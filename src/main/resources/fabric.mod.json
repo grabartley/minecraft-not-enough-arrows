@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "more-arrows",
+  "version": "${version}",
+  "name": "More Arrows",
+  "description": "Expands the arrow types available in Minecraft with new craftable arrows that carry unique effects.",
+  "authors": [
+    "Vitória Vedana",
+    "Graham Bartley"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/more-arrows",
+    "sources": "https://github.com/grabartley/minecraft-more-arrows",
+    "issues": "https://github.com/grabartley/minecraft-more-arrows/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.grahambartley.morearrows.MoreArrows"
+    ],
+    "client": [
+      "com.grahambartley.morearrows.MoreArrowsClient"
+    ],
+    "fabric-gametest": []
+  },
+  "mixins": [
+    "more-arrows.mixins.json",
+    {
+      "config": "more-arrows.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "accessWidener": "more-arrows.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": ">=0.107.0+1.21.1",
+    "geckolib": ">=4.7"
+  },
+  "suggests": {
+    "jei": "*",
+    "emi": "*"
+  }
+}
