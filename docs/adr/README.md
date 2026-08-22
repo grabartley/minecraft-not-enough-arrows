@@ -13,6 +13,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0003](0003-explosive-arrows-telegraph.md) | Explosive arrows telegraph before detonating |
 | [0004](0004-grapple-is-a-ticked-session.md) | Grappling is a server-owned ticked session |
 | [0005](0005-config-split-by-family.md) | Configuration and commands are split by arrow family |
+| [0006](0006-arrow-identity-is-shared-by-item-and-entity.md) | An arrow's item and entity share one identifier |
 
 ## Writing A New Record
 

@@ -10,6 +10,9 @@ public class MoreArrows implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    ModArrows.register();
+    ModItemGroups.register();
+
     LOGGER.info("More Arrows initialized");
   }
 }
