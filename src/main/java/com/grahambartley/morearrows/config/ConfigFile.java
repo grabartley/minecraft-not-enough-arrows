@@ -1,8 +1,5 @@
 package com.grahambartley.morearrows.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -15,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 public final class ConfigFile {
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigFile.class);
-  private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
   private static final String TEMP_SUFFIX = ".tmp";
 
   private ConfigFile() {}
@@ -40,11 +36,7 @@ public final class ConfigFile {
     }
 
     try {
-      final JsonObject root = GSON.fromJson(json, JsonObject.class);
-      if (root == null) {
-        throw new JsonParseException("Config root is not a JSON object");
-      }
-      return MoreArrowsConfig.fromJson(root);
+      return ConfigCodec.decode(json);
     } catch (final JsonParseException | IllegalStateException ex) {
       final Path backup = backUpBrokenFile(path);
       LOGGER.warn(
@@ -67,7 +59,7 @@ public final class ConfigFile {
         Files.createDirectories(parent);
       }
       final Path temp = path.resolveSibling(path.getFileName() + TEMP_SUFFIX);
-      Files.writeString(temp, GSON.toJson(config.toJson()), StandardCharsets.UTF_8);
+      Files.writeString(temp, ConfigCodec.encode(config), StandardCharsets.UTF_8);
       Files.move(temp, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
       return true;
     } catch (final IOException ex) {
