@@ -22,7 +22,10 @@
     "client": [
       "com.grahambartley.morearrows.MoreArrowsClient"
     ],
-    "fabric-gametest": []
+    "fabric-gametest": [
+      "com.grahambartley.morearrows.gametest.ArrowRegistrarGameTest",
+      "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest"
+    ]
   },
   "mixins": [
     "more-arrows.mixins.json",
