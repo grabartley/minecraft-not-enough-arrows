@@ -6,10 +6,6 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IModInfoRegistration;
 import net.minecraft.util.Identifier;
 
-/**
- * Loaded by JEI through the {@code jei_mod_plugin} entrypoint in {@code fabric.mod.json}. Nothing
- * else references this class, so it stays unloaded when JEI is not installed.
- */
 @JeiPlugin
 public final class MoreArrowsJeiPlugin implements IModPlugin {
 

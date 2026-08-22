@@ -70,8 +70,6 @@ loom {
 sourceSets {
 	clientTest {
 		compileClasspath += sourceSets.client.compileClasspath + sourceSets.client.output + sourceSets.main.output
-		// Client compile classpath, not just runtime: the recipe viewer APIs are compile-only, and
-		// tests for the compat classes have to load their types.
 		runtimeClasspath += sourceSets.client.runtimeClasspath + sourceSets.client.compileClasspath + sourceSets.client.output + sourceSets.main.output
 	}
 }
@@ -242,8 +240,6 @@ check {
 }
 
 jar {
-	// Captured at configuration time: reading inputs.properties from the rename closure resolves at
-	// execution time, which the configuration cache rejects.
 	def archivesName = project.base.archivesName.get()
 	inputs.property "archivesName", archivesName
 
