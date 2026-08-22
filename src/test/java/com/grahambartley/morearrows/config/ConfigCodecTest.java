@@ -49,13 +49,13 @@ class ConfigCodecTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"{ not json ", "[1,2,3]", "\"a string\"", "12"})
+  @ValueSource(strings = {"{ not json ", "[1,2,3]", "\"a string\"", "12", "null"})
   void refusesToDecodeContentThatIsNotAConfigObject(final String json) {
-    assertThrows(RuntimeException.class, () -> ConfigCodec.decode(json));
+    assertThrows(JsonParseException.class, () -> ConfigCodec.decode(json));
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"{ not json ", "[1,2,3]", "\"a string\""})
+  @ValueSource(strings = {"{ not json ", "[1,2,3]", "\"a string\"", "12", "null"})
   void fallsBackToDefaultsWhenAskedToBeLenient(final String json) {
     assertEquals(MoreArrowsConfig.defaults(), ConfigCodec.decodeOrDefaults(json));
   }

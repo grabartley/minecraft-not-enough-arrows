@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public final class ConfigPaths {
-  static final String MOD_DIR = "more-arrows";
+  public static final String MOD_DIR = "more-arrows";
   static final String SERVER_CONFIG_FILE = "server-config.json";
   static final String JSON_EXTENSION = ".json";
   static final String BROKEN_MARKER = ".broken.";
