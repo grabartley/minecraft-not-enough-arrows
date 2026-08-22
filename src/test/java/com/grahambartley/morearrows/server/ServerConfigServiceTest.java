@@ -1,8 +1,13 @@
-package com.grahambartley.morearrows.config;
+package com.grahambartley.morearrows.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.grahambartley.morearrows.config.ConfigFile;
+import com.grahambartley.morearrows.config.ConfigPaths;
+import com.grahambartley.morearrows.config.GrappleArrowConfig;
+import com.grahambartley.morearrows.config.MoreArrowsConfig;
+import com.grahambartley.morearrows.config.ServerConfigHolder;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -11,7 +16,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-class ServerConfigLoaderTest {
+class ServerConfigServiceTest {
 
   @TempDir Path worldRoot;
 
@@ -21,19 +26,24 @@ class ServerConfigLoaderTest {
   }
 
   @Test
+  void gatesMutationBehindOperatorPermissionLevelTwo() {
+    assertEquals(2, ServerConfigService.OP_PERMISSION_LEVEL);
+  }
+
+  @Test
   void writesDefaultsOutWhenTheWorldHasNoConfigYet() {
-    ServerConfigLoader.loadFromWorldRoot(worldRoot);
+    ServerConfigService.loadFromWorldRoot(worldRoot);
 
     assertTrue(Files.exists(new ConfigPaths(worldRoot).getServerConfigPath()));
   }
 
   @Test
-  void publishesTheLoadedConfigToTheHolder() throws IOException {
+  void publishesTheLoadedConfigSoTheServerCanReadIt() throws IOException {
     writeConfig("{\"grapple\":{\"maxRangeBlocks\":64}}");
 
-    ServerConfigLoader.loadFromWorldRoot(worldRoot);
+    ServerConfigService.loadFromWorldRoot(worldRoot);
 
-    assertEquals(64, ServerConfigHolder.get().grapple().maxRangeBlocks());
+    assertEquals(64, ServerConfigService.get().grapple().maxRangeBlocks());
   }
 
   @Test
@@ -41,7 +51,7 @@ class ServerConfigLoaderTest {
     final String contents = "{\"grapple\":{\"maxRangeBlocks\":64}}";
     final Path path = writeConfig(contents);
 
-    ServerConfigLoader.loadFromWorldRoot(worldRoot);
+    ServerConfigService.loadFromWorldRoot(worldRoot);
 
     assertEquals(contents, Files.readString(path, StandardCharsets.UTF_8));
   }
@@ -50,7 +60,7 @@ class ServerConfigLoaderTest {
   void replacesAMalformedConfigWithDefaultsOnDisk() throws IOException {
     writeConfig("{ not json ");
 
-    ServerConfigLoader.loadFromWorldRoot(worldRoot);
+    ServerConfigService.loadFromWorldRoot(worldRoot);
 
     final Path path = new ConfigPaths(worldRoot).getServerConfigPath();
     assertTrue(Files.exists(path));
@@ -61,7 +71,7 @@ class ServerConfigLoaderTest {
   void keepsTheMalformedConfigBesideTheReplacement() throws IOException {
     writeConfig("{ not json ");
 
-    ServerConfigLoader.loadFromWorldRoot(worldRoot);
+    ServerConfigService.loadFromWorldRoot(worldRoot);
 
     try (var entries = Files.list(new ConfigPaths(worldRoot).getModDir())) {
       assertTrue(entries.anyMatch(p -> p.getFileName().toString().contains(".broken.")));
@@ -69,8 +79,33 @@ class ServerConfigLoaderTest {
   }
 
   @Test
-  void returnsDefaultsForAWorldWithNoConfig() {
-    assertEquals(MoreArrowsConfig.defaults(), ServerConfigLoader.loadFromWorldRoot(worldRoot));
+  void resetsToDefaultsWhenThereIsNoSaveSession() {
+    ServerConfigHolder.set(
+        MoreArrowsConfig.defaults()
+            .withGrapple(new GrappleArrowConfig(64, 1.0f, true, true, 8, false)));
+
+    ServerConfigService.loadFromSession(null);
+
+    assertEquals(MoreArrowsConfig.defaults(), ServerConfigService.get());
+  }
+
+  @Test
+  void refusesToUpdateWithoutAServerOrConfig() {
+    assertEquals(false, ServerConfigService.update(null, MoreArrowsConfig.defaults()));
+  }
+
+  @Test
+  void broadcastingWithoutAServerIsANoOp() {
+    ServerConfigService.broadcast(null);
+
+    assertEquals(MoreArrowsConfig.defaults(), ServerConfigService.get());
+  }
+
+  @Test
+  void syncingToNoPlayerIsANoOp() {
+    ServerConfigService.syncTo(null);
+
+    assertEquals(MoreArrowsConfig.defaults(), ServerConfigService.get());
   }
 
   private Path writeConfig(final String contents) throws IOException {

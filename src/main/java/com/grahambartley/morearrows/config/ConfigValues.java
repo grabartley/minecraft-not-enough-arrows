@@ -102,6 +102,10 @@ public final class ConfigValues {
   }
 
   public static List<String> normalizeIdentifiers(final List<String> raw) {
+    return normalizeIdentifiers(raw, Integer.MAX_VALUE);
+  }
+
+  public static List<String> normalizeIdentifiers(final List<String> raw, final int maxEntries) {
     if (raw == null) {
       return List.of();
     }
@@ -111,9 +115,17 @@ public final class ConfigValues {
         continue;
       }
       final String trimmed = entry.trim().toLowerCase(Locale.ROOT);
-      if (!trimmed.isEmpty()) {
-        normalized.add(trimmed);
+      if (trimmed.isEmpty()) {
+        continue;
       }
+      if (normalized.size() >= maxEntries) {
+        LOGGER.warn(
+            "More Arrows config identifier list exceeds {} entries, dropping {}",
+            maxEntries,
+            trimmed);
+        continue;
+      }
+      normalized.add(trimmed);
     }
     return List.copyOf(normalized);
   }
