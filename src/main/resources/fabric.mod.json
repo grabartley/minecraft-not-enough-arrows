@@ -34,6 +34,7 @@
     "fabric-gametest": [
       "com.grahambartley.morearrows.gametest.ArrowRegistrarGameTest",
       "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest",
+      "com.grahambartley.morearrows.gametest.MoreArrowsCommandGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigPayloadsGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigServiceGameTest"
     ]

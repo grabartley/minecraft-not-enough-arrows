@@ -35,6 +35,29 @@ The mod keeps two separate stores, and which one a setting lives in decides who 
 
 Server config decides gameplay and is authoritative. Client state holds interface preferences only, so editing it changes nothing another player can observe. Either file falls back to defaults if it is missing or malformed, keeping a copy of the broken file beside it rather than overwriting it.
 
+## Commands
+
+Every server config option is adjustable at runtime, so a server owner on a headless box never has to edit a file or restart. Changes are written to the world save and pushed to connected clients immediately.
+
+| Command | Permission | Purpose |
+|---|---|---|
+| `/morearrows` | Anyone | Lists the commands the caller is allowed to run |
+| `/morearrows status` | Anyone | Prints every setting and its current value |
+| `/morearrows config reset` | Operator (level 2) | Restores every setting to its default |
+| `/morearrows config <family> <option> <value>` | Operator (level 2) | Sets one option |
+
+`<family>` is `explosive`, `grapple`, `utility`, or `physics`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it.
+
+Values are checked against the same bounds the config record enforces. A value outside them is rejected with an error naming the accepted range, rather than being silently clamped the way a hand-edited file is on load.
+
+The gravity arrow block exclusion list is edited rather than replaced:
+
+```
+/morearrows config physics gravityblockexclusions add <block>
+/morearrows config physics gravityblockexclusions remove <block>
+/morearrows config physics gravityblockexclusions clear
+```
+
 ## Documentation
 
 - [`docs/standards.md`](docs/standards.md) covers the engineering standards shared across these mods

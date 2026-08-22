@@ -83,4 +83,54 @@ public record GrappleArrowConfig(
     root.addProperty(KEY_ROPES_DECAY, ropesDecay);
     return root;
   }
+
+  public GrappleArrowConfig withMaxRangeBlocks(final int value) {
+    return new GrappleArrowConfig(
+        value,
+        pullSpeed,
+        cancelFallDamageOnArrival,
+        returnArrowOnArrival,
+        ropeLengthBlocks,
+        ropesDecay);
+  }
+
+  public GrappleArrowConfig withPullSpeed(final float value) {
+    return new GrappleArrowConfig(
+        maxRangeBlocks,
+        value,
+        cancelFallDamageOnArrival,
+        returnArrowOnArrival,
+        ropeLengthBlocks,
+        ropesDecay);
+  }
+
+  public GrappleArrowConfig withCancelFallDamageOnArrival(final boolean value) {
+    return new GrappleArrowConfig(
+        maxRangeBlocks, pullSpeed, value, returnArrowOnArrival, ropeLengthBlocks, ropesDecay);
+  }
+
+  public GrappleArrowConfig withReturnArrowOnArrival(final boolean value) {
+    return new GrappleArrowConfig(
+        maxRangeBlocks, pullSpeed, cancelFallDamageOnArrival, value, ropeLengthBlocks, ropesDecay);
+  }
+
+  public GrappleArrowConfig withRopeLengthBlocks(final int value) {
+    return new GrappleArrowConfig(
+        maxRangeBlocks,
+        pullSpeed,
+        cancelFallDamageOnArrival,
+        returnArrowOnArrival,
+        value,
+        ropesDecay);
+  }
+
+  public GrappleArrowConfig withRopesDecay(final boolean value) {
+    return new GrappleArrowConfig(
+        maxRangeBlocks,
+        pullSpeed,
+        cancelFallDamageOnArrival,
+        returnArrowOnArrival,
+        ropeLengthBlocks,
+        value);
+  }
 }
