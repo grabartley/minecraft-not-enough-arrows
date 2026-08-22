@@ -70,7 +70,7 @@ loom {
 sourceSets {
 	clientTest {
 		compileClasspath += sourceSets.client.compileClasspath + sourceSets.client.output + sourceSets.main.output
-		runtimeClasspath += sourceSets.client.runtimeClasspath + sourceSets.client.output + sourceSets.main.output
+		runtimeClasspath += sourceSets.client.runtimeClasspath + sourceSets.client.compileClasspath + sourceSets.client.output + sourceSets.main.output
 	}
 }
 
@@ -206,17 +206,45 @@ tasks.register("verifyMainSourceSideSafety") {
 	}
 }
 
+tasks.register("verifyNoBundledRecipeViewers") {
+	group = "verification"
+	description = "Fails if the remapped jar bundles Mod Menu, JEI, or EMI code"
+
+	def remappedJar = tasks.named("remapJar").flatMap { it.archiveFile }
+	inputs.file(remappedJar)
+
+	doLast {
+		def bundledPrefixes = ["mezz/jei/", "dev/emi/", "com/terraformersmc/modmenu/"]
+		def violations = []
+
+		new java.util.zip.ZipFile(remappedJar.get().asFile).withCloseable { zip ->
+			zip.entries().each { entry ->
+				if (bundledPrefixes.any { entry.name.startsWith(it) }) {
+					violations << entry.name
+				}
+			}
+		}
+
+		if (!violations.isEmpty()) {
+			throw new GradleException(
+				"Recipe viewer code bundled into the mod jar:\n" + violations.join("\n"))
+		}
+	}
+}
+
 check {
 	dependsOn spotlessCheck
 	dependsOn verifyMainSourceSideSafety
+	dependsOn verifyNoBundledRecipeViewers
 	dependsOn clientTest
 }
 
 jar {
-	inputs.property "archivesName", project.base.archivesName
+	def archivesName = project.base.archivesName.get()
+	inputs.property "archivesName", archivesName
 
 	from("LICENSE") {
-		rename { "${it}_${inputs.properties.archivesName}"}
+		rename { "${it}_${archivesName}" }
 	}
 }
 
