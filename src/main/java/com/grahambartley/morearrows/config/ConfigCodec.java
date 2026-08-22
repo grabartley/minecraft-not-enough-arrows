@@ -2,7 +2,7 @@ package com.grahambartley.morearrows.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 public final class ConfigCodec {
@@ -20,11 +20,11 @@ public final class ConfigCodec {
     if (json == null || json.isBlank()) {
       return MoreArrowsConfig.defaults();
     }
-    final JsonObject root = GSON.fromJson(json, JsonObject.class);
-    if (root == null) {
+    final JsonElement root = GSON.fromJson(json, JsonElement.class);
+    if (root == null || !root.isJsonObject()) {
       throw new JsonParseException("Config root is not a JSON object");
     }
-    return MoreArrowsConfig.fromJson(root);
+    return MoreArrowsConfig.fromJson(root.getAsJsonObject());
   }
 
   public static MoreArrowsConfig decodeOrDefaults(final String json) {
