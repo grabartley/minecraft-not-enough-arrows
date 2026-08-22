@@ -1,0 +1,66 @@
+package com.grahambartley.morearrows.config;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+class GrappleArrowConfigTest {
+
+  @ParameterizedTest
+  @CsvSource({"0, 4", "4, 4", "32, 32", "128, 128", "999, 128"})
+  void clampsMaxRange(final int given, final int expected) {
+    assertEquals(expected, config(given, 0.8f, 16).maxRangeBlocks());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"0.0, 0.1", "0.1, 0.1", "0.8, 0.8", "4.0, 4.0", "9.0, 4.0"})
+  void clampsPullSpeed(final float given, final float expected) {
+    assertEquals(expected, config(32, given, 16).pullSpeed());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"0, 1", "1, 1", "16, 16", "128, 128", "999, 128"})
+  void clampsRopeLength(final int given, final int expected) {
+    assertEquals(expected, config(32, 0.8f, given).ropeLengthBlocks());
+  }
+
+  @Test
+  void defaultsToForgivingArrivalBehaviour() {
+    final GrappleArrowConfig defaults = GrappleArrowConfig.defaults();
+
+    assertTrue(defaults.cancelFallDamageOnArrival());
+    assertTrue(defaults.returnArrowOnArrival());
+  }
+
+  @Test
+  void fallsBackToDefaultsForAnEmptyObject() {
+    assertEquals(GrappleArrowConfig.defaults(), GrappleArrowConfig.fromJson(new JsonObject()));
+  }
+
+  @Test
+  void readsOnlyTheKeysThatArePresentAndDefaultsTheRest() {
+    final GrappleArrowConfig parsed =
+        GrappleArrowConfig.fromJson(
+            JsonParser.parseString("{\"maxRangeBlocks\":64}").getAsJsonObject());
+
+    assertEquals(64, parsed.maxRangeBlocks());
+    assertEquals(GrappleArrowConfig.DEFAULT_PULL_SPEED, parsed.pullSpeed());
+  }
+
+  @Test
+  void roundTripsThroughJson() {
+    final GrappleArrowConfig original = new GrappleArrowConfig(64, 1.5f, false, false, 40, true);
+
+    assertEquals(original, GrappleArrowConfig.fromJson(original.toJson()));
+  }
+
+  private static GrappleArrowConfig config(
+      final int maxRange, final float pullSpeed, final int ropeLength) {
+    return new GrappleArrowConfig(maxRange, pullSpeed, true, true, ropeLength, false);
+  }
+}
