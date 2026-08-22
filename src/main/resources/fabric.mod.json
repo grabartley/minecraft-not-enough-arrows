@@ -22,6 +22,15 @@
     "client": [
       "com.grahambartley.morearrows.MoreArrowsClient"
     ],
+    "modmenu": [
+      "com.grahambartley.morearrows.MoreArrowsModMenu"
+    ],
+    "jei_mod_plugin": [
+      "com.grahambartley.morearrows.compat.jei.MoreArrowsJeiPlugin"
+    ],
+    "emi": [
+      "com.grahambartley.morearrows.compat.emi.MoreArrowsEmiPlugin"
+    ],
     "fabric-gametest": [
       "com.grahambartley.morearrows.gametest.ArrowRegistrarGameTest",
       "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest",
