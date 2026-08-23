@@ -102,4 +102,41 @@ public record UtilityArrowConfig(
     root.addProperty(KEY_WIND_PUSH_STRENGTH, windPushStrength);
     return root;
   }
+
+  public UtilityArrowConfig withGlowDurationTicks(final int value) {
+    return new UtilityArrowConfig(
+        value,
+        redstoneSignalDurationTicks,
+        redstoneSignalStrength,
+        windBurstRadius,
+        windPushStrength);
+  }
+
+  public UtilityArrowConfig withRedstoneSignalDurationTicks(final int value) {
+    return new UtilityArrowConfig(
+        glowDurationTicks, value, redstoneSignalStrength, windBurstRadius, windPushStrength);
+  }
+
+  public UtilityArrowConfig withRedstoneSignalStrength(final int value) {
+    return new UtilityArrowConfig(
+        glowDurationTicks, redstoneSignalDurationTicks, value, windBurstRadius, windPushStrength);
+  }
+
+  public UtilityArrowConfig withWindBurstRadius(final float value) {
+    return new UtilityArrowConfig(
+        glowDurationTicks,
+        redstoneSignalDurationTicks,
+        redstoneSignalStrength,
+        value,
+        windPushStrength);
+  }
+
+  public UtilityArrowConfig withWindPushStrength(final float value) {
+    return new UtilityArrowConfig(
+        glowDurationTicks,
+        redstoneSignalDurationTicks,
+        redstoneSignalStrength,
+        windBurstRadius,
+        value);
+  }
 }

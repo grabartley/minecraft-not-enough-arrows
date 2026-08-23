@@ -70,4 +70,35 @@ class UtilityArrowConfigTest {
       final int glowTicks, final int redstoneTicks, final int redstoneStrength) {
     return new UtilityArrowConfig(glowTicks, redstoneTicks, redstoneStrength, 3.0f, 1.0f);
   }
+
+  @Test
+  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
+    final UtilityArrowConfig original = UtilityArrowConfig.defaults();
+
+    final UtilityArrowConfig updated = original.withRedstoneSignalStrength(7);
+
+    assertEquals(7, updated.redstoneSignalStrength());
+    assertEquals(original.glowDurationTicks(), updated.glowDurationTicks());
+    assertEquals(original.windPushStrength(), updated.windPushStrength());
+  }
+
+  @Test
+  void aChangedValueIsStillClamped() {
+    assertEquals(
+        UtilityArrowConfig.REDSTONE_SIGNAL_STRENGTH_MAX,
+        UtilityArrowConfig.defaults().withRedstoneSignalStrength(999).redstoneSignalStrength());
+  }
+
+  @Test
+  void everyUtilityFieldCanBeChangedOnItsOwn() {
+    final UtilityArrowConfig updated =
+        UtilityArrowConfig.defaults()
+            .withGlowDurationTicks(100)
+            .withRedstoneSignalDurationTicks(20)
+            .withRedstoneSignalStrength(7)
+            .withWindBurstRadius(5.0f)
+            .withWindPushStrength(2.0f);
+
+    assertEquals(new UtilityArrowConfig(100, 20, 7, 5.0f, 2.0f), updated);
+  }
 }

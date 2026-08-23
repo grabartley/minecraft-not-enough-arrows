@@ -99,4 +99,100 @@ public record ExplosiveArrowConfig(
     root.addProperty(KEY_BEEP_VOLUME, beepVolume);
     return root;
   }
+
+  public ExplosiveArrowConfig withGunpowder(final ExplosiveTierConfig value) {
+    return new ExplosiveArrowConfig(
+        value,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withTnt(final ExplosiveTierConfig value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        value,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withFireCharge(final ExplosiveTierConfig value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        value,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withDamageTerrain(final boolean value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        value,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withDamageEntities(final boolean value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        value,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withFirePatchRadius(final int value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        value,
+        firePatchDurationTicks,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withFirePatchDurationTicks(final int value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        value,
+        beepVolume);
+  }
+
+  public ExplosiveArrowConfig withBeepVolume(final float value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        value);
+  }
 }

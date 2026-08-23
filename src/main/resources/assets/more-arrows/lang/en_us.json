@@ -1,3 +1,13 @@
 {
-  "itemGroup.more-arrows.arrows": "More Arrows"
+  "itemGroup.more-arrows.arrows": "More Arrows",
+  "command.more-arrows.help.header": "More Arrows commands:",
+  "command.more-arrows.help.entry": "- /%s",
+  "command.more-arrows.status.header": "More Arrows settings:",
+  "command.more-arrows.status.entry": "- %s=%s",
+  "command.more-arrows.update.success": "Set %s to %s",
+  "command.more-arrows.update.failed": "Could not save %s, the server config was not written",
+  "command.more-arrows.exclusions.already_present": "That block is already excluded from gravity arrows",
+  "command.more-arrows.exclusions.not_present": "That block is not excluded from gravity arrows",
+  "command.more-arrows.exclusions.full": "The gravity arrow exclusion list is full",
+  "command.more-arrows.exclusions.invalid": "That is not a valid block identifier"
 }

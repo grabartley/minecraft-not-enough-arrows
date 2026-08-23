@@ -108,4 +108,43 @@ class PhysicsArrowConfigTest {
   private static PhysicsArrowConfig config(final int radius, final List<String> exclusions) {
     return new PhysicsArrowConfig(radius, exclusions, 3, true);
   }
+
+  @Test
+  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
+    final PhysicsArrowConfig original = PhysicsArrowConfig.defaults();
+
+    final PhysicsArrowConfig updated = original.withRicochetBounceCount(5);
+
+    assertEquals(5, updated.ricochetBounceCount());
+    assertEquals(original.gravityImpactRadius(), updated.gravityImpactRadius());
+    assertEquals(original.gravityBlockExclusions(), updated.gravityBlockExclusions());
+  }
+
+  @Test
+  void aChangedValueIsStillClamped() {
+    assertEquals(
+        PhysicsArrowConfig.RICOCHET_BOUNCE_COUNT_MAX,
+        PhysicsArrowConfig.defaults().withRicochetBounceCount(999).ricochetBounceCount());
+  }
+
+  @Test
+  void aChangedExclusionListIsStillNormalised() {
+    assertEquals(
+        java.util.List.of("minecraft:sand"),
+        PhysicsArrowConfig.defaults()
+            .withGravityBlockExclusions(java.util.List.of("  MINECRAFT:SAND  ", "minecraft:sand"))
+            .gravityBlockExclusions());
+  }
+
+  @Test
+  void everyPhysicsFieldCanBeChangedOnItsOwn() {
+    final PhysicsArrowConfig updated =
+        PhysicsArrowConfig.defaults()
+            .withGravityImpactRadius(4)
+            .withGravityBlockExclusions(java.util.List.of("minecraft:sand"))
+            .withRicochetBounceCount(5)
+            .withRicochetRetainsDamage(false);
+
+    assertEquals(new PhysicsArrowConfig(4, java.util.List.of("minecraft:sand"), 5, false), updated);
+  }
 }

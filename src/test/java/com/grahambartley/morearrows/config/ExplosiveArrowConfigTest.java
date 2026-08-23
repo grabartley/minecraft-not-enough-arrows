@@ -146,4 +146,41 @@ class ExplosiveArrowConfigTest {
         defaults.firePatchDurationTicks(),
         defaults.beepVolume());
   }
+
+  @Test
+  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
+    final ExplosiveArrowConfig original = ExplosiveArrowConfig.defaults();
+
+    final ExplosiveArrowConfig updated = original.withFirePatchRadius(5);
+
+    assertEquals(5, updated.firePatchRadius());
+    assertEquals(original.gunpowder(), updated.gunpowder());
+    assertEquals(original.beepVolume(), updated.beepVolume());
+    assertEquals(original.damageEntities(), updated.damageEntities());
+  }
+
+  @Test
+  void aChangedValueIsStillClamped() {
+    assertEquals(
+        ExplosiveArrowConfig.FIRE_PATCH_RADIUS_MAX,
+        ExplosiveArrowConfig.defaults().withFirePatchRadius(999).firePatchRadius());
+  }
+
+  @Test
+  void everyExplosiveFieldCanBeChangedOnItsOwn() {
+    final ExplosiveTierConfig tier = new ExplosiveTierConfig(10, 2.0f);
+
+    final ExplosiveArrowConfig updated =
+        ExplosiveArrowConfig.defaults()
+            .withGunpowder(tier)
+            .withTnt(tier)
+            .withFireCharge(tier)
+            .withDamageTerrain(true)
+            .withDamageEntities(false)
+            .withFirePatchRadius(5)
+            .withFirePatchDurationTicks(400)
+            .withBeepVolume(0.5f);
+
+    assertEquals(new ExplosiveArrowConfig(tier, tier, tier, true, false, 5, 400, 0.5f), updated);
+  }
 }

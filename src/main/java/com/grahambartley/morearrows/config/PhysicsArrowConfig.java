@@ -82,4 +82,24 @@ public record PhysicsArrowConfig(
     root.addProperty(KEY_RICOCHET_RETAINS_DAMAGE, ricochetRetainsDamage);
     return root;
   }
+
+  public PhysicsArrowConfig withGravityImpactRadius(final int value) {
+    return new PhysicsArrowConfig(
+        value, gravityBlockExclusions, ricochetBounceCount, ricochetRetainsDamage);
+  }
+
+  public PhysicsArrowConfig withGravityBlockExclusions(final List<String> value) {
+    return new PhysicsArrowConfig(
+        gravityImpactRadius, value, ricochetBounceCount, ricochetRetainsDamage);
+  }
+
+  public PhysicsArrowConfig withRicochetBounceCount(final int value) {
+    return new PhysicsArrowConfig(
+        gravityImpactRadius, gravityBlockExclusions, value, ricochetRetainsDamage);
+  }
+
+  public PhysicsArrowConfig withRicochetRetainsDamage(final boolean value) {
+    return new PhysicsArrowConfig(
+        gravityImpactRadius, gravityBlockExclusions, ricochetBounceCount, value);
+  }
 }

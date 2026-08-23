@@ -63,4 +63,38 @@ class GrappleArrowConfigTest {
       final int maxRange, final float pullSpeed, final int ropeLength) {
     return new GrappleArrowConfig(maxRange, pullSpeed, true, true, ropeLength, false);
   }
+
+  @Test
+  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
+    final GrappleArrowConfig original = GrappleArrowConfig.defaults();
+
+    final GrappleArrowConfig updated = original.withMaxRangeBlocks(64);
+
+    assertEquals(64, updated.maxRangeBlocks());
+    assertEquals(original.withMaxRangeBlocks(original.maxRangeBlocks()), original);
+    assertEquals(original.pullSpeed(), updated.pullSpeed());
+    assertEquals(original.ropeLengthBlocks(), updated.ropeLengthBlocks());
+    assertEquals(original.ropesDecay(), updated.ropesDecay());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"999, 128", "0, 4"})
+  void aChangedValueIsStillClamped(final int given, final int expected) {
+    assertEquals(
+        expected, GrappleArrowConfig.defaults().withMaxRangeBlocks(given).maxRangeBlocks());
+  }
+
+  @Test
+  void everyGrappleFieldCanBeChangedOnItsOwn() {
+    final GrappleArrowConfig updated =
+        GrappleArrowConfig.defaults()
+            .withMaxRangeBlocks(64)
+            .withPullSpeed(1.5f)
+            .withCancelFallDamageOnArrival(false)
+            .withReturnArrowOnArrival(false)
+            .withRopeLengthBlocks(40)
+            .withRopesDecay(true);
+
+    assertEquals(new GrappleArrowConfig(64, 1.5f, false, false, 40, true), updated);
+  }
 }
