@@ -53,5 +53,6 @@
   "config.more-arrows.option.client.showCountdownHud": "Show Countdown HUD",
   "config.more-arrows.option.client.playCountdownSound": "Play Countdown Sound",
   "config.more-arrows.option.client.countdownHudScale": "Countdown HUD Scale",
-  "config.more-arrows.identifier_list.hint": "minecraft:bedrock, minecraft:obsidian"
+  "config.more-arrows.identifier_list.hint": "minecraft:bedrock, minecraft:obsidian",
+  "info.more-arrows.shared.firing": "Fires from a bow, a crossbow, or a dispenser, and is picked back up the same way a vanilla arrow is."
 }

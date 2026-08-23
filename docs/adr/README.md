@@ -18,6 +18,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0008](0008-client-state-is-separate-from-server-config.md) | Client state is a separate store from server configuration |
 | [0009](0009-arrows-reach-vanilla-weapons-through-vanilla-hooks.md) | Arrows reach vanilla weapons through vanilla's own hooks |
 | [0010](0010-one-option-catalog-feeds-every-surface.md) | One option catalog feeds every surface that reads configuration |
+| [0011](0011-recipe-viewer-info-is-written-once.md) | Recipe viewer info is written once and adapted per viewer |
 
 ## Writing A New Record
 
