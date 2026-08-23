@@ -1,7 +1,10 @@
 package com.grahambartley.morearrows.entity;
 
 import com.grahambartley.morearrows.arrow.ArrowImpact;
+import java.util.Optional;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -55,6 +58,14 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
     if (getWorld() instanceof ServerWorld serverWorld && !isRemoved()) {
       onArrowTick(serverWorld);
     }
+  }
+
+  public Optional<LivingEntity> shooter() {
+    return getOwner() instanceof LivingEntity living ? Optional.of(living) : Optional.empty();
+  }
+
+  public Optional<PlayerEntity> shootingPlayer() {
+    return getOwner() instanceof PlayerEntity player ? Optional.of(player) : Optional.empty();
   }
 
   protected ArrowImpact onArrowHitBlock(
