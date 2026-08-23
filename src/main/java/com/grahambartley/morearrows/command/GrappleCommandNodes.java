@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.command;
 
+import com.grahambartley.morearrows.config.ConfigSettings;
 import com.grahambartley.morearrows.config.GrappleArrowConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;

@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.command;
 
+import com.grahambartley.morearrows.config.ConfigValueFormat;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import com.grahambartley.morearrows.server.ServerConfigService;
 import com.mojang.brigadier.arguments.BoolArgumentType;

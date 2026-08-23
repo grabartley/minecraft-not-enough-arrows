@@ -1,4 +1,4 @@
-package com.grahambartley.morearrows.command;
+package com.grahambartley.morearrows.config;
 
 import java.util.List;
 import java.util.Locale;

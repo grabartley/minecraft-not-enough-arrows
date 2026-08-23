@@ -49,6 +49,21 @@ The mod keeps two separate stores, and which one a setting lives in decides who 
 
 Server config decides gameplay and is authoritative. Client state holds interface preferences only, so editing it changes nothing another player can observe. Either file falls back to defaults if it is missing or malformed, keeping a copy of the broken file beside it rather than overwriting it.
 
+## Settings Screen
+
+Every option is also editable in game through [Mod Menu](https://modrinth.com/mod/modmenu), so a player never has to type a command or edit a file. The screen lists the same settings the command tree exposes, in the same order, with each control constrained to the same range the config record enforces.
+
+Server settings are edited on a draft and sent to the server when the screen closes, so the server stays the authority on what is actually stored. Client settings are written straight to the client state file.
+
+| Session | Server settings | Client settings |
+|---|---|---|
+| Singleplayer | Editable | Editable |
+| Multiplayer, operator | Editable | Editable |
+| Multiplayer, not an operator | Read-only, with the reason shown under the title | Editable |
+| Title screen, no world joined | Read-only, showing defaults | Editable |
+
+The server checks operator permission again when the update arrives, so a client that ignores the read-only state changes nothing. A refused update is answered with a fresh sync, which puts the client's view back on the server's values.
+
 ## Commands
 
 Every server config option is adjustable at runtime, so a server owner on a headless box never has to edit a file or restart. Changes are written to the world save and pushed to connected clients immediately.
@@ -60,7 +75,7 @@ Every server config option is adjustable at runtime, so a server owner on a head
 | `/morearrows config reset` | Operator (level 2) | Restores every setting to its default |
 | `/morearrows config <family> <option> <value>` | Operator (level 2) | Sets one option |
 
-`<family>` is `explosive`, `grapple`, `utility`, or `physics`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it.
+`<family>` is `explosive`, `grapple`, `utility`, or `physics`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/morearrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
 
 Values are checked against the same bounds the config record enforces. A value outside them is rejected with an error naming the accepted range, rather than being silently clamped the way a hand-edited file is on load.
 

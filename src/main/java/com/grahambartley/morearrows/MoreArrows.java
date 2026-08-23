@@ -3,6 +3,7 @@ package com.grahambartley.morearrows;
 import com.grahambartley.morearrows.command.MoreArrowsCommand;
 import com.grahambartley.morearrows.network.ModNetworking;
 import com.grahambartley.morearrows.server.ServerConfigSyncListener;
+import com.grahambartley.morearrows.server.ServerConfigUpdateReceiver;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public class MoreArrows implements ModInitializer {
     ModItemGroups.register();
     ModNetworking.registerPayloads();
     ServerConfigSyncListener.register();
+    ServerConfigUpdateReceiver.register();
     CommandRegistrationCallback.EVENT.register(
         (dispatcher, registryAccess, environment) -> MoreArrowsCommand.register(dispatcher));
 

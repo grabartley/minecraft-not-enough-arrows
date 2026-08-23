@@ -1,4 +1,4 @@
-package com.grahambartley.morearrows.command;
+package com.grahambartley.morearrows.config;
 
 public final class ConfigSettings {
   public static final String EXPLOSIVE = "explosive";
