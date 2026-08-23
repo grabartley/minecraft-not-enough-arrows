@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.command;
 
+import com.grahambartley.morearrows.config.ConfigSettings;
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
 import com.grahambartley.morearrows.config.ExplosiveTierConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;

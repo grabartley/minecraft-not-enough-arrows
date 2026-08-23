@@ -1,4 +1,4 @@
-package com.grahambartley.morearrows.command;
+package com.grahambartley.morearrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

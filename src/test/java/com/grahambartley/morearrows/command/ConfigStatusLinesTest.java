@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.morearrows.command.ConfigStatusLines.StatusEntry;
+import com.grahambartley.morearrows.config.ConfigSettings;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import java.util.List;
 import java.util.Locale;
