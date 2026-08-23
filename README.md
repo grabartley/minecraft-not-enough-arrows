@@ -87,6 +87,20 @@ The gravity arrow block exclusion list is edited rather than replaced:
 /morearrows config physics gravityblockexclusions clear
 ```
 
+## Recipe Viewers
+
+[EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei) both show an information page beside each of the mod's arrows, covering what the arrow does beyond what its recipe already says. Neither viewer holds content of its own. Both read one shared list, so the two can never disagree about what an arrow does.
+
+| Piece | Holds |
+|---|---|
+| `InfoEntry` | The items an entry covers and the translation keys describing them |
+| `RecipeViewerInfo` | The entry list, built from the arrows the mod registered |
+| `en_us.json` | Every word a player reads |
+
+The list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
+
+Neither viewer is bundled into the jar, and `./gradlew check` fails if either ever is.
+
 ## Documentation
 
 - [`docs/standards.md`](docs/standards.md) covers the engineering standards shared across these mods
