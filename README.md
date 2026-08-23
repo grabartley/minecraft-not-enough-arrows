@@ -15,6 +15,20 @@ Expands the arrow types available in Minecraft with new craftable arrows that ca
 - Wind arrow
 - Redstone arrow
 
+## Firing and recovery
+
+Every arrow this mod adds behaves like a vanilla arrow everywhere a vanilla arrow already works, rather than only on a bow:
+
+| Source | Behaviour |
+|---|---|
+| Bow | Fires any mod arrow, including with Infinity |
+| Crossbow | Fires any mod arrow, and Multishot fires three of them |
+| Dispenser | Shoots any mod arrow as a projectile rather than dropping it as an item |
+
+Recovery follows vanilla exactly. An arrow fired in survival is picked back up as the arrow it was fired as, an arrow fired in creative or off an Infinity bow is not recoverable, and an arrow shot by a dispenser is.
+
+An arrow shot by a dispenser has no player behind it. Arrow effects account for that, so no effect misbehaves in a redstone contraption.
+
 ## Development
 
 Gradle + Fabric Loom toolchain with Spotless formatting, JaCoCo coverage, Fabric GameTest, and CI/CD via GitHub Actions, sharing the workflow of [minecraft-dogs-unleashed](https://github.com/grabartley/minecraft-dogs-unleashed).

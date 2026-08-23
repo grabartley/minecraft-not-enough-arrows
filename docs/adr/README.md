@@ -16,6 +16,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0006](0006-arrow-identity-is-shared-by-item-and-entity.md) | An arrow's item and entity share one identifier |
 | [0007](0007-config-travels-as-json-on-the-wire.md) | Config travels to clients as JSON, not a hand-written packet codec |
 | [0008](0008-client-state-is-separate-from-server-config.md) | Client state is a separate store from server configuration |
+| [0009](0009-arrows-reach-vanilla-weapons-through-vanilla-hooks.md) | Arrows reach vanilla weapons through vanilla's own hooks |
 
 ## Writing A New Record
 

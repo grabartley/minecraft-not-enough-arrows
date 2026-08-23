@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.Item;
@@ -34,6 +35,8 @@ public final class ArrowRegistrar {
     final BaseArrowItem item =
         Registry.register(
             Registries.ITEM, id, new BaseArrowItem(new Item.Settings(), definition.spawnFactory()));
+
+    DispenserBlock.registerProjectileBehavior(item);
 
     final RegisteredArrow<E> registration = new RegisteredArrow<>(id, entityType, item);
     registrationsByPath.put(definition.path(), registration);
