@@ -45,6 +45,21 @@ Arrows that leave fire behind share one system rather than each placing blocks o
 
 Expiry is tracked against the world clock in memory rather than written into the world save, so fire lit before a server restart is not put out by the mod afterwards and goes out the way vanilla fire does.
 
+## Block Anchors
+
+Arrows that attach themselves to the world share one anchoring system rather than each tracking their own hold, so the grapple arrow and the rope arrow agree on what counts as something worth holding onto and on when a hold is lost.
+
+| Rule | Behaviour |
+|---|---|
+| What can be anchored to | Anything with a collision shape that is not air, not replaceable, and not a fluid. Full blocks, slabs, stairs, fences and glass all hold; grass, water, torches and open air do not |
+| Who owns an anchor | Exactly one owner, identified by UUID, holds at most one anchor per world. Anchoring again replaces the previous hold rather than stacking a second one |
+| Sharing a block | Any number of owners may anchor to the same block at once, and each hold is released on its own |
+| Losing the block | The server checks every anchor each world tick and releases any whose block has been broken or replaced by a different block |
+| Lifetime | Every anchor carries an expiry tick and is released once that tick passes, so no hold outlives its purpose |
+| Leaving | Disconnecting releases every anchor that player held in every world, and stopping the server clears all anchor state |
+
+Anchor state is server-owned and lives in memory only. The client is never the authority on where an anchor is, and nothing is written into the world save, so no anchor survives a restart.
+
 ## Development
 
 Gradle + Fabric Loom toolchain with Spotless formatting, JaCoCo coverage, Fabric GameTest, and CI/CD via GitHub Actions, sharing the workflow of [minecraft-dogs-unleashed](https://github.com/grabartley/minecraft-dogs-unleashed).

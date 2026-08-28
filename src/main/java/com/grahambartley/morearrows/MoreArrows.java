@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows;
 
+import com.grahambartley.morearrows.anchor.AnchorService;
 import com.grahambartley.morearrows.command.MoreArrowsCommand;
 import com.grahambartley.morearrows.fire.FirePatchService;
 import com.grahambartley.morearrows.network.ModNetworking;
@@ -20,6 +21,7 @@ public class MoreArrows implements ModInitializer {
     ModItemGroups.register();
     ModNetworking.registerPayloads();
     FirePatchService.register();
+    AnchorService.register();
     ServerConfigSyncListener.register();
     ServerConfigUpdateReceiver.register();
     CommandRegistrationCallback.EVENT.register(

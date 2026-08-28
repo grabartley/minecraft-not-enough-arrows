@@ -32,6 +32,8 @@
       "com.grahambartley.morearrows.compat.emi.MoreArrowsEmiPlugin"
     ],
     "fabric-gametest": [
+      "com.grahambartley.morearrows.gametest.AnchorServiceGameTest",
+      "com.grahambartley.morearrows.gametest.AnchorSiteGameTest",
       "com.grahambartley.morearrows.gametest.ArrowFiringGameTest",
       "com.grahambartley.morearrows.gametest.ArrowPickupGameTest",
       "com.grahambartley.morearrows.gametest.ArrowRegistrarGameTest",
