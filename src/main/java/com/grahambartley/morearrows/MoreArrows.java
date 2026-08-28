@@ -19,6 +19,7 @@ public class MoreArrows implements ModInitializer {
   public void onInitialize() {
     ModArrows.register();
     ModItemGroups.register();
+    ModRecipes.register();
     ModNetworking.registerPayloads();
     FirePatchService.register();
     AnchorService.register();

@@ -118,6 +118,38 @@ The gravity arrow block exclusion list is edited rather than replaced:
 /morearrows config physics gravityblockexclusions clear
 ```
 
+## Fletching Recipes
+
+The fletching table station has its own recipe type, `more-arrows:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
+
+A recipe is an unordered list of ingredients, each with the count it demands, and one result carrying its own count:
+
+```json
+{
+"type": "more-arrows:fletching",
+"ingredients": [
+	{ "ingredient": { "item": "minecraft:arrow" }, "count": 4 },
+	{ "ingredient": { "item": "minecraft:tnt" } }
+],
+"result": { "id": "minecraft:arrow", "count": 8 }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `ingredients` | One to nine entries. Each `ingredient` is a vanilla ingredient, so `{ "item": ... }`, `{ "tag": ... }`, and a list of either all work |
+| `count` | How many of that ingredient the station demands. Optional, one to sixty-four, defaults to one |
+| `result` | A vanilla item stack, so `count` sets how many arrows come out |
+
+| Rule | Behaviour |
+|---|---|
+| Slot order | Ignored. Each ingredient claims one slot, no two claim the same slot, and nothing is left over |
+| Leftover items | An item the recipe did not ask for stops the match rather than being quietly ignored |
+| Shared items | Two ingredients that accept the same item need two separate stacks, exactly as shapeless crafting already behaves |
+| A bad recipe | Reported as a load error naming that one file, leaving the rest of the pack to load |
+
+The station interface itself ships separately. The recipe type, the station's screen, and the recipes the mod ships are each their own piece of work, and no arrow is blocked on any of them: [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
+
 ## Recipe Viewers
 
 [EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei) both show an information page beside each of the mod's arrows, covering what the arrow does beyond what its recipe already says. Neither viewer holds content of its own. Both read one shared list, so the two can never disagree about what an arrow does.
