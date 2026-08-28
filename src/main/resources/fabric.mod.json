@@ -35,6 +35,8 @@
       "com.grahambartley.morearrows.gametest.ArrowFiringGameTest",
       "com.grahambartley.morearrows.gametest.ArrowPickupGameTest",
       "com.grahambartley.morearrows.gametest.ArrowRegistrarGameTest",
+      "com.grahambartley.morearrows.gametest.FirePatchPlacerGameTest",
+      "com.grahambartley.morearrows.gametest.FirePatchServiceGameTest",
       "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest",
       "com.grahambartley.morearrows.gametest.MoreArrowsCommandGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigPayloadsGameTest",
