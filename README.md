@@ -159,6 +159,7 @@ The station interface itself ships separately. The recipe type, the station's sc
 | `InfoEntry` | The items an entry covers and the translation keys describing them |
 | `RecipeViewerInfo` | The entry list, built from the arrows the mod registered |
 | `en_us.json` | Every word a player reads |
+| `MoreArrowsEmiPlugin` | The adapter that hands that list to EMI, holding no content of its own |
 
 The list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
 
