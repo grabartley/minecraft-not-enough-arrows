@@ -60,6 +60,18 @@ Arrows that attach themselves to the world share one anchoring system rather tha
 
 Anchor state is server-owned and lives in memory only. The client is never the authority on where an anchor is, and nothing is written into the world save, so no anchor survives a restart.
 
+## Sounds
+
+The mod's sound assets live under `assets/more-arrows/sounds/` and are declared in `assets/more-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
+
+| Sound | Used for |
+|---|---|
+| `more-arrows:countdown_beep` | The single beep every explosive arrow plays while its fuse burns |
+
+The countdown communicates urgency through cadence rather than through different sounds: one short beep is replayed at a shortening interval as detonation approaches, so a player who hears the beeps speeding up knows to move. Keeping it to one asset is what makes that escalation smooth, because the interval is the only thing changing.
+
+Every sound asset is mono. Minecraft only applies distance attenuation and stereo panning to mono sounds, so a stereo asset would play at full volume anywhere in the world and a player could not tell where the arrow counting down actually is.
+
 ## Development
 
 Gradle + Fabric Loom toolchain with Spotless formatting, JaCoCo coverage, Fabric GameTest, and CI/CD via GitHub Actions, sharing the workflow of [minecraft-dogs-unleashed](https://github.com/grabartley/minecraft-dogs-unleashed).
