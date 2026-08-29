@@ -72,6 +72,18 @@ The countdown communicates urgency through cadence rather than through different
 
 Every sound asset is mono. Minecraft only applies distance attenuation and stereo panning to mono sounds, so a stereo asset would play at full volume anywhere in the world and a player could not tell where the arrow counting down actually is.
 
+## Textures
+
+Texture assets live under `assets/more-arrows/textures/`, and each ships alongside a palette-mapped text source in `art/sprites/`. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
+
+| Texture | Source | Used for |
+|---|---|---|
+| `textures/item/grapple_arrow.png` | `art/sprites/grapple_arrow.sprite.txt` | The grapple arrow's item sprite |
+| `textures/item/rope_arrow.png` | `art/sprites/rope_arrow.sprite.txt` | The rope arrow's item sprite |
+| `textures/block/rope.png` | `art/sprites/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
+
+The rope block is the one texture with a tiling contract, because a descent stacks it vertically and any mismatch across the tile boundary reads as a seam running the whole length of the drop. Its strand grooves step one column per row on a four row cycle, and sixteen divides by four, so row fifteen hands off to row zero mid-diagonal and the twist runs unbroken. Anything that changes the number of rows in that cycle to something other than a factor of sixteen puts a seam back. The single whipping band is what a ladder gets from its rungs, a repeat that tells a player the block is climbable, and it sits away from the tile boundary so it never reads as the seam it is not.
+
 ## Development
 
 Gradle + Fabric Loom toolchain with Spotless formatting, JaCoCo coverage, Fabric GameTest, and CI/CD via GitHub Actions, sharing the workflow of [minecraft-dogs-unleashed](https://github.com/grabartley/minecraft-dogs-unleashed).
