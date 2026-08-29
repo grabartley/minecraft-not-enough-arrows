@@ -1,0 +1,33 @@
+# Rope arrow, the traversal family's descent tool.
+# The same cold blue steel head as the grapple arrow, kept narrow so it reads
+# as an anchor point rather than a claw, with a coil of hemp rope hanging off
+# the head. The rope carries the identity: it is paler and greyer than the
+# shaft's wood so the two never merge at hotbar size.
+# O = 22262C  anchor, shadowed facet
+# d = 3E454F  anchor, inner shadow
+# m = 6E7A88  anchor, body
+# H = B4C1CE  anchor, lit edge
+# R = 6B5A3A  rope, shadow
+# r = A89168  rope, mid
+# t = D8C69B  rope, light
+# S = 896727  shaft, lit face
+# s = 281E0B  shaft, shadow face
+# F = E0E0E0  fletching, light
+# f = C6C6C6  fletching, mid
+# x = 3F3F3F  fletching, dark
+................
+..............Hm
+.............HmO
+............HmdO
+...........HmdO.
+..........SsdO..
+.........Ss..tR.
+........Ss...rR.
+.......Ss....tR.
+......Ss...ttrr.
+.....Ss...tr..rR
+...Ffs....rt..Rr
+..FfFx....tr..rR
+..xFx......rRRR.
+...x............
+................
