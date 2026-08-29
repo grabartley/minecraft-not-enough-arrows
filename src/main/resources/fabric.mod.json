@@ -44,6 +44,7 @@
       "com.grahambartley.morearrows.gametest.FletchingRecipeInputGameTest",
       "com.grahambartley.morearrows.gametest.FletchingRecipeSerializerGameTest",
       "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest",
+      "com.grahambartley.morearrows.gametest.ModSoundsGameTest",
       "com.grahambartley.morearrows.gametest.ModRecipesGameTest",
       "com.grahambartley.morearrows.gametest.MoreArrowsCommandGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigPayloadsGameTest",
