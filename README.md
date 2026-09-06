@@ -83,9 +83,15 @@ Texture assets live under `assets/more-arrows/textures/`, and each ships alongsi
 | `textures/item/glow_ink_arrow.png` | `art/sprites/glow_ink_arrow.sprite.txt` | The glow ink arrow's item sprite |
 | `textures/item/wind_arrow.png` | `art/sprites/wind_arrow.sprite.txt` | The wind arrow's item sprite |
 | `textures/item/redstone_arrow.png` | `art/sprites/redstone_arrow.sprite.txt` | The redstone arrow's item sprite |
+| `textures/item/gravity_arrow.png` | `art/sprites/gravity_arrow.sprite.txt` | The gravity arrow's item sprite |
+| `textures/item/ricochet_arrow.png` | `art/sprites/ricochet_arrow.sprite.txt` | The ricochet arrow's item sprite |
 | `textures/block/rope.png` | `art/sprites/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
+
+The two physics arrows have the same job of reading as terrain manipulation rather than as damage, and each solves it differently. The gravity arrow puts a slime cube on the tip and a second, smaller cube already falling away beneath it, because what the arrow does to a block is only sayable as a second shape: a head alone can be heavy, but it cannot be falling. The head keeps slime's darker inner cube so it is read as slime rather than as any green block, and it stays square where the glow ink sac is round, since those are the mod's two soft heads.
+
+The ricochet arrow is the harder of the two, because the grapple arrow is also hook derived and the two must never be confused in a hotbar. They are separated by silhouette before colour: the grapple splays three prongs wide across the canvas, and the ricochet is a single narrow crook curling back over itself. Colour then reinforces it, warm iron against the grapple's cold blue steel, and dark enough that it does not drift toward the wind arrow's pale ring either.
 
 The rope block is the one texture with a tiling contract, because a descent stacks it vertically and any mismatch across the tile boundary reads as a seam running the whole length of the drop. Its strand grooves step one column per row on a four row cycle, and sixteen divides by four, so row fifteen hands off to row zero mid-diagonal and the twist runs unbroken. Anything that changes the number of rows in that cycle to something other than a factor of sixteen puts a seam back. The single whipping band is what a ladder gets from its rungs, a repeat that tells a player the block is climbable, and it sits away from the tile boundary so it never reads as the seam it is not.
 
