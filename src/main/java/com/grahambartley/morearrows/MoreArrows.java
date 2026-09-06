@@ -4,6 +4,7 @@ import com.grahambartley.morearrows.anchor.AnchorService;
 import com.grahambartley.morearrows.command.MoreArrowsCommand;
 import com.grahambartley.morearrows.fire.FirePatchService;
 import com.grahambartley.morearrows.fuse.FuseService;
+import com.grahambartley.morearrows.grapple.GrappleService;
 import com.grahambartley.morearrows.network.ModNetworking;
 import com.grahambartley.morearrows.server.ServerConfigSyncListener;
 import com.grahambartley.morearrows.server.ServerConfigUpdateReceiver;
@@ -26,6 +27,7 @@ public class MoreArrows implements ModInitializer {
     FirePatchService.register();
     FuseService.register();
     AnchorService.register();
+    GrappleService.register();
     ServerConfigSyncListener.register();
     ServerConfigUpdateReceiver.register();
     CommandRegistrationCallback.EVENT.register(

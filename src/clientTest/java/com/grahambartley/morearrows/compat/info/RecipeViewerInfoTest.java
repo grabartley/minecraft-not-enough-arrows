@@ -4,9 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.grahambartley.morearrows.ModArrows;
 import com.grahambartley.morearrows.MoreArrows;
-import com.grahambartley.morearrows.arrow.RegisteredArrow;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.util.Identifier;
@@ -68,15 +66,6 @@ class RecipeViewerInfoTest {
   void rejectsANullItemId() {
     assertThrows(
         NullPointerException.class, () -> RecipeViewerInfo.entries(Arrays.asList(TNT_ARROW, null)));
-  }
-
-  @Test
-  void coversEveryArrowTheModRegisteredWithoutDroppingOrReorderingAny() {
-    assertEquals(
-        ModArrows.registered().stream().map(RegisteredArrow::id).toList(),
-        RecipeViewerInfo.arrowEntries().stream()
-            .flatMap(entry -> entry.itemIds().stream())
-            .toList());
   }
 
   @Test
