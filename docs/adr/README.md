@@ -21,6 +21,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0011](0011-recipe-viewer-info-is-written-once.md) | Recipe viewer info is written once and adapted per viewer |
 | [0012](0012-fire-patches-are-server-owned-and-time-boxed.md) | Fire patches are a server-owned, time-boxed system |
 | [0013](0013-fletching-recipes-are-an-unordered-list-of-counted-ingredients.md) | Fletching recipes are an unordered list of counted ingredients |
+| [0014](0014-fuses-are-tracked-against-the-entity-that-carries-them.md) | Fuses are tracked against the entity that carries them |
 
 ## Writing A New Record
 
