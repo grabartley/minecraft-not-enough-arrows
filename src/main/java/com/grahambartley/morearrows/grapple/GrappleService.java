@@ -122,7 +122,8 @@ public final class GrappleService {
 
   private static void pullTowardAnchor(
       final ServerPlayerEntity player, final Vec3d target, final double pullSpeed) {
-    player.setVelocity(GrapplePull.velocity(pullOrigin(player), target, pullSpeed));
+    player.setVelocity(
+        GrapplePull.velocity(pullOrigin(player), target, pullSpeed, player.getFinalGravity()));
     player.velocityModified = true;
     GrappleFlightCheck.clearFloatingCountFor(player);
   }

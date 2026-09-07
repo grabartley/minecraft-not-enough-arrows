@@ -18,11 +18,16 @@ public final class GrapplePull {
     return maxRangeBlocks > 0 && distanceBetween(puller, target) <= maxRangeBlocks;
   }
 
-  public static Vec3d velocity(final Vec3d puller, final Vec3d target, final double speed) {
+  public static Vec3d velocity(
+      final Vec3d puller, final Vec3d target, final double speed, final double gravity) {
     if (speed <= 0.0 || hasArrived(puller, target)) {
       return Vec3d.ZERO;
     }
-    return target.subtract(puller).normalize().multiply(speed);
+    return target
+        .subtract(puller)
+        .normalize()
+        .multiply(speed)
+        .add(0.0, Math.max(0.0, gravity), 0.0);
   }
 
   public static int lifetimeTicks(final Vec3d puller, final Vec3d target, final double speed) {

@@ -138,9 +138,12 @@ public final class GrappleServiceGameTest implements FabricGameTest {
           context.assertTrue(
               pull.x > 0.0 && pull.y > 0.0 && pull.z > 0.0,
               "A pull should point at an anchor up and away from the player, was " + pull);
+          final double commanded = pull.subtract(0.0, player.getFinalGravity(), 0.0).length();
           context.assertTrue(
-              Math.abs(pull.length() - GrappleArrowConfig.DEFAULT_PULL_SPEED) < SPEED_TOLERANCE,
-              "A pull should carry the configured speed, was " + pull.length());
+              Math.abs(commanded - GrappleArrowConfig.DEFAULT_PULL_SPEED) < SPEED_TOLERANCE,
+              "A pull should carry the configured speed once the gravity it also carries is"
+                  + " taken back off, was "
+                  + commanded);
           context.complete();
         });
   }

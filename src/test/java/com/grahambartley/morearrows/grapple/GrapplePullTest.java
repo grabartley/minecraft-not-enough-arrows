@@ -39,7 +39,7 @@ class GrapplePullTest {
   void thePullPointsStraightAtTheAnchor() {
     final Vec3d target = PULLER.add(6.0, 8.0, 0.0);
 
-    final Vec3d velocity = GrapplePull.velocity(PULLER, target, 0.5);
+    final Vec3d velocity = GrapplePull.velocity(PULLER, target, 0.5, 0.0);
 
     assertEquals(0.3, velocity.x, TOLERANCE);
     assertEquals(0.4, velocity.y, TOLERANCE);
@@ -49,27 +49,27 @@ class GrapplePullTest {
   @ParameterizedTest
   @ValueSource(doubles = {0.1, 0.8, 4.0})
   void thePullCarriesExactlyTheConfiguredSpeed(final double speed) {
-    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(-9.0, 12.0, 20.0), speed);
+    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(-9.0, 12.0, 20.0), speed, 0.0);
 
     assertEquals(speed, velocity.length(), TOLERANCE);
   }
 
   @Test
   void aPullerPulledDownwardIsPulledDownward() {
-    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, -10.0, 0.0), 0.8);
+    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, -10.0, 0.0), 0.8, 0.0);
 
     assertEquals(-0.8, velocity.y, TOLERANCE);
   }
 
   @Test
   void aPullerThatHasArrivedIsNoLongerPulled() {
-    assertEquals(Vec3d.ZERO, GrapplePull.velocity(PULLER, PULLER.add(1.0, 0.0, 0.0), 0.8));
+    assertEquals(Vec3d.ZERO, GrapplePull.velocity(PULLER, PULLER.add(1.0, 0.0, 0.0), 0.8, 0.0));
   }
 
   @ParameterizedTest
   @ValueSource(doubles = {0.0, -0.5})
   void aSpeedOfZeroOrLessPullsNothing(final double speed) {
-    assertEquals(Vec3d.ZERO, GrapplePull.velocity(PULLER, PULLER.add(0.0, 20.0, 0.0), speed));
+    assertEquals(Vec3d.ZERO, GrapplePull.velocity(PULLER, PULLER.add(0.0, 20.0, 0.0), speed, 0.0));
   }
 
   @ParameterizedTest
@@ -86,6 +86,22 @@ class GrapplePullTest {
     assertEquals(
         GrapplePull.OVERRUN_GRACE_TICKS,
         GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, 100.0, 0.0), speed));
+  }
+
+  @ParameterizedTest
+  @CsvSource({"0.08, 0.88", "0.0, 0.8", "0.5, 1.3"})
+  void aPullUpwardCarriesTheGravityTheClientIsAboutToSubtract(
+      final double gravity, final double expectedY) {
+    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, 20.0, 0.0), 0.8, gravity);
+
+    assertEquals(expectedY, velocity.y, TOLERANCE);
+  }
+
+  @Test
+  void aPullIsNeverSlowedByANegativeGravity() {
+    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, 20.0, 0.0), 0.8, -0.5);
+
+    assertEquals(0.8, velocity.y, TOLERANCE);
   }
 
   @Test
