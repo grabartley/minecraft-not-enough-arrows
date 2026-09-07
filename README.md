@@ -73,7 +73,7 @@ Arrows that attach themselves to the world share one anchoring system rather tha
 | Sharing a block | Any number of owners may anchor to the same block at once, and each hold is released on its own |
 | Losing the block | The server checks every anchor each world tick and releases any whose block has been broken or replaced by a different block |
 | Lifetime | Every anchor carries an expiry tick and is released once that tick passes, so no hold outlives its purpose |
-| Leaving | Disconnecting releases every anchor that player held in every world, and stopping the server clears all anchor state |
+| Leaving | Dying or disconnecting releases every anchor that player held in every world, and stopping the server clears all anchor state |
 
 Anchor state is server-owned and lives in memory only. The client is never the authority on where an anchor is, and nothing is written into the world save, so no anchor survives a restart.
 

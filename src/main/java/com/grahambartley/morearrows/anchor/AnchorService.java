@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -26,6 +28,12 @@ public final class AnchorService {
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
     ServerPlayConnectionEvents.DISCONNECT.register(
         (handler, server) -> releaseEverywhere(handler.getPlayer().getUuid()));
+    ServerLivingEntityEvents.AFTER_DEATH.register(
+        (entity, damageSource) -> {
+          if (entity instanceof ServerPlayerEntity player) {
+            releaseEverywhere(player.getUuid());
+          }
+        });
   }
 
   @Nullable

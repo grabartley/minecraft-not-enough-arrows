@@ -47,8 +47,9 @@ public final class GrappleService {
     }
 
     final GrappleArrowConfig config = ServerConfigService.get().grapple();
+    final Vec3d origin = pullOrigin(player);
     final Vec3d target = Vec3d.ofCenter(anchorPos);
-    if (!GrapplePull.isWithinRange(pullOrigin(player), target, config.maxRangeBlocks())) {
+    if (!GrapplePull.isWithinRange(origin, target, config.maxRangeBlocks())) {
       return null;
     }
     if (AnchorService.anchor(world, player.getUuid(), anchorPos) == null) {
@@ -59,7 +60,7 @@ public final class GrappleService {
         new GrappleSession(
             player.getUuid(),
             anchorPos,
-            GrapplePull.lifetimeTicks(pullOrigin(player), target, config.pullSpeed()));
+            GrapplePull.lifetimeTicks(origin, target, config.pullSpeed()));
     trackerFor(world).add(session);
     return session;
   }
@@ -87,7 +88,6 @@ public final class GrappleService {
 
   public static void releaseEverywhere(@Nullable final UUID playerId) {
     TRACKERS.values().forEach(tracker -> tracker.remove(playerId));
-    AnchorService.releaseEverywhere(playerId);
   }
 
   public static void forget() {

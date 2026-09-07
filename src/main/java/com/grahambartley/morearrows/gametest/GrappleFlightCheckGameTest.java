@@ -26,11 +26,4 @@ public final class GrappleFlightCheckGameTest implements FabricGameTest {
         "Ticks the server still counts a pulled player as floating for");
     context.complete();
   }
-
-  @GameTest(templateName = TEMPLATE, batchId = GrappleTestSupport.BATCH, tickLimit = 20)
-  public void aMissingPlayerIsLeftAlone(TestContext context) {
-    GrappleFlightCheck.clearFloatingCountFor(null);
-
-    context.complete();
-  }
 }

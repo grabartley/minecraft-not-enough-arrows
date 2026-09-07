@@ -5,6 +5,7 @@ import com.grahambartley.morearrows.anchor.BlockAnchor;
 import java.util.UUID;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
@@ -18,6 +19,8 @@ public final class AnchorServiceGameTest implements FabricGameTest {
   private static final BlockPos TARGET = new BlockPos(3, 3, 3);
   private static final int LONG_LIFETIME_TICKS = 400;
   private static final int SHORT_LIFETIME_TICKS = 10;
+  private static final BlockPos OWNER_STAND = new BlockPos(0, 3, 0);
+  private static final int DEATH_TICK = 5;
 
   @BeforeBatch(batchId = BATCH)
   public void forgetAnchorsBeforeBatch(ServerWorld world) {
@@ -184,6 +187,25 @@ public final class AnchorServiceGameTest implements FabricGameTest {
         AnchorService.anchorOf(context.getWorld(), owner) == null,
         "An owner who leaves should hold no anchor anywhere");
     context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  public void anOwnerWhoDiesReleasesEveryAnchorTheyHeld(TestContext context) {
+    context.setBlockState(TARGET, Blocks.STONE);
+    final ServerPlayerEntity owner = GrappleTestSupport.playerAt(context, OWNER_STAND);
+    AnchorService.anchor(
+        context.getWorld(), owner.getUuid(), context.getAbsolutePos(TARGET), LONG_LIFETIME_TICKS);
+
+    owner.kill();
+
+    context.runAtTick(
+        DEATH_TICK,
+        () -> {
+          context.assertTrue(
+              AnchorService.anchorOf(context.getWorld(), owner.getUuid()) == null,
+              "An owner who dies should hold no anchor anywhere");
+          context.complete();
+        });
   }
 
   @GameTest(templateName = TEMPLATE, batchId = FORGET_BATCH, tickLimit = 20)

@@ -215,7 +215,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = TEMPLATE, batchId = GrappleTestSupport.BATCH, tickLimit = 20)
-  public void aPlayerReleasedEverywhereGivesUpBothTheirPullAndTheirAnchor(TestContext context) {
+  public void aPlayerReleasedEverywhereIsNoLongerPulledInAnyWorld(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = GrappleTestSupport.playerAt(context, PLAYER_STAND);
     GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
@@ -225,9 +225,6 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.assertTrue(
         GrappleService.sessionOf(context.getWorld(), player.getUuid()) == null,
         "A player who died or left should be pulled in no world at all");
-    context.assertTrue(
-        AnchorService.anchorOf(context.getWorld(), player.getUuid()) == null,
-        "A player who died or left should hold onto no block in any world");
     context.complete();
   }
 
