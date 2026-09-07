@@ -10,6 +10,13 @@ final class MockPlayerSupport {
 
   private MockPlayerSupport() {}
 
+  static void moveTo(
+      final TestContext context, final ServerPlayerEntity player, final Vec3d relativePos) {
+    final Vec3d target = context.getAbsolute(relativePos);
+    player.refreshPositionAndAngles(target.getX(), target.getY(), target.getZ(), 0f, 0f);
+    player.setVelocity(Vec3d.ZERO);
+  }
+
   static ServerPlayerEntity playerAt(final TestContext context, final BlockPos relativePos) {
     final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
     final Vec3d target = context.getAbsolute(Vec3d.ofBottomCenter(relativePos));

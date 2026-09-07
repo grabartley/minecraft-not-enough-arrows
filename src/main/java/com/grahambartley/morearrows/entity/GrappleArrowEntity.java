@@ -63,14 +63,9 @@ public class GrappleArrowEntity extends BaseArrowEntity implements Leashable {
   }
 
   @Override
-  public void detachLeash(final boolean sendPacket, final boolean dropItem) {
-    Leashable.super.detachLeash(sendPacket, false);
-  }
-
-  @Override
   @Nullable
   public ItemEntity dropItem(final ItemConvertible item) {
-    return item == Items.LEAD ? null : super.dropItem(item);
+    return item.asItem() == Items.LEAD ? null : super.dropItem(item);
   }
 
   @Override

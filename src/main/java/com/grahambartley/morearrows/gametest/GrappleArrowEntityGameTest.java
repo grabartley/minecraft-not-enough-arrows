@@ -35,7 +35,6 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final double FAR_BEYOND_A_LEAD = 24.0;
   private static final int LETTING_GO_TICKS = 15;
   private static final int STRETCH_TICKS = 4;
-  private static final double LEAD_SEARCH_MARGIN = 32.0;
 
   @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
@@ -237,10 +236,10 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
           final GrappleArrowEntity landed = plantedArrow(context);
           context.assertTrue(landed != null, "The fired arrow should still be in the world");
           landed.setVelocity(Vec3d.ZERO);
-          final Vec3d stretched =
-              context.getAbsolute(Vec3d.ofBottomCenter(SHOOTER_STAND)).add(FAR_BEYOND_A_LEAD, 0, 0);
-          shooter.networkHandler.requestTeleport(
-              stretched.getX(), stretched.getY(), stretched.getZ(), 0f, 0f);
+          MockPlayerSupport.moveTo(
+              context,
+              shooter,
+              Vec3d.ofBottomCenter(SHOOTER_STAND).add(0.0, FAR_BEYOND_A_LEAD, 0.0));
         });
     context.runAtTick(
         LANDING_TICK + STRETCH_TICKS,
@@ -268,7 +267,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
             .getWorld()
             .getEntitiesByClass(
                 ItemEntity.class,
-                context.getTestBox().expand(LEAD_SEARCH_MARGIN),
+                context.getTestBox(),
                 dropped -> dropped.getStack().isOf(Items.LEAD))
             .isEmpty(),
         "A grapple line is not a lead and must never drop one");
