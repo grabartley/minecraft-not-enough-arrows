@@ -162,7 +162,7 @@ The wind arrow bursts on impact the way a wind charge does, shoving nearby entit
 | Rule | Behaviour |
 |---|---|
 | Block interactions | Vanilla's own wind charge explosion, carrying vanilla's immune-block list and a thrown charge's knockback, so doors, trapdoors, fence gates, levers, buttons, and bells respond as they do to a thrown charge. Nothing solid is broken, though like a thrown charge it still clears fragile zero-resistance blocks such as torches and flowers near the impact |
-| Who gets pushed | Every entity within `utility.windBurstRadius` of the impact, except the shooter and the arrow itself. The shooter is exempted from the burst's own explosion knockback too, not only from the configured shove |
+| Who gets pushed | Every entity within `utility.windBurstRadius` of the impact, except the shooter and the arrow itself. The burst's explosion reports zero knockback for the shooter as well, so no path through it can move them |
 | How hard | `utility.windPushStrength` at the centre, falling off linearly to nothing at the edge of the radius |
 | Which way | Directly away from the impact point. An entity standing exactly on it is pushed straight up rather than in an arbitrary direction |
 | Other players | Pushed by a velocity change that is sent to their client, so the shove is smooth rather than a visible teleport |

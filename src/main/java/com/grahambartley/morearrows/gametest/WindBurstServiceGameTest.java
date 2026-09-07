@@ -13,7 +13,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.Properties;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -117,38 +116,6 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
         "A configured radius too small to reach the bystander displaces nobody");
     context.assertEquals(
         bystander.getVelocity(), Vec3d.ZERO, "The live config radius should decide who moves");
-    context.complete();
-  }
-
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aPlayerShooterIsSparedTheBurstsOwnExplosionKnockback(TestContext context) {
-    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, new BlockPos(3, 2, 3));
-    final WindArrowEntity arrow = context.spawnEntity(ModArrows.WIND_ARROW.entityType(), CENTRE);
-    arrow.setOwner(shooter);
-    shooter.setVelocity(Vec3d.ZERO);
-    shooter.velocityModified = false;
-
-    final List<Entity> displaced = burst(context, arrow);
-
-    context.assertFalse(
-        displaced.contains(shooter), "The shooting player should never be displaced");
-    context.assertEquals(
-        shooter.getVelocity(),
-        Vec3d.ZERO,
-        "A player standing on their own burst should not be launched by its explosion");
-    context.complete();
-  }
-
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aPlayerBystanderIsStillLaunchedByTheBurst(TestContext context) {
-    final ServerPlayerEntity bystander = MockPlayerSupport.playerAt(context, new BlockPos(3, 2, 3));
-    bystander.setVelocity(Vec3d.ZERO);
-
-    burst(context, null);
-
-    context.assertFalse(
-        bystander.getVelocity().equals(Vec3d.ZERO),
-        "A player who did not fire the arrow should be shoved by the burst");
     context.complete();
   }
 

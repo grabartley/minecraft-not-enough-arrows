@@ -7,11 +7,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class WindArrowEntity extends BaseArrowEntity {
   private static final double DISPLACING_DAMAGE = 0.5;
+  private static final double FACE_CLEARANCE = 0.25;
 
   public WindArrowEntity(
       final EntityType<? extends WindArrowEntity> entityType, final World world) {
@@ -34,7 +36,11 @@ public class WindArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
-    WindBurstService.burst(world, blockHitResult.getPos(), this);
+    final Vec3d center =
+        blockHitResult
+            .getPos()
+            .add(Vec3d.of(blockHitResult.getSide().getVector()).multiply(FACE_CLEARANCE));
+    WindBurstService.burst(world, center, this);
     return ArrowImpact.DISCARD;
   }
 

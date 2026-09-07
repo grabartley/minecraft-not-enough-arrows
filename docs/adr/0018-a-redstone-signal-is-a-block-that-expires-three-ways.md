@@ -33,6 +33,8 @@ An arrow that fires into a protected region embeds and does nothing, which is th
 
 The charge is invisible, so a player debugging a mechanism cannot see the source. The arrow itself is stuck in the adjacent face and is the visible cue, which is why the charge goes on the hit face rather than somewhere more convenient.
 
+One narrow window remains, and it is a signal that runs long rather than one that runs forever. A charge booked for a long duration, destroyed early, and replaced at the same position by a shorter one leaves only the first charge's tick queued, because the replacement's was deduped away. If that chunk then unloads before the shorter duration is up, the tick sweep drops its tracker entry but cannot clear the block, so on reload the position stays powered until the first charge's later expiry arrives. The signal still ends on its own, which is the property that matters, and closing the window entirely would mean re-booking a tick from the sweep for a chunk that is not loaded.
+
 Because the block is registered, a world that once had this mod and later loses it will log unknown block warnings for any charge still saved. The stopping hook means that set is empty after a clean shutdown, and the scheduled tick means it is empty shortly after any unclean one, so the window is small but is not zero.
 
 Strength and duration are server config, and a duration of zero places no charge at all rather than placing one that never expires.

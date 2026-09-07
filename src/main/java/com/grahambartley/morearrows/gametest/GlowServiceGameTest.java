@@ -111,8 +111,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
   }
 
   private static ArmorStandEntity target(final TestContext context) {
-    final ArmorStandEntity target = context.spawnEntity(EntityType.ARMOR_STAND, TARGET_STAND);
-    return target;
+    return context.spawnEntity(EntityType.ARMOR_STAND, TARGET_STAND);
   }
 
   private static MoreArrowsConfig configWithGlowDuration(final int durationTicks) {
