@@ -148,7 +148,7 @@ The redstone arrow emits a redstone signal at the face it strikes, at a configur
 | How long it lasts | `utility.redstoneSignalDurationTicks` |
 | Where it will not go | Anywhere the shooter may not build, which is the same protection and world border check the fire patch system makes, and anywhere that is not air |
 | Chunk unload mid-signal | The signal ends. Its expiry is booked as a scheduled block tick, which is saved with the chunk, so an unloaded chunk expires its charge as it loads. Nothing force-loads a chunk to clear a charge early |
-| Server restart | No signal survives one. Every charge is cleared before the world saves |
+| Server restart | No signal outlives one in a loaded chunk, because every tracked charge is cleared before the world saves. A charge whose chunk had already unloaded is left to its scheduled tick, so it expires as that chunk loads rather than being force-loaded at shutdown |
 | A duration of zero | No signal is placed at all |
 
 The mechanism behind that last set of rows is worth reading before changing it: [ADR 0018](docs/adr/0018-a-redstone-signal-is-a-block-that-expires-three-ways.md) covers why the signal is a block, why it expires three different ways, and what each one is actually for.
@@ -161,7 +161,7 @@ The wind arrow bursts on impact the way a wind charge does, shoving nearby entit
 
 | Rule | Behaviour |
 |---|---|
-| Block interactions | Vanilla's own wind charge explosion, carrying vanilla's immune-block list and a thrown charge's knockback, so doors, trapdoors, fence gates, levers, buttons, and bells respond as they do to a thrown charge, and nothing is broken |
+| Block interactions | Vanilla's own wind charge explosion, carrying vanilla's immune-block list and a thrown charge's knockback, so doors, trapdoors, fence gates, levers, buttons, and bells respond as they do to a thrown charge. Nothing solid is broken, though like a thrown charge it still clears fragile zero-resistance blocks such as torches and flowers near the impact |
 | Who gets pushed | Every entity within `utility.windBurstRadius` of the impact, except the shooter and the arrow itself. The shooter is exempted from the burst's own explosion knockback too, not only from the configured shove |
 | How hard | `utility.windPushStrength` at the centre, falling off linearly to nothing at the edge of the radius |
 | Which way | Directly away from the impact point. An entity standing exactly on it is pushed straight up rather than in an arbitrary direction |

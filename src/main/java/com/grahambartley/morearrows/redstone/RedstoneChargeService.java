@@ -56,12 +56,13 @@ public final class RedstoneChargeService {
     return true;
   }
 
-  public static boolean isLiveAt(final ServerWorld world, final BlockPos pos) {
+  public static int remainingTicksAt(final ServerWorld world, final BlockPos pos) {
     if (world == null || pos == null) {
-      return false;
+      return 0;
     }
     final RedstoneChargeTracker tracker = TRACKERS.get(world.getRegistryKey());
-    return tracker != null && tracker.isLiveAt(pos, world.getTime());
+    final long remaining = tracker == null ? 0L : tracker.remainingAt(pos, world.getTime());
+    return (int) Math.min(remaining, Integer.MAX_VALUE);
   }
 
   public static void forget() {

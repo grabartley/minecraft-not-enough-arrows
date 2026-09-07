@@ -82,7 +82,9 @@ public class RedstoneChargeBlock extends Block {
   @Override
   protected void scheduledTick(
       final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
-    if (RedstoneChargeService.isLiveAt(world, pos)) {
+    final int remaining = RedstoneChargeService.remainingTicksAt(world, pos);
+    if (remaining > 0) {
+      world.scheduleBlockTick(pos, this, remaining);
       return;
     }
     world.removeBlock(pos, false);

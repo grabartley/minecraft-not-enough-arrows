@@ -67,6 +67,6 @@
   "info.more-arrows.grapple_arrow": "Hooks into the first block it hits and reels the shooter to it. Fired beyond the configured range, it embeds without pulling.",
   "info.more-arrows.rope_arrow": "Anchors in the block it hits and drops a climbable rope beneath it, down to the configured length or until the rope meets the ground.",
   "info.more-arrows.glow_ink_arrow": "Marks the living entity it hits with the glowing effect for the configured duration, outlining it through terrain for every player on the server. It barely scratches what it tags.",
-  "info.more-arrows.redstone_arrow": "Emits a redstone signal at the face it strikes, at the configured strength, until the configured duration runs out. The signal always expires, including across a chunk reload or a restart.",
+  "info.more-arrows.redstone_arrow": "Emits a redstone signal at the face it strikes, at the configured strength, until the configured duration runs out. The signal expires on its own, including across a chunk reload.",
   "info.more-arrows.wind_arrow": "Bursts on impact like a wind charge, opening the same doors, trapdoors, and gates, and shoving nearby entities away with force that falls off toward the edge of the burst. It never shoves the shooter."
 }

@@ -188,6 +188,22 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 120)
+  public void aChargeReplacedAfterItsBlockIsDestroyedStillGoesAwayOnItsOwn(TestContext context) {
+    charge(context, STRENGTH, SHORT_DURATION_TICKS);
+    context.setBlockState(CHARGE, Blocks.AIR);
+
+    context.runAtTick(2, () -> charge(context, STRENGTH, SHORT_DURATION_TICKS * 3));
+    context.runAtTick(SHORT_DURATION_TICKS + 2, RedstoneChargeService::forget);
+
+    context.runAtTick(
+        SHORT_DURATION_TICKS * 4 + 20,
+        () -> {
+          context.expectBlock(Blocks.AIR, CHARGE);
+          context.complete();
+        });
+  }
+
   private static boolean charge(
       final TestContext context, final int strength, final int durationTicks) {
     return RedstoneChargeService.charge(

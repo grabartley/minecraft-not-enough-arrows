@@ -11,16 +11,15 @@ import net.minecraft.world.explosion.AdvancedExplosionBehavior;
 import org.jetbrains.annotations.Nullable;
 
 public final class WindExplosionBehavior extends AdvancedExplosionBehavior {
-  public static final float THROWN_CHARGE_KNOCKBACK = 1.22f;
-  private static final boolean AFFECTS_BLOCKS = true;
-  private static final boolean DAMAGES_FIRE_IMMUNE = false;
+  private static final float THROWN_CHARGE_KNOCKBACK = 1.22f;
+  private static final boolean DESTROYS_BLOCKS = true;
+  private static final boolean DAMAGES_ENTITIES = false;
   private static final float NO_KNOCKBACK = 0.0f;
 
   @Nullable private final Entity spared;
 
   public WindExplosionBehavior(@Nullable final Entity spared) {
-    super(
-        AFFECTS_BLOCKS, DAMAGES_FIRE_IMMUNE, Optional.of(THROWN_CHARGE_KNOCKBACK), immuneBlocks());
+    super(DESTROYS_BLOCKS, DAMAGES_ENTITIES, Optional.of(THROWN_CHARGE_KNOCKBACK), immuneBlocks());
     this.spared = spared;
   }
 

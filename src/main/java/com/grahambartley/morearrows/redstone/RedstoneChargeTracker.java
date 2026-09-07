@@ -36,9 +36,9 @@ public final class RedstoneChargeTracker {
     return all;
   }
 
-  public boolean isLiveAt(final BlockPos pos, final long tick) {
+  public long remainingAt(final BlockPos pos, final long tick) {
     final RedstoneCharge charge = pos == null ? null : charges.get(pos);
-    return charge != null && !charge.hasExpired(tick);
+    return charge == null || charge.hasExpired(tick) ? 0L : charge.expiryTick() - tick;
   }
 
   public int size() {

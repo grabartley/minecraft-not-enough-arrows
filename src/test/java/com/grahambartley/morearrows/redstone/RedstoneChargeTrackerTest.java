@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullSource;
 
 class RedstoneChargeTrackerTest {
@@ -44,32 +45,31 @@ class RedstoneChargeTrackerTest {
     assertEquals(1, tracker.size());
   }
 
-  @Test
-  void aChargeIsLiveUntilItsExpiryTick() {
+  @ParameterizedTest
+  @CsvSource({"0, 100", "40, 60", "99, 1", "100, 0", "150, 0"})
+  void aChargeReportsHowMuchLongerItHolds(final long tick, final long remaining) {
     tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
 
-    assertTrue(tracker.isLiveAt(EARLY_POSITION, 99L));
-    assertFalse(tracker.isLiveAt(EARLY_POSITION, 100L));
-    assertFalse(tracker.isLiveAt(EARLY_POSITION, 150L));
+    assertEquals(remaining, tracker.remainingAt(EARLY_POSITION, tick));
   }
 
   @Test
-  void anUntrackedPositionIsNeverLive() {
-    assertFalse(tracker.isLiveAt(EARLY_POSITION, 0L));
+  void anUntrackedPositionHasNothingRemaining() {
+    assertEquals(0L, tracker.remainingAt(EARLY_POSITION, 0L));
   }
 
   @Test
-  void aPositionIsNoLongerLiveOnceItsChargeHasBeenTakenAway() {
+  void aPositionHasNothingRemainingOnceItsChargeHasBeenTakenAway() {
     tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
     tracker.takeExpired(150L);
 
-    assertFalse(tracker.isLiveAt(EARLY_POSITION, 0L));
+    assertEquals(0L, tracker.remainingAt(EARLY_POSITION, 0L));
   }
 
   @ParameterizedTest
   @NullSource
-  void aMissingPositionIsNeverLive(final BlockPos missing) {
-    assertFalse(tracker.isLiveAt(missing, 0L));
+  void aMissingPositionHasNothingRemaining(final BlockPos missing) {
+    assertEquals(0L, tracker.remainingAt(missing, 0L));
   }
 
   @Test
@@ -125,10 +125,10 @@ class RedstoneChargeTrackerTest {
   }
 
   @Test
-  void rechargingAPositionKeepsItLivePastTheOlderExpiry() {
+  void rechargingAPositionCarriesTheNewerExpiryPastTheOlderOne() {
     tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
     tracker.add(new RedstoneCharge(EARLY_POSITION, 300L));
 
-    assertTrue(tracker.isLiveAt(EARLY_POSITION, 150L));
+    assertEquals(150L, tracker.remainingAt(EARLY_POSITION, 150L));
   }
 }

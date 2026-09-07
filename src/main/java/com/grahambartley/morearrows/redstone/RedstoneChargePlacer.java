@@ -33,7 +33,7 @@ public final class RedstoneChargePlacer {
   }
 
   public static boolean clear(final ServerWorld world, final BlockPos pos) {
-    if (!isLoaded(world, pos) || !isCharge(world, pos)) {
+    if (!isCharge(world, pos)) {
       return false;
     }
     return world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
@@ -44,7 +44,7 @@ public final class RedstoneChargePlacer {
         && world.getBlockState(pos).getBlock() instanceof RedstoneChargeBlock;
   }
 
-  public static boolean isLoaded(final ServerWorld world, final BlockPos pos) {
+  private static boolean isLoaded(final ServerWorld world, final BlockPos pos) {
     return world != null && pos != null && world.isChunkLoaded(new ChunkPos(pos).toLong());
   }
 }
