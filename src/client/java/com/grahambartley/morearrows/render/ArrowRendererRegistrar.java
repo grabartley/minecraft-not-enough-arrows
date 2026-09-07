@@ -12,7 +12,14 @@ public final class ArrowRendererRegistrar {
   private ArrowRendererRegistrar() {}
 
   public static void registerAll() {
-    ModArrows.registered().forEach(ArrowRendererRegistrar::register);
+    final Identifier grappleArrowId = ModArrows.GRAPPLE_ARROW.id();
+    EntityRendererRegistry.register(
+        ModArrows.GRAPPLE_ARROW.entityType(),
+        context -> new GrappleArrowEntityRenderer(context, textureFor(grappleArrowId)));
+
+    ModArrows.registered().stream()
+        .filter(arrow -> !arrow.id().equals(grappleArrowId))
+        .forEach(ArrowRendererRegistrar::register);
   }
 
   public static Identifier textureFor(final Identifier arrowId) {
