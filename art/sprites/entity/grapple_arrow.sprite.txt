@@ -1,0 +1,49 @@
+# Grapple arrow in flight.
+# The vanilla arrow model draws this one image as four quads rotated around the
+# arrow's axis, so rows 0-4 are the side profile from nock at x0 to tip at x15,
+# and rows 5-9 columns 0-4 are the nock cap seen end on.
+# The head is the same cold blue steel as the item sprite's grapnel claw, splayed
+# into three tines so it reads as something that bites rather than pierces. The
+# shaft carries a grain ramp rather than the sprite's lit and shadowed faces,
+# because at one pixel tall there is no second face to shade.
+# canvas = 32
+# H = B4C1CE  claw, lit edge
+# m = 6E7A88  claw, body
+# d = 3E454F  claw, inner shadow
+# W = A8802F  shaft, grain highlight
+# S = 896727  shaft, body
+# w = 5E4619  shaft, nock shadow
+# F = E0E0E0  fletching, light
+# f = C6C6C6  fletching, mid
+fFf.......H.H.H
+.fFf......m.m.m
+wSSWSSWSSdmmmmmH
+.fFf......m.m.m
+fFf.......d.d.d
+..F
+..F
+fFSFf
+..F
+..f
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
