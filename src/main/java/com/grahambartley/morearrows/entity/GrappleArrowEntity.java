@@ -3,28 +3,23 @@ package com.grahambartley.morearrows.entity;
 import com.grahambartley.morearrows.arrow.ArrowImpact;
 import com.grahambartley.morearrows.grapple.GrappleService;
 import com.grahambartley.morearrows.grapple.GrappleSession;
-import java.util.OptionalInt;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.Leashable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class GrappleArrowEntity extends BaseArrowEntity {
-  private static final TrackedData<OptionalInt> HAULED_PLAYER =
-      DataTracker.registerData(GrappleArrowEntity.class, TrackedDataHandlerRegistry.OPTIONAL_INT);
-
+public class GrappleArrowEntity extends BaseArrowEntity implements Leashable {
   private static final String ANCHOR_KEY = "GrappleAnchor";
 
   @Nullable private BlockPos anchor;
+  @Nullable private LeashData leashData;
 
   public GrappleArrowEntity(
       final EntityType<? extends GrappleArrowEntity> entityType, final World world) {
@@ -42,14 +37,20 @@ public class GrappleArrowEntity extends BaseArrowEntity {
     super(entityType, world, x, y, z, stack, weapon);
   }
 
-  public OptionalInt hauledPlayerId() {
-    return getDataTracker().get(HAULED_PLAYER);
+  @Override
+  @Nullable
+  public LeashData getLeashData() {
+    return leashData;
   }
 
   @Override
-  protected void initDataTracker(final DataTracker.Builder builder) {
-    super.initDataTracker(builder);
-    builder.add(HAULED_PLAYER, OptionalInt.empty());
+  public void setLeashData(@Nullable final LeashData leashData) {
+    this.leashData = leashData;
+  }
+
+  @Override
+  public boolean canBeLeashed() {
+    return false;
   }
 
   @Override
@@ -62,7 +63,7 @@ public class GrappleArrowEntity extends BaseArrowEntity {
                   GrappleService.start(world, player, blockHitResult.getBlockPos());
               if (started != null) {
                 anchor = started.anchor();
-                haul(player);
+                attachLeash(player, true);
               }
             });
     return ArrowImpact.DEFAULT;
@@ -73,44 +74,34 @@ public class GrappleArrowEntity extends BaseArrowEntity {
     if (anchor == null) {
       return;
     }
-    if (!(getOwner() instanceof PlayerEntity player) || !stillPulling(world, player)) {
-      anchor = null;
-      release();
+    if (getOwner() instanceof PlayerEntity player && stillPulling(world, player)) {
+      if (getLeashHolder() != player) {
+        attachLeash(player, true);
+      }
       return;
     }
-    haul(player);
+    anchor = null;
+    if (isLeashed()) {
+      detachLeash(true, false);
+    }
   }
 
   @Override
   public void writeCustomDataToNbt(final NbtCompound nbt) {
     super.writeCustomDataToNbt(nbt);
     if (anchor != null) {
-      nbt.putIntArray(ANCHOR_KEY, new int[] {anchor.getX(), anchor.getY(), anchor.getZ()});
+      nbt.put(ANCHOR_KEY, NbtHelper.fromBlockPos(anchor));
     }
   }
 
   @Override
   public void readCustomDataFromNbt(final NbtCompound nbt) {
     super.readCustomDataFromNbt(nbt);
-    final int[] stored = nbt.getIntArray(ANCHOR_KEY);
-    anchor = stored.length == 3 ? new BlockPos(stored[0], stored[1], stored[2]) : null;
+    anchor = NbtHelper.toBlockPos(nbt, ANCHOR_KEY).orElse(null);
   }
 
   private boolean stillPulling(final ServerWorld world, final PlayerEntity player) {
     final GrappleSession session = GrappleService.sessionOf(world, player.getUuid());
     return session != null && session.anchor().equals(anchor);
-  }
-
-  private void haul(final Entity player) {
-    final OptionalInt hauled = OptionalInt.of(player.getId());
-    if (!hauled.equals(hauledPlayerId())) {
-      getDataTracker().set(HAULED_PLAYER, hauled);
-    }
-  }
-
-  private void release() {
-    if (hauledPlayerId().isPresent()) {
-      getDataTracker().set(HAULED_PLAYER, OptionalInt.empty());
-    }
   }
 }
