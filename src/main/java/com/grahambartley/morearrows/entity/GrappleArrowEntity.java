@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.entity;
 import com.grahambartley.morearrows.arrow.ArrowImpact;
 import com.grahambartley.morearrows.grapple.GrappleService;
 import com.grahambartley.morearrows.grapple.GrappleSession;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Leashable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -51,6 +52,16 @@ public class GrappleArrowEntity extends BaseArrowEntity implements Leashable {
   @Override
   public boolean canBeLeashed() {
     return false;
+  }
+
+  @Override
+  public boolean beforeLeashTick(final Entity holder, final float distance) {
+    return false;
+  }
+
+  @Override
+  public void detachLeash(final boolean sendPacket, final boolean dropItem) {
+    Leashable.super.detachLeash(sendPacket, false);
   }
 
   @Override

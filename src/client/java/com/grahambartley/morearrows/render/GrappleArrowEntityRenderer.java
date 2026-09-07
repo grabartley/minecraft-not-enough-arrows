@@ -19,6 +19,7 @@ public class GrappleArrowEntityRenderer extends BaseArrowEntityRenderer<GrappleA
       final double cameraX,
       final double cameraY,
       final double cameraZ) {
-    return super.shouldRender(arrow, frustum, cameraX, cameraY, cameraZ) || arrow.isLeashed();
+    return super.shouldRender(arrow, frustum, cameraX, cameraY, cameraZ)
+        || arrow.getLeashHolder() != null;
   }
 }
