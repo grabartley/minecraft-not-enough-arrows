@@ -1,6 +1,8 @@
 {
   "itemGroup.more-arrows.arrows": "More Arrows",
   "item.more-arrows.grapple_arrow": "Grapple Arrow",
+  "item.more-arrows.rope_arrow": "Rope Arrow",
+  "block.more-arrows.rope": "Rope",
   "command.more-arrows.help.header": "More Arrows commands:",
   "command.more-arrows.help.entry": "- /%s",
   "command.more-arrows.status.header": "More Arrows settings:",
@@ -58,5 +60,6 @@
   "config.more-arrows.identifier_list.hint": "minecraft:bedrock, minecraft:obsidian",
   "subtitles.more-arrows.countdown_beep": "Arrow fuse beeps",
   "info.more-arrows.shared.firing": "Fires from a bow, a crossbow, or a dispenser, and is picked back up the same way a vanilla arrow is.",
-  "info.more-arrows.grapple_arrow": "Hooks into the first block it hits and reels the shooter to it. Fired beyond the configured range, it embeds without pulling."
+  "info.more-arrows.grapple_arrow": "Hooks into the first block it hits and reels the shooter to it. Fired beyond the configured range, it embeds without pulling.",
+  "info.more-arrows.rope_arrow": "Anchors in the block it hits and drops a climbable rope beneath it, down to the configured length or until the rope meets the ground."
 }

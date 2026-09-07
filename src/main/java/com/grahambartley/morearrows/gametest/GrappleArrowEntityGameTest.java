@@ -29,7 +29,6 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final float EASTWARD_YAW = 270.0f;
   private static final float LEVEL_PITCH = 0.0f;
   private static final float BOW_SPEED = 3.0f;
-  private static final int FULLY_DRAWN = 0;
   private static final int LANDING_TICK = 20;
   private static final float BEYOND_VANILLA_LEASH = 15.0f;
   private static final double FAR_BEYOND_A_LEAD = 24.0;
@@ -40,7 +39,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK,
@@ -86,7 +85,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   public void anArrowPullingAPlayerHoldsItsLineToThatPlayer(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK,
@@ -108,7 +107,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   public void anArrowWhoseGrappleHasEndedHoldsNoLine(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK, () -> GrappleService.release(context.getWorld(), shooter.getUuid()));
@@ -130,7 +129,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final GrappleArrowEntity[] reloadedArrow = {null};
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK,
@@ -187,7 +186,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   public void aGrappleLineIsNeverBrokenByVanillaLeashDistance(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK,
@@ -206,7 +205,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   public void aGrappleLineWhoseHolderDiesNeverLeavesALeadBehind(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK,
@@ -228,7 +227,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   public void aGrappleLineStretchedPastALeadsReachIsNeitherBrokenNorFelt(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
-    fireFromBow(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
         LANDING_TICK,
@@ -286,15 +285,6 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     for (int height = 0; height < WALL_HEIGHT; height++) {
       context.setBlockState(WALL_BASE.up(height), Blocks.STONE);
     }
-  }
-
-  private static void fireFromBow(final TestContext context, final ServerPlayerEntity shooter) {
-    shooter.setYaw(EASTWARD_YAW);
-    shooter.setPitch(LEVEL_PITCH);
-    shooter.getInventory().setStack(0, new ItemStack(ModArrows.GRAPPLE_ARROW.item(), 8));
-
-    final ItemStack bow = new ItemStack(Items.BOW);
-    Items.BOW.onStoppedUsing(bow, context.getWorld(), shooter, FULLY_DRAWN);
   }
 
   private static void fireFromBowHeldBy(final TestContext context, final PigEntity shooter) {

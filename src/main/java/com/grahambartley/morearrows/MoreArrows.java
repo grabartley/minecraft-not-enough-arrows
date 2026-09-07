@@ -19,6 +19,7 @@ public class MoreArrows implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    ModBlocks.register();
     ModArrows.register();
     ModItemGroups.register();
     ModRecipes.register();
