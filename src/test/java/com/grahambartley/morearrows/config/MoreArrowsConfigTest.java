@@ -40,7 +40,8 @@ class MoreArrowsConfigTest {
 
   @Test
   void replacesOnlyTheGrappleFamily() {
-    final GrappleArrowConfig replacement = new GrappleArrowConfig(64, 2.0f, false, false, 8, true);
+    final GrappleArrowConfig replacement =
+        new GrappleArrowConfig(64, 2.0f, 0.2f, false, false, 8, true);
     final MoreArrowsConfig updated = MoreArrowsConfig.defaults().withGrapple(replacement);
 
     assertEquals(replacement, updated.grapple());
@@ -122,7 +123,7 @@ class MoreArrowsConfigTest {
                 8,
                 5999,
                 1.75f),
-            new GrappleArrowConfig(127, 3.9f, false, false, 127, true),
+            new GrappleArrowConfig(127, 3.9f, 0.2f, false, false, 127, true),
             new UtilityArrowConfig(5999, 1199, 1, 15.5f, 7.5f),
             new PhysicsArrowConfig(8, List.of("minecraft:bedrock"), 16, false));
 

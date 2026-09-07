@@ -90,7 +90,7 @@ class ConfigFileTest {
     final MoreArrowsConfig saved =
         MoreArrowsConfig.defaults()
             .withPhysics(new PhysicsArrowConfig(4, List.of("minecraft:bedrock"), 9, false))
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, false, true, 8, true));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, false, true, 8, true));
 
     assertTrue(ConfigFile.save(path, saved));
 
@@ -129,7 +129,7 @@ class ConfigFileTest {
     ConfigFile.save(path, MoreArrowsConfig.defaults());
     final MoreArrowsConfig updated =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, false, true, 8, true));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, false, true, 8, true));
 
     assertTrue(ConfigFile.save(path, updated));
     assertEquals(updated, ConfigFile.load(path));
@@ -147,10 +147,10 @@ class ConfigFileTest {
     final Path worldB = tempDir.resolve("World B");
     final MoreArrowsConfig configA =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, true, true, 8, false));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, true, true, 8, false));
     final MoreArrowsConfig configB =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(16, 0.5f, false, false, 4, true));
+            .withGrapple(new GrappleArrowConfig(16, 0.5f, 0.2f, false, false, 4, true));
 
     ConfigFile.save(new ConfigPaths(worldA).getServerConfigPath(), configA);
     ConfigFile.save(new ConfigPaths(worldB).getServerConfigPath(), configB);

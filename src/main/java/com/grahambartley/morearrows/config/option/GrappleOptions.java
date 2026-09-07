@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 public final class GrappleOptions {
   public static final float PULL_SPEED_STEP = 0.05f;
+  public static final float PULL_ACCELERATION_STEP = 0.01f;
 
   private GrappleOptions() {}
 
@@ -38,6 +39,13 @@ public final class GrappleOptions {
             PULL_SPEED_STEP,
             config -> config.grapple().pullSpeed(),
             (config, value) -> grapple(config, it -> it.withPullSpeed(value))),
+        new FloatOption<>(
+            ConfigSettings.GRAPPLE_PULL_ACCELERATION,
+            GrappleArrowConfig.PULL_ACCELERATION_MIN,
+            GrappleArrowConfig.PULL_ACCELERATION_MAX,
+            PULL_ACCELERATION_STEP,
+            config -> config.grapple().pullAcceleration(),
+            (config, value) -> grapple(config, it -> it.withPullAcceleration(value))),
         new BooleanOption<>(
             ConfigSettings.GRAPPLE_CANCEL_FALL_DAMAGE_ON_ARRIVAL,
             config -> config.grapple().cancelFallDamageOnArrival(),

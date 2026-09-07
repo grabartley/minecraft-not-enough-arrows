@@ -22,6 +22,7 @@ class GrappleOptionsTest {
         List.of(
             "grapple.maxRangeBlocks",
             "grapple.pullSpeed",
+            "grapple.pullAcceleration",
             "grapple.cancelFallDamageOnArrival",
             "grapple.returnArrowOnArrival",
             "grapple.ropeLengthBlocks",

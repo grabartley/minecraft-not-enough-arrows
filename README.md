@@ -73,9 +73,32 @@ Arrows that attach themselves to the world share one anchoring system rather tha
 | Sharing a block | Any number of owners may anchor to the same block at once, and each hold is released on its own |
 | Losing the block | The server checks every anchor each world tick and releases any whose block has been broken or replaced by a different block |
 | Lifetime | Every anchor carries an expiry tick and is released once that tick passes, so no hold outlives its purpose |
-| Leaving | Disconnecting releases every anchor that player held in every world, and stopping the server clears all anchor state |
+| Leaving | Dying or disconnecting releases every anchor that player held in every world, and stopping the server clears all anchor state |
 
 Anchor state is server-owned and lives in memory only. The client is never the authority on where an anchor is, and nothing is written into the world save, so no anchor survives a restart.
+
+## Grapple Arrow
+
+The grapple arrow hooks into the first block it hits and reels its shooter to it. The pull is a server-owned session, one per player, ticked alongside the anchor it holds, and [ADR 0004](docs/adr/0004-grapple-is-a-ticked-session.md) covers why it applies velocity rather than repositioning the player.
+
+| Rule | Behaviour |
+|---|---|
+| What starts a pull | An arrow shot by a player landing in a block the anchoring system will hold onto. A dispensed arrow has no player behind it, so it embeds and pulls nobody |
+| Reach | `grapple.maxRangeBlocks`, measured from the player to the centre of the block hit. An arrow that lands further away embeds without pulling |
+| How the player moves | The server sets the player's velocity toward the anchor each tick and lets vanilla send the velocity update the client already knows how to apply. Nothing is ever repositioned, so the client's own movement prediction is never fought |
+| Speed | The pull accelerates rather than running at one flat speed: it builds by `grapple.pullAcceleration` blocks per tick until it reaches `grapple.pullSpeed`, then holds there. Both are read fresh every tick, so an operator changing either mid-pull changes how fast that pull moves. The pull's tick budget is worked out once when it starts, so a mid-pull change moves the player without extending the time it has |
+| Gravity | The pull carries the gravity the client is about to subtract, so the speed it builds to is the speed the player actually travels rather than an upper bound gravity quietly eats into |
+| One at a time | A player is pulled by at most one grapple. Firing again replaces the first and takes the new anchor with it, rather than stacking a second pull |
+| Arrival | The pull stops once the player is within reach of the anchor |
+| Losing the block | The anchor is released the moment its block is broken or replaced, and the session ends with it |
+| Running long | Every session carries a tick budget worked out from the distance it set out to cover and the ramp it takes to get up to speed, so a pull that cannot finish ends rather than stalling forever |
+| Leaving | Dying or disconnecting ends the pull |
+
+The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit, which is the check that stops flight hacks. A pull is the mod deliberately holding a player in the air, so the mod clears that counter for as long as it is pulling, and [ADR 0015](docs/adr/0015-the-mod-owns-the-flight-check-while-it-moves-a-player.md) covers why. Without it, a slow pull across a long distance disconnects the very player it is carrying.
+
+Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it.
+
+Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one tripwire hook, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
 ## Sounds
 

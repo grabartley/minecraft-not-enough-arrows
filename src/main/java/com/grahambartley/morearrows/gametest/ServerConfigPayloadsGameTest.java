@@ -27,7 +27,7 @@ public final class ServerConfigPayloadsGameTest implements FabricGameTest {
   public void syncPayloadPreservesEveryFamilyAcrossTheWire(TestContext context) {
     final MoreArrowsConfig original =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(127, 3.9f, false, false, 127, true))
+            .withGrapple(new GrappleArrowConfig(127, 3.9f, 3.9f, false, false, 127, true))
             .withPhysics(
                 new PhysicsArrowConfig(
                     8, List.of("minecraft:bedrock", "minecraft:obsidian"), 16, false));

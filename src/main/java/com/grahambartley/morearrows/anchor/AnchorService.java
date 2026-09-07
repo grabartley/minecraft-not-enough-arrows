@@ -1,12 +1,12 @@
 package com.grahambartley.morearrows.anchor;
 
+import com.grahambartley.morearrows.server.PlayerExit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -24,8 +24,7 @@ public final class AnchorService {
   public static void register() {
     ServerTickEvents.END_WORLD_TICK.register(AnchorService::dropLostAnchorsIn);
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
-    ServerPlayConnectionEvents.DISCONNECT.register(
-        (handler, server) -> releaseEverywhere(handler.getPlayer().getUuid()));
+    PlayerExit.whenLeaving(AnchorService::releaseEverywhere);
   }
 
   @Nullable
