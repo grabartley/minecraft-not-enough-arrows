@@ -29,6 +29,8 @@ There is no rope state to lose, to persist, or to leak. Ropes survive restarts b
 
 The anchor system is used for validation only. `AnchorSite` answers whether the arrow hit something worth anchoring to, which is the same question the grapple asks, but no `BlockAnchor` is taken. Anchors are owned one per player per world, and a player may reasonably leave several ropes hanging around a ravine, so taking one would either cap ropes at one per player or quietly cancel a grapple in flight.
 
-Decay is not precise. A scheduled tick fires when its chunk is ticking, so a rope in an unvisited chunk outlives its interval until somebody comes back. For sweeping up abandoned ropes that is the desired behaviour, since the ropes that matter are the ones a player can see.
+Decay is not precise. A scheduled tick fires when its chunk is ticking, so a rope in an unvisited chunk outlives its five minute interval until somebody comes back. For sweeping up abandoned ropes that is the desired behaviour, since the ropes that matter are the ones a player can see.
+
+The cost of staying responsive to the setting is that a rope keeps an appointment it may never act on. With decay off, which is the default, every rope reschedules its check forever, so a chunk full of ropes carries a scheduled tick per segment for as long as those ropes stand. That is accepted deliberately: the alternative is that an operator turning decay on reaches only ropes hung after the change, which reads as the setting being broken.
 
 Two ropes hung from the same anchor block cannot exist, because the second has nowhere to start: the space beneath the anchor is already a rope. Firing again at an anchor that already carries a rope embeds the arrow and changes nothing, which reads as the rope already being there.

@@ -115,7 +115,7 @@ The rope arrow anchors in the block it hits and drops a climbable rope beneath i
 | Climbing | The rope is a climbable block, so vanilla's own climbing rules apply to it exactly as they do to a ladder or a vine, in both directions |
 | Losing the anchor | Breaking the block a rope hangs from drops the whole rope, one segment at a time down the chain |
 | Removal | Breaking any segment takes the rope below it with it, so a player clears a rope in one hit rather than eleven |
-| Decay | `grapple.ropesDecay`, off by default. With it on, each rope is swept up once its own decay check comes round |
+| Decay | `grapple.ropesDecay`, off by default. Each rope checks itself every five minutes of world time, and with decay on that check sweeps it up |
 
 Nothing about a rope is held in memory, so a rope survives a restart, a chunk unload, and everything else a chunk survives. A rope's decay check is scheduled into the chunk rather than run from a server tick loop, which means a rope in an unvisited chunk waits rather than decaying on a clock nobody is watching. A rope spared by a check because decay was off books the next one, so turning decay on later still reaches ropes hung before the change.
 

@@ -8,11 +8,12 @@ import net.minecraft.util.math.BlockPos;
 
 public final class BlockEditPermissionGameTest implements FabricGameTest {
   private static final String BATCH = "block-edit-permission";
+  private static final String TEMPLATE = "more-arrows:fire_pad";
   private static final BlockPos INSIDE_THE_WORLD = new BlockPos(0, 3, 0);
   private static final BlockPos FAR_OUTSIDE_THE_BORDER =
       new BlockPos(Integer.MAX_VALUE, 3, Integer.MAX_VALUE);
 
-  @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEditWithNobodyBehindItIsAllowedInsideTheWorldBorder(TestContext context) {
     context.assertTrue(
         BlockEditPermission.allows(
@@ -21,7 +22,7 @@ public final class BlockEditPermissionGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEditWithNobodyBehindItStopsAtTheWorldBorder(TestContext context) {
     context.assertFalse(
         BlockEditPermission.allows(context.getWorld(), FAR_OUTSIDE_THE_BORDER, null),
@@ -29,7 +30,7 @@ public final class BlockEditPermissionGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPlayerMayEditTheWorldTheyAreStandingIn(TestContext context) {
     context.assertTrue(
         BlockEditPermission.allows(
@@ -40,7 +41,7 @@ public final class BlockEditPermissionGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void nothingIsEditedWithoutAWorldOrAPosition(TestContext context) {
     context.assertFalse(
         BlockEditPermission.allows(null, context.getAbsolutePos(INSIDE_THE_WORLD), null),
