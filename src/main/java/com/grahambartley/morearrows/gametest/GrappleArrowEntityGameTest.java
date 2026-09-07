@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.gametest;
 import com.grahambartley.morearrows.ModArrows;
 import com.grahambartley.morearrows.anchor.AnchorService;
 import com.grahambartley.morearrows.entity.BaseArrowEntity;
+import com.grahambartley.morearrows.entity.GrappleArrowEntity;
 import com.grahambartley.morearrows.grapple.GrappleService;
 import com.grahambartley.morearrows.grapple.GrappleSession;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -72,6 +73,59 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
               "An arrow with no player behind it should take no anchor");
           context.complete();
         });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
+  public void anArrowPullingAPlayerNamesThatPlayerForTheLineToDrawTo(TestContext context) {
+    raiseWall(context);
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    fireFromBow(context, shooter);
+
+    context.runAtTick(
+        LANDING_TICK,
+        () -> {
+          final GrappleArrowEntity landed = plantedArrow(context);
+
+          context.assertTrue(landed != null, "The fired arrow should still be in the world");
+          context.assertTrue(
+              landed.hauledPlayerId().isPresent(),
+              "An arrow that is pulling somebody should name them so the line has an end to draw to");
+          context.assertEquals(
+              landed.hauledPlayerId().getAsInt(),
+              shooter.getId(),
+              "Player the planted arrow is hauling");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
+  public void anArrowWhoseGrappleHasEndedNamesNobody(TestContext context) {
+    raiseWall(context);
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    fireFromBow(context, shooter);
+
+    context.runAtTick(
+        LANDING_TICK, () -> GrappleService.release(context.getWorld(), shooter.getUuid()));
+    context.runAtTick(
+        LANDING_TICK + 10,
+        () -> {
+          final GrappleArrowEntity landed = plantedArrow(context);
+
+          context.assertTrue(landed != null, "The fired arrow should still be in the world");
+          context.assertTrue(
+              landed.hauledPlayerId().isEmpty(),
+              "An arrow whose grapple ended should leave no line hanging off it");
+          context.complete();
+        });
+  }
+
+  private static GrappleArrowEntity plantedArrow(final TestContext context) {
+    return context
+        .getWorld()
+        .getEntitiesByClass(GrappleArrowEntity.class, context.getTestBox(), arrow -> true)
+        .stream()
+        .findFirst()
+        .orElse(null);
   }
 
   private static void raiseWall(final TestContext context) {

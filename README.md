@@ -96,6 +96,8 @@ The grapple arrow hooks into the first block it hits and reels its shooter to it
 
 The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit, which is the check that stops flight hacks. A pull is the mod deliberately holding a player in the air, so the mod clears that counter for as long as it is pulling, and [ADR 0015](docs/adr/0015-the-mod-owns-the-flight-check-while-it-moves-a-player.md) covers why. Without it, a slow pull across a long distance disconnects the very player it is carrying.
 
+A line renders between the player and the arrow they are hanging from, so the pull reads as a grapple rather than as the player being dragged by nothing. The planted arrow carries the identity of the player it is hauling, which is the only thing the client needs: the arrow is one end of the line and that player is the other. Because that travels as entity data the server already syncs, the line draws for everyone who can see the arrow rather than only for the player being pulled, and it disappears the moment the pull ends because the arrow stops naming anybody.
+
 Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it.
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one tripwire hook, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
