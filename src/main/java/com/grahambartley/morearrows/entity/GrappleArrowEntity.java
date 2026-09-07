@@ -5,9 +5,12 @@ import com.grahambartley.morearrows.grapple.GrappleService;
 import com.grahambartley.morearrows.grapple.GrappleSession;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.Leashable;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.server.world.ServerWorld;
@@ -62,6 +65,12 @@ public class GrappleArrowEntity extends BaseArrowEntity implements Leashable {
   @Override
   public void detachLeash(final boolean sendPacket, final boolean dropItem) {
     Leashable.super.detachLeash(sendPacket, false);
+  }
+
+  @Override
+  @Nullable
+  public ItemEntity dropItem(final ItemConvertible item) {
+    return item == Items.LEAD ? null : super.dropItem(item);
   }
 
   @Override

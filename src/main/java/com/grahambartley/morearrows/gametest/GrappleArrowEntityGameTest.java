@@ -18,6 +18,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final String TEMPLATE = "more-arrows:fire_pad";
@@ -31,6 +32,10 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final int FULLY_DRAWN = 0;
   private static final int LANDING_TICK = 20;
   private static final float BEYOND_VANILLA_LEASH = 15.0f;
+  private static final double FAR_BEYOND_A_LEAD = 24.0;
+  private static final int LETTING_GO_TICKS = 15;
+  private static final int STRETCH_TICKS = 4;
+  private static final double LEAD_SEARCH_MARGIN = 32.0;
 
   @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
@@ -198,8 +203,8 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
-  public void lettingGoOfAGrappleLineNeverDropsALead(TestContext context) {
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
+  public void aGrappleLineWhoseHolderDiesNeverLeavesALeadBehind(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     fireFromBow(context, shooter);
@@ -209,21 +214,64 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         () -> {
           final GrappleArrowEntity landed = plantedArrow(context);
           context.assertTrue(landed != null, "The fired arrow should still be in the world");
-
-          landed.detachLeash(true, true);
-
-          context.assertFalse(landed.isLeashed(), "Letting go should leave no line behind");
-          context.assertTrue(
-              context
-                  .getWorld()
-                  .getEntitiesByClass(
-                      ItemEntity.class,
-                      context.getTestBox(),
-                      dropped -> dropped.getStack().isOf(Items.LEAD))
-                  .isEmpty(),
-              "A grapple line is not a lead and must never drop one");
+          context.assertTrue(landed.isLeashed(), "The arrow should be holding its line");
+          shooter.kill();
+        });
+    context.runAtTick(
+        LANDING_TICK + LETTING_GO_TICKS,
+        () -> {
+          assertNoLeadWasDropped(context);
           context.complete();
         });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
+  public void aGrappleLineStretchedPastALeadsReachIsNeitherBrokenNorFelt(TestContext context) {
+    raiseWall(context);
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    fireFromBow(context, shooter);
+
+    context.runAtTick(
+        LANDING_TICK,
+        () -> {
+          final GrappleArrowEntity landed = plantedArrow(context);
+          context.assertTrue(landed != null, "The fired arrow should still be in the world");
+          landed.setVelocity(Vec3d.ZERO);
+          final Vec3d stretched =
+              context.getAbsolute(Vec3d.ofBottomCenter(SHOOTER_STAND)).add(FAR_BEYOND_A_LEAD, 0, 0);
+          shooter.networkHandler.requestTeleport(
+              stretched.getX(), stretched.getY(), stretched.getZ(), 0f, 0f);
+        });
+    context.runAtTick(
+        LANDING_TICK + STRETCH_TICKS,
+        () -> {
+          final GrappleArrowEntity landed = plantedArrow(context);
+          context.assertTrue(landed != null, "The fired arrow should still be in the world");
+          context.assertTrue(
+              GrappleService.sessionOf(context.getWorld(), shooter.getUuid()) != null,
+              "The grapple should still be pulling when its line is checked");
+          context.assertTrue(
+              landed.isLeashed(),
+              "A grapple line stretched past a lead's reach should not be snapped by vanilla");
+          context.assertTrue(
+              landed.getVelocity().lengthSquared() == 0.0,
+              "A planted arrow should never be tugged about by leash elasticity, velocity was "
+                  + landed.getVelocity());
+          assertNoLeadWasDropped(context);
+          context.complete();
+        });
+  }
+
+  private static void assertNoLeadWasDropped(final TestContext context) {
+    context.assertTrue(
+        context
+            .getWorld()
+            .getEntitiesByClass(
+                ItemEntity.class,
+                context.getTestBox().expand(LEAD_SEARCH_MARGIN),
+                dropped -> dropped.getStack().isOf(Items.LEAD))
+            .isEmpty(),
+        "A grapple line is not a lead and must never drop one");
   }
 
   private static GrappleArrowEntity plantedArrow(final TestContext context) {
