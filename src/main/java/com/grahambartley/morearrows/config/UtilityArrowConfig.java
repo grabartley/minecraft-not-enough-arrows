@@ -11,7 +11,7 @@ public record UtilityArrowConfig(
 
   public static final int GLOW_DURATION_TICKS_MIN = 0;
   public static final int GLOW_DURATION_TICKS_MAX = 6000;
-  public static final int REDSTONE_SIGNAL_DURATION_TICKS_MIN = 1;
+  public static final int REDSTONE_SIGNAL_DURATION_TICKS_MIN = 0;
   public static final int REDSTONE_SIGNAL_DURATION_TICKS_MAX = 1200;
   public static final int REDSTONE_SIGNAL_STRENGTH_MIN = 1;
   public static final int REDSTONE_SIGNAL_STRENGTH_MAX = 15;

@@ -17,7 +17,7 @@ class UtilityArrowConfigTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"0, 1", "1, 1", "40, 40", "1200, 1200", "99999, 1200"})
+  @CsvSource({"-1, 0", "0, 0", "1, 1", "40, 40", "1200, 1200", "99999, 1200"})
   void clampsRedstoneSignalDuration(final int given, final int expected) {
     assertEquals(expected, config(200, given, 15).redstoneSignalDurationTicks());
   }

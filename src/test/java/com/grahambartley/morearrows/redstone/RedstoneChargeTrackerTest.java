@@ -37,23 +37,39 @@ class RedstoneChargeTrackerTest {
   }
 
   @Test
-  void aTrackedChargeIsCountedAndFound() {
+  void aTrackedChargeIsCounted() {
     tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
 
     assertFalse(tracker.isEmpty());
     assertEquals(1, tracker.size());
-    assertTrue(tracker.contains(EARLY_POSITION));
   }
 
   @Test
-  void anUntrackedPositionIsNotFound() {
-    assertFalse(tracker.contains(EARLY_POSITION));
+  void aChargeIsLiveUntilItsExpiryTick() {
+    tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
+
+    assertTrue(tracker.isLiveAt(EARLY_POSITION, 99L));
+    assertFalse(tracker.isLiveAt(EARLY_POSITION, 100L));
+    assertFalse(tracker.isLiveAt(EARLY_POSITION, 150L));
+  }
+
+  @Test
+  void anUntrackedPositionIsNeverLive() {
+    assertFalse(tracker.isLiveAt(EARLY_POSITION, 0L));
+  }
+
+  @Test
+  void aPositionIsNoLongerLiveOnceItsChargeHasBeenTakenAway() {
+    tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
+    tracker.takeExpired(150L);
+
+    assertFalse(tracker.isLiveAt(EARLY_POSITION, 0L));
   }
 
   @ParameterizedTest
   @NullSource
-  void aMissingPositionIsNeverFound(final BlockPos missing) {
-    assertFalse(tracker.contains(missing));
+  void aMissingPositionIsNeverLive(final BlockPos missing) {
+    assertFalse(tracker.isLiveAt(missing, 0L));
   }
 
   @Test
@@ -109,22 +125,10 @@ class RedstoneChargeTrackerTest {
   }
 
   @Test
-  void aRemovedChargeIsNoLongerTracked() {
+  void rechargingAPositionKeepsItLivePastTheOlderExpiry() {
     tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
+    tracker.add(new RedstoneCharge(EARLY_POSITION, 300L));
 
-    tracker.remove(EARLY_POSITION);
-
-    assertTrue(tracker.isEmpty());
-    assertFalse(tracker.contains(EARLY_POSITION));
-  }
-
-  @ParameterizedTest
-  @NullSource
-  void removingAMissingPositionChangesNothing(final BlockPos missing) {
-    tracker.add(new RedstoneCharge(EARLY_POSITION, 100L));
-
-    tracker.remove(missing);
-
-    assertEquals(1, tracker.size());
+    assertTrue(tracker.isLiveAt(EARLY_POSITION, 150L));
   }
 }

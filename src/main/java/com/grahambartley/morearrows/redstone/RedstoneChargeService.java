@@ -56,6 +56,14 @@ public final class RedstoneChargeService {
     return true;
   }
 
+  public static boolean isLiveAt(final ServerWorld world, final BlockPos pos) {
+    if (world == null || pos == null) {
+      return false;
+    }
+    final RedstoneChargeTracker tracker = TRACKERS.get(world.getRegistryKey());
+    return tracker != null && tracker.isLiveAt(pos, world.getTime());
+  }
+
   public static void forget() {
     TRACKERS.clear();
   }

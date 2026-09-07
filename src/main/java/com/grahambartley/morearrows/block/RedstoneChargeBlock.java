@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.block;
 
+import com.grahambartley.morearrows.redstone.RedstoneChargeService;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -32,11 +33,11 @@ public class RedstoneChargeBlock extends Block {
         .pistonBehavior(PistonBehavior.DESTROY);
   }
 
-  public static BlockState stateWith(final RedstoneChargeBlock block, final int power) {
-    return block.getDefaultState().with(POWER, clampPower(power));
+  public BlockState stateWith(final int power) {
+    return getDefaultState().with(POWER, clampPower(power));
   }
 
-  public static int clampPower(final int power) {
+  private static int clampPower(final int power) {
     return Math.clamp(power, 0, Properties.POWER.getValues().size() - 1);
   }
 
@@ -81,6 +82,9 @@ public class RedstoneChargeBlock extends Block {
   @Override
   protected void scheduledTick(
       final BlockState state, final ServerWorld world, final BlockPos pos, final Random random) {
+    if (RedstoneChargeService.isLiveAt(world, pos)) {
+      return;
+    }
     world.removeBlock(pos, false);
   }
 }

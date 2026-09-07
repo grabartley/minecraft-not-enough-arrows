@@ -152,6 +152,42 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void theLiveServerConfigCanSwitchChargesOff(TestContext context) {
+    final MoreArrowsConfig previous = ServerConfigService.get();
+    final boolean charged;
+    try {
+      ServerConfigHolder.set(configWithSignal(STRENGTH, 0));
+      charged =
+          RedstoneChargeService.charge(context.getWorld(), context.getAbsolutePos(CHARGE), null);
+    } finally {
+      ServerConfigHolder.set(previous);
+    }
+
+    context.assertFalse(charged, "A configured duration of zero should charge nothing");
+    context.expectBlock(Blocks.AIR, CHARGE);
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void aChargeThatReplacesAnExpiredOneKeepsItsOwnFullDuration(TestContext context) {
+    charge(context, STRENGTH, SHORT_DURATION_TICKS);
+
+    context.runAtTick(
+        SHORT_DURATION_TICKS + 5,
+        () -> {
+          context.expectBlock(Blocks.AIR, CHARGE);
+          charge(context, STRENGTH, LONG_DURATION_TICKS);
+        });
+
+    context.runAtTick(
+        SHORT_DURATION_TICKS + 40,
+        () -> {
+          context.expectBlock(ModBlocks.REDSTONE_CHARGE, CHARGE);
+          context.complete();
+        });
+  }
+
   private static boolean charge(
       final TestContext context, final int strength, final int durationTicks) {
     return RedstoneChargeService.charge(

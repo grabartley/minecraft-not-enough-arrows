@@ -36,14 +36,9 @@ public final class RedstoneChargeTracker {
     return all;
   }
 
-  public boolean contains(final BlockPos pos) {
-    return pos != null && charges.containsKey(pos);
-  }
-
-  public void remove(final BlockPos pos) {
-    if (pos != null) {
-      charges.remove(pos);
-    }
+  public boolean isLiveAt(final BlockPos pos, final long tick) {
+    final RedstoneCharge charge = pos == null ? null : charges.get(pos);
+    return charge != null && !charge.hasExpired(tick);
   }
 
   public int size() {

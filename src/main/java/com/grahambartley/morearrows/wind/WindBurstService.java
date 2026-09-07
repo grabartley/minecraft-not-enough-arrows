@@ -2,9 +2,9 @@ package com.grahambartley.morearrows.wind;
 
 import com.grahambartley.morearrows.config.UtilityArrowConfig;
 import com.grahambartley.morearrows.server.ServerConfigService;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.projectile.AbstractWindChargeEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
@@ -35,16 +35,20 @@ public final class WindBurstService {
       return List.of();
     }
 
-    activateBlocks(world, center, source);
-    return displaceEntities(world, center, source, radius, strength);
+    final Entity shooter = shooterOf(source);
+    activateBlocks(world, center, source, shooter);
+    return displaceEntities(world, center, source, shooter, radius, strength);
   }
 
   private static void activateBlocks(
-      final ServerWorld world, final Vec3d center, @Nullable final Entity source) {
+      final ServerWorld world,
+      final Vec3d center,
+      @Nullable final Entity source,
+      @Nullable final Entity shooter) {
     world.createExplosion(
         source,
         null,
-        AbstractWindChargeEntity.EXPLOSION_BEHAVIOR,
+        new WindExplosionBehavior(shooter),
         center.getX(),
         center.getY(),
         center.getZ(),
@@ -60,25 +64,27 @@ public final class WindBurstService {
       final ServerWorld world,
       final Vec3d center,
       @Nullable final Entity source,
+      @Nullable final Entity shooter,
       final float radius,
       final float strength) {
     if (radius <= 0.0f || strength <= 0.0f) {
       return List.of();
     }
 
-    final Entity shooter = shooterOf(source);
-    final List<Entity> displaced =
-        world.getOtherEntities(shooter, Box.of(center, radius * 2, radius * 2, radius * 2)).stream()
-            .filter(entity -> entity != source)
-            .filter(entity -> push(entity, center, radius, strength))
-            .toList();
+    final List<Entity> displaced = new ArrayList<>();
+    for (final Entity entity :
+        world.getOtherEntities(shooter, Box.of(center, radius * 2, radius * 2, radius * 2))) {
+      if (entity != source && push(entity, center, radius, strength)) {
+        displaced.add(entity);
+      }
+    }
     return List.copyOf(displaced);
   }
 
   private static boolean push(
       final Entity entity, final Vec3d center, final float radius, final float strength) {
     final Vec3d push = WindBurst.push(center, entity.getPos(), radius, strength);
-    if (push.equals(Vec3d.ZERO)) {
+    if (push.lengthSquared() == 0.0) {
       return false;
     }
     entity.addVelocity(push);

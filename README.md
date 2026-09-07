@@ -147,7 +147,7 @@ The redstone arrow emits a redstone signal at the face it strikes, at a configur
 | How strong it is | `utility.redstoneSignalStrength`, emitted as both weak and strong power in every direction, so it drives lamps, doors, pistons, dispensers, and comparators alike |
 | How long it lasts | `utility.redstoneSignalDurationTicks` |
 | Where it will not go | Anywhere the shooter may not build, which is the same protection and world border check the fire patch system makes, and anywhere that is not air |
-| Chunk unload mid-signal | The signal ends. Its expiry is booked as a scheduled block tick, which is saved with the chunk, so an unloaded chunk expires its charge on the way back in rather than waiting for a visitor |
+| Chunk unload mid-signal | The signal ends. Its expiry is booked as a scheduled block tick, which is saved with the chunk, so an unloaded chunk expires its charge as it loads. Nothing force-loads a chunk to clear a charge early |
 | Server restart | No signal survives one. Every charge is cleared before the world saves |
 | A duration of zero | No signal is placed at all |
 
@@ -161,15 +161,15 @@ The wind arrow bursts on impact the way a wind charge does, shoving nearby entit
 
 | Rule | Behaviour |
 |---|---|
-| Block interactions | Vanilla's own wind charge explosion, run with vanilla's wind charge explosion behaviour, so doors, trapdoors, fence gates, levers, buttons, and bells respond exactly as they do to a thrown charge, and nothing is broken |
-| Who gets pushed | Every entity within `utility.windBurstRadius` of the impact, except the shooter and the arrow itself |
+| Block interactions | Vanilla's own wind charge explosion, carrying vanilla's immune-block list and a thrown charge's knockback, so doors, trapdoors, fence gates, levers, buttons, and bells respond as they do to a thrown charge, and nothing is broken |
+| Who gets pushed | Every entity within `utility.windBurstRadius` of the impact, except the shooter and the arrow itself. The shooter is exempted from the burst's own explosion knockback too, not only from the configured shove |
 | How hard | `utility.windPushStrength` at the centre, falling off linearly to nothing at the edge of the radius |
 | Which way | Directly away from the impact point. An entity standing exactly on it is pushed straight up rather than in an arbitrary direction |
 | Other players | Pushed by a velocity change that is sent to their client, so the shove is smooth rather than a visible teleport |
 | Damage | Half a heart at most. The displacement is the point |
 | The arrow afterwards | Spent. A wind arrow bursts rather than embedding, so unlike the mod's other arrows it is not recoverable from where it lands |
 
-Block interaction is deliberately vanilla's radius rather than the configured burst radius. The requirement is that wind-activated blocks behave exactly as they do for a wind charge, and the surest way to hold that is to run vanilla's explosion with vanilla's numbers. `utility.windBurstRadius` governs the entity shove, which is the part vanilla gives no control over.
+Block interaction is deliberately vanilla's radius rather than the configured burst radius. The requirement is that wind-activated blocks behave as they do for a wind charge, and the surest way to hold that is to run vanilla's explosion with vanilla's numbers. `utility.windBurstRadius` governs the entity shove, which is the part vanilla gives no control over.
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one wind charge, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station. A wind charge is the ingredient rather than a breeze rod because a rod crafts into four charges, so the charge is the finer unit and a player with rods can still reach it.
 

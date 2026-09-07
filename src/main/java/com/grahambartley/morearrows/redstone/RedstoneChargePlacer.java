@@ -9,6 +9,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import org.jetbrains.annotations.Nullable;
 
 public final class RedstoneChargePlacer {
@@ -24,7 +25,7 @@ public final class RedstoneChargePlacer {
       return false;
     }
 
-    final BlockState state = RedstoneChargeBlock.stateWith(ModBlocks.REDSTONE_CHARGE, power);
+    final BlockState state = ModBlocks.REDSTONE_CHARGE.stateWith(power);
     if (!BlockPlacement.canPlace(world, pos, state, shooter)) {
       return false;
     }
@@ -32,15 +33,18 @@ public final class RedstoneChargePlacer {
   }
 
   public static boolean clear(final ServerWorld world, final BlockPos pos) {
-    if (world == null || pos == null || !isCharge(world, pos)) {
+    if (!isLoaded(world, pos) || !isCharge(world, pos)) {
       return false;
     }
     return world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
   }
 
   public static boolean isCharge(final ServerWorld world, final BlockPos pos) {
-    return world != null
-        && pos != null
+    return isLoaded(world, pos)
         && world.getBlockState(pos).getBlock() instanceof RedstoneChargeBlock;
+  }
+
+  public static boolean isLoaded(final ServerWorld world, final BlockPos pos) {
+    return world != null && pos != null && world.isChunkLoaded(new ChunkPos(pos).toLong());
   }
 }
