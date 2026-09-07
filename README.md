@@ -137,18 +137,18 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/more-arrows/textures/`, and each ships alongside a palette-mapped text source in `art/sprites/`, with the in-flight entity textures under `art/sprites/entity/`. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
+Texture assets live under `assets/more-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, or `entity/` to match. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
 
 | Texture | Source | Used for |
 |---|---|---|
-| `textures/item/grapple_arrow.png` | `art/sprites/grapple_arrow.sprite.txt` | The grapple arrow's item sprite |
-| `textures/item/rope_arrow.png` | `art/sprites/rope_arrow.sprite.txt` | The rope arrow's item sprite |
-| `textures/item/glow_ink_arrow.png` | `art/sprites/glow_ink_arrow.sprite.txt` | The glow ink arrow's item sprite |
-| `textures/item/wind_arrow.png` | `art/sprites/wind_arrow.sprite.txt` | The wind arrow's item sprite |
-| `textures/item/redstone_arrow.png` | `art/sprites/redstone_arrow.sprite.txt` | The redstone arrow's item sprite |
-| `textures/item/gravity_arrow.png` | `art/sprites/gravity_arrow.sprite.txt` | The gravity arrow's item sprite |
-| `textures/item/ricochet_arrow.png` | `art/sprites/ricochet_arrow.sprite.txt` | The ricochet arrow's item sprite |
-| `textures/block/rope.png` | `art/sprites/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
+| `textures/item/grapple_arrow.png` | `art/sprites/item/grapple_arrow.sprite.txt` | The grapple arrow's item sprite |
+| `textures/item/rope_arrow.png` | `art/sprites/item/rope_arrow.sprite.txt` | The rope arrow's item sprite |
+| `textures/item/glow_ink_arrow.png` | `art/sprites/item/glow_ink_arrow.sprite.txt` | The glow ink arrow's item sprite |
+| `textures/item/wind_arrow.png` | `art/sprites/item/wind_arrow.sprite.txt` | The wind arrow's item sprite |
+| `textures/item/redstone_arrow.png` | `art/sprites/item/redstone_arrow.sprite.txt` | The redstone arrow's item sprite |
+| `textures/item/gravity_arrow.png` | `art/sprites/item/gravity_arrow.sprite.txt` | The gravity arrow's item sprite |
+| `textures/item/ricochet_arrow.png` | `art/sprites/item/ricochet_arrow.sprite.txt` | The ricochet arrow's item sprite |
+| `textures/block/rope.png` | `art/sprites/block/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | `art/sprites/entity/grapple_arrow.sprite.txt` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | `art/sprites/entity/rope_arrow.sprite.txt` | The rope arrow in flight and planted in a block |
 
@@ -160,7 +160,7 @@ The ricochet arrow is the harder of the two, because the grapple arrow is also h
 
 The two in-flight textures are 32x32 rather than 16x16, and only a corner of that canvas is ever drawn. Vanilla's projectile renderer unwraps an arrow as rows 0 to 4 across the full sixteen columns, which is the side profile from nock to tip, plus rows 5 to 9 in columns 0 to 4, which is the fletching cross seen end on. Everything else stays transparent. That one profile is then drawn four times, rotated around the arrow's axis, so a player sees overlapping copies of it from almost every angle and fine detail cross-hatches into mush.
 
-It is also why both textures are shaded symmetrically about the shaft rather than lit from one side. A profile drawn mirrored on top of itself turns any top-to-bottom gradient into a two tone head, brightest where one copy's lit edge lands on the other's shadow, and that lands hardest on exactly the element carrying the arrow's identity. Symmetric shading survives the mirror intact, so form has to come from the silhouette and from tone across the arrow's length instead.
+It is also why both textures are shaded symmetrically about the shaft rather than lit from one side. A profile drawn mirrored on top of itself turns any top-to-bottom gradient into a two tone head, brightest where one copy's lit edge lands on the other's shadow, and that lands hardest on exactly the element carrying the arrow's identity. Symmetric shading survives the mirror intact, so form has to come from the silhouette and from tone along the arrow's length instead.
 
 Both arrows therefore spend their detail budget on a single silhouette break rather than on shading. The grapple arrow splays three tines off a cold blue steel head, which is the widest head in the mod and the thing that separates it from a vanilla arrow at any distance. The rope arrow keeps its head narrow, an anchor point rather than a claw, and carries a pale hemp coil part way down the shaft instead, so the two traversal arrows are told apart by where the mass sits rather than by colour. That matters more here than anywhere else in the mod, because a player watches a grapple arrow fly its whole arc to an anchor before being pulled to it.
 
