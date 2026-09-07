@@ -107,10 +107,11 @@ The rope arrow anchors in the block it hits and drops a climbable rope beneath i
 
 | Rule | Behaviour |
 |---|---|
-| What holds a rope | Anything the anchoring system will hold onto, checked the same way the grapple checks it. An arrow with no player behind it still hangs a rope, so a dispenser works |
+| Where an arrow takes hold | Anything the anchoring system will hold onto, which is the same question the grapple asks. An arrow with no player behind it still hangs a rope, so a dispenser works |
+| Whether anything hangs | The rope block's own support rule, which needs an underside to hang from. The two rules are not the same: a top slab or the open half of an upside-down stair is worth anchoring into but has no underside, so the arrow embeds and no rope appears |
 | Where the rope goes | Straight down from the block hit, starting in the space directly beneath it |
 | How long it is | `grapple.ropeLengthBlocks`, or shorter if it runs out of room first |
-| Stopping early | The rope stops at the first position that is not free, so it lands on the floor rather than through it and stops at a ledge rather than clipping into it |
+| Stopping early | The rope stops at the first position that is not open air, so it lands on the floor rather than through it and stops at a ledge rather than clipping into it. Water, crops, and grass stop a rope too, because a descent is not worth destroying what a player put there |
 | Climbing | The rope is a climbable block, so vanilla's own climbing rules apply to it exactly as they do to a ladder or a vine, in both directions |
 | Losing the anchor | Breaking the block a rope hangs from drops the whole rope, one segment at a time down the chain |
 | Removal | Breaking any segment takes the rope below it with it, so a player clears a rope in one hit rather than eleven |
@@ -120,7 +121,7 @@ Nothing about a rope is held in memory, so a rope survives a restart, a chunk un
 
 The rope block is placed by the mod rather than crafted, and it drops nothing when broken. It is a route, not a resource.
 
-Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one lead, yielding eight.
+Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one lead, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
 ## Sounds
 

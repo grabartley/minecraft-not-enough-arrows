@@ -12,8 +12,7 @@ final class RopeTestSupport {
 
   private RopeTestSupport() {}
 
-  static BlockPos raiseCeiling(final TestContext context) {
+  static void raiseCeiling(final TestContext context) {
     context.setBlockState(CEILING, Blocks.STONE);
-    return context.getAbsolutePos(CEILING);
   }
 }

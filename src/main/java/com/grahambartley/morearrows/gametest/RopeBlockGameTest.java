@@ -113,7 +113,7 @@ public final class RopeBlockGameTest implements FabricGameTest {
 
   @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = DECAY_ON_BATCH, tickLimit = 40)
   public void aRopeDecaysWhenItsDecayCheckComesRoundAndDecayIsOn(TestContext context) {
-    dropRopeWithDecayCheckDueSoon(context);
+    bookADecayCheckDueSoonThenDropRope(context);
 
     context.runAtTick(
         DECAY_CHECK_TICK + NEXT_TICK,
@@ -126,7 +126,7 @@ public final class RopeBlockGameTest implements FabricGameTest {
 
   @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = DECAY_OFF_BATCH, tickLimit = 40)
   public void aRopeSurvivesItsDecayCheckWhenDecayIsOff(TestContext context) {
-    dropRopeWithDecayCheckDueSoon(context);
+    bookADecayCheckDueSoonThenDropRope(context);
 
     context.runAtTick(
         DECAY_CHECK_TICK + NEXT_TICK,
@@ -138,7 +138,7 @@ public final class RopeBlockGameTest implements FabricGameTest {
 
   @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = DECAY_OFF_BATCH, tickLimit = 40)
   public void aRopeThatSurvivedADecayCheckIsCheckedAgainLater(TestContext context) {
-    dropRopeWithDecayCheckDueSoon(context);
+    bookADecayCheckDueSoonThenDropRope(context);
 
     context.runAtTick(
         DECAY_CHECK_TICK + NEXT_TICK,
@@ -154,7 +154,7 @@ public final class RopeBlockGameTest implements FabricGameTest {
         });
   }
 
-  private static void dropRopeWithDecayCheckDueSoon(final TestContext context) {
+  private static void bookADecayCheckDueSoonThenDropRope(final TestContext context) {
     for (int depth = 0; depth < ROPE_LENGTH; depth++) {
       context
           .getWorld()

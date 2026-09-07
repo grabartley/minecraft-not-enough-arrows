@@ -1,7 +1,7 @@
 package com.grahambartley.morearrows.rope;
 
 import com.grahambartley.morearrows.ModBlocks;
-import com.grahambartley.morearrows.world.BlockEditPermission;
+import com.grahambartley.morearrows.world.BlockPlacement;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Block;
@@ -34,16 +34,7 @@ public final class RopePlacer {
 
   public static boolean canPlaceAt(
       final ServerWorld world, final BlockPos pos, @Nullable final PlayerEntity placer) {
-    if (world == null || pos == null || !world.isInBuildLimit(pos)) {
-      return false;
-    }
-    if (!BlockEditPermission.allows(world, pos, placer)) {
-      return false;
-    }
-    if (!world.getBlockState(pos).isAir()) {
-      return false;
-    }
-    return ropeState().canPlaceAt(world, pos);
+    return BlockPlacement.canPlace(world, pos, ropeState(), placer);
   }
 
   private static BlockState ropeState() {

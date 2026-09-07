@@ -8,6 +8,8 @@ import com.grahambartley.morearrows.rope.RopeService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SlabBlock;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.AfterBatch;
 import net.minecraft.test.BeforeBatch;
@@ -57,6 +59,19 @@ public final class RopeServiceGameTest implements FabricGameTest {
     context.assertTrue(
         drop(context, LONGER_THAN_THE_SHAFT).isEmpty(),
         "Grass holds no anchor, so it should hold no rope either");
+    context.complete();
+  }
+
+  @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void nothingHangsFromABlockWithNoUndersideToHangFrom(TestContext context) {
+    context.setBlockState(
+        RopeTestSupport.CEILING,
+        Blocks.STONE_SLAB.getDefaultState().with(SlabBlock.TYPE, SlabType.TOP));
+
+    context.assertTrue(
+        drop(context, LONGER_THAN_THE_SHAFT).isEmpty(),
+        "A top slab is worth anchoring an arrow into but has no underside a rope can hang from,"
+            + " so the arrow should embed and no rope should appear");
     context.complete();
   }
 

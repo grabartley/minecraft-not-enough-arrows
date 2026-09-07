@@ -20,7 +20,7 @@ import net.minecraft.world.WorldView;
 
 public class RopeBlock extends Block {
   public static final MapCodec<RopeBlock> CODEC = createCodec(RopeBlock::new);
-  public static final int DECAY_INTERVAL_TICKS = 20 * 60 * 5;
+  private static final int DECAY_INTERVAL_TICKS = 20 * 60 * 5;
 
   private static final VoxelShape STRAND = createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
 

@@ -38,6 +38,7 @@
       "com.grahambartley.morearrows.gametest.ArrowPickupGameTest",
       "com.grahambartley.morearrows.gametest.ArrowRegistrarGameTest",
       "com.grahambartley.morearrows.gametest.BlockEditPermissionGameTest",
+      "com.grahambartley.morearrows.gametest.BlockPlacementGameTest",
       "com.grahambartley.morearrows.gametest.FirePatchPlacerGameTest",
       "com.grahambartley.morearrows.gametest.FirePatchServiceGameTest",
       "com.grahambartley.morearrows.gametest.FletchingIngredientGameTest",

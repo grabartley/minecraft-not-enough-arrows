@@ -1,6 +1,6 @@
 package com.grahambartley.morearrows.fire;
 
-import com.grahambartley.morearrows.world.BlockEditPermission;
+import com.grahambartley.morearrows.world.BlockPlacement;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.AbstractFireBlock;
@@ -37,16 +37,10 @@ public final class FirePatchPlacer {
 
   public static boolean canPlaceAt(
       final ServerWorld world, final BlockPos pos, @Nullable final PlayerEntity igniter) {
-    if (world == null || pos == null || !world.isInBuildLimit(pos)) {
+    if (world == null || pos == null) {
       return false;
     }
-    if (!BlockEditPermission.allows(world, pos, igniter)) {
-      return false;
-    }
-    if (!world.getBlockState(pos).isAir()) {
-      return false;
-    }
-    return AbstractFireBlock.getState(world, pos).canPlaceAt(world, pos);
+    return BlockPlacement.canPlace(world, pos, AbstractFireBlock.getState(world, pos), igniter);
   }
 
   public static boolean clear(final ServerWorld world, final BlockPos pos) {

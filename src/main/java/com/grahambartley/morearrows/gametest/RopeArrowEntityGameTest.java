@@ -38,11 +38,13 @@ public final class RopeArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = RopeTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowThatFindsNothingToAnchorToHangsNoRope(TestContext context) {
+    context.setBlockState(OVERHANG, Blocks.SHORT_GRASS);
     fireFromBow(context, MockPlayerSupport.playerAt(context, SHOOTER_STAND));
 
     context.runAtTick(
         LANDING_TICK,
         () -> {
+          context.expectBlock(Blocks.SHORT_GRASS, OVERHANG);
           context.dontExpectBlock(ModBlocks.ROPE, OVERHANG.down());
           context.complete();
         });
