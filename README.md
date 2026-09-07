@@ -8,11 +8,8 @@ Expands the arrow types available in Minecraft with new craftable arrows that ca
 
 - TNT arrow
 - Ender pearl arrow
-- Glow ink arrow
 - Slime arrow
 - Fire charge arrow
-- Wind arrow
-- Redstone arrow
 
 ## Firing and recovery
 
@@ -123,6 +120,59 @@ The rope block is placed by the mod rather than crafted, and it drops nothing wh
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one lead, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
+## Glow Ink Arrow
+
+The glow ink arrow marks what it hits rather than hurting it, applying vanilla's glowing effect so the target is outlined through terrain for everyone on the server. It is the mod's tracking tool: a way to keep a creeper, a fleeing raider, or a friend's position readable through a wall.
+
+| Rule | Behaviour |
+|---|---|
+| What it marks | Any living entity it strikes. The glowing effect is a status effect, so anything without status effects, such as a boat or an item frame, is not marked |
+| How long the mark lasts | `utility.glowDurationTicks` |
+| Who sees the outline | Every player on the server, because vanilla syncs the glow flag to all trackers rather than only to the shooter |
+| Damage | Half a heart at most. The mark is the point |
+| Hitting a block | Nothing happens and the arrow embeds as any arrow does |
+| A duration of zero | No mark is applied at all, so the arrow becomes an inert tracer |
+
+The mark is a real status effect rather than an entity flag the mod keeps alive, so its countdown, its persistence across a restart, and its syncing to every client are vanilla's problem rather than this mod's.
+
+Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one glow ink sac, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+
+## Redstone Arrow
+
+The redstone arrow emits a redstone signal at the face it strikes, at a configured strength, for a configured time, and then stops. It is a way to throw a switch across a gap: a door, a piston, a dispenser, or anything else that reads power, triggered from wherever a player can land an arrow.
+
+| Rule | Behaviour |
+|---|---|
+| Where the signal appears | The air position on the face that was struck, which is where the arrow itself is embedded. The block that was hit is never replaced |
+| How strong it is | `utility.redstoneSignalStrength`, emitted as both weak and strong power in every direction, so it drives lamps, doors, pistons, dispensers, and comparators alike |
+| How long it lasts | `utility.redstoneSignalDurationTicks` |
+| Where it will not go | Anywhere the shooter may not build, which is the same protection and world border check the fire patch system makes, and anywhere that is not air |
+| Chunk unload mid-signal | The signal ends. Its expiry is booked as a scheduled block tick, which is saved with the chunk, so an unloaded chunk expires its charge on the way back in rather than waiting for a visitor |
+| Server restart | No signal survives one. Every charge is cleared before the world saves |
+| A duration of zero | No signal is placed at all |
+
+The mechanism behind that last set of rows is worth reading before changing it: [ADR 0018](docs/adr/0018-a-redstone-signal-is-a-block-that-expires-three-ways.md) covers why the signal is a block, why it expires three different ways, and what each one is actually for.
+
+Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one redstone dust, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+
+## Wind Arrow
+
+The wind arrow bursts on impact the way a wind charge does, shoving nearby entities away from the point of impact and triggering the same block interactions a wind charge triggers. It is crowd control and a door opener rather than a weapon.
+
+| Rule | Behaviour |
+|---|---|
+| Block interactions | Vanilla's own wind charge explosion, run with vanilla's wind charge explosion behaviour, so doors, trapdoors, fence gates, levers, buttons, and bells respond exactly as they do to a thrown charge, and nothing is broken |
+| Who gets pushed | Every entity within `utility.windBurstRadius` of the impact, except the shooter and the arrow itself |
+| How hard | `utility.windPushStrength` at the centre, falling off linearly to nothing at the edge of the radius |
+| Which way | Directly away from the impact point. An entity standing exactly on it is pushed straight up rather than in an arbitrary direction |
+| Other players | Pushed by a velocity change that is sent to their client, so the shove is smooth rather than a visible teleport |
+| Damage | Half a heart at most. The displacement is the point |
+| The arrow afterwards | Spent. A wind arrow bursts rather than embedding, so unlike the mod's other arrows it is not recoverable from where it lands |
+
+Block interaction is deliberately vanilla's radius rather than the configured burst radius. The requirement is that wind-activated blocks behave exactly as they do for a wind charge, and the surest way to hold that is to run vanilla's explosion with vanilla's numbers. `utility.windBurstRadius` governs the entity shove, which is the part vanilla gives no control over.
+
+Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one wind charge, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station. A wind charge is the ingredient rather than a breeze rod because a rod crafts into four charges, so the charge is the finer unit and a player with rods can still reach it.
+
 ## Sounds
 
 The mod's sound assets live under `assets/more-arrows/sounds/` and are declared in `assets/more-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
@@ -151,6 +201,9 @@ Texture assets live under `assets/more-arrows/textures/`, and each ships alongsi
 | `textures/block/rope.png` | `art/sprites/block/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | `art/sprites/entity/grapple_arrow.sprite.txt` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | `art/sprites/entity/rope_arrow.sprite.txt` | The rope arrow in flight and planted in a block |
+| `textures/entity/arrow/glow_ink_arrow.png` | `art/sprites/entity/glow_ink_arrow.sprite.txt` | The glow ink arrow in flight and planted in a block |
+| `textures/entity/arrow/redstone_arrow.png` | `art/sprites/entity/redstone_arrow.sprite.txt` | The redstone arrow in flight and planted in a block |
+| `textures/entity/arrow/wind_arrow.png` | `art/sprites/entity/wind_arrow.sprite.txt` | The wind arrow in flight and planted in a block |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
 
@@ -163,6 +216,8 @@ The two in-flight textures are 32x32 rather than 16x16, and only a corner of tha
 It is also why both textures are shaded symmetrically about the shaft rather than lit from one side. A profile drawn mirrored on top of itself turns any top-to-bottom gradient into a two tone head, brightest where one copy's lit edge lands on the other's shadow, and that lands hardest on exactly the element carrying the arrow's identity. Symmetric shading survives the mirror intact, so form has to come from the silhouette and from tone along the arrow's length instead.
 
 Both arrows therefore spend their detail budget on a single silhouette break rather than on shading. The grapple arrow splays three tines off a cold blue steel head, which is the widest head in the mod and the thing that separates it from a vanilla arrow at any distance. The rope arrow keeps its head narrow, an anchor point rather than a claw, and carries a pale hemp coil part way down the shaft instead, so the two traversal arrows are told apart by where the mass sits rather than by colour. That matters more here than anywhere else in the mod, because a player watches a grapple arrow fly its whole arc to an anchor before being pulled to it.
+
+The three utility arrows reach the same problem from the other side, because all three are a coloured lump on a tip and colour is the first thing the mirrored profile destroys. They are separated by how far the head departs from the shaft instead. The glow ink sac is the widest, bulging a pixel clear of the shaft on both outer rows; the redstone crystal is held entirely inside the three middle rows, so it stays square and compact where the sac swells; and the wind ring keeps its single-pixel hole, which is the one feature that survives the mirror intact, since the overlaid copies land hole on hole rather than lit edge on shadow. The sac's slung-under-the-axis pose from its item sprite does not survive the mirror at all and is moved back onto the axis here, because two mirrored copies of an off-axis head read as two heads.
 
 The rope block is the one texture with a tiling contract, because a descent stacks it vertically and any mismatch across the tile boundary reads as a seam running the whole length of the drop. Its strand grooves step one column per row on a four row cycle, and sixteen divides by four, so row fifteen hands off to row zero mid-diagonal and the twist runs unbroken. Anything that changes the number of rows in that cycle to something other than a factor of sixteen puts a seam back. The single whipping band is what a ladder gets from its rungs, a repeat that tells a player the block is climbable, and it sits away from the tile boundary so it never reads as the seam it is not.
 
