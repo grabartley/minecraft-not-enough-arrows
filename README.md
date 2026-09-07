@@ -8,7 +8,6 @@ Expands the arrow types available in Minecraft with new craftable arrows that ca
 
 - TNT arrow
 - Ender pearl arrow
-- Lead (rope) arrow
 - Glow ink arrow
 - Slime arrow
 - Fire charge arrow
@@ -64,7 +63,7 @@ Because the blast position is read from the carrier at the moment the fuse expir
 
 ## Block Anchors
 
-Arrows that attach themselves to the world share one anchoring system rather than each tracking their own hold, so the grapple arrow and the rope arrow agree on what counts as something worth holding onto and on when a hold is lost.
+Arrows that attach themselves to the world share one anchoring system rather than each deciding for itself what counts as something worth holding onto, so the grapple arrow and the rope arrow agree on where an arrow may take hold. The grapple goes further and takes a tracked hold, because a pull has to know when the block under it is gone. A rope only borrows the question, since the rope block answers for its own support once it is placed.
 
 | Rule | Behaviour |
 |---|---|
@@ -101,6 +100,27 @@ A line renders between the player and the arrow they are hanging from, so the pu
 Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it.
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one tripwire hook, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+
+## Rope Arrow
+
+The rope arrow anchors in the block it hits and drops a climbable rope beneath it, giving a descent route into a cave, a ravine, or a shaft that a player would otherwise have to dig or fall into. Unlike the grapple, nothing about it is a session: the rope is a block that holds itself up, and [ADR 0017](docs/adr/0017-a-rope-holds-itself-up-rather-than-being-tracked.md) covers why it is not tracked like everything else this mod places.
+
+| Rule | Behaviour |
+|---|---|
+| What holds a rope | Anything the anchoring system will hold onto, checked the same way the grapple checks it. An arrow with no player behind it still hangs a rope, so a dispenser works |
+| Where the rope goes | Straight down from the block hit, starting in the space directly beneath it |
+| How long it is | `grapple.ropeLengthBlocks`, or shorter if it runs out of room first |
+| Stopping early | The rope stops at the first position that is not free, so it lands on the floor rather than through it and stops at a ledge rather than clipping into it |
+| Climbing | The rope is a climbable block, so vanilla's own climbing rules apply to it exactly as they do to a ladder or a vine, in both directions |
+| Losing the anchor | Breaking the block a rope hangs from drops the whole rope, one segment at a time down the chain |
+| Removal | Breaking any segment takes the rope below it with it, so a player clears a rope in one hit rather than eleven |
+| Decay | `grapple.ropesDecay`, off by default. With it on, each rope is swept up once its own decay check comes round |
+
+Nothing about a rope is held in memory, so a rope survives a restart, a chunk unload, and everything else a chunk survives. A rope's decay check is scheduled into the chunk rather than run from a server tick loop, which means a rope in an unvisited chunk waits rather than decaying on a clock nobody is watching. A rope spared by a check because decay was off books the next one, so turning decay on later still reaches ropes hung before the change.
+
+The rope block is placed by the mod rather than crafted, and it drops nothing when broken. It is a route, not a resource.
+
+Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one lead, yielding eight.
 
 ## Sounds
 

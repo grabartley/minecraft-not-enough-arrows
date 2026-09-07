@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "more-arrows:grapple_arrow"
+    "more-arrows:grapple_arrow",
+    "more-arrows:rope_arrow"
   ]
 }

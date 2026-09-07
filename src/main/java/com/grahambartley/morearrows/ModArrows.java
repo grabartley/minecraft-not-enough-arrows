@@ -5,6 +5,7 @@ import com.grahambartley.morearrows.arrow.ArrowDefinition;
 import com.grahambartley.morearrows.arrow.ArrowRegistrar;
 import com.grahambartley.morearrows.arrow.RegisteredArrow;
 import com.grahambartley.morearrows.entity.GrappleArrowEntity;
+import com.grahambartley.morearrows.entity.RopeArrowEntity;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -16,6 +17,10 @@ public final class ModArrows {
   public static final RegisteredArrow<GrappleArrowEntity> GRAPPLE_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of("grapple_arrow", GrappleArrowEntity::new, ModArrows::grappleArrow));
+
+  public static final RegisteredArrow<RopeArrowEntity> ROPE_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("rope_arrow", RopeArrowEntity::new, ModArrows::ropeArrow));
 
   private ModArrows() {}
 
@@ -39,5 +44,15 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new GrappleArrowEntity(GRAPPLE_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static RopeArrowEntity ropeArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RopeArrowEntity(ROPE_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

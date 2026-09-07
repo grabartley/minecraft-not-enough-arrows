@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.fire;
 
+import com.grahambartley.morearrows.world.BlockEditPermission;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.AbstractFireBlock;
@@ -39,7 +40,7 @@ public final class FirePatchPlacer {
     if (world == null || pos == null || !world.isInBuildLimit(pos)) {
       return false;
     }
-    if (!isAllowedBy(world, pos, igniter)) {
+    if (!BlockEditPermission.allows(world, pos, igniter)) {
       return false;
     }
     if (!world.getBlockState(pos).isAir()) {
@@ -68,12 +69,5 @@ public final class FirePatchPlacer {
       }
     }
     return null;
-  }
-
-  private static boolean isAllowedBy(
-      final ServerWorld world, final BlockPos pos, @Nullable final PlayerEntity igniter) {
-    return igniter == null
-        ? world.getWorldBorder().contains(pos)
-        : world.canPlayerModifyAt(igniter, pos);
   }
 }
