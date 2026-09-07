@@ -4,7 +4,6 @@ import com.grahambartley.morearrows.anchor.AnchorService;
 import com.grahambartley.morearrows.config.GrappleArrowConfig;
 import com.grahambartley.morearrows.server.ServerConfigService;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -29,7 +28,11 @@ public final class GrappleService {
     ServerTickEvents.END_WORLD_TICK.register(GrappleService::pullGrapplesIn);
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
     ServerLivingEntityEvents.AFTER_DEATH.register(
-        (entity, damageSource) -> releaseEverywhere(entity.getUuid()));
+        (entity, damageSource) -> {
+          if (entity instanceof ServerPlayerEntity player) {
+            releaseEverywhere(player.getUuid());
+          }
+        });
     ServerPlayConnectionEvents.DISCONNECT.register(
         (handler, server) -> releaseEverywhere(handler.getPlayer().getUuid()));
   }
@@ -84,11 +87,7 @@ public final class GrappleService {
 
   public static void releaseEverywhere(@Nullable final UUID playerId) {
     TRACKERS.values().forEach(tracker -> tracker.remove(playerId));
-  }
-
-  public static List<GrappleSession> sessionsIn(@Nullable final ServerWorld world) {
-    final GrappleTracker tracker = trackerIn(world);
-    return tracker == null ? List.of() : tracker.sessions();
+    AnchorService.releaseEverywhere(playerId);
   }
 
   public static void forget() {

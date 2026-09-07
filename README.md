@@ -93,7 +93,7 @@ The grapple arrow hooks into the first block it hits and reels its shooter to it
 | Running long | Every session carries a tick budget worked out from the distance it set out to cover, so a pull that cannot finish ends rather than stalling forever |
 | Leaving | Dying or disconnecting ends the pull |
 
-The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit, which is the check that stops flight hacks. A pull is the mod deliberately holding a player in the air, so the mod clears that counter for as long as it is pulling. Without it, a slow pull across a long distance disconnects the very player it is carrying.
+The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit, which is the check that stops flight hacks. A pull is the mod deliberately holding a player in the air, so the mod clears that counter for as long as it is pulling, and [ADR 0015](docs/adr/0015-the-mod-owns-the-flight-check-while-it-moves-a-player.md) covers why. Without it, a slow pull across a long distance disconnects the very player it is carrying.
 
 Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it.
 

@@ -45,6 +45,7 @@
       "com.grahambartley.morearrows.gametest.FletchingRecipeSerializerGameTest",
       "com.grahambartley.morearrows.gametest.FuseServiceGameTest",
       "com.grahambartley.morearrows.gametest.GrappleArrowEntityGameTest",
+      "com.grahambartley.morearrows.gametest.GrappleFlightCheckGameTest",
       "com.grahambartley.morearrows.gametest.GrappleServiceGameTest",
       "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest",
       "com.grahambartley.morearrows.gametest.ModRecipesGameTest",
