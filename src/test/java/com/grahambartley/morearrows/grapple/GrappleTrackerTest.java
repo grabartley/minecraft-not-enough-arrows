@@ -43,7 +43,7 @@ class GrappleTrackerTest {
 
   @Test
   void aSessionThatHasAlreadyEndedIsNotTracked() {
-    tracker.add(new GrappleSession(FIRST_PLAYER, ANCHOR, 0));
+    tracker.add(new GrappleSession(FIRST_PLAYER, ANCHOR, 0, 0));
 
     assertTrue(tracker.isEmpty());
   }
@@ -123,6 +123,6 @@ class GrappleTrackerTest {
   }
 
   private static GrappleSession session(final UUID playerId, final BlockPos anchor) {
-    return new GrappleSession(playerId, anchor, LIFETIME_TICKS);
+    return GrappleSession.beginning(playerId, anchor, LIFETIME_TICKS);
   }
 }

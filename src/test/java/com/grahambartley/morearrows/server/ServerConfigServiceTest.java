@@ -82,7 +82,7 @@ class ServerConfigServiceTest {
   void resetsToDefaultsWhenThereIsNoSaveSession() {
     ServerConfigHolder.set(
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 1.0f, true, true, 8, false)));
+            .withGrapple(new GrappleArrowConfig(64, 1.0f, 0.2f, true, true, 8, false)));
 
     ServerConfigService.loadFromSession(null);
 

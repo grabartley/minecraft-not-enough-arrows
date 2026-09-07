@@ -114,6 +114,7 @@ public final class ServerConfigServiceGameTest implements FabricGameTest {
             new GrappleArrowConfig(
                 maxRangeBlocks,
                 GrappleArrowConfig.DEFAULT_PULL_SPEED,
+                GrappleArrowConfig.DEFAULT_PULL_ACCELERATION,
                 true,
                 true,
                 GrappleArrowConfig.DEFAULT_ROPE_LENGTH_BLOCKS,

@@ -34,6 +34,12 @@ class GrappleSessionTest {
   }
 
   @Test
+  void aSessionCountsHowLongItHasBeenPulling() {
+    assertEquals(0, GrappleSession.beginning(PLAYER, ANCHOR, LIFETIME_TICKS).pulledTicks());
+    assertEquals(3, session(LIFETIME_TICKS).pulled().pulled().pulled().pulledTicks());
+  }
+
+  @Test
   void aSessionOnItsLastTickCannotBePulledPastTheEnd() {
     assertTrue(session(1).pulled().hasExpired());
     assertEquals(0, session(0).pulled().remainingTicks());
@@ -69,19 +75,19 @@ class GrappleSessionTest {
   @Test
   void aSessionWithoutAPlayerIsRejected() {
     assertThrows(
-        NullPointerException.class, () -> new GrappleSession(null, ANCHOR, LIFETIME_TICKS));
+        NullPointerException.class, () -> new GrappleSession(null, ANCHOR, LIFETIME_TICKS, 0));
   }
 
   @Test
   void aSessionWithoutAnAnchorIsRejected() {
     assertThrows(
-        NullPointerException.class, () -> new GrappleSession(PLAYER, null, LIFETIME_TICKS));
+        NullPointerException.class, () -> new GrappleSession(PLAYER, null, LIFETIME_TICKS, 0));
   }
 
   @Test
   void aSessionKeepsItsAnchorWhenTheCallersCursorMovesOn() {
     final BlockPos.Mutable cursor = new BlockPos.Mutable(4, 64, -2);
-    final GrappleSession session = new GrappleSession(PLAYER, cursor, LIFETIME_TICKS);
+    final GrappleSession session = new GrappleSession(PLAYER, cursor, LIFETIME_TICKS, 0);
 
     cursor.set(9, 9, 9);
 
@@ -89,7 +95,7 @@ class GrappleSessionTest {
   }
 
   private static GrappleSession session(final int remainingTicks) {
-    return new GrappleSession(PLAYER, ANCHOR, remainingTicks);
+    return new GrappleSession(PLAYER, ANCHOR, remainingTicks, 0);
   }
 
   private static BlockAnchor anchorAt(final BlockPos pos) {

@@ -30,6 +30,7 @@ public final class ConfigSettings {
 
   public static final String GRAPPLE_MAX_RANGE_BLOCKS = GRAPPLE + ".maxRangeBlocks";
   public static final String GRAPPLE_PULL_SPEED = GRAPPLE + ".pullSpeed";
+  public static final String GRAPPLE_PULL_ACCELERATION = GRAPPLE + ".pullAcceleration";
   public static final String GRAPPLE_CANCEL_FALL_DAMAGE_ON_ARRIVAL =
       GRAPPLE + ".cancelFallDamageOnArrival";
   public static final String GRAPPLE_RETURN_ARROW_ON_ARRIVAL = GRAPPLE + ".returnArrowOnArrival";

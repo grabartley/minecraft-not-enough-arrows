@@ -86,11 +86,12 @@ The grapple arrow hooks into the first block it hits and reels its shooter to it
 | What starts a pull | An arrow shot by a player landing in a block the anchoring system will hold onto. A dispensed arrow has no player behind it, so it embeds and pulls nobody |
 | Reach | `grapple.maxRangeBlocks`, measured from the player to the centre of the block hit. An arrow that lands further away embeds without pulling |
 | How the player moves | The server sets the player's velocity toward the anchor each tick and lets vanilla send the velocity update the client already knows how to apply. Nothing is ever repositioned, so the client's own movement prediction is never fought |
-| Speed | `grapple.pullSpeed`, read fresh every tick, so an operator changing it mid-pull changes that pull. The pull carries the gravity the client is about to subtract, so the configured speed is the speed the player actually travels rather than an upper bound gravity quietly eats into |
+| Speed | The pull accelerates rather than running at one flat speed: it builds by `grapple.pullAcceleration` blocks per tick until it reaches `grapple.pullSpeed`, then holds there. Both are read fresh every tick, so an operator changing either mid-pull changes that pull |
+| Gravity | The pull carries the gravity the client is about to subtract, so the speed it builds to is the speed the player actually travels rather than an upper bound gravity quietly eats into |
 | One at a time | A player is pulled by at most one grapple. Firing again replaces the first and takes the new anchor with it, rather than stacking a second pull |
 | Arrival | The pull stops once the player is within reach of the anchor |
 | Losing the block | The anchor is released the moment its block is broken or replaced, and the session ends with it |
-| Running long | Every session carries a tick budget worked out from the distance it set out to cover, so a pull that cannot finish ends rather than stalling forever |
+| Running long | Every session carries a tick budget worked out from the distance it set out to cover and the ramp it takes to get up to speed, so a pull that cannot finish ends rather than stalling forever |
 | Leaving | Dying or disconnecting ends the pull |
 
 The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit, which is the check that stops flight hacks. A pull is the mod deliberately holding a player in the air, so the mod clears that counter for as long as it is pulling, and [ADR 0015](docs/adr/0015-the-mod-owns-the-flight-check-while-it-moves-a-player.md) covers why. Without it, a slow pull across a long distance disconnects the very player it is carrying.

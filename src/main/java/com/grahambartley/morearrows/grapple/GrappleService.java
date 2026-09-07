@@ -57,10 +57,11 @@ public final class GrappleService {
     }
 
     final GrappleSession session =
-        new GrappleSession(
+        GrappleSession.beginning(
             player.getUuid(),
             anchorPos,
-            GrapplePull.lifetimeTicks(origin, target, config.pullSpeed()));
+            GrapplePull.lifetimeTicks(
+                origin, target, config.pullSpeed(), config.pullAcceleration()));
     trackerFor(world).add(session);
     return session;
   }
@@ -100,7 +101,7 @@ public final class GrappleService {
       return;
     }
 
-    final float pullSpeed = ServerConfigService.get().grapple().pullSpeed();
+    final GrappleArrowConfig config = ServerConfigService.get().grapple();
     for (final GrappleSession session : tracker.sessions()) {
       if (!(world.getEntity(session.playerId()) instanceof ServerPlayerEntity player)
           || player.isRemoved()
@@ -116,7 +117,11 @@ public final class GrappleService {
       }
 
       tracker.add(pulled);
-      pullTowardAnchor(player, session.target(), pullSpeed);
+      pullTowardAnchor(
+          player,
+          session.target(),
+          GrapplePull.speedAt(
+              session.pulledTicks(), config.pullSpeed(), config.pullAcceleration()));
     }
   }
 

@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.config.option;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.grahambartley.morearrows.config.GrappleArrowConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,12 +33,15 @@ class FloatOptionTest {
 
   @Test
   void readsTheValueOffTheSubject() {
-    assertEquals(0.8f, pullSpeed().read(MoreArrowsConfig.defaults()), TOLERANCE);
+    assertEquals(
+        GrappleArrowConfig.DEFAULT_PULL_SPEED,
+        pullSpeed().read(MoreArrowsConfig.defaults()),
+        TOLERANCE);
   }
 
   @Test
   void displaysTheValueAsText() {
-    assertEquals("0.80", pullSpeed().displayValue(MoreArrowsConfig.defaults()));
+    assertEquals("1.50", pullSpeed().displayValue(MoreArrowsConfig.defaults()));
   }
 
   @Test

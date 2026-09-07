@@ -25,6 +25,13 @@ public final class GrappleCommandNodes {
                 GrappleArrowConfig.PULL_SPEED_MAX,
                 (current, value) -> change(current, grapple -> grapple.withPullSpeed(value))))
         .then(
+            ConfigOptionNodes.floatOption(
+                ConfigSettings.GRAPPLE_PULL_ACCELERATION,
+                GrappleArrowConfig.PULL_ACCELERATION_MIN,
+                GrappleArrowConfig.PULL_ACCELERATION_MAX,
+                (current, value) ->
+                    change(current, grapple -> grapple.withPullAcceleration(value))))
+        .then(
             ConfigOptionNodes.booleanOption(
                 ConfigSettings.GRAPPLE_CANCEL_FALL_DAMAGE_ON_ARRIVAL,
                 (current, value) ->

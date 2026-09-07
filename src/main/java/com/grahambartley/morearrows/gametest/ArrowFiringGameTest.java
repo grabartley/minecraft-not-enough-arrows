@@ -9,6 +9,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.tag.ItemTags;
@@ -16,9 +17,13 @@ import net.minecraft.test.CustomTestProvider;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFunction;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 
 public final class ArrowFiringGameTest implements FabricGameTest {
   private static final String BATCH = "arrow-firing";
@@ -49,6 +54,14 @@ public final class ArrowFiringGameTest implements FabricGameTest {
   }
 
   @CustomTestProvider
+  public Collection<TestFunction> anArrowIsNeverThrownFromTheHand() {
+    return ArrowTestSupport.perRegisteredArrow(
+        BATCH,
+        "morearrows.arrowisneverthrownfromthehand",
+        ArrowFiringGameTest::assertArrowIsNeverThrownFromTheHand);
+  }
+
+  @CustomTestProvider
   public Collection<TestFunction> aDispensedArrowHasNoShooter() {
     return ArrowTestSupport.perRegisteredArrow(
         BATCH,
@@ -69,6 +82,27 @@ public final class ArrowFiringGameTest implements FabricGameTest {
     context.assertTrue(
         dispensed.shootingPlayer().isEmpty(),
         "A dispensed " + arrow.id() + " should resolve no shooting player");
+    context.complete();
+  }
+
+  private static void assertArrowIsNeverThrownFromTheHand(
+      final TestContext context, final RegisteredArrow<?> arrow) {
+    final PlayerEntity holder = context.createMockPlayer(GameMode.SURVIVAL);
+    final ItemStack held = new ItemStack(arrow.item());
+    holder.setStackInHand(Hand.MAIN_HAND, held);
+
+    final TypedActionResult<ItemStack> result =
+        arrow.item().use(context.getWorld(), holder, Hand.MAIN_HAND);
+
+    context.assertTrue(
+        result.getResult() == ActionResult.PASS,
+        "An arrow only leaves a weapon, so using "
+            + arrow.id()
+            + " in hand should do nothing, but returned "
+            + result.getResult());
+    context.assertEquals(
+        held.getCount(), 1, "Arrows left in hand after using " + arrow.id() + " in hand");
+    context.dontExpectEntity(arrow.entityType());
     context.complete();
   }
 

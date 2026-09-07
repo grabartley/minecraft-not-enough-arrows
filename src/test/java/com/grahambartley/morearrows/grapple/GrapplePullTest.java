@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.grapple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
@@ -73,11 +74,44 @@ class GrapplePullTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"16.0, 0.8, 40", "16.0, 1.0, 36", "5.0, 2.0, 23", "0.0, 0.8, 20"})
-  void aSessionLivesLongEnoughToCoverTheDistancePlusGrace(
-      final double distance, final double speed, final int expectedTicks) {
-    assertEquals(
-        expectedTicks, GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, distance, 0.0), speed));
+  @CsvSource({"0, 0.15", "1, 0.30", "4, 0.75", "9, 1.50", "20, 1.50", "200, 1.50"})
+  void aPullBuildsUpToItsTopSpeedAndHoldsThere(final int pulledTicks, final double expected) {
+    assertEquals(expected, GrapplePull.speedAt(pulledTicks, 1.5, 0.15), TOLERANCE);
+  }
+
+  @Test
+  void aPullIsSlowestOnTheTickItStarts() {
+    final double first = GrapplePull.speedAt(0, 1.5, 0.15);
+    final double later = GrapplePull.speedAt(5, 1.5, 0.15);
+
+    assertTrue(first < later, "A grapple should be accelerating, not moving at one flat speed");
+  }
+
+  @ParameterizedTest
+  @ValueSource(doubles = {0.0, -0.5})
+  void aPullWithNoAccelerationNeverGetsMoving(final double acceleration) {
+    assertEquals(0.0, GrapplePull.speedAt(10, 1.5, acceleration), TOLERANCE);
+  }
+
+  @Test
+  void aSessionLivesLongEnoughToCoverTheDistanceItRampsOver() {
+    final int ticks = GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, 40.0, 0.0), 1.5, 0.15);
+
+    assertTrue(
+        ticks > GrapplePull.OVERRUN_GRACE_TICKS,
+        "A budget must cover the ramp as well as the grace, was " + ticks);
+    assertTrue(
+        ticks
+            > (int) ((40.0 - GrapplePull.ARRIVAL_DISTANCE) / 1.5) + GrapplePull.OVERRUN_GRACE_TICKS,
+        "A ramped pull needs longer than one travelling flat out, was " + ticks);
+  }
+
+  @Test
+  void aSessionThatAcceleratesHarderNeedsLessTime() {
+    final int gentle = GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, 40.0, 0.0), 1.5, 0.05);
+    final int brisk = GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, 40.0, 0.0), 1.5, 1.5);
+
+    assertTrue(brisk < gentle, "Accelerating harder should reach the anchor sooner");
   }
 
   @ParameterizedTest
@@ -85,23 +119,7 @@ class GrapplePullTest {
   void aSessionThatCanNeverCoverTheDistanceStillEnds(final double speed) {
     assertEquals(
         GrapplePull.OVERRUN_GRACE_TICKS,
-        GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, 100.0, 0.0), speed));
-  }
-
-  @ParameterizedTest
-  @CsvSource({"0.08, 0.88", "0.0, 0.8", "0.5, 1.3"})
-  void aPullUpwardCarriesTheGravityTheClientIsAboutToSubtract(
-      final double gravity, final double expectedY) {
-    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, 20.0, 0.0), 0.8, gravity);
-
-    assertEquals(expectedY, velocity.y, TOLERANCE);
-  }
-
-  @Test
-  void aPullIsNeverSlowedByANegativeGravity() {
-    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, 20.0, 0.0), 0.8, -0.5);
-
-    assertEquals(0.8, velocity.y, TOLERANCE);
+        GrapplePull.lifetimeTicks(PULLER, PULLER.add(0.0, 100.0, 0.0), speed, 0.15));
   }
 
   @Test

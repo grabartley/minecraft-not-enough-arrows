@@ -24,7 +24,7 @@ class ClientConfigHolderTest {
   void holdsWhateverTheServerSent() {
     final MoreArrowsConfig fromServer =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, false, false, 8, true));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, false, false, 8, true));
 
     ClientConfigHolder.accept(fromServer);
 
@@ -36,10 +36,10 @@ class ClientConfigHolderTest {
   void replacesEarlierServerStateRatherThanMergingIt() {
     ClientConfigHolder.accept(
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, false, false, 8, true)));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, false, false, 8, true)));
     final MoreArrowsConfig latest =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(16, 0.5f, true, true, 4, false));
+            .withGrapple(new GrappleArrowConfig(16, 0.5f, 0.2f, true, true, 4, false));
 
     ClientConfigHolder.accept(latest);
 
@@ -50,7 +50,7 @@ class ClientConfigHolderTest {
   void ignoresANullSyncRatherThanDroppingKnownState() {
     final MoreArrowsConfig fromServer =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, false, false, 8, true));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, false, false, 8, true));
     ClientConfigHolder.accept(fromServer);
 
     ClientConfigHolder.accept(null);
@@ -63,7 +63,7 @@ class ClientConfigHolderTest {
   void forgetsServerStateOnDisconnectSoTheNextServerStartsClean() {
     ClientConfigHolder.accept(
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 2.0f, false, false, 8, true)));
+            .withGrapple(new GrappleArrowConfig(64, 2.0f, 0.2f, false, false, 8, true)));
 
     ClientConfigHolder.clear();
 

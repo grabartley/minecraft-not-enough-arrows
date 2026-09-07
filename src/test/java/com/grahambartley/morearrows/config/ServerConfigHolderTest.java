@@ -21,7 +21,7 @@ class ServerConfigHolderTest {
   void holdsTheConfigItIsGiven() {
     final MoreArrowsConfig updated =
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 1.0f, true, true, 8, false));
+            .withGrapple(new GrappleArrowConfig(64, 1.0f, 0.2f, true, true, 8, false));
     ServerConfigHolder.set(updated);
 
     assertEquals(updated, ServerConfigHolder.get());
@@ -31,7 +31,7 @@ class ServerConfigHolderTest {
   void fallsBackToDefaultsWhenGivenNull() {
     ServerConfigHolder.set(
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 1.0f, true, true, 8, false)));
+            .withGrapple(new GrappleArrowConfig(64, 1.0f, 0.2f, true, true, 8, false)));
     ServerConfigHolder.set(null);
 
     assertEquals(MoreArrowsConfig.defaults(), ServerConfigHolder.get());
@@ -41,7 +41,7 @@ class ServerConfigHolderTest {
   void resetsBackToDefaults() {
     ServerConfigHolder.set(
         MoreArrowsConfig.defaults()
-            .withGrapple(new GrappleArrowConfig(64, 1.0f, true, true, 8, false)));
+            .withGrapple(new GrappleArrowConfig(64, 1.0f, 0.2f, true, true, 8, false)));
     ServerConfigHolder.reset();
 
     assertEquals(MoreArrowsConfig.defaults(), ServerConfigHolder.get());

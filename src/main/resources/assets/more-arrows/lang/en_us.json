@@ -38,6 +38,7 @@
   "config.more-arrows.option.explosive.beepVolume": "Countdown Beep Volume",
   "config.more-arrows.option.grapple.maxRangeBlocks": "Grapple Range (blocks)",
   "config.more-arrows.option.grapple.pullSpeed": "Grapple Pull Speed",
+  "config.more-arrows.option.grapple.pullAcceleration": "Grapple Pull Acceleration",
   "config.more-arrows.option.grapple.cancelFallDamageOnArrival": "Cancel Fall Damage On Arrival",
   "config.more-arrows.option.grapple.returnArrowOnArrival": "Return Arrow On Arrival",
   "config.more-arrows.option.grapple.ropeLengthBlocks": "Rope Length (blocks)",

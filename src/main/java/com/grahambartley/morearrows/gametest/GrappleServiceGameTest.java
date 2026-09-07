@@ -30,6 +30,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   private static final int BREAK_TICK = 3;
   private static final int FLOATING_TICKS = 40;
   private static final int ASSERT_TICK = 10;
+  private static final int RAMP_ASSERT_TICK = 25;
   private static final int OVERRUN_MARGIN_TICKS = 10;
   private static final double SPEED_TOLERANCE = 0.01;
 
@@ -138,12 +139,43 @@ public final class GrappleServiceGameTest implements FabricGameTest {
           context.assertTrue(
               pull.x > 0.0 && pull.y > 0.0 && pull.z > 0.0,
               "A pull should point at an anchor up and away from the player, was " + pull);
-          final double commanded = pull.subtract(0.0, player.getFinalGravity(), 0.0).length();
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = GrappleTestSupport.BATCH, tickLimit = 60)
+  public void aPullBuildsSpeedRatherThanHoldingOneFlatSpeed(TestContext context) {
+    context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
+    final ServerPlayerEntity player = GrappleTestSupport.playerAt(context, PLAYER_STAND);
+    final double[] firstPull = {0.0};
+    final double[] latestPull = {0.0};
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+
+    context.runAtEveryTick(
+        () -> {
+          final double commanded =
+              player.getVelocity().subtract(0.0, player.getFinalGravity(), 0.0).length();
+          if (commanded <= 0.0) {
+            return;
+          }
+          if (firstPull[0] == 0.0) {
+            firstPull[0] = commanded;
+          }
+          latestPull[0] = commanded;
+        });
+    context.runAtTick(
+        RAMP_ASSERT_TICK,
+        () -> {
+          context.assertTrue(firstPull[0] > 0.0, "A grappled player should be pulled at all");
           context.assertTrue(
-              Math.abs(commanded - GrappleArrowConfig.DEFAULT_PULL_SPEED) < SPEED_TOLERANCE,
-              "A pull should carry the configured speed once the gravity it also carries is"
-                  + " taken back off, was "
-                  + commanded);
+              latestPull[0] > firstPull[0],
+              "A grapple should build speed, but went from "
+                  + firstPull[0]
+                  + " to "
+                  + latestPull[0]);
+          context.assertTrue(
+              latestPull[0] <= GrappleArrowConfig.DEFAULT_PULL_SPEED + SPEED_TOLERANCE,
+              "A grapple should never outrun its configured top speed, was " + latestPull[0]);
           context.complete();
         });
   }
