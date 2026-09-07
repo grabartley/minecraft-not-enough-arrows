@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.test.AfterBatch;
 import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -23,6 +24,9 @@ import net.minecraft.util.math.Vec3d;
 
 public final class FuseServiceGameTest implements FabricGameTest {
   private static final String BATCH = "fuse-countdown";
+  private static final String FORGET_BATCH = "fuse-forget";
+  private static final String MUTED_BEEP_BATCH = "fuse-muted-beep";
+  private static final String TIER_DELAY_BATCH = "fuse-tier-delay";
   private static final String TEMPLATE = "more-arrows:fire_pad";
 
   private static final BlockPos IMPACT = new BlockPos(3, 2, 3);
@@ -40,6 +44,39 @@ public final class FuseServiceGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = BATCH)
   public void forgetEveryFuseBeforeBatch(ServerWorld world) {
+    startClean();
+  }
+
+  @BeforeBatch(batchId = FORGET_BATCH)
+  public void forgetEveryFuseBeforeForgetBatch(ServerWorld world) {
+    startClean();
+  }
+
+  @BeforeBatch(batchId = MUTED_BEEP_BATCH)
+  public void muteTheBeepBeforeBatch(ServerWorld world) {
+    startClean();
+    ServerConfigHolder.set(
+        MoreArrowsConfig.defaults()
+            .withExplosive(ExplosiveArrowConfig.defaults().withBeepVolume(0.0f)));
+  }
+
+  @AfterBatch(batchId = MUTED_BEEP_BATCH)
+  public void restoreDefaultConfigAfterMutedBeepBatch(ServerWorld world) {
+    ServerConfigHolder.reset();
+  }
+
+  @BeforeBatch(batchId = TIER_DELAY_BATCH)
+  public void setTheTierDelayBeforeBatch(ServerWorld world) {
+    startClean();
+    ServerConfigHolder.set(configWithTntDelay(SHORT_DELAY_TICKS));
+  }
+
+  @AfterBatch(batchId = TIER_DELAY_BATCH)
+  public void restoreDefaultConfigAfterTierDelayBatch(ServerWorld world) {
+    ServerConfigHolder.reset();
+  }
+
+  private static void startClean() {
     FuseService.forget();
     DETONATIONS.clear();
   }
@@ -177,13 +214,9 @@ public final class FuseServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MUTED_BEEP_BATCH, tickLimit = 60)
   public void mutingTheBeepStillLetsTheFuseBurnDown(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
-    final MoreArrowsConfig previous = ServerConfigService.get();
-    ServerConfigHolder.set(
-        MoreArrowsConfig.defaults()
-            .withExplosive(ExplosiveArrowConfig.defaults().withBeepVolume(0.0f)));
 
     context.runAtTick(
         LIGHT_TICK,
@@ -193,26 +226,19 @@ public final class FuseServiceGameTest implements FabricGameTest {
           context.runAtTick(
               LIGHT_TICK + SHORT_DELAY_TICKS + 10,
               () -> {
-                ServerConfigHolder.set(previous);
                 assertDetonatedAt(context, arrow.getUuid(), IMPACT);
                 context.complete();
               });
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = TIER_DELAY_BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesHowLongATierBurnsFor(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
-    final MoreArrowsConfig previous = ServerConfigService.get();
-    final Fuse fuse;
-    try {
-      ServerConfigHolder.set(configWithTntDelay(SHORT_DELAY_TICKS));
-      fuse =
-          FuseService.light(
-              context.getWorld(), arrow, ServerConfigService.get().explosive().tnt().delayTicks());
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+
+    final Fuse fuse =
+        FuseService.light(
+            context.getWorld(), arrow, ServerConfigService.get().explosive().tnt().delayTicks());
 
     context.assertTrue(fuse != null, "A configured tier delay should light a fuse");
     context.assertEquals(
@@ -220,7 +246,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = FORGET_BATCH, tickLimit = 20)
   public void forgettingEveryFuseLeavesNothingBurning(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
     FuseService.light(context.getWorld(), arrow, LONG_DELAY_TICKS);
