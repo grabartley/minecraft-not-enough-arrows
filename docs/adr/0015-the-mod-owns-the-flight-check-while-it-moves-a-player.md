@@ -7,7 +7,7 @@
 
 The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit. It is the check that stops flight hacks, and it does not know the difference between a cheating client and a player the server itself is carrying.
 
-A grapple pull is exactly that second case. [ADR 0004](0004-grapple-is-a-ticked-session.md) settled that the pull applies velocity rather than repositioning the player, which means a pulled player is genuinely airborne and genuinely not descending for the whole pull. At the default pull speed a long pull already approaches the limit, and an operator who lowers `grapple.pullSpeed` or raises `grapple.maxRangeBlocks` walks straight past it. The failure is a disconnect, it only happens on a dedicated server, and it lands on the player the feature was carrying.
+A grapple pull is exactly that second case. [ADR 0004](0004-grapple-is-a-ticked-session.md) settled that the pull applies velocity rather than repositioning the player, which means a pulled player is genuinely airborne and genuinely not descending for the whole pull. At the default settings a long pull already approaches the limit, and an operator who lowers `grapple.pullSpeed` or `grapple.pullAcceleration`, or raises `grapple.maxRangeBlocks`, walks straight past it. The failure is a disconnect, it only happens on a dedicated server, and it lands on the player the feature was carrying.
 
 Neither of the obvious dodges is acceptable. Capping a session's length so it can never reach the limit silently truncates pulls the operator explicitly configured. Granting the player flight, or a status effect the check already exempts, changes what the player can do rather than what the server believes about them.
 

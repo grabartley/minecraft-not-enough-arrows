@@ -5,10 +5,10 @@ import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-final class GrappleTestSupport {
+final class MockPlayerSupport {
   static final String BATCH = "grapple";
 
-  private GrappleTestSupport() {}
+  private MockPlayerSupport() {}
 
   static ServerPlayerEntity playerAt(final TestContext context, final BlockPos relativePos) {
     final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();

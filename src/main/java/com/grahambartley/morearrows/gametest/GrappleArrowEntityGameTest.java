@@ -28,10 +28,10 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final int FULLY_DRAWN = 0;
   private static final int LANDING_TICK = 20;
 
-  @GameTest(templateName = TEMPLATE, batchId = GrappleTestSupport.BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
     raiseWall(context);
-    final ServerPlayerEntity shooter = GrappleTestSupport.playerAt(context, SHOOTER_STAND);
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     fireFromBow(context, shooter);
 
     context.runAtTick(
@@ -52,7 +52,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = GrappleTestSupport.BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredWithNoPlayerBehindItGrapplesNobody(TestContext context) {
     raiseWall(context);
     final PigEntity shooter = context.spawnEntity(EntityType.PIG, SHOOTER_STAND);

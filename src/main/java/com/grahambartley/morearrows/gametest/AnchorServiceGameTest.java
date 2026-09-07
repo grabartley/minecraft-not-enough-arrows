@@ -192,7 +192,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void anOwnerWhoDiesReleasesEveryAnchorTheyHeld(TestContext context) {
     context.setBlockState(TARGET, Blocks.STONE);
-    final ServerPlayerEntity owner = GrappleTestSupport.playerAt(context, OWNER_STAND);
+    final ServerPlayerEntity owner = MockPlayerSupport.playerAt(context, OWNER_STAND);
     AnchorService.anchor(
         context.getWorld(), owner.getUuid(), context.getAbsolutePos(TARGET), LONG_LIFETIME_TICKS);
 

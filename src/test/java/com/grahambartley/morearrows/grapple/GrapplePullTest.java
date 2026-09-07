@@ -55,6 +55,46 @@ class GrapplePullTest {
     assertEquals(speed, velocity.length(), TOLERANCE);
   }
 
+  @ParameterizedTest
+  @CsvSource({"0.08", "0.02", "0.5"})
+  void aPullCarriesTheGravityTheClientIsAboutToSubtract(final double gravity) {
+    final Vec3d target = PULLER.add(0.0, 20.0, 0.0);
+
+    final Vec3d carried = GrapplePull.velocity(PULLER, target, 0.8, gravity);
+    final Vec3d bare = GrapplePull.velocity(PULLER, target, 0.8, 0.0);
+
+    assertEquals(bare.y + gravity, carried.y, TOLERANCE);
+    assertEquals(bare.x, carried.x, TOLERANCE);
+    assertEquals(bare.z, carried.z, TOLERANCE);
+  }
+
+  @Test
+  void gravityIsCarriedOnTopOfASidewaysPullRatherThanBendingIt() {
+    final Vec3d target = PULLER.add(20.0, 0.0, 0.0);
+
+    final Vec3d carried = GrapplePull.velocity(PULLER, target, 0.8, 0.08);
+
+    assertEquals(0.8, carried.x, TOLERANCE);
+    assertEquals(0.08, carried.y, TOLERANCE);
+    assertEquals(0.0, carried.z, TOLERANCE);
+  }
+
+  @ParameterizedTest
+  @ValueSource(doubles = {-0.08, -1.0})
+  void aPullIsNeverDraggedDownByANegativeGravity(final double gravity) {
+    final Vec3d target = PULLER.add(0.0, 20.0, 0.0);
+
+    assertEquals(
+        GrapplePull.velocity(PULLER, target, 0.8, 0.0).y,
+        GrapplePull.velocity(PULLER, target, 0.8, gravity).y,
+        TOLERANCE);
+  }
+
+  @Test
+  void aPullerThatHasArrivedIsNotEvenGivenTheGravityCarry() {
+    assertEquals(Vec3d.ZERO, GrapplePull.velocity(PULLER, PULLER.add(1.0, 0.0, 0.0), 0.8, 0.08));
+  }
+
   @Test
   void aPullerPulledDownwardIsPulledDownward() {
     final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, -10.0, 0.0), 0.8, 0.0);

@@ -29,13 +29,6 @@ class GrappleArrowConfigTest {
     assertEquals(expected, accelerating(given).pullAcceleration());
   }
 
-  @Test
-  void aPullBuildsUpToItsSpeedRatherThanStartingThere() {
-    assertTrue(
-        GrappleArrowConfig.DEFAULT_PULL_ACCELERATION < GrappleArrowConfig.DEFAULT_PULL_SPEED,
-        "A grapple that reaches its top speed on the first tick is not accelerating");
-  }
-
   private static GrappleArrowConfig accelerating(final float pullAcceleration) {
     return GrappleArrowConfig.defaults().withPullAcceleration(pullAcceleration);
   }

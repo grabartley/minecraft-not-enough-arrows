@@ -2,14 +2,13 @@ package com.grahambartley.morearrows.grapple;
 
 import com.grahambartley.morearrows.anchor.AnchorService;
 import com.grahambartley.morearrows.config.GrappleArrowConfig;
+import com.grahambartley.morearrows.server.PlayerExit;
 import com.grahambartley.morearrows.server.ServerConfigService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -27,14 +26,7 @@ public final class GrappleService {
   public static void register() {
     ServerTickEvents.END_WORLD_TICK.register(GrappleService::pullGrapplesIn);
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
-    ServerLivingEntityEvents.AFTER_DEATH.register(
-        (entity, damageSource) -> {
-          if (entity instanceof ServerPlayerEntity player) {
-            releaseEverywhere(player.getUuid());
-          }
-        });
-    ServerPlayConnectionEvents.DISCONNECT.register(
-        (handler, server) -> releaseEverywhere(handler.getPlayer().getUuid()));
+    PlayerExit.whenLeaving(GrappleService::stopPullingEverywhere);
   }
 
   @Nullable
@@ -87,7 +79,7 @@ public final class GrappleService {
     return released;
   }
 
-  public static void releaseEverywhere(@Nullable final UUID playerId) {
+  public static void stopPullingEverywhere(@Nullable final UUID playerId) {
     TRACKERS.values().forEach(tracker -> tracker.remove(playerId));
   }
 
