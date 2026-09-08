@@ -4,26 +4,30 @@
 # are the fletching cross seen end on. The Textures section of the README covers
 # why only that corner of the canvas is ever sampled.
 #
-# The entry tier carries the shortest head in the family and the only unbarbed
-# one, held inside row 2 so its silhouette is a plain spike. That is deliberate:
-# the four explosive arrows are separated in flight by how far the head reaches
-# and whether it carries barbs, because the mirrored profile flattens colour
-# first and a player picking a tier mid-fight is reading length, not hue.
+# The head stands three rows tall at the shoulder and tapers over two columns to
+# a single lit pixel, which is the proportion vanilla's own arrow uses. A head
+# drawn flat along the centre line reads as a smear at speed rather than as a
+# blade, and that is the failure this profile exists to avoid.
+#
+# The entry tier is the shortest head in the family and the only unbarbed one, so
+# the four explosive arrows are told apart by reach and barb count while moving.
 #
 # canvas = 32
 #
 # H = C2C2CC  blade, lit edge
+# c = A6A6B0  blade, bright facet
 # m = 7E7E88  blade, body
 # d = 5A5A64  blade, inner shadow
+# O = 3A3A42  blade, collar, where the head meets the shaft
 # W = A8802F  shaft, grain highlight
 # S = 896727  shaft, body
 # w = 5E4619  shaft, nock shadow
 # F = E0E0E0  fletching, light
 # f = C6C6C6  fletching, mid
 fFf.............................
-.fFf............................
-wSSWSSWSSSSSdmmH................
-.fFf............................
+.fFf........dm..................
+wSSWSSWSSSSOdmcH................
+.fFf........dm..................
 fFf.............................
 ..F.............................
 ..F.............................

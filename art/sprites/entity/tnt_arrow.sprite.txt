@@ -4,19 +4,19 @@
 # are the fletching cross seen end on. The Textures section of the README covers
 # why only that corner of the canvas is ever sampled.
 #
-# Tier two reaches one pixel further than tier one and gains a single barb at the
+# Tier two reaches a column further than tier one and gains a single barb at the
 # shoulder, mirrored onto both outer rows so the pair survives the profile being
-# drawn over itself. The white band inlaid down the flat is the one pixel of the
-# item sprite worth keeping here, because it is the only mark that separates this
-# from the fire charge arrow once both are red-lit and moving.
+# drawn over itself. The white band inlaid down the flat is the one mark that
+# separates this from the fire charge arrow once both are red-lit and moving.
 #
 # canvas = 32
 #
 # H = FF7A55  blade, lit edge
+# c = E8492E  blade, bright facet
 # m = DB2F1A  blade, body
 # B = DDD9D9  band inlaid down the flat
 # d = 912D11  blade, inner shadow
-# O = 4A0F08  blade, shadowed facet
+# O = 4A0F08  blade, collar, where the head meets the shaft
 # k = 6E1A0E  barb
 # W = A8802F  shaft, grain highlight
 # S = 896727  shaft, body
@@ -24,9 +24,9 @@
 # F = E0E0E0  fletching, light
 # f = C6C6C6  fletching, mid
 fFf.............................
-.fFf.......k....................
-wSSWSSWSSSSOdBmH................
-.fFf.......k....................
+.fFf......kdB...................
+wSSWSSWSSSOdBmcH................
+.fFf......kdB...................
 fFf.............................
 ..F.............................
 ..F.............................
