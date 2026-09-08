@@ -46,6 +46,8 @@
       "com.grahambartley.morearrows.gametest.FletchingRecipeInputGameTest",
       "com.grahambartley.morearrows.gametest.FletchingRecipeSerializerGameTest",
       "com.grahambartley.morearrows.gametest.FuseServiceGameTest",
+      "com.grahambartley.morearrows.gametest.GlowInkArrowEntityGameTest",
+      "com.grahambartley.morearrows.gametest.GlowServiceGameTest",
       "com.grahambartley.morearrows.gametest.GrappleArrowEntityGameTest",
       "com.grahambartley.morearrows.gametest.GrappleFlightCheckGameTest",
       "com.grahambartley.morearrows.gametest.GrappleServiceGameTest",
@@ -53,6 +55,9 @@
       "com.grahambartley.morearrows.gametest.ModRecipesGameTest",
       "com.grahambartley.morearrows.gametest.ModSoundsGameTest",
       "com.grahambartley.morearrows.gametest.MoreArrowsCommandGameTest",
+      "com.grahambartley.morearrows.gametest.RedstoneArrowEntityGameTest",
+      "com.grahambartley.morearrows.gametest.RedstoneChargePlacerGameTest",
+      "com.grahambartley.morearrows.gametest.RedstoneChargeServiceGameTest",
       "com.grahambartley.morearrows.gametest.RopeArrowEntityGameTest",
       "com.grahambartley.morearrows.gametest.RopeBlockGameTest",
       "com.grahambartley.morearrows.gametest.RopeClimbGameTest",
@@ -60,7 +65,9 @@
       "com.grahambartley.morearrows.gametest.RopeServiceGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigPayloadsGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigServiceGameTest",
-      "com.grahambartley.morearrows.gametest.ServerConfigUpdateReceiverGameTest"
+      "com.grahambartley.morearrows.gametest.ServerConfigUpdateReceiverGameTest",
+      "com.grahambartley.morearrows.gametest.WindArrowEntityGameTest",
+      "com.grahambartley.morearrows.gametest.WindBurstServiceGameTest"
     ]
   },
   "mixins": [

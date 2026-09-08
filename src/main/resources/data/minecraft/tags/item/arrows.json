@@ -2,6 +2,9 @@
   "replace": false,
   "values": [
     "more-arrows:grapple_arrow",
-    "more-arrows:rope_arrow"
+    "more-arrows:rope_arrow",
+    "more-arrows:glow_ink_arrow",
+    "more-arrows:redstone_arrow",
+    "more-arrows:wind_arrow"
   ]
 }

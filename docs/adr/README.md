@@ -25,6 +25,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0015](0015-the-mod-owns-the-flight-check-while-it-moves-a-player.md) | The mod owns the anti-flight check while it moves a player |
 | [0016](0016-the-grapple-line-is-a-vanilla-leash-with-its-physics-switched-off.md) | The grapple line is a vanilla leash with its physics switched off |
 | [0017](0017-a-rope-holds-itself-up-rather-than-being-tracked.md) | A rope holds itself up rather than being tracked |
+| [0018](0018-a-redstone-signal-is-a-block-that-expires-three-ways.md) | A redstone signal is a block that expires three ways |
 
 ## Writing A New Record
 
