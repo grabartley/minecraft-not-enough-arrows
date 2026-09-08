@@ -58,7 +58,26 @@ public final class ExplosiveCommandNodes {
                 ConfigSettings.EXPLOSIVE_BEEP_VOLUME,
                 ExplosiveArrowConfig.BEEP_VOLUME_MIN,
                 ExplosiveArrowConfig.BEEP_VOLUME_MAX,
-                (current, value) -> change(current, explosive -> explosive.withBeepVolume(value))));
+                (current, value) -> change(current, explosive -> explosive.withBeepVolume(value))))
+        .then(
+            ConfigOptionNodes.intOption(
+                ConfigSettings.EXPLOSIVE_INCENDIARY_BURN_RADIUS,
+                ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MIN,
+                ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MAX,
+                (current, value) ->
+                    change(current, explosive -> explosive.withIncendiaryBurnRadius(value))))
+        .then(
+            ConfigOptionNodes.intOption(
+                ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
+                ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MIN,
+                ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MAX,
+                (current, value) ->
+                    change(current, explosive -> explosive.withIncendiaryIgniteSeconds(value))))
+        .then(
+            ConfigOptionNodes.booleanOption(
+                ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
+                (current, value) ->
+                    change(current, explosive -> explosive.withIncendiaryIgnitesBlocks(value))));
   }
 
   private static LiteralArgumentBuilder<ServerCommandSource> tier(

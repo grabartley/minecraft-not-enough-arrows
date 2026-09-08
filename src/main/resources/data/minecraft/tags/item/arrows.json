@@ -5,6 +5,10 @@
     "more-arrows:rope_arrow",
     "more-arrows:glow_ink_arrow",
     "more-arrows:redstone_arrow",
-    "more-arrows:wind_arrow"
+    "more-arrows:wind_arrow",
+    "more-arrows:gunpowder_arrow",
+    "more-arrows:tnt_arrow",
+    "more-arrows:fire_charge_arrow",
+    "more-arrows:incendiary_arrow"
   ]
 }

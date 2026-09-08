@@ -79,6 +79,25 @@ public final class ExplosiveOptions {
             BEEP_VOLUME_STEP,
             config -> config.explosive().beepVolume(),
             (config, value) -> explosive(config, it -> it.withBeepVolume(value))));
+    options.add(
+        new IntOption<>(
+            ConfigSettings.EXPLOSIVE_INCENDIARY_BURN_RADIUS,
+            ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MIN,
+            ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MAX,
+            config -> config.explosive().incendiaryBurnRadius(),
+            (config, value) -> explosive(config, it -> it.withIncendiaryBurnRadius(value))));
+    options.add(
+        new IntOption<>(
+            ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
+            ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MIN,
+            ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MAX,
+            config -> config.explosive().incendiaryIgniteSeconds(),
+            (config, value) -> explosive(config, it -> it.withIncendiaryIgniteSeconds(value))));
+    options.add(
+        new BooleanOption<>(
+            ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
+            config -> config.explosive().incendiaryIgnitesBlocks(),
+            (config, value) -> explosive(config, it -> it.withIncendiaryIgnitesBlocks(value))));
     return List.copyOf(options);
   }
 

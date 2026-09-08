@@ -27,6 +27,11 @@ public final class ConfigSettings {
   public static final String EXPLOSIVE_FIRE_PATCH_DURATION_TICKS =
       EXPLOSIVE + ".firePatchDurationTicks";
   public static final String EXPLOSIVE_BEEP_VOLUME = EXPLOSIVE + ".beepVolume";
+  public static final String EXPLOSIVE_INCENDIARY_BURN_RADIUS = EXPLOSIVE + ".incendiaryBurnRadius";
+  public static final String EXPLOSIVE_INCENDIARY_IGNITE_SECONDS =
+      EXPLOSIVE + ".incendiaryIgniteSeconds";
+  public static final String EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS =
+      EXPLOSIVE + ".incendiaryIgnitesBlocks";
 
   public static final String GRAPPLE_MAX_RANGE_BLOCKS = GRAPPLE + ".maxRangeBlocks";
   public static final String GRAPPLE_PULL_SPEED = GRAPPLE + ".pullSpeed";

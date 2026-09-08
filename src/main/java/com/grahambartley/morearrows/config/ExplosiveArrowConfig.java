@@ -10,7 +10,10 @@ public record ExplosiveArrowConfig(
     boolean damageEntities,
     int firePatchRadius,
     int firePatchDurationTicks,
-    float beepVolume) {
+    float beepVolume,
+    int incendiaryBurnRadius,
+    int incendiaryIgniteSeconds,
+    boolean incendiaryIgnitesBlocks) {
 
   public static final int FIRE_PATCH_RADIUS_MIN = 0;
   public static final int FIRE_PATCH_RADIUS_MAX = 8;
@@ -18,6 +21,10 @@ public record ExplosiveArrowConfig(
   public static final int FIRE_PATCH_DURATION_TICKS_MAX = 6000;
   public static final float BEEP_VOLUME_MIN = 0.0f;
   public static final float BEEP_VOLUME_MAX = 2.0f;
+  public static final int INCENDIARY_BURN_RADIUS_MIN = 0;
+  public static final int INCENDIARY_BURN_RADIUS_MAX = 8;
+  public static final int INCENDIARY_IGNITE_SECONDS_MIN = 0;
+  public static final int INCENDIARY_IGNITE_SECONDS_MAX = 60;
 
   public static final ExplosiveTierConfig DEFAULT_GUNPOWDER = new ExplosiveTierConfig(60, 4.0f);
   public static final ExplosiveTierConfig DEFAULT_TNT = new ExplosiveTierConfig(50, 6.0f);
@@ -27,6 +34,9 @@ public record ExplosiveArrowConfig(
   public static final int DEFAULT_FIRE_PATCH_RADIUS = 2;
   public static final int DEFAULT_FIRE_PATCH_DURATION_TICKS = 200;
   public static final float DEFAULT_BEEP_VOLUME = 1.0f;
+  public static final int DEFAULT_INCENDIARY_BURN_RADIUS = 3;
+  public static final int DEFAULT_INCENDIARY_IGNITE_SECONDS = 5;
+  public static final boolean DEFAULT_INCENDIARY_IGNITES_BLOCKS = true;
 
   static final String KEY_GUNPOWDER = "gunpowder";
   static final String KEY_TNT = "tnt";
@@ -36,6 +46,9 @@ public record ExplosiveArrowConfig(
   static final String KEY_FIRE_PATCH_RADIUS = "firePatchRadius";
   static final String KEY_FIRE_PATCH_DURATION_TICKS = "firePatchDurationTicks";
   static final String KEY_BEEP_VOLUME = "beepVolume";
+  static final String KEY_INCENDIARY_BURN_RADIUS = "incendiaryBurnRadius";
+  static final String KEY_INCENDIARY_IGNITE_SECONDS = "incendiaryIgniteSeconds";
+  static final String KEY_INCENDIARY_IGNITES_BLOCKS = "incendiaryIgnitesBlocks";
 
   public ExplosiveArrowConfig {
     gunpowder = gunpowder == null ? DEFAULT_GUNPOWDER : gunpowder;
@@ -47,6 +60,12 @@ public record ExplosiveArrowConfig(
         ConfigValues.clampInt(
             firePatchDurationTicks, FIRE_PATCH_DURATION_TICKS_MIN, FIRE_PATCH_DURATION_TICKS_MAX);
     beepVolume = ConfigValues.clampFloat(beepVolume, BEEP_VOLUME_MIN, BEEP_VOLUME_MAX);
+    incendiaryBurnRadius =
+        ConfigValues.clampInt(
+            incendiaryBurnRadius, INCENDIARY_BURN_RADIUS_MIN, INCENDIARY_BURN_RADIUS_MAX);
+    incendiaryIgniteSeconds =
+        ConfigValues.clampInt(
+            incendiaryIgniteSeconds, INCENDIARY_IGNITE_SECONDS_MIN, INCENDIARY_IGNITE_SECONDS_MAX);
   }
 
   public static ExplosiveArrowConfig defaults() {
@@ -58,7 +77,10 @@ public record ExplosiveArrowConfig(
         DEFAULT_DAMAGE_ENTITIES,
         DEFAULT_FIRE_PATCH_RADIUS,
         DEFAULT_FIRE_PATCH_DURATION_TICKS,
-        DEFAULT_BEEP_VOLUME);
+        DEFAULT_BEEP_VOLUME,
+        DEFAULT_INCENDIARY_BURN_RADIUS,
+        DEFAULT_INCENDIARY_IGNITE_SECONDS,
+        DEFAULT_INCENDIARY_IGNITES_BLOCKS);
   }
 
   public static ExplosiveArrowConfig fromJson(final JsonObject root) {
@@ -84,7 +106,21 @@ public record ExplosiveArrowConfig(
             FIRE_PATCH_DURATION_TICKS_MIN,
             FIRE_PATCH_DURATION_TICKS_MAX),
         ConfigValues.readFloat(
-            root, KEY_BEEP_VOLUME, defaults.beepVolume(), BEEP_VOLUME_MIN, BEEP_VOLUME_MAX));
+            root, KEY_BEEP_VOLUME, defaults.beepVolume(), BEEP_VOLUME_MIN, BEEP_VOLUME_MAX),
+        ConfigValues.readInt(
+            root,
+            KEY_INCENDIARY_BURN_RADIUS,
+            defaults.incendiaryBurnRadius(),
+            INCENDIARY_BURN_RADIUS_MIN,
+            INCENDIARY_BURN_RADIUS_MAX),
+        ConfigValues.readInt(
+            root,
+            KEY_INCENDIARY_IGNITE_SECONDS,
+            defaults.incendiaryIgniteSeconds(),
+            INCENDIARY_IGNITE_SECONDS_MIN,
+            INCENDIARY_IGNITE_SECONDS_MAX),
+        ConfigValues.readBoolean(
+            root, KEY_INCENDIARY_IGNITES_BLOCKS, defaults.incendiaryIgnitesBlocks()));
   }
 
   public JsonObject toJson() {
@@ -97,6 +133,9 @@ public record ExplosiveArrowConfig(
     root.addProperty(KEY_FIRE_PATCH_RADIUS, firePatchRadius);
     root.addProperty(KEY_FIRE_PATCH_DURATION_TICKS, firePatchDurationTicks);
     root.addProperty(KEY_BEEP_VOLUME, beepVolume);
+    root.addProperty(KEY_INCENDIARY_BURN_RADIUS, incendiaryBurnRadius);
+    root.addProperty(KEY_INCENDIARY_IGNITE_SECONDS, incendiaryIgniteSeconds);
+    root.addProperty(KEY_INCENDIARY_IGNITES_BLOCKS, incendiaryIgnitesBlocks);
     return root;
   }
 
@@ -109,7 +148,10 @@ public record ExplosiveArrowConfig(
         damageEntities,
         firePatchRadius,
         firePatchDurationTicks,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withTnt(final ExplosiveTierConfig value) {
@@ -121,7 +163,10 @@ public record ExplosiveArrowConfig(
         damageEntities,
         firePatchRadius,
         firePatchDurationTicks,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withFireCharge(final ExplosiveTierConfig value) {
@@ -133,7 +178,10 @@ public record ExplosiveArrowConfig(
         damageEntities,
         firePatchRadius,
         firePatchDurationTicks,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withDamageTerrain(final boolean value) {
@@ -145,7 +193,10 @@ public record ExplosiveArrowConfig(
         damageEntities,
         firePatchRadius,
         firePatchDurationTicks,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withDamageEntities(final boolean value) {
@@ -157,7 +208,10 @@ public record ExplosiveArrowConfig(
         value,
         firePatchRadius,
         firePatchDurationTicks,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withFirePatchRadius(final int value) {
@@ -169,7 +223,10 @@ public record ExplosiveArrowConfig(
         damageEntities,
         value,
         firePatchDurationTicks,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withFirePatchDurationTicks(final int value) {
@@ -181,7 +238,10 @@ public record ExplosiveArrowConfig(
         damageEntities,
         firePatchRadius,
         value,
-        beepVolume);
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
   }
 
   public ExplosiveArrowConfig withBeepVolume(final float value) {
@@ -193,6 +253,54 @@ public record ExplosiveArrowConfig(
         damageEntities,
         firePatchRadius,
         firePatchDurationTicks,
+        value,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
+  }
+
+  public ExplosiveArrowConfig withIncendiaryBurnRadius(final int value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume,
+        value,
+        incendiaryIgniteSeconds,
+        incendiaryIgnitesBlocks);
+  }
+
+  public ExplosiveArrowConfig withIncendiaryIgniteSeconds(final int value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume,
+        incendiaryBurnRadius,
+        value,
+        incendiaryIgnitesBlocks);
+  }
+
+  public ExplosiveArrowConfig withIncendiaryIgnitesBlocks(final boolean value) {
+    return new ExplosiveArrowConfig(
+        gunpowder,
+        tnt,
+        fireCharge,
+        damageTerrain,
+        damageEntities,
+        firePatchRadius,
+        firePatchDurationTicks,
+        beepVolume,
+        incendiaryBurnRadius,
+        incendiaryIgniteSeconds,
         value);
   }
 }

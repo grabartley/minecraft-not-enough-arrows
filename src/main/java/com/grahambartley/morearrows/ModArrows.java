@@ -4,10 +4,14 @@ import com.grahambartley.morearrows.arrow.ArrowCatalog;
 import com.grahambartley.morearrows.arrow.ArrowDefinition;
 import com.grahambartley.morearrows.arrow.ArrowRegistrar;
 import com.grahambartley.morearrows.arrow.RegisteredArrow;
+import com.grahambartley.morearrows.entity.FireChargeArrowEntity;
 import com.grahambartley.morearrows.entity.GlowInkArrowEntity;
 import com.grahambartley.morearrows.entity.GrappleArrowEntity;
+import com.grahambartley.morearrows.entity.GunpowderArrowEntity;
+import com.grahambartley.morearrows.entity.IncendiaryArrowEntity;
 import com.grahambartley.morearrows.entity.RedstoneArrowEntity;
 import com.grahambartley.morearrows.entity.RopeArrowEntity;
+import com.grahambartley.morearrows.entity.TntArrowEntity;
 import com.grahambartley.morearrows.entity.WindArrowEntity;
 import java.util.List;
 import net.minecraft.item.ItemStack;
@@ -36,6 +40,24 @@ public final class ModArrows {
   public static final RegisteredArrow<WindArrowEntity> WIND_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of("wind_arrow", WindArrowEntity::new, ModArrows::windArrow));
+
+  public static final RegisteredArrow<GunpowderArrowEntity> GUNPOWDER_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "gunpowder_arrow", GunpowderArrowEntity::new, ModArrows::gunpowderArrow));
+
+  public static final RegisteredArrow<TntArrowEntity> TNT_ARROW =
+      REGISTRAR.register(ArrowDefinition.of("tnt_arrow", TntArrowEntity::new, ModArrows::tntArrow));
+
+  public static final RegisteredArrow<FireChargeArrowEntity> FIRE_CHARGE_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "fire_charge_arrow", FireChargeArrowEntity::new, ModArrows::fireChargeArrow));
+
+  public static final RegisteredArrow<IncendiaryArrowEntity> INCENDIARY_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "incendiary_arrow", IncendiaryArrowEntity::new, ModArrows::incendiaryArrow));
 
   private ModArrows() {}
 
@@ -99,5 +121,45 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new WindArrowEntity(WIND_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static GunpowderArrowEntity gunpowderArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new GunpowderArrowEntity(GUNPOWDER_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static TntArrowEntity tntArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new TntArrowEntity(TNT_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static FireChargeArrowEntity fireChargeArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new FireChargeArrowEntity(FIRE_CHARGE_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static IncendiaryArrowEntity incendiaryArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new IncendiaryArrowEntity(INCENDIARY_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }
