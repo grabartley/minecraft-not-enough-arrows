@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.config.option;
 import com.grahambartley.morearrows.config.ConfigSettings;
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
 import com.grahambartley.morearrows.config.ExplosiveTierConfig;
+import com.grahambartley.morearrows.config.IncendiaryArrowConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,28 @@ public final class ExplosiveOptions {
             BEEP_VOLUME_STEP,
             config -> config.explosive().beepVolume(),
             (config, value) -> explosive(config, it -> it.withBeepVolume(value))));
+    options.add(
+        new IntOption<>(
+            ConfigSettings.EXPLOSIVE_INCENDIARY_BURN_RADIUS,
+            IncendiaryArrowConfig.BURN_RADIUS_MIN,
+            IncendiaryArrowConfig.BURN_RADIUS_MAX,
+            config -> config.explosive().incendiary().burnRadius(),
+            (config, value) ->
+                explosive(config, it -> it.withIncendiary(fire -> fire.withBurnRadius(value)))));
+    options.add(
+        new IntOption<>(
+            ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
+            IncendiaryArrowConfig.IGNITE_SECONDS_MIN,
+            IncendiaryArrowConfig.IGNITE_SECONDS_MAX,
+            config -> config.explosive().incendiary().igniteSeconds(),
+            (config, value) ->
+                explosive(config, it -> it.withIncendiary(fire -> fire.withIgniteSeconds(value)))));
+    options.add(
+        new BooleanOption<>(
+            ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
+            config -> config.explosive().incendiary().ignitesBlocks(),
+            (config, value) ->
+                explosive(config, it -> it.withIncendiary(fire -> fire.withIgnitesBlocks(value)))));
     return List.copyOf(options);
   }
 

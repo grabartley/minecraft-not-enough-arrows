@@ -58,7 +58,8 @@ class ExplosiveArrowConfigTest {
             defaults.damageEntities(),
             defaults.firePatchRadius(),
             given,
-            defaults.beepVolume());
+            defaults.beepVolume(),
+            defaults.incendiary());
 
     assertEquals(expected, config.firePatchDurationTicks());
   }
@@ -76,7 +77,8 @@ class ExplosiveArrowConfigTest {
             defaults.damageEntities(),
             defaults.firePatchRadius(),
             defaults.firePatchDurationTicks(),
-            given);
+            given,
+            defaults.incendiary());
 
     assertEquals(expected, config.beepVolume());
   }
@@ -84,7 +86,8 @@ class ExplosiveArrowConfigTest {
   @Test
   void substitutesDefaultsForNullTiers() {
     final ExplosiveArrowConfig config =
-        new ExplosiveArrowConfig(null, null, null, false, true, 2, 200, 1.0f);
+        new ExplosiveArrowConfig(
+            null, null, null, false, true, 2, 200, 1.0f, IncendiaryArrowConfig.defaults());
 
     assertEquals(ExplosiveArrowConfig.DEFAULT_GUNPOWDER, config.gunpowder());
     assertEquals(ExplosiveArrowConfig.DEFAULT_TNT, config.tnt());
@@ -129,7 +132,8 @@ class ExplosiveArrowConfigTest {
             false,
             5,
             1234,
-            0.25f);
+            0.25f,
+            new IncendiaryArrowConfig(6, 37, false));
 
     assertEquals(original, ExplosiveArrowConfig.fromJson(original.toJson()));
   }
@@ -144,7 +148,8 @@ class ExplosiveArrowConfigTest {
         defaults.damageEntities(),
         radius,
         defaults.firePatchDurationTicks(),
-        defaults.beepVolume());
+        defaults.beepVolume(),
+        defaults.incendiary());
   }
 
   @Test
@@ -181,6 +186,9 @@ class ExplosiveArrowConfigTest {
             .withFirePatchDurationTicks(400)
             .withBeepVolume(0.5f);
 
-    assertEquals(new ExplosiveArrowConfig(tier, tier, tier, true, false, 5, 400, 0.5f), updated);
+    assertEquals(
+        new ExplosiveArrowConfig(
+            tier, tier, tier, true, false, 5, 400, 0.5f, IncendiaryArrowConfig.defaults()),
+        updated);
   }
 }

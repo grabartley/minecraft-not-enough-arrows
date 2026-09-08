@@ -43,6 +43,14 @@ class ExplosiveCommandNodesTest {
     "morearrows config explosive firepatchdurationticks 6000,     true",
     "morearrows config explosive firepatchdurationticks 6001,     false",
     "morearrows config explosive beepvolume 2.0,                  true",
+    "morearrows config explosive incendiary burnradius 0,        true",
+    "morearrows config explosive incendiary burnradius 8,        true",
+    "morearrows config explosive incendiary burnradius 9,        false",
+    "morearrows config explosive incendiary igniteseconds 0,     true",
+    "morearrows config explosive incendiary igniteseconds 60,    true",
+    "morearrows config explosive incendiary igniteseconds 61,    false",
+    "morearrows config explosive incendiary ignitesblocks true,  true",
+    "morearrows config explosive incendiary ignitesblocks maybe, false",
     "morearrows config explosive beepvolume 2.1,                  false",
   })
   void eachOptionAcceptsOnlyValuesInsideItsConfiguredBounds(String command, boolean accepted) {

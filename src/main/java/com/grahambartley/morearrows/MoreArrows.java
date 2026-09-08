@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows;
 
 import com.grahambartley.morearrows.anchor.AnchorService;
+import com.grahambartley.morearrows.blast.BlastService;
 import com.grahambartley.morearrows.command.MoreArrowsCommand;
 import com.grahambartley.morearrows.fire.FirePatchService;
 import com.grahambartley.morearrows.fuse.FuseService;
@@ -28,6 +29,7 @@ public class MoreArrows implements ModInitializer {
     ModNetworking.registerPayloads();
     FirePatchService.register();
     FuseService.register();
+    BlastService.register();
     AnchorService.register();
     GrappleService.register();
     RedstoneChargeService.register();

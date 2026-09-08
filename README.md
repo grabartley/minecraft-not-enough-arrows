@@ -6,10 +6,8 @@ Expands the arrow types available in Minecraft with new craftable arrows that ca
 
 ## Planned features
 
-- TNT arrow
 - Ender pearl arrow
 - Slime arrow
-- Fire charge arrow
 
 ## Firing and recovery
 
@@ -173,6 +171,46 @@ Block interaction is deliberately vanilla's radius rather than the configured bu
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one wind charge, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station. A wind charge is the ingredient rather than a breeze rod because a rod crafts into four charges, so the charge is the finer unit and a player with rods can still reach it.
 
+## Explosive Arrows
+
+Three tiers that share one fuse, one blast system, and one config family, crafted in a ladder where each tier is built from the one below it. None of them detonates on impact: an explosive arrow embeds, beeps down a countdown that quickens as it runs out, and then goes off. [ADR 0003](docs/adr/0003-explosive-arrows-telegraph.md) covers why the telegraph is not optional.
+
+| Tier | Crafted from | Fuse | Power | Leaves fire |
+|---|---|---|---|---|
+| Gunpowder arrow | Eight plain arrows around gunpowder | `explosive.gunpowder.delayTicks`, 60 by default | `explosive.gunpowder.power`, 4.0 by default, which is vanilla TNT | No |
+| TNT arrow | Eight gunpowder arrows around a block of TNT | `explosive.tnt.delayTicks`, 50 by default | `explosive.tnt.power`, 6.0 by default | No |
+| Fire charge arrow | Eight TNT arrows around a fire charge | `explosive.fireCharge.delayTicks`, 40 by default | `explosive.fireCharge.power`, 8.0 by default | Yes |
+
+Each tier is shorter-fused and stronger than the one below it, so the ladder reads as escalation rather than as three similar arrows.
+
+| Rule | Behaviour |
+|---|---|
+| Terrain damage | `explosive.damageTerrain`, **off by default**. The gunpowder arrow is craftable from gunpowder alone, which makes it the cheapest way to reach a build from range, so a fresh install cannot be used to grief terrain until an operator turns it on |
+| Entity damage | `explosive.damageEntities`, on by default, and independent of the terrain switch. Turning it off stops the blast hurting anything, but vanilla still throws entities clear of an explosion, so a blast with damage off is a shove rather than nothing |
+| A fuse already burning | Re-hitting an arrow that is already counting down does not restart or stack its fuse |
+| Hitting an entity | The arrow keeps itself rather than being consumed on contact, because vanilla would discard it and the fuse it carries would die with it. It arms and holds at the point it struck, counting down there, the same way vanilla parks an arrow in the block it hits. A Piercing crossbow buys no extra reach on an explosive arrow, because it stops on the first target it touches |
+| Contact damage | None. An explosive arrow that strikes a mob deals no arrow damage on the way past, because skipping vanilla's resolution is what keeps the fuse alive. The blast is the whole payload, and it lands a moment later |
+| A delay of zero | Detonates on contact, supported but not the default |
+| A power of zero | Detonates without an explosion, so an operator can disable a tier's blast without removing the arrow |
+| Losing the arrow | A fuse whose arrow is destroyed mid-countdown is held briefly and then abandoned, so nothing detonates from an arrow that no longer exists |
+| The fire the top tier leaves | The shared fire patch system, sized by `explosive.firePatchRadius` and `explosive.firePatchDurationTicks`, which is time-boxed and asks the world for permission before placing anything. [ADR 0012](docs/adr/0012-fire-patches-are-server-owned-and-time-boxed.md) covers it |
+
+## Incendiary Arrow
+
+The incendiary arrow is fire without an explosion: on contact it sets every entity within its burn radius alight and lays a fire patch on the surface. It is for igniting a group of mobs or a structure, not for moving terrain.
+
+| Rule | Behaviour |
+|---|---|
+| What burns | Every entity within `explosive.incendiary.burnRadius` of the impact, measured as a sphere rather than a column, skipping anything fire immune. The shooter is spared, as they are by the wind arrow, and dropped items are left alone so a burst does not destroy the loot it is standing in |
+| For how long | `explosive.incendiary.igniteSeconds` |
+| Fire on the ground | `explosive.incendiary.ignitesBlocks`, on by default, placed through the same fire patch system the top explosive tier uses, so it is time-boxed and respects protection. The patch is sized by `explosive.incendiary.burnRadius` rather than by `explosive.firePatchRadius`, so the ground fire covers what the arrow burned rather than a separate area |
+| Explosion | None, ever. No blast, no knockback, and no terrain damage beyond what the fire itself does |
+| The arrow afterwards | Spent on contact with a block, like the wind arrow, rather than recoverable |
+| A radius of zero | Burns nothing and places nothing |
+| An ignite time of zero | Still lays fire, but sets no entity alight, so an operator can keep the ground fire and drop the direct burning |
+
+It shares the fire charge arrow's ingredient and nothing else. Tier three is an explosion that happens to leave fire behind and is crafted from the tier below it; this one is crafted from plain arrows and never explodes. The recipes cannot collide, because one is a fire charge ringed by TNT arrows and the other is a fire charge ringed by plain arrows.
+
 ## Sounds
 
 The mod's sound assets live under `assets/more-arrows/sounds/` and are declared in `assets/more-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
@@ -204,6 +242,10 @@ Texture assets live under `assets/more-arrows/textures/`, and each ships alongsi
 | `textures/entity/arrow/glow_ink_arrow.png` | `art/sprites/entity/glow_ink_arrow.sprite.txt` | The glow ink arrow in flight and planted in a block |
 | `textures/entity/arrow/redstone_arrow.png` | `art/sprites/entity/redstone_arrow.sprite.txt` | The redstone arrow in flight and planted in a block |
 | `textures/entity/arrow/wind_arrow.png` | `art/sprites/entity/wind_arrow.sprite.txt` | The wind arrow in flight and planted in a block |
+| `textures/entity/arrow/gunpowder_arrow.png` | `art/sprites/entity/gunpowder_arrow.sprite.txt` | The gunpowder arrow in flight and planted in a block |
+| `textures/entity/arrow/tnt_arrow.png` | `art/sprites/entity/tnt_arrow.sprite.txt` | The TNT arrow in flight and planted in a block |
+| `textures/entity/arrow/fire_charge_arrow.png` | `art/sprites/entity/fire_charge_arrow.sprite.txt` | The fire charge arrow in flight and planted in a block |
+| `textures/entity/arrow/incendiary_arrow.png` | `art/sprites/entity/incendiary_arrow.sprite.txt` | The incendiary arrow in flight and planted in a block |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
 
@@ -218,6 +260,12 @@ It is also why both textures are shaded symmetrically about the shaft rather tha
 Both arrows therefore spend their detail budget on a single silhouette break rather than on shading. The grapple arrow splays three tines off a cold blue steel head, which is the widest head in the mod and the thing that separates it from a vanilla arrow at any distance. The rope arrow keeps its head narrow, an anchor point rather than a claw, and carries a pale hemp coil part way down the shaft instead, so the two traversal arrows are told apart by where the mass sits rather than by colour. That matters more here than anywhere else in the mod, because a player watches a grapple arrow fly its whole arc to an anchor before being pulled to it.
 
 The three utility arrows reach the same problem from the other side, because all three are a coloured lump on a tip and colour is the first thing the mirrored profile destroys. They are separated by how far the head departs from the shaft instead. The glow ink sac is the widest, bulging a pixel clear of the shaft on both outer rows; the redstone crystal is held entirely inside the three middle rows, so it stays square and compact where the sac swells; and the wind ring keeps its single-pixel hole, which is the one feature that survives the mirror intact, since the overlaid copies land hole on hole rather than lit edge on shadow. The sac's slung-under-the-axis pose from its item sprite does not survive the mirror at all and is moved back onto the axis here, because two mirrored copies of an off-axis head read as two heads.
+
+Every in-flight head is built with mass rather than as a line. It swells to the full five rows of the profile band at its shoulder and tapers to a single lit pixel at the point, with the outer rows held in the darkest tone and the centre line the brightest. Vanilla's own arrow gets away with a three row head because it is the shape a player already knows; a mod arrow carrying an identity has to be read at a glance while moving, and a head drawn flat along the centre line has no depth to lose. It comes back from the mirrored profile as a smear. Mass and symmetric tone are what survive, and the mod's heads run from twenty two pixels for the lightest to thirty two for the heaviest, which is also the order the explosive tiers escalate in.
+
+The four explosive arrows are the one family that can lean on silhouette outright, because they are the only arrows carrying blades and a blade can be lengthened and barbed without ceasing to read as a blade. They are ordered by reach and barb count: the gunpowder arrow is the shortest and carries none, the TNT arrow reaches a pixel further and gains one, and the fire charge arrow reaches furthest and carries two. That ordering is the tier ladder made visible, so a player watching an arrow fly knows which one is about to go off before it does.
+
+The incendiary arrow is the exception and is deliberately not part of that ladder, because it is not a tier. It shares the gunpowder arrow's unbarbed silhouette and separates on colour alone, which is the one place in the mod where colour is asked to carry the whole distinction. That is safe here only because the pair sits at the extremes of the palette, cold grey steel against a blade lit end to end, rather than the near-misses the item sprites had to solve for. Against the fire charge arrow, which it is closer to in purpose, it separates on both: no barbs, and lit along its whole length instead of dark iron with a molten point.
 
 The rope block is the one texture with a tiling contract, because a descent stacks it vertically and any mismatch across the tile boundary reads as a seam running the whole length of the drop. Its strand grooves step one column per row on a four row cycle, and sixteen divides by four, so row fifteen hands off to row zero mid-diagonal and the twist runs unbroken. Anything that changes the number of rows in that cycle to something other than a factor of sixteen puts a seam back. The single whipping band is what a ladder gets from its rungs, a repeat that tells a player the block is climbable, and it sits away from the tile boundary so it never reads as the seam it is not.
 

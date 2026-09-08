@@ -30,7 +30,10 @@ class ExplosiveOptionsTest {
             "explosive.damageEntities",
             "explosive.firePatchRadius",
             "explosive.firePatchDurationTicks",
-            "explosive.beepVolume"),
+            "explosive.beepVolume",
+            "explosive.incendiary.burnRadius",
+            "explosive.incendiary.igniteSeconds",
+            "explosive.incendiary.ignitesBlocks"),
         ExplosiveOptions.options().stream().map(ConfigOption::id).toList());
   }
 

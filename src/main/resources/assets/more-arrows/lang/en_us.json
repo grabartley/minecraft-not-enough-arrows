@@ -5,6 +5,10 @@
   "item.more-arrows.glow_ink_arrow": "Glow Ink Arrow",
   "item.more-arrows.redstone_arrow": "Redstone Arrow",
   "item.more-arrows.wind_arrow": "Wind Arrow",
+  "item.more-arrows.gunpowder_arrow": "Gunpowder Arrow",
+  "item.more-arrows.tnt_arrow": "TNT Arrow",
+  "item.more-arrows.fire_charge_arrow": "Fire Charge Arrow",
+  "item.more-arrows.incendiary_arrow": "Incendiary Arrow",
   "block.more-arrows.rope": "Rope",
   "block.more-arrows.redstone_charge": "Redstone Charge",
   "command.more-arrows.help.header": "More Arrows commands:",
@@ -42,6 +46,9 @@
   "config.more-arrows.option.explosive.firePatchRadius": "Fire Patch Radius (blocks)",
   "config.more-arrows.option.explosive.firePatchDurationTicks": "Fire Patch Duration (ticks)",
   "config.more-arrows.option.explosive.beepVolume": "Countdown Beep Volume",
+  "config.more-arrows.option.explosive.incendiary.burnRadius": "Incendiary Burn Radius (blocks)",
+  "config.more-arrows.option.explosive.incendiary.igniteSeconds": "Incendiary Ignite Time (seconds)",
+  "config.more-arrows.option.explosive.incendiary.ignitesBlocks": "Incendiary Sets Blocks Alight",
   "config.more-arrows.option.grapple.maxRangeBlocks": "Grapple Range (blocks)",
   "config.more-arrows.option.grapple.pullSpeed": "Grapple Pull Speed",
   "config.more-arrows.option.grapple.pullAcceleration": "Grapple Pull Acceleration",
@@ -68,5 +75,9 @@
   "info.more-arrows.rope_arrow": "Anchors in the block it hits and drops a climbable rope beneath it, down to the configured length or until the rope meets the ground.",
   "info.more-arrows.glow_ink_arrow": "Marks the living entity it hits with the glowing effect for the configured duration, outlining it through terrain for every player on the server. It barely scratches what it tags.",
   "info.more-arrows.redstone_arrow": "Emits a redstone signal at the face it strikes, at the configured strength, until the configured duration runs out. The signal expires on its own, including across a chunk reload.",
-  "info.more-arrows.wind_arrow": "Bursts on impact like a wind charge, opening the same doors, trapdoors, and gates, and shoving nearby entities away with force that falls off toward the edge of the burst. It never shoves the shooter."
+  "info.more-arrows.wind_arrow": "Bursts on impact like a wind charge, opening the same doors, trapdoors, and gates, and shoving nearby entities away with force that falls off toward the edge of the burst. It never shoves the shooter.",
+  "info.more-arrows.gunpowder_arrow": "Sticks where it lands, beeps down a configured fuse, then explodes at vanilla TNT strength. Terrain damage is off by default, so it rearranges mobs rather than builds until an operator says otherwise.",
+  "info.more-arrows.tnt_arrow": "The second explosive tier, crafted from eight gunpowder arrows around a block of TNT. Shorter fuse and a bigger blast than the tier below it.",
+  "info.more-arrows.fire_charge_arrow": "The largest explosion of the three tiers, crafted from eight TNT arrows around a fire charge, and the only one that leaves a fire patch behind.",
+  "info.more-arrows.incendiary_arrow": "Fire without an explosion. On contact it sets every entity in the burn radius alight and lays a fire patch on the surface, with no blast and no terrain damage beyond what the fire itself does."
 }
