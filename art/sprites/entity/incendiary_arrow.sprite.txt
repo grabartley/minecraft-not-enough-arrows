@@ -2,12 +2,18 @@
 #
 # Rows 0-4 are the side profile, nock at x0 to tip at x15. Rows 5-9 columns 0-4
 # are the fletching cross seen end on. The Textures section of the README covers
-# why only that corner of the canvas is ever sampled.
+# why only that corner of the canvas is ever sampled.#
+# The head is built with mass rather than as a line: it swells to the full five
+# rows of the profile band at its shoulder and tapers to a single lit pixel at
+# the point, with the outer rows held in the darkest tone and the centre line the
+# brightest. That shading is symmetric about the shaft on purpose, because the
+# renderer mirrors this profile onto itself and any top-to-bottom gradient would
+# come back as a two tone lump. Symmetric tone is what survives, and it is what
+# gives the head volume instead of leaving it reading flat at speed.
 #
 # Fire without an explosion, and the head says so by glowing along its whole
 # length rather than only at the point. It carries no barb, which keeps it apart
-# from the fire charge arrow it would otherwise sit closest to: that one is a
-# barbed dark blade with a molten tip, this one is a smooth blade lit end to end.
+# from the fire charge arrow it would otherwise sit closest to.
 #
 # canvas = 32
 #
@@ -15,17 +21,17 @@
 # c = FFCB00  blade, bright
 # m = FFA300  blade, body
 # d = E78500  blade, inner shadow
-# O = C25406  blade, collar, still glowing
+# O = C25406  blade, shadowed outer facet, still glowing
 # W = A8802F  shaft, grain highlight
 # S = 896727  shaft, body
 # w = 5E4619  shaft, nock shadow
 # F = E0E0E0  fletching, light
 # f = C6C6C6  fletching, mid
-fFf.............................
-.fFf.......Odm..................
-wSSWSSWSSSOdmcch................
-.fFf.......Odm..................
-fFf.............................
+fFf.........OO..................
+.fFf......Odmmd.................
+wSSWSSWSSOdmmcch................
+.fFf......Odmmd.................
+fFf.........OO..................
 ..F.............................
 ..F.............................
 fFSFf...........................

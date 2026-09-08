@@ -2,15 +2,17 @@
 #
 # Rows 0-4 are the side profile, nock at x0 to tip at x15. Rows 5-9 columns 0-4
 # are the fletching cross seen end on. The Textures section of the README covers
-# why only that corner of the canvas is ever sampled.
+# why only that corner of the canvas is ever sampled.#
+# The head is built with mass rather than as a line: it swells to the full five
+# rows of the profile band at its shoulder and tapers to a single lit pixel at
+# the point, with the outer rows held in the darkest tone and the centre line the
+# brightest. That shading is symmetric about the shaft on purpose, because the
+# renderer mirrors this profile onto itself and any top-to-bottom gradient would
+# come back as a two tone lump. Symmetric tone is what survives, and it is what
+# gives the head volume instead of leaving it reading flat at speed.
 #
-# The head stands three rows tall at the shoulder and tapers over two columns to
-# a single lit pixel, which is the proportion vanilla's own arrow uses. A head
-# drawn flat along the centre line reads as a smear at speed rather than as a
-# blade, and that is the failure this profile exists to avoid.
-#
-# The entry tier is the shortest head in the family and the only unbarbed one, so
-# the four explosive arrows are told apart by reach and barb count while moving.
+# The entry tier carries the smallest head of the four and the only unbarbed one,
+# so the family is told apart by mass and barb count while it is still moving.
 #
 # canvas = 32
 #
@@ -18,17 +20,17 @@
 # c = A6A6B0  blade, bright facet
 # m = 7E7E88  blade, body
 # d = 5A5A64  blade, inner shadow
-# O = 3A3A42  blade, collar, where the head meets the shaft
+# O = 3A3A42  blade, shadowed outer facet
 # W = A8802F  shaft, grain highlight
 # S = 896727  shaft, body
 # w = 5E4619  shaft, nock shadow
 # F = E0E0E0  fletching, light
 # f = C6C6C6  fletching, mid
-fFf.............................
-.fFf........dm..................
-wSSWSSWSSSSOdmcH................
-.fFf........dm..................
-fFf.............................
+fFf.........OO..................
+.fFf.......dmmd.................
+wSSWSSWSSSOdmmcH................
+.fFf.......dmmd.................
+fFf.........OO..................
 ..F.............................
 ..F.............................
 fFSFf...........................
