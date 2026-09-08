@@ -4,7 +4,9 @@ import com.grahambartley.morearrows.config.PhysicsArrowConfig;
 import com.grahambartley.morearrows.server.ServerConfigService;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
@@ -29,12 +31,17 @@ public final class GravityService {
 
     final List<BlockPos> fallen = new ArrayList<>();
     for (final BlockPos pos : GravityShape.blocks(center, physics.gravityImpactRadius())) {
-      if (FallingBlocks.canFall(world, pos, shooter)
-          && !physics.isExcludedFromGravity(FallingBlocks.blockIdAt(world, pos))
-          && FallingBlocks.drop(world, pos) != null) {
+      final BlockState state = world.getBlockState(pos);
+      if (FallingBlocks.canFall(world, pos, state, shooter)
+          && !physics.isExcludedFromGravity(blockIdOf(state))) {
+        FallingBlocks.drop(world, pos, state);
         fallen.add(pos);
       }
     }
     return List.copyOf(fallen);
+  }
+
+  private static String blockIdOf(final BlockState state) {
+    return Registries.BLOCK.getId(state.getBlock()).toString();
   }
 }

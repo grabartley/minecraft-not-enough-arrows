@@ -8,6 +8,7 @@ import com.grahambartley.morearrows.entity.RicochetArrowEntity;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.AfterBatch;
@@ -26,6 +27,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
   private static final int RESTING_TICK = 25;
   private static final int STILL_RESTING_TICK = 35;
   private static final double STILL = 1.0e-6;
+  private static final double EMBEDDED_IN_THE_WALL = 1.0;
 
   @BeforeBatch(batchId = BATCH)
   public void allowOneBounceOnly(ServerWorld world) {
@@ -101,6 +103,45 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
                   + restingPlace[0]
                   + " to "
                   + arrow.getPos());
+
+          final Vec3d wallFace = context.getAbsolute(Vec3d.ofCenter(WEST_WALL)).add(0.5, 0.0, 0.0);
+          context.assertTrue(
+              arrow.getPos().getX() - wallFace.getX() < EMBEDDED_IN_THE_WALL,
+              "An arrow out of bounces should come to rest against the wall it met, not on the"
+                  + " floor short of it, resting X was "
+                  + arrow.getPos().getX()
+                  + " against a wall face at "
+                  + wallFace.getX());
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void anArrowThatSurvivesAReloadDoesNotGetItsBouncesBack(TestContext context) {
+    raiseWalls(context);
+    fireEast(context);
+
+    context.runAtTick(
+        PhysicsArrowTestSupport.IMPACT_TICK,
+        () -> {
+          final RicochetArrowEntity bounced = firedArrow(context);
+          context.assertTrue(bounced != null, "A bouncing arrow should still be in the world");
+          context.assertEquals(bounced.bounces(), ONE_BOUNCE, "Bounces used before the reload");
+
+          final NbtCompound saved = new NbtCompound();
+          bounced.writeCustomDataToNbt(saved);
+
+          final RicochetArrowEntity reloaded =
+              context.spawnEntity(
+                  ModArrows.RICOCHET_ARROW.entityType(), CORRIDOR_SHOOTER_STAND.up());
+          context.assertEquals(
+              reloaded.bounces(), 0, "A freshly built arrow starts with all of its bounces");
+
+          reloaded.readCustomDataFromNbt(saved);
+          context.assertEquals(
+              reloaded.bounces(),
+              ONE_BOUNCE,
+              "An arrow that came back from a reload should remember the bounces it spent");
           context.complete();
         });
   }

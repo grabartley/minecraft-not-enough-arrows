@@ -78,21 +78,10 @@ class GravityShapeTest {
     assertEquals(blocks.size(), blocks.stream().distinct().count());
   }
 
-  @Test
-  void theSameRadiusAlwaysProducesTheSameBlocksInTheSameOrder() {
-    assertEquals(GravityShape.blocks(CENTER, 3), GravityShape.blocks(CENTER, 3));
-  }
-
-  @Test
-  void theReturnedBlocksCannotBeEdited() {
-    final List<BlockPos> blocks = GravityShape.blocks(CENTER, 2);
-
-    assertThrows(UnsupportedOperationException.class, () -> blocks.add(BlockPos.ORIGIN));
-  }
-
-  @Test
-  void theSingleBlockDefaultCannotBeEdited() {
-    final List<BlockPos> blocks = GravityShape.blocks(CENTER, 0);
+  @ParameterizedTest
+  @ValueSource(ints = {0, 2})
+  void theReturnedBlocksCannotBeEdited(final int radius) {
+    final List<BlockPos> blocks = GravityShape.blocks(CENTER, radius);
 
     assertThrows(UnsupportedOperationException.class, () -> blocks.add(BlockPos.ORIGIN));
   }

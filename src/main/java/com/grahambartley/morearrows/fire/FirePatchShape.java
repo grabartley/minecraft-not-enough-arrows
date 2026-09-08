@@ -1,7 +1,7 @@
 package com.grahambartley.morearrows.fire;
 
+import com.grahambartley.morearrows.world.BlockOrder;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import net.minecraft.util.math.BlockPos;
 
@@ -22,19 +22,7 @@ public final class FirePatchShape {
         }
       }
     }
-    columns.sort(nearestFirst(center));
+    columns.sort(BlockOrder.nearestFirst(center));
     return List.copyOf(columns);
-  }
-
-  private static Comparator<BlockPos> nearestFirst(final BlockPos center) {
-    return Comparator.comparingLong((BlockPos column) -> squaredDistance(center, column))
-        .thenComparingInt(BlockPos::getX)
-        .thenComparingInt(BlockPos::getZ);
-  }
-
-  private static long squaredDistance(final BlockPos center, final BlockPos column) {
-    final long offsetX = (long) column.getX() - center.getX();
-    final long offsetZ = (long) column.getZ() - center.getZ();
-    return offsetX * offsetX + offsetZ * offsetZ;
   }
 }

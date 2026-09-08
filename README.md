@@ -219,7 +219,8 @@ It is also the most destructive thing in the mod on a shared server, so the rule
 
 | Rule | Behaviour |
 |---|---|
-| What can be dropped | Anything a player standing there could have broken. The position has to be inside the build limit, the block has to be solid rather than air, a fluid, or a replaceable plant, and its hardness has to be zero or greater, so bedrock, barriers and the rest of the unbreakable set never move |
+| What can be dropped | Anything a player standing there could have broken and walked away with. The position has to be inside the build limit, the block has to be solid rather than air, a fluid, or a replaceable plant, and its hardness has to be zero or greater, so bedrock, barriers and the rest of the unbreakable set never move |
+| What is left alone regardless | Anything holding a player's items, and anything else carrying a block entity. A falling block carries a block state and nothing else, so a chest would scatter its contents and a shulker box would lose them outright. A block holding water is spared for the same reason ropes and grapples will not anchor to one |
 | Where it will not go | Anywhere the shooter may not build, which is the same protection and world border check the fire patch and redstone systems make. A dispensed arrow has no player behind it, so it is checked against the world border alone |
 | How much falls | `physics.gravityImpactRadius`, **zero by default**, which drops only the block that was hit. Raising it drops every block within that many blocks of the one hit, measured as a sphere, nearest first |
 | Protecting a block | `physics.gravityBlockExclusions`, a list an operator edits a block at a time. An excluded block is spared at any radius, including when the blocks around it go |
@@ -240,7 +241,7 @@ The ricochet arrow glances off the surfaces it hits instead of embedding in them
 | What a bounce costs | A fifth of its speed. Three bounces leave it at roughly half the speed it launched at, which is what makes the arc after a bank readable rather than a straight line to somewhere unexpected |
 | How many bounces | `physics.ricochetBounceCount`, three by default. A count of zero turns it into a plain arrow that embeds on the first thing it touches |
 | Damage across bounces | `physics.ricochetRetainsDamage`, on by default, which keeps the damage the bow gave it through every bounce. Turned off, damage falls by the same fifth each bounce takes off the speed |
-| Blocks that react to being hit | They react on every bounce rather than only on the shot that finally lands, so buttons, bells and target blocks work the way they do for any other arrow |
+| Blocks that react to being hit | They react on every bounce rather than only on the shot that finally lands, so buttons, bells and target blocks work the way they do for any other arrow, and an enchanted bow's hit-block effects land on every bounce too |
 | Hitting an entity | A normal arrow hit, never a bounce. A Piercing crossbow behaves exactly as it does for a plain arrow |
 | Running out of bounces | The arrow embeds in the next surface it meets and is recovered like any other arrow |
 | Crossing a reload | The bounces it has used are written into the arrow, so an arrow that survives a chunk unload or a restart mid-flight does not get its bounces back |

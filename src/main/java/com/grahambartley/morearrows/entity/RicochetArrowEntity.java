@@ -71,6 +71,11 @@ public class RicochetArrowEntity extends BaseArrowEntity {
   private void reactTo(final ServerWorld world, final BlockHitResult blockHitResult) {
     final BlockState struck = world.getBlockState(blockHitResult.getBlockPos());
     struck.onProjectileHit(world, struck, blockHitResult, this);
+
+    final ItemStack weapon = getWeaponStack();
+    if (weapon != null) {
+      onBlockHitEnchantmentEffects(world, blockHitResult, weapon);
+    }
   }
 
   private void bounceOff(final Direction surface, final Vec3d impact, final boolean retainsDamage) {

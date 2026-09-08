@@ -1,7 +1,7 @@
 package com.grahambartley.morearrows.gravity;
 
+import com.grahambartley.morearrows.world.BlockOrder;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import net.minecraft.util.math.BlockPos;
 
@@ -27,21 +27,7 @@ public final class GravityShape {
         }
       }
     }
-    blocks.sort(nearestFirst(center));
+    blocks.sort(BlockOrder.nearestFirst(center));
     return List.copyOf(blocks);
-  }
-
-  private static Comparator<BlockPos> nearestFirst(final BlockPos center) {
-    return Comparator.comparingLong((BlockPos block) -> squaredDistance(center, block))
-        .thenComparingInt(BlockPos::getX)
-        .thenComparingInt(BlockPos::getY)
-        .thenComparingInt(BlockPos::getZ);
-  }
-
-  private static long squaredDistance(final BlockPos center, final BlockPos block) {
-    final long offsetX = (long) block.getX() - center.getX();
-    final long offsetY = (long) block.getY() - center.getY();
-    final long offsetZ = (long) block.getZ() - center.getZ();
-    return offsetX * offsetX + offsetY * offsetY + offsetZ * offsetZ;
   }
 }

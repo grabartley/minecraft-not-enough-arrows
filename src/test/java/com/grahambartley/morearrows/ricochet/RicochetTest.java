@@ -60,13 +60,26 @@ class RicochetTest {
 
   @ParameterizedTest
   @EnumSource(Direction.class)
-  void aBounceOffAnySurfaceIsPredictableEnoughToAimWith(final Direction surface) {
-    final Vec3d velocity = new Vec3d(1.0, -2.0, 3.0);
+  void theAngleOffASurfaceMatchesTheAngleIntoIt(final Direction surface) {
+    final Vec3d normal = Vec3d.of(surface.getVector());
+    final Vec3d approach = normal.multiply(-1.0).add(0.3, 0.2, 0.1);
+
+    final Vec3d deflected = Ricochet.deflect(approach, surface);
 
     assertEquals(
-        Ricochet.deflect(velocity, surface),
-        Ricochet.deflect(velocity, surface),
-        "surface " + surface);
+        -approach.dotProduct(normal) * Ricochet.SPEED_RETENTION,
+        deflected.dotProduct(normal),
+        TOLERANCE,
+        "The component into " + surface + " should come back out at the same angle");
+    final Vec3d carriedThrough = alongThe(approach, normal).multiply(Ricochet.SPEED_RETENTION);
+    final Vec3d actual = alongThe(deflected, normal);
+    assertEquals(carriedThrough.x, actual.x, TOLERANCE, "Sideways travel across " + surface);
+    assertEquals(carriedThrough.y, actual.y, TOLERANCE, "Sideways travel across " + surface);
+    assertEquals(carriedThrough.z, actual.z, TOLERANCE, "Sideways travel across " + surface);
+  }
+
+  private static Vec3d alongThe(final Vec3d velocity, final Vec3d normal) {
+    return velocity.subtract(normal.multiply(velocity.dotProduct(normal)));
   }
 
   @Test

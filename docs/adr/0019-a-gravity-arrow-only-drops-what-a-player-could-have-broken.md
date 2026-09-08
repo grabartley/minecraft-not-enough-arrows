@@ -13,7 +13,9 @@ There is also a category of block the list should never have to name. Bedrock, b
 
 ## Decision
 
-Before anything falls, each position is put to one question: could a player standing there have broken this block? Concretely, the position has to be inside the build limit, the block has to be something real rather than air, a fluid, or a replaceable plant, it has to have a collision shape, its hardness has to be zero or greater, and the shooter has to be allowed to modify that position.
+Before anything falls, each position is put to one question: could a player standing there have broken this block, and walked away with everything that was in it? Concretely, the position has to be inside the build limit, the block has to be something real rather than air, a fluid, or a replaceable plant, it has to have a collision shape, its hardness has to be zero or greater, it must not carry a block entity, and the shooter has to be allowed to modify that position.
+
+The block entity clause is the second half of that question rather than a taste call. `FallingBlockEntity.spawnFromBlock` carries a block state and nothing else: it does not copy block entity data, and it clears the position with a plain block state change. A chest scatters its contents on that path because its own replacement handling does, and a shulker box does not, because vanilla only preserves a shulker box's contents through the item it drops when broken. Letting either fall means an arrow can delete a player's storage from range, which is a worse outcome than the arrow simply refusing to move a container.
 
 That last clause is the world's own permission check, which is the same gate the fire patch system and the redstone charge already pass through, so the gravity arrow inherits spawn protection and the world border without inventing a rule of its own. A dispensed arrow has no player behind it and is checked against the world border alone, exactly as the other two are.
 
@@ -30,3 +32,5 @@ The permission check is per position rather than per shot, so a radius that stra
 Accepted drawback: the fall itself is vanilla's, so once a block is airborne none of this applies to it any more. A falling block that drifts is a vanilla falling block, and where it lands is not something the arrow gets a say in. The epic already put restoring fallen blocks out of scope, and this is the same boundary seen from the other side.
 
 Accepted drawback: waterlogged blocks are treated as fluid and never fall, which is stricter than the rule needs to be. It matches the answer the anchoring system already gives to the neighbouring question of what counts as a real block, and being consistently conservative here is worth more than the underwater case it costs.
+
+Accepted drawback: excluding block entities also spares furnaces, signs, banners and beehives, none of which is really about protecting storage. A rule that named containers specifically would be narrower and would need extending every time a mod adds a container, and the arrow refusing to move a sign is a smaller cost than the arrow voiding a shulker box.
