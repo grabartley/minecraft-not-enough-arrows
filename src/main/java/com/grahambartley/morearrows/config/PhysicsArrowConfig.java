@@ -2,6 +2,7 @@ package com.grahambartley.morearrows.config;
 
 import com.google.gson.JsonObject;
 import java.util.List;
+import java.util.Locale;
 
 public record PhysicsArrowConfig(
     int gravityImpactRadius,
@@ -19,6 +20,8 @@ public record PhysicsArrowConfig(
   public static final List<String> DEFAULT_GRAVITY_BLOCK_EXCLUSIONS = List.of();
   public static final int DEFAULT_RICOCHET_BOUNCE_COUNT = 3;
   public static final boolean DEFAULT_RICOCHET_RETAINS_DAMAGE = true;
+
+  private static final String VANILLA_NAMESPACE = "minecraft:";
 
   static final String KEY_GRAVITY_IMPACT_RADIUS = "gravityImpactRadius";
   static final String KEY_GRAVITY_BLOCK_EXCLUSIONS = "gravityBlockExclusions";
@@ -49,8 +52,18 @@ public record PhysicsArrowConfig(
   }
 
   public boolean isExcludedFromGravity(final String blockId) {
-    return blockId != null
-        && gravityBlockExclusions.contains(blockId.trim().toLowerCase(java.util.Locale.ROOT));
+    if (blockId == null) {
+      return false;
+    }
+    final String normalized = blockId.trim().toLowerCase(Locale.ROOT);
+    return gravityBlockExclusions.contains(normalized)
+        || gravityBlockExclusions.contains(withoutVanillaNamespace(normalized));
+  }
+
+  private static String withoutVanillaNamespace(final String blockId) {
+    return blockId.startsWith(VANILLA_NAMESPACE)
+        ? blockId.substring(VANILLA_NAMESPACE.length())
+        : blockId;
   }
 
   public static PhysicsArrowConfig fromJson(final JsonObject root) {

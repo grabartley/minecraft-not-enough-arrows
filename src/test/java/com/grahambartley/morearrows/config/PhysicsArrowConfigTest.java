@@ -72,6 +72,17 @@ class PhysicsArrowConfigTest {
     assertTrue(config(0, List.of("minecraft:stone")).isExcludedFromGravity(queried));
   }
 
+  @ParameterizedTest
+  @ValueSource(strings = {"stone", "  STONE  "})
+  void matchesAVanillaBlockExcludedWithoutItsNamespace(final String excluded) {
+    assertTrue(config(0, List.of(excluded)).isExcludedFromGravity("minecraft:stone"));
+  }
+
+  @Test
+  void doesNotMatchAModdedBlockSharingAVanillaBlocksPath() {
+    assertFalse(config(0, List.of("stone")).isExcludedFromGravity("more-arrows:stone"));
+  }
+
   @Test
   void doesNotMatchABlockThatIsNotExcluded() {
     assertFalse(config(0, List.of("minecraft:stone")).isExcludedFromGravity("minecraft:dirt"));

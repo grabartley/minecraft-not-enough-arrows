@@ -7,9 +7,11 @@ import com.grahambartley.morearrows.arrow.RegisteredArrow;
 import com.grahambartley.morearrows.entity.FireChargeArrowEntity;
 import com.grahambartley.morearrows.entity.GlowInkArrowEntity;
 import com.grahambartley.morearrows.entity.GrappleArrowEntity;
+import com.grahambartley.morearrows.entity.GravityArrowEntity;
 import com.grahambartley.morearrows.entity.GunpowderArrowEntity;
 import com.grahambartley.morearrows.entity.IncendiaryArrowEntity;
 import com.grahambartley.morearrows.entity.RedstoneArrowEntity;
+import com.grahambartley.morearrows.entity.RicochetArrowEntity;
 import com.grahambartley.morearrows.entity.RopeArrowEntity;
 import com.grahambartley.morearrows.entity.TntArrowEntity;
 import com.grahambartley.morearrows.entity.WindArrowEntity;
@@ -58,6 +60,14 @@ public final class ModArrows {
       REGISTRAR.register(
           ArrowDefinition.of(
               "incendiary_arrow", IncendiaryArrowEntity::new, ModArrows::incendiaryArrow));
+
+  public static final RegisteredArrow<GravityArrowEntity> GRAVITY_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("gravity_arrow", GravityArrowEntity::new, ModArrows::gravityArrow));
+
+  public static final RegisteredArrow<RicochetArrowEntity> RICOCHET_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("ricochet_arrow", RicochetArrowEntity::new, ModArrows::ricochetArrow));
 
   private ModArrows() {}
 
@@ -161,5 +171,25 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new IncendiaryArrowEntity(INCENDIARY_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static GravityArrowEntity gravityArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new GravityArrowEntity(GRAVITY_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static RicochetArrowEntity ricochetArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RicochetArrowEntity(RICOCHET_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }
