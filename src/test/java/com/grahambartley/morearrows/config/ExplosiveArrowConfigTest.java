@@ -59,9 +59,7 @@ class ExplosiveArrowConfigTest {
             defaults.firePatchRadius(),
             given,
             defaults.beepVolume(),
-            defaults.incendiaryBurnRadius(),
-            defaults.incendiaryIgniteSeconds(),
-            defaults.incendiaryIgnitesBlocks());
+            defaults.incendiary());
 
     assertEquals(expected, config.firePatchDurationTicks());
   }
@@ -80,9 +78,7 @@ class ExplosiveArrowConfigTest {
             defaults.firePatchRadius(),
             defaults.firePatchDurationTicks(),
             given,
-            defaults.incendiaryBurnRadius(),
-            defaults.incendiaryIgniteSeconds(),
-            defaults.incendiaryIgnitesBlocks());
+            defaults.incendiary());
 
     assertEquals(expected, config.beepVolume());
   }
@@ -90,7 +86,8 @@ class ExplosiveArrowConfigTest {
   @Test
   void substitutesDefaultsForNullTiers() {
     final ExplosiveArrowConfig config =
-        new ExplosiveArrowConfig(null, null, null, false, true, 2, 200, 1.0f, 3, 5, true);
+        new ExplosiveArrowConfig(
+            null, null, null, false, true, 2, 200, 1.0f, IncendiaryArrowConfig.defaults());
 
     assertEquals(ExplosiveArrowConfig.DEFAULT_GUNPOWDER, config.gunpowder());
     assertEquals(ExplosiveArrowConfig.DEFAULT_TNT, config.tnt());
@@ -136,41 +133,9 @@ class ExplosiveArrowConfigTest {
             5,
             1234,
             0.25f,
-            6,
-            37,
-            false);
+            new IncendiaryArrowConfig(6, 37, false));
 
     assertEquals(original, ExplosiveArrowConfig.fromJson(original.toJson()));
-  }
-
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "3, 3", "8, 8", "99, 8"})
-  void clampsIncendiaryBurnRadius(final int given, final int expected) {
-    assertEquals(
-        expected,
-        ExplosiveArrowConfig.defaults().withIncendiaryBurnRadius(given).incendiaryBurnRadius());
-  }
-
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "5, 5", "60, 60", "999, 60"})
-  void clampsIncendiaryIgniteSeconds(final int given, final int expected) {
-    assertEquals(
-        expected,
-        ExplosiveArrowConfig.defaults()
-            .withIncendiaryIgniteSeconds(given)
-            .incendiaryIgniteSeconds());
-  }
-
-  @Test
-  void incendiaryBlockIgnitionTogglesIndependently() {
-    final ExplosiveArrowConfig off =
-        ExplosiveArrowConfig.defaults().withIncendiaryIgnitesBlocks(false);
-
-    assertEquals(false, off.incendiaryIgnitesBlocks());
-    assertEquals(
-        ExplosiveArrowConfig.defaults().incendiaryBurnRadius(), off.incendiaryBurnRadius());
-    assertEquals(
-        ExplosiveArrowConfig.defaults().incendiaryIgniteSeconds(), off.incendiaryIgniteSeconds());
   }
 
   private static ExplosiveArrowConfig withFirePatchRadius(final int radius) {
@@ -184,9 +149,7 @@ class ExplosiveArrowConfigTest {
         radius,
         defaults.firePatchDurationTicks(),
         defaults.beepVolume(),
-        defaults.incendiaryBurnRadius(),
-        defaults.incendiaryIgniteSeconds(),
-        defaults.incendiaryIgnitesBlocks());
+        defaults.incendiary());
   }
 
   @Test
@@ -224,6 +187,8 @@ class ExplosiveArrowConfigTest {
             .withBeepVolume(0.5f);
 
     assertEquals(
-        new ExplosiveArrowConfig(tier, tier, tier, true, false, 5, 400, 0.5f, 3, 5, true), updated);
+        new ExplosiveArrowConfig(
+            tier, tier, tier, true, false, 5, 400, 0.5f, IncendiaryArrowConfig.defaults()),
+        updated);
   }
 }

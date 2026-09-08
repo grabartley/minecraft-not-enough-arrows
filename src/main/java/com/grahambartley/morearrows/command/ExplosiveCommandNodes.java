@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.command;
 import com.grahambartley.morearrows.config.ConfigSettings;
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
 import com.grahambartley.morearrows.config.ExplosiveTierConfig;
+import com.grahambartley.morearrows.config.IncendiaryArrowConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import java.util.function.Function;
@@ -62,22 +63,34 @@ public final class ExplosiveCommandNodes {
         .then(
             ConfigOptionNodes.intOption(
                 ConfigSettings.EXPLOSIVE_INCENDIARY_BURN_RADIUS,
-                ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MIN,
-                ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MAX,
+                IncendiaryArrowConfig.BURN_RADIUS_MIN,
+                IncendiaryArrowConfig.BURN_RADIUS_MAX,
                 (current, value) ->
-                    change(current, explosive -> explosive.withIncendiaryBurnRadius(value))))
+                    change(
+                        current,
+                        explosive ->
+                            explosive.withIncendiary(
+                                explosive.incendiary().withBurnRadius(value)))))
         .then(
             ConfigOptionNodes.intOption(
                 ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
-                ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MIN,
-                ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MAX,
+                IncendiaryArrowConfig.IGNITE_SECONDS_MIN,
+                IncendiaryArrowConfig.IGNITE_SECONDS_MAX,
                 (current, value) ->
-                    change(current, explosive -> explosive.withIncendiaryIgniteSeconds(value))))
+                    change(
+                        current,
+                        explosive ->
+                            explosive.withIncendiary(
+                                explosive.incendiary().withIgniteSeconds(value)))))
         .then(
             ConfigOptionNodes.booleanOption(
                 ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
                 (current, value) ->
-                    change(current, explosive -> explosive.withIncendiaryIgnitesBlocks(value))));
+                    change(
+                        current,
+                        explosive ->
+                            explosive.withIncendiary(
+                                explosive.incendiary().withIgnitesBlocks(value)))));
   }
 
   private static LiteralArgumentBuilder<ServerCommandSource> tier(

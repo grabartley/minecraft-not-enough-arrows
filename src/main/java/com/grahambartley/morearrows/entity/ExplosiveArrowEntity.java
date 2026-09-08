@@ -56,7 +56,7 @@ public abstract class ExplosiveArrowEntity extends BaseArrowEntity {
 
   private ArrowImpact arm(final ServerWorld world, final ArrowImpact armed) {
     if (FuseService.fuseOn(world, getUuid()) != null) {
-      return ArrowImpact.RETAIN;
+      return armed;
     }
 
     final int delayTicks = tier.in(ServerConfigService.get().explosive()).delayTicks();

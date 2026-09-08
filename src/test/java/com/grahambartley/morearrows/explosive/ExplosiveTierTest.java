@@ -9,8 +9,6 @@ import com.grahambartley.morearrows.config.ExplosiveTierConfig;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullSource;
 
 class ExplosiveTierTest {
 
@@ -31,20 +29,6 @@ class ExplosiveTierTest {
 
     assertEquals(7, ExplosiveTier.TNT.in(config).delayTicks());
     assertEquals(11.0f, ExplosiveTier.TNT.in(config).power());
-  }
-
-  @ParameterizedTest
-  @EnumSource(ExplosiveTier.class)
-  void aMissingConfigFallsBackToTheDefaultsRatherThanFailing(final ExplosiveTier tier) {
-    assertEquals(tier.in(ExplosiveArrowConfig.defaults()), tier.in(null));
-  }
-
-  @ParameterizedTest
-  @NullSource
-  void everyTierSurvivesAMissingConfig(final ExplosiveArrowConfig missing) {
-    for (final ExplosiveTier tier : ExplosiveTier.values()) {
-      assertTrue(tier.in(missing).power() > 0.0f);
-    }
   }
 
   @Test

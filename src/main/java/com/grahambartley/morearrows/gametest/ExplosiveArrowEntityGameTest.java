@@ -18,10 +18,11 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
-  private static final String BATCH = "explosive";
+  private static final String BATCH = "explosive-arrow";
+  private static final String ENTITY_HIT_BATCH = "explosive-arrow-entity-hit";
 
   @CustomTestProvider
-  public Collection<TestFunction> aFiredArrowLightsItsFuse() {
+  public Collection<TestFunction> tierFuseTests() {
     return List.of(
         tierTest("gunpowder", ModArrows.GUNPOWDER_ARROW, ExplosiveTier.GUNPOWDER),
         tierTest("tnt", ModArrows.TNT_ARROW, ExplosiveTier.TNT),
@@ -84,28 +85,41 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
         UtilityArrowTestSupport.LANDING_TICK,
         () -> {
           final ExplosiveArrowEntity landed = landedArrow(context, arrow);
-          System.out.println(
-              "[DIAG] "
-                  + arrow.id()
-                  + " landed="
-                  + (landed != null)
-                  + " allExplosiveInBox="
-                  + context
-                      .getWorld()
-                      .getEntitiesByClass(
-                          ExplosiveArrowEntity.class, context.getTestBox(), c -> true)
-                      .stream()
-                      .map(c -> c.getType().toString() + "@" + c.getBlockPos())
-                      .toList()
-                  + " fuses="
-                  + FuseService.fusesIn(context.getWorld()).size());
           context.assertTrue(
               landed != null, "A fired " + arrow.id() + " should still exist where it landed");
+          final boolean burning = FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null;
+          defuse(context, landed);
           context.assertTrue(
-              FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null,
-              "A fired " + arrow.id() + " should be burning its own fuse where it landed");
+              burning, "A fired " + arrow.id() + " should be burning its own fuse where it landed");
           context.complete();
         });
+  }
+
+  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void anArrowThatStrikesAnEntityKeepsItselfAndItsFuse(TestContext context) {
+    UtilityArrowTestSupport.raiseBackstop(context);
+    UtilityArrowTestSupport.liveTargetOnPedestalAt(context, new BlockPos(4, 3, 3));
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        ModArrows.GUNPOWDER_ARROW.item());
+
+    context.runAtTick(
+        UtilityArrowTestSupport.LANDING_TICK + 10,
+        () -> {
+          final ExplosiveArrowEntity landed = landedArrow(context, ModArrows.GUNPOWDER_ARROW);
+          context.assertTrue(
+              landed != null, "An arrow that struck an entity should keep itself and its fuse");
+          final boolean burning = FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null;
+          defuse(context, landed);
+          context.assertTrue(burning, "An arrow that struck an entity should be counting down");
+          context.complete();
+        });
+  }
+
+  private static void defuse(final TestContext context, final ExplosiveArrowEntity arrow) {
+    FuseService.extinguish(context.getWorld(), arrow.getUuid());
+    arrow.discard();
   }
 
   @Nullable

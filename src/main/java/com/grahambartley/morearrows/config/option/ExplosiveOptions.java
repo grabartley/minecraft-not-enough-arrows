@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.config.option;
 import com.grahambartley.morearrows.config.ConfigSettings;
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
 import com.grahambartley.morearrows.config.ExplosiveTierConfig;
+import com.grahambartley.morearrows.config.IncendiaryArrowConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,22 +83,27 @@ public final class ExplosiveOptions {
     options.add(
         new IntOption<>(
             ConfigSettings.EXPLOSIVE_INCENDIARY_BURN_RADIUS,
-            ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MIN,
-            ExplosiveArrowConfig.INCENDIARY_BURN_RADIUS_MAX,
-            config -> config.explosive().incendiaryBurnRadius(),
-            (config, value) -> explosive(config, it -> it.withIncendiaryBurnRadius(value))));
+            IncendiaryArrowConfig.BURN_RADIUS_MIN,
+            IncendiaryArrowConfig.BURN_RADIUS_MAX,
+            config -> config.explosive().incendiary().burnRadius(),
+            (config, value) ->
+                explosive(config, it -> it.withIncendiary(it.incendiary().withBurnRadius(value)))));
     options.add(
         new IntOption<>(
             ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
-            ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MIN,
-            ExplosiveArrowConfig.INCENDIARY_IGNITE_SECONDS_MAX,
-            config -> config.explosive().incendiaryIgniteSeconds(),
-            (config, value) -> explosive(config, it -> it.withIncendiaryIgniteSeconds(value))));
+            IncendiaryArrowConfig.IGNITE_SECONDS_MIN,
+            IncendiaryArrowConfig.IGNITE_SECONDS_MAX,
+            config -> config.explosive().incendiary().igniteSeconds(),
+            (config, value) ->
+                explosive(
+                    config, it -> it.withIncendiary(it.incendiary().withIgniteSeconds(value)))));
     options.add(
         new BooleanOption<>(
             ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
-            config -> config.explosive().incendiaryIgnitesBlocks(),
-            (config, value) -> explosive(config, it -> it.withIncendiaryIgnitesBlocks(value))));
+            config -> config.explosive().incendiary().ignitesBlocks(),
+            (config, value) ->
+                explosive(
+                    config, it -> it.withIncendiary(it.incendiary().withIgnitesBlocks(value)))));
     return List.copyOf(options);
   }
 

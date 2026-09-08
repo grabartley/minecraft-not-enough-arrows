@@ -186,9 +186,10 @@ Each tier is shorter-fused and stronger than the one below it, so the ladder rea
 | Rule | Behaviour |
 |---|---|
 | Terrain damage | `explosive.damageTerrain`, **off by default**. The gunpowder arrow is craftable from gunpowder alone, which makes it the cheapest way to reach a build from range, so a fresh install cannot be used to grief terrain until an operator turns it on |
-| Entity damage | `explosive.damageEntities`, on by default, and independent of the terrain switch |
+| Entity damage | `explosive.damageEntities`, on by default, and independent of the terrain switch. Turning it off stops the blast hurting anything, but vanilla still throws entities clear of an explosion, so a blast with damage off is a shove rather than nothing |
 | A fuse already burning | Re-hitting an arrow that is already counting down does not restart or stack its fuse |
-| Hitting an entity | The arrow keeps itself rather than being consumed on contact, because vanilla would discard it and the fuse it carries would die with it. It comes to rest and counts down where it lands |
+| Hitting an entity | The arrow keeps itself rather than being consumed on contact, because vanilla would discard it and the fuse it carries would die with it. It arms and carries on to where it comes to rest |
+| Contact damage | None. An explosive arrow that strikes a mob deals no arrow damage on the way past, because skipping vanilla's resolution is what keeps the fuse alive. The blast is the whole payload, and it lands a moment later |
 | A delay of zero | Detonates on contact, supported but not the default |
 | A power of zero | Detonates without an explosion, so an operator can disable a tier's blast without removing the arrow |
 | Losing the arrow | A fuse whose arrow is destroyed mid-countdown is held briefly and then abandoned, so nothing detonates from an arrow that no longer exists |
@@ -200,9 +201,9 @@ The incendiary arrow is fire without an explosion: on contact it sets every enti
 
 | Rule | Behaviour |
 |---|---|
-| What burns | Every entity within `explosive.incendiaryBurnRadius` of the impact, measured as a sphere rather than a column, skipping anything fire immune |
-| For how long | `explosive.incendiaryIgniteSeconds` |
-| Fire on the ground | `explosive.incendiaryIgnitesBlocks`, on by default, placed through the same fire patch system the top explosive tier uses, so it is time-boxed and respects protection |
+| What burns | Every entity within `explosive.incendiary.burnRadius` of the impact, measured as a sphere rather than a column, skipping anything fire immune. The shooter is spared, as they are by the wind arrow, and dropped items are left alone so a burst does not destroy the loot it is standing in |
+| For how long | `explosive.incendiary.igniteSeconds` |
+| Fire on the ground | `explosive.incendiary.ignitesBlocks`, on by default, placed through the same fire patch system the top explosive tier uses, so it is time-boxed and respects protection. The patch is sized by `explosive.incendiary.burnRadius` rather than by `explosive.firePatchRadius`, so the ground fire covers what the arrow burned rather than a separate area |
 | Explosion | None, ever. No blast, no knockback, and no terrain damage beyond what the fire itself does |
 | The arrow afterwards | Spent on contact with a block, like the wind arrow, rather than recoverable |
 | A radius of zero | Burns nothing and places nothing |

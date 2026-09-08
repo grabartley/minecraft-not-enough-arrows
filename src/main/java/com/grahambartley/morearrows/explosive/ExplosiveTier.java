@@ -20,7 +20,7 @@ public enum ExplosiveTier {
   }
 
   public ExplosiveTierConfig in(final ExplosiveArrowConfig config) {
-    return selector.apply(config == null ? ExplosiveArrowConfig.defaults() : config);
+    return selector.apply(config);
   }
 
   public boolean leavesFire() {

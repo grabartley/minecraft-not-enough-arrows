@@ -44,7 +44,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aBlastBreaksTerrainWhenTerrainDamageIsOn(TestContext context) {
     context.setBlockState(NEARBY_BLOCK, Blocks.DIRT);
-    detonateWith(context, configWith(true, true));
+    detonateWith(context, configWith(true, false));
 
     context.expectBlock(Blocks.AIR, NEARBY_BLOCK);
     context.complete();

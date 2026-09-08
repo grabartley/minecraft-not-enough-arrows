@@ -34,9 +34,7 @@ class ConfigCodecTest {
                 8,
                 5999,
                 1.75f,
-                7,
-                42,
-                false),
+                new IncendiaryArrowConfig(7, 42, false)),
             new GrappleArrowConfig(127, 3.9f, 0.2f, false, false, 127, true),
             new UtilityArrowConfig(5999, 1199, 1, 15.5f, 7.5f),
             new PhysicsArrowConfig(8, List.of("minecraft:bedrock"), 16, false));

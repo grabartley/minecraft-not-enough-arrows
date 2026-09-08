@@ -5,8 +5,6 @@ import com.grahambartley.morearrows.entity.ExplosiveArrowEntity;
 import com.grahambartley.morearrows.fire.FirePatchService;
 import com.grahambartley.morearrows.fuse.FuseService;
 import com.grahambartley.morearrows.server.ServerConfigService;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -27,14 +25,15 @@ public final class BlastService {
 
   public static void detonate(
       @Nullable final ServerWorld world, @Nullable final ExplosiveArrowEntity arrow) {
-    if (world == null || arrow == null) {
+    if (world == null || arrow == null || arrow.isRemoved()) {
       return;
     }
 
     final ExplosiveArrowConfig explosive = ServerConfigService.get().explosive();
     blast(world, arrow, arrow.tier().in(explosive).power(), explosive);
     if (arrow.tier().leavesFire()) {
-      FirePatchService.ignite(world, BlockPos.ofFloored(arrow.getPos()), shooterOf(arrow));
+      FirePatchService.ignite(
+          world, BlockPos.ofFloored(arrow.getPos()), arrow.shootingPlayer().orElse(null));
     }
     arrow.discard();
   }
@@ -57,12 +56,5 @@ public final class BlastService {
         power,
         false,
         explosive.damageTerrain() ? World.ExplosionSourceType.TNT : World.ExplosionSourceType.NONE);
-  }
-
-  @Nullable
-  private static PlayerEntity shooterOf(final Entity arrow) {
-    return arrow instanceof ExplosiveArrowEntity explosive
-        ? explosive.shootingPlayer().orElse(null)
-        : null;
   }
 }

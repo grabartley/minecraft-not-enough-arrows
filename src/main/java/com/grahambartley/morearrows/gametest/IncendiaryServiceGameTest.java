@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows.gametest;
 
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
+import com.grahambartley.morearrows.config.IncendiaryArrowConfig;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
 import com.grahambartley.morearrows.config.ServerConfigHolder;
 import com.grahambartley.morearrows.incendiary.IncendiaryService;
@@ -24,6 +25,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
   private static final BlockPos DISTANT_STAND = new BlockPos(6, 3, 6);
   private static final int RADIUS = 3;
   private static final int IGNITE_SECONDS = 5;
+  private static final int FIRE_PATCH_TICKS = 200;
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityInsideTheRadiusCatchesFire(TestContext context) {
@@ -101,8 +103,10 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
           MoreArrowsConfig.defaults()
               .withExplosive(
                   ExplosiveArrowConfig.defaults()
-                      .withIncendiaryBurnRadius(0)
-                      .withIncendiaryIgnitesBlocks(false)));
+                      .withIncendiary(
+                          IncendiaryArrowConfig.defaults()
+                              .withBurnRadius(0)
+                              .withIgnitesBlocks(false))));
       burned =
           IncendiaryService.ignite(context.getWorld(), context.getAbsolute(CENTRE), null, null);
     } finally {
@@ -126,7 +130,8 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
         null,
         radius,
         igniteSeconds,
-        ignitesBlocks);
+        ignitesBlocks,
+        FIRE_PATCH_TICKS);
   }
 
   private static CowEntity cowAt(final TestContext context, final BlockPos relativePos) {
