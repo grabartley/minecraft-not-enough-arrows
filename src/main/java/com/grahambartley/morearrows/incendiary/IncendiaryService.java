@@ -9,6 +9,7 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -54,7 +55,12 @@ public final class IncendiaryService {
       FirePatchService.ignite(
           world, BlockPos.ofFloored(center), shooter, radius, firePatchDurationTicks);
     }
-    return burnEntities(world, center, source, shooter, radius, igniteSeconds);
+    return burnEntities(world, center, source, ownerOf(source), radius, igniteSeconds);
+  }
+
+  @Nullable
+  private static Entity ownerOf(@Nullable final Entity source) {
+    return source instanceof ProjectileEntity projectile ? projectile.getOwner() : null;
   }
 
   private static List<Entity> burnEntities(

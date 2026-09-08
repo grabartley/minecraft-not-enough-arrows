@@ -188,7 +188,7 @@ Each tier is shorter-fused and stronger than the one below it, so the ladder rea
 | Terrain damage | `explosive.damageTerrain`, **off by default**. The gunpowder arrow is craftable from gunpowder alone, which makes it the cheapest way to reach a build from range, so a fresh install cannot be used to grief terrain until an operator turns it on |
 | Entity damage | `explosive.damageEntities`, on by default, and independent of the terrain switch. Turning it off stops the blast hurting anything, but vanilla still throws entities clear of an explosion, so a blast with damage off is a shove rather than nothing |
 | A fuse already burning | Re-hitting an arrow that is already counting down does not restart or stack its fuse |
-| Hitting an entity | The arrow keeps itself rather than being consumed on contact, because vanilla would discard it and the fuse it carries would die with it. It arms and carries on to where it comes to rest |
+| Hitting an entity | The arrow keeps itself rather than being consumed on contact, because vanilla would discard it and the fuse it carries would die with it. It arms, stops where it struck, and drops to the ground to finish counting down. A Piercing crossbow does not make an explosive arrow pass through a second target: it arms on the first one it touches |
 | Contact damage | None. An explosive arrow that strikes a mob deals no arrow damage on the way past, because skipping vanilla's resolution is what keeps the fuse alive. The blast is the whole payload, and it lands a moment later |
 | A delay of zero | Detonates on contact, supported but not the default |
 | A power of zero | Detonates without an explosion, so an operator can disable a tier's blast without removing the arrow |

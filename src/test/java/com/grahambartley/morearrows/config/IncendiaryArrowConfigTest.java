@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -53,7 +54,6 @@ class IncendiaryArrowConfigTest {
   void aMissingFieldFallsBackToTheDefaultItWasGiven() {
     final IncendiaryArrowConfig fallback = new IncendiaryArrowConfig(7, 11, false);
 
-    assertEquals(
-        fallback, IncendiaryArrowConfig.fromJson(new com.google.gson.JsonObject(), fallback));
+    assertEquals(fallback, IncendiaryArrowConfig.fromJson(new JsonObject(), fallback));
   }
 }

@@ -60,6 +60,11 @@ public final class ExplosiveCommandNodes {
                 ExplosiveArrowConfig.BEEP_VOLUME_MIN,
                 ExplosiveArrowConfig.BEEP_VOLUME_MAX,
                 (current, value) -> change(current, explosive -> explosive.withBeepVolume(value))))
+        .then(incendiary());
+  }
+
+  private static LiteralArgumentBuilder<ServerCommandSource> incendiary() {
+    return ConfigOptionNodes.group(ConfigSettings.EXPLOSIVE_INCENDIARY)
         .then(
             ConfigOptionNodes.intOption(
                 ConfigSettings.EXPLOSIVE_INCENDIARY_BURN_RADIUS,

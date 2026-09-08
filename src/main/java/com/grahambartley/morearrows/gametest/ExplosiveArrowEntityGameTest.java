@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.test.CustomTestProvider;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -95,24 +96,33 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(
+      templateName = UtilityArrowTestSupport.TEMPLATE,
+      batchId = ENTITY_HIT_BATCH,
+      tickLimit = 120)
   public void anArrowThatStrikesAnEntityKeepsItselfAndItsFuse(TestContext context) {
     UtilityArrowTestSupport.raiseBackstop(context);
-    UtilityArrowTestSupport.liveTargetOnPedestalAt(context, new BlockPos(4, 3, 3));
+    final CowEntity target =
+        UtilityArrowTestSupport.liveTargetOnPedestalAt(
+            context, UtilityArrowTestSupport.IMPACT_FACE);
+    final float healthBefore = target.getHealth();
     MockPlayerSupport.fireEastFromBow(
         context,
         MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
         ModArrows.GUNPOWDER_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK + 10,
+        UtilityArrowTestSupport.LANDING_TICK + 30,
         () -> {
           final ExplosiveArrowEntity landed = landedArrow(context, ModArrows.GUNPOWDER_ARROW);
           context.assertTrue(
               landed != null, "An arrow that struck an entity should keep itself and its fuse");
           final boolean burning = FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null;
+          final float healthAfter = target.getHealth();
           defuse(context, landed);
           context.assertTrue(burning, "An arrow that struck an entity should be counting down");
+          context.assertEquals(
+              healthAfter, healthBefore, "An explosive arrow deals no damage on contact");
           context.complete();
         });
   }
