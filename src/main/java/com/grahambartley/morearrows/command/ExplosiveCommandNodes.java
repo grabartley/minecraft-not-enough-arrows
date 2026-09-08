@@ -73,9 +73,7 @@ public final class ExplosiveCommandNodes {
                 (current, value) ->
                     change(
                         current,
-                        explosive ->
-                            explosive.withIncendiary(
-                                explosive.incendiary().withBurnRadius(value)))))
+                        explosive -> explosive.withIncendiary(fire -> fire.withBurnRadius(value)))))
         .then(
             ConfigOptionNodes.intOption(
                 ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
@@ -85,8 +83,7 @@ public final class ExplosiveCommandNodes {
                     change(
                         current,
                         explosive ->
-                            explosive.withIncendiary(
-                                explosive.incendiary().withIgniteSeconds(value)))))
+                            explosive.withIncendiary(fire -> fire.withIgniteSeconds(value)))))
         .then(
             ConfigOptionNodes.booleanOption(
                 ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
@@ -94,8 +91,7 @@ public final class ExplosiveCommandNodes {
                     change(
                         current,
                         explosive ->
-                            explosive.withIncendiary(
-                                explosive.incendiary().withIgnitesBlocks(value)))));
+                            explosive.withIncendiary(fire -> fire.withIgnitesBlocks(value)))));
   }
 
   private static LiteralArgumentBuilder<ServerCommandSource> tier(

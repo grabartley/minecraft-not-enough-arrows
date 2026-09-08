@@ -55,6 +55,6 @@ public final class BlastService {
         arrow.getZ(),
         power,
         false,
-        explosive.damageTerrain() ? World.ExplosionSourceType.TNT : World.ExplosionSourceType.NONE);
+        World.ExplosionSourceType.TNT);
   }
 }

@@ -211,6 +211,11 @@ public record ExplosiveArrowConfig(
         incendiary);
   }
 
+  public ExplosiveArrowConfig withIncendiary(
+      final java.util.function.UnaryOperator<IncendiaryArrowConfig> change) {
+    return withIncendiary(change.apply(incendiary));
+  }
+
   public ExplosiveArrowConfig withIncendiary(final IncendiaryArrowConfig value) {
     return new ExplosiveArrowConfig(
         gunpowder,

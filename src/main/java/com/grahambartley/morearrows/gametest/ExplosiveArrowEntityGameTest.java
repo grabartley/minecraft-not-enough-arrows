@@ -16,6 +16,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFunction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
@@ -112,18 +113,40 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
         ModArrows.GUNPOWDER_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK + 30,
+        UtilityArrowTestSupport.LANDING_TICK + 10,
         () -> {
           final ExplosiveArrowEntity landed = landedArrow(context, ModArrows.GUNPOWDER_ARROW);
           context.assertTrue(
               landed != null, "An arrow that struck an entity should keep itself and its fuse");
+          final Vec3d restingAt = landed.getPos();
           final boolean burning = FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null;
           final float healthAfter = target.getHealth();
-          defuse(context, landed);
-          context.assertTrue(burning, "An arrow that struck an entity should be counting down");
-          context.assertEquals(
-              healthAfter, healthBefore, "An explosive arrow deals no damage on contact");
-          context.complete();
+
+          context.runAtTick(
+              UtilityArrowTestSupport.LANDING_TICK + 20,
+              () -> {
+                final Vec3d stillAt = landed.getPos();
+                defuse(context, landed);
+                context.assertTrue(
+                    burning, "An arrow that struck an entity should be counting down");
+                context.assertEquals(
+                    healthAfter, healthBefore, "An explosive arrow deals no damage on contact");
+                context.assertTrue(
+                    stillAt.squaredDistanceTo(restingAt) < 1.0e-6,
+                    "An arrow that struck an entity should hold where it struck rather than drift,"
+                        + " but moved from "
+                        + restingAt
+                        + " to "
+                        + stillAt);
+                context.assertTrue(
+                    restingAt.squaredDistanceTo(target.getPos()) < 9.0,
+                    "An arrow should stop at the mob it struck rather than short of it, but rested"
+                        + " at "
+                        + restingAt
+                        + " with the target at "
+                        + target.getPos());
+                context.complete();
+              });
         });
   }
 

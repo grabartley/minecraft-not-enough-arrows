@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,11 +57,11 @@ public abstract class ExplosiveArrowEntity extends BaseArrowEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {
     struck.add(entityHitResult.getEntity().getId());
     final ArrowImpact impact = arm(world, ArrowImpact.RETAIN);
-    // Vanilla would discard the arrow here and the fuse would die with it, so the arrow is
-    // stopped by hand instead. Without this it keeps full velocity through an unclamped hit
-    // and can pass into the block behind its target.
-    setVelocity(Vec3d.ZERO);
-    velocityModified = true;
+    if (isRemoved()) {
+      return impact;
+    }
+    setVelocity(entityHitResult.getPos().subtract(getPos()));
+    inGround = true;
     return impact;
   }
 

@@ -87,7 +87,7 @@ public final class ExplosiveOptions {
             IncendiaryArrowConfig.BURN_RADIUS_MAX,
             config -> config.explosive().incendiary().burnRadius(),
             (config, value) ->
-                explosive(config, it -> it.withIncendiary(it.incendiary().withBurnRadius(value)))));
+                explosive(config, it -> it.withIncendiary(fire -> fire.withBurnRadius(value)))));
     options.add(
         new IntOption<>(
             ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITE_SECONDS,
@@ -95,15 +95,13 @@ public final class ExplosiveOptions {
             IncendiaryArrowConfig.IGNITE_SECONDS_MAX,
             config -> config.explosive().incendiary().igniteSeconds(),
             (config, value) ->
-                explosive(
-                    config, it -> it.withIncendiary(it.incendiary().withIgniteSeconds(value)))));
+                explosive(config, it -> it.withIncendiary(fire -> fire.withIgniteSeconds(value)))));
     options.add(
         new BooleanOption<>(
             ConfigSettings.EXPLOSIVE_INCENDIARY_IGNITES_BLOCKS,
             config -> config.explosive().incendiary().ignitesBlocks(),
             (config, value) ->
-                explosive(
-                    config, it -> it.withIncendiary(it.incendiary().withIgnitesBlocks(value)))));
+                explosive(config, it -> it.withIncendiary(fire -> fire.withIgnitesBlocks(value)))));
     return List.copyOf(options);
   }
 
