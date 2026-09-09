@@ -83,5 +83,6 @@
   "info.more-arrows.fire_charge_arrow": "The largest explosion of the three tiers, crafted from eight TNT arrows around a fire charge, and the only one that leaves a fire patch behind.",
   "info.more-arrows.incendiary_arrow": "Fire without an explosion. On contact it sets every entity in the burn radius alight and lays a fire patch on the surface, with no blast and no terrain damage beyond what the fire itself does.",
   "info.more-arrows.gravity_arrow": "Drops the block it strikes, which then falls like vanilla sand and re-places itself where it lands. It affects only the block that was hit unless an operator raises the impact radius, it never moves an unbreakable block, and it goes down with the block it drops rather than being recovered.",
-  "info.more-arrows.ricochet_arrow": "Glances off the surfaces it hits instead of embedding, reflecting like light off a mirror so a shot can be banked around a corner or off a ceiling. It runs out of bounces after the configured count and then embeds, recoverable as any arrow is. Hitting an entity is a normal arrow hit, never a bounce."
+  "info.more-arrows.ricochet_arrow": "Glances off the surfaces it hits instead of embedding, reflecting like light off a mirror so a shot can be banked around a corner or off a ceiling. It runs out of bounces after the configured count and then embeds, recoverable as any arrow is. Hitting an entity is a normal arrow hit, never a bounce.",
+  "hud.more-arrows.countdown": "Fuse %s"
 }

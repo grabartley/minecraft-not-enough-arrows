@@ -41,6 +41,7 @@
       "com.grahambartley.morearrows.gametest.BlockEditPermissionGameTest",
       "com.grahambartley.morearrows.gametest.BlockPlacementGameTest",
       "com.grahambartley.morearrows.gametest.ChargedCrossbowArrowGameTest",
+      "com.grahambartley.morearrows.gametest.CountdownBroadcasterGameTest",
       "com.grahambartley.morearrows.gametest.ExplosiveArrowEntityGameTest",
       "com.grahambartley.morearrows.gametest.FallingBlocksGameTest",
       "com.grahambartley.morearrows.gametest.FirePatchPlacerGameTest",

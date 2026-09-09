@@ -1,10 +1,13 @@
 package com.grahambartley.morearrows.network;
 
 import com.grahambartley.morearrows.config.ClientConfigHolder;
+import com.grahambartley.morearrows.hud.CountdownSync;
+import com.grahambartley.morearrows.network.CountdownPayloads.CountdownS2CPayload;
 import com.grahambartley.morearrows.network.NockedArrowPayloads.NockedArrowS2CPayload;
 import com.grahambartley.morearrows.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
 import com.grahambartley.morearrows.render.NockedArrowSync;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -17,13 +20,30 @@ public final class ModNetworkingClient {
         SyncServerConfigS2CPayload.ID, ModNetworkingClient::handleSyncServerConfig);
     ClientPlayNetworking.registerGlobalReceiver(
         NockedArrowS2CPayload.ID, ModNetworkingClient::handleNockedArrow);
+    ClientPlayNetworking.registerGlobalReceiver(
+        CountdownS2CPayload.ID, ModNetworkingClient::handleCountdown);
+    ClientTickEvents.END_CLIENT_TICK.register(client -> CountdownSync.burnDown());
     ClientEntityEvents.ENTITY_UNLOAD.register(
-        (entity, world) -> NockedArrowSync.forget(entity.getId()));
+        (entity, world) -> {
+          NockedArrowSync.forget(entity.getId());
+          CountdownSync.forget(entity.getId());
+        });
     ClientPlayConnectionEvents.DISCONNECT.register(
         (handler, client) -> {
           ClientConfigHolder.clear();
           NockedArrowSync.clear();
+          CountdownSync.clear();
         });
+  }
+
+  private static void handleCountdown(
+      final CountdownS2CPayload payload, final ClientPlayNetworking.Context context) {
+    context
+        .client()
+        .execute(
+            () ->
+                CountdownSync.accept(
+                    payload.carrierId(), payload.delayTicks(), payload.remainingTicks()));
   }
 
   private static void handleNockedArrow(

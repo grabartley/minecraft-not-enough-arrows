@@ -3,6 +3,7 @@ package com.grahambartley.morearrows;
 import com.grahambartley.morearrows.anchor.AnchorService;
 import com.grahambartley.morearrows.blast.BlastService;
 import com.grahambartley.morearrows.command.MoreArrowsCommand;
+import com.grahambartley.morearrows.countdown.CountdownBroadcaster;
 import com.grahambartley.morearrows.fire.FirePatchService;
 import com.grahambartley.morearrows.fuse.FuseService;
 import com.grahambartley.morearrows.grapple.GrappleService;
@@ -30,6 +31,7 @@ public class MoreArrows implements ModInitializer {
     ModNetworking.registerPayloads();
     FirePatchService.register();
     FuseService.register();
+    CountdownBroadcaster.register();
     BlastService.register();
     AnchorService.register();
     GrappleService.register();

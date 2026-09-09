@@ -84,6 +84,19 @@ The fuse itself knows nothing about explosions. It signals that a countdown fini
 
 Because the blast position is read from the carrier at the moment the fuse expires, there is no path that detonates at a stale position. Fuse state is server-owned and lives in memory only, so a restart mid-countdown defuses what was burning rather than resuming it.
 
+A burning fuse is also drawn, so a countdown can be read as well as heard. Every player who can see the carrier gets the readout, not just whoever fired the arrow, which is the whole point of a telegraph: it is worth most to the person it is aimed at, and to anyone standing next to them.
+
+| Rule | Behaviour |
+|---|---|
+| Who sees it | Everyone tracking the carrier, plus the carrier themselves when a player is the one walking around with it |
+| What it shows | The time left and a bar that empties as the fuse burns, so urgency reads without relying on colour |
+| Where the number comes from | The server announces a fuse once, with its full length and the time left, and the client counts down from there. It is a readout rather than a timer: the blast still lands when the server says it does, and [ADR 0024](docs/adr/0024-the-countdown-is-sent-once-and-counted-down-locally.md) covers why it is not sent every tick |
+| Turning it off | `client.showCountdownHud`, a per-player preference that changes nothing for anyone else |
+| Making it bigger | `client.countdownHudScale` |
+| Turning the beep off | `client.playCountdownSound`. The server decides whether a beep happens and how loud, and this decides whether you hear it, so it can mute a beep the server is playing and cannot bring back one `explosive.beepVolume` already silenced |
+
+Those three are client state rather than server config, so they live in the client's own file and are never sent anywhere. A player muting the countdown for themselves does not mute it for the person standing beside them.
+
 ## Block Anchors
 
 Arrows that attach themselves to the world share one anchoring system rather than each deciding for itself what counts as something worth holding onto, so the grapple arrow and the rope arrow agree on where an arrow may take hold. The grapple goes further and takes a tracked hold, because a pull has to know when the block under it is gone. A rope only borrows the question, since the rope block answers for its own support once it is placed.
