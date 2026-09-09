@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.nock;
 
+import com.grahambartley.morearrows.item.BaseArrowItem;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.item.CrossbowItem;
@@ -19,6 +20,6 @@ public final class ChargedCrossbowArrow {
       return ItemStack.EMPTY;
     }
     final ItemStack arrow = charged.getProjectiles().getFirst();
-    return NockedBowArrow.isModArrow(arrow) ? arrow : ItemStack.EMPTY;
+    return BaseArrowItem.isModArrow(arrow) ? arrow : ItemStack.EMPTY;
   }
 }

@@ -1,6 +1,6 @@
 package com.grahambartley.morearrows.render;
 
-import com.grahambartley.morearrows.nock.NockedBowArrow;
+import com.grahambartley.morearrows.item.BaseArrowItem;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.item.ItemStack;
@@ -11,7 +11,7 @@ public final class NockedArrowSync {
   private NockedArrowSync() {}
 
   public static void accept(final int entityId, final ItemStack arrow) {
-    if (NockedBowArrow.isModArrow(arrow)) {
+    if (BaseArrowItem.isModArrow(arrow)) {
       BY_ENTITY_ID.put(entityId, arrow);
     } else {
       BY_ENTITY_ID.remove(entityId);

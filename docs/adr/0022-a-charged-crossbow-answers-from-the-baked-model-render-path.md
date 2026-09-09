@@ -29,6 +29,8 @@ A charged crossbow now shows its arrow on every surface that draws one: in the h
 
 A drawn bow is still held-only, and ADR 0021 rejected exactly this asymmetry on the grounds that a surface where one weapon updates and the other silently does not is worse than one where neither does. That objection does not survive the split being per weapon rather than per surface. A bow has a nocked arrow only while it is being pulled, and it can only be pulled in a hand, so a bow in a slot is not withholding an answer, it has none. There is no missing overlay for a player to notice.
 
+Accepted drawback: a multishot crossbow holds three projectiles and shows one arrow, the first, which is also the first one it fires. Drawing all three would need three placements this record does not have, and one overlay reads as "loaded with this" rather than as a count.
+
 Accepted drawback: the mod now draws over an item in the inventory screen, which is the most render-hooked surface in the game. Anything else that draws items its own way, rather than through `ItemRenderer`, gets no overlay, and anything that wraps the baked model overload sees the overlay as part of the item.
 
 Accepted drawback: reading the arrow's model from `ItemModels` skips override resolution, so an arrow whose model ever branched on a data component would draw its base model in a slot and its resolved model in the hand. No arrow this mod ships has overrides, and the assumption is written down here rather than found later.
