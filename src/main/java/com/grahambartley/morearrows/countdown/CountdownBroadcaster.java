@@ -48,13 +48,13 @@ public final class CountdownBroadcaster {
 
     for (final Fuse fuse : FuseService.fusesIn(world)) {
       final Entity carrier = world.getEntity(fuse.hostId());
-      if (carrier == null) {
+      if (carrier == null || carrier.isRemoved()) {
         continue;
       }
 
       burning.add(fuse.hostId());
       if (changes.record(fuse.hostId(), carrier.getId(), fuse.delayTicks())) {
-        announceTo(watchersOf(carrier), payloadFor(carrier, fuse));
+        announceTo(PlayerLookup.tracking(carrier), payloadFor(carrier, fuse));
       }
     }
 
@@ -88,14 +88,6 @@ public final class CountdownBroadcaster {
 
   private static CountdownS2CPayload payloadFor(final Entity carrier, final Fuse fuse) {
     return new CountdownS2CPayload(carrier.getId(), fuse.delayTicks(), fuse.remainingTicks());
-  }
-
-  private static Iterable<ServerPlayerEntity> watchersOf(final Entity carrier) {
-    final Set<ServerPlayerEntity> watchers = new HashSet<>(PlayerLookup.tracking(carrier));
-    if (carrier instanceof ServerPlayerEntity carrying) {
-      watchers.add(carrying);
-    }
-    return watchers;
   }
 
   private static void announceTo(

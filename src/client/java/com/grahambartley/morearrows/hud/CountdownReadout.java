@@ -1,5 +1,7 @@
 package com.grahambartley.morearrows.hud;
 
+import java.util.Locale;
+
 public final class CountdownReadout {
   public static final int TICKS_PER_SECOND = 20;
   public static final float URGENT_SECONDS = 1.5f;
@@ -11,7 +13,7 @@ public final class CountdownReadout {
   }
 
   public static String secondsText(final int remainingTicks) {
-    return String.format("%.1fs", secondsLeft(remainingTicks));
+    return String.format(Locale.ROOT, "%.1fs", secondsLeft(remainingTicks));
   }
 
   public static float fractionLeft(final int remainingTicks, final int delayTicks) {

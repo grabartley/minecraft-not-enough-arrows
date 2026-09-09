@@ -5,11 +5,16 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 public final class CountdownSync {
   private static final Map<Integer, Countdown> BURNING = new LinkedHashMap<>();
 
   private CountdownSync() {}
+
+  public static void register() {
+    ClientTickEvents.END_WORLD_TICK.register(world -> burnDown());
+  }
 
   public static void accept(final int carrierId, final int delayTicks, final int remainingTicks) {
     final Countdown countdown = new Countdown(carrierId, delayTicks, remainingTicks);
@@ -21,8 +26,8 @@ public final class CountdownSync {
   }
 
   public static void burnDown() {
-    BURNING.values().removeIf(countdown -> !countdown.isBurning());
     BURNING.replaceAll((carrierId, countdown) -> countdown.burned());
+    BURNING.values().removeIf(countdown -> !countdown.isBurning());
   }
 
   public static List<Countdown> mostUrgentFirst() {

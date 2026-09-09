@@ -1,4 +1,4 @@
-package com.grahambartley.morearrows.hud;
+package com.grahambartley.morearrows.sound;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

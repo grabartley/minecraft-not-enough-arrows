@@ -30,8 +30,4 @@ public final class CountdownChanges {
   public boolean knows(final UUID carrier) {
     return lastSent.containsKey(carrier);
   }
-
-  public void clear() {
-    lastSent.clear();
-  }
 }

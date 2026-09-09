@@ -34,7 +34,8 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
     context.assertTrue(
         original.equals(received),
         "A burning countdown should survive a wire round trip, but was " + received);
-    context.assertTrue(received.isBurning(), "A countdown with time left should read as burning");
+    context.assertEquals(
+        143, received.remainingTicks(), "A burning countdown should carry the time it has left");
     context.complete();
   }
 
@@ -43,7 +44,8 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
     final CountdownS2CPayload received = roundTrip(context, CountdownS2CPayload.ended(7));
 
     context.assertEquals(7, received.carrierId(), "An ended countdown should name its carrier");
-    context.assertFalse(received.isBurning(), "An ended countdown should not read as burning");
+    context.assertEquals(
+        0, received.remainingTicks(), "An ended countdown should carry nothing left to draw");
     context.complete();
   }
 

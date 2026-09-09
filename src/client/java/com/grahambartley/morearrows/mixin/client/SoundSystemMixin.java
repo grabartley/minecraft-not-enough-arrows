@@ -1,7 +1,7 @@
 package com.grahambartley.morearrows.mixin.client;
 
 import com.grahambartley.morearrows.client.state.ClientStateService;
-import com.grahambartley.morearrows.hud.CountdownMute;
+import com.grahambartley.morearrows.sound.CountdownMute;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
 import org.spongepowered.asm.mixin.Mixin;

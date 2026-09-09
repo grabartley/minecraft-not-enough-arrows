@@ -22,10 +22,6 @@ public final class CountdownPayloads {
       return new CountdownS2CPayload(carrierId, 0, 0);
     }
 
-    public boolean isBurning() {
-      return delayTicks > 0 && remainingTicks > 0;
-    }
-
     @Override
     public CustomPayload.Id<? extends CustomPayload> getId() {
       return ID;

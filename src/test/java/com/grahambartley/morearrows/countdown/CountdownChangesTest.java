@@ -93,14 +93,4 @@ class CountdownChangesTest {
 
     assertTrue(changes.record(CARRIER, CARRIER_ENTITY_ID, 60));
   }
-
-  @Test
-  void clearingForgetsEveryCarrier() {
-    changes.record(CARRIER, CARRIER_ENTITY_ID, 60);
-    changes.record(OTHER, CARRIER_ENTITY_ID + 1, 40);
-
-    changes.clear();
-
-    assertEquals(Set.of(), changes.announced());
-  }
 }

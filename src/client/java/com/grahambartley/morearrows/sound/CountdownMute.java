@@ -1,4 +1,4 @@
-package com.grahambartley.morearrows.hud;
+package com.grahambartley.morearrows.sound;
 
 import com.grahambartley.morearrows.ModSounds;
 import net.minecraft.util.Identifier;

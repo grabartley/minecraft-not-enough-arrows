@@ -7,7 +7,6 @@ import com.grahambartley.morearrows.network.NockedArrowPayloads.NockedArrowS2CPa
 import com.grahambartley.morearrows.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
 import com.grahambartley.morearrows.render.NockedArrowSync;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
@@ -22,7 +21,6 @@ public final class ModNetworkingClient {
         NockedArrowS2CPayload.ID, ModNetworkingClient::handleNockedArrow);
     ClientPlayNetworking.registerGlobalReceiver(
         CountdownS2CPayload.ID, ModNetworkingClient::handleCountdown);
-    ClientTickEvents.END_CLIENT_TICK.register(client -> CountdownSync.burnDown());
     ClientEntityEvents.ENTITY_UNLOAD.register(
         (entity, world) -> {
           NockedArrowSync.forget(entity.getId());

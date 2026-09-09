@@ -88,7 +88,7 @@ A burning fuse is also drawn, so a countdown can be read as well as heard. Every
 
 | Rule | Behaviour |
 |---|---|
-| Who sees it | Everyone tracking the carrier, plus the carrier themselves when a player is the one walking around with it |
+| Who sees it | Every player tracking the arrow that is counting down, not only whoever fired it |
 | What it shows | The time left and a bar that empties as the fuse burns, so urgency reads without relying on colour |
 | Where the number comes from | The server announces a fuse once, with its full length and the time left, and the client counts down from there. It is a readout rather than a timer: the blast still lands when the server says it does, and [ADR 0024](docs/adr/0024-the-countdown-is-sent-once-and-counted-down-locally.md) covers why it is not sent every tick |
 | Turning it off | `client.showCountdownHud`, a per-player preference that changes nothing for anyone else |
