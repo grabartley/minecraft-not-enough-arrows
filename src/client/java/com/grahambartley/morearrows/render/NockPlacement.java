@@ -9,11 +9,11 @@ public record NockPlacement(float offsetX, float offsetY) {
   private static final float SHORT_PULL = 0.65F;
   private static final float FULL_PULL = 0.9F;
   private static final float PIXEL = 1.0F / 16.0F;
-  private static final NockPlacement CHARGED_CROSSBOW = ofPixels(-1, -1);
+  private static final int BARELY_DRAWN = 0;
+  private static final NockPlacement CHARGED_CROSSBOW = forPullStage(BARELY_DRAWN);
 
   public static NockPlacement forBowPull(final int maxUseTime, final int useTimeLeft) {
-    final int stage = pullStage((maxUseTime - useTimeLeft) / PULL_TICKS);
-    return ofPixels(stage - 1, stage - 1);
+    return forPullStage(pullStage((maxUseTime - useTimeLeft) / PULL_TICKS));
   }
 
   public static NockPlacement forChargedCrossbow() {
@@ -29,10 +29,14 @@ public record NockPlacement(float offsetX, float offsetY) {
     if (pull >= FULL_PULL) {
       return 2;
     }
-    return pull >= SHORT_PULL ? 1 : 0;
+    return pull >= SHORT_PULL ? 1 : BARELY_DRAWN;
   }
 
-  private static NockPlacement ofPixels(final int x, final int y) {
-    return new NockPlacement(x * PIXEL, -y * PIXEL);
+  private static NockPlacement forPullStage(final int stage) {
+    return ofSpritePixels(stage - 1, stage - 1);
+  }
+
+  private static NockPlacement ofSpritePixels(final int spriteX, final int spriteY) {
+    return new NockPlacement(spriteX * PIXEL, -spriteY * PIXEL);
   }
 }

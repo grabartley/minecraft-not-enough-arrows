@@ -10,7 +10,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class NockPlacementTest {
   private static final int BOW_MAX_USE_TIME = 72000;
-  private static final float PULL_TICKS = 20.0F;
   private static final float PIXEL = 1.0F / 16.0F;
   private static final float TOLERANCE = 1.0E-4F;
 
@@ -29,28 +28,12 @@ class NockPlacementTest {
     "20, 1, -1",
     "200, 1, -1",
   })
-  void slidesTheArrowOnePixelForEachPullStageTheBowTextureAdvances(
+  void slidesTheArrowOnePixelAtEachPullFractionTheVanillaBowModelBranchesOn(
       final int heldTicks, final float expectedPixelsX, final float expectedPixelsY) {
     final NockPlacement placement = afterHolding(heldTicks);
 
     assertEquals(expectedPixelsX * PIXEL, placement.offsetX(), TOLERANCE, "offset x");
     assertEquals(expectedPixelsY * PIXEL, placement.offsetY(), TOLERANCE, "offset y");
-  }
-
-  @ParameterizedTest
-  @CsvSource({
-    "12, 0.6, 0",
-    "13, 0.65, 1",
-    "17, 0.85, 1",
-    "18, 0.9, 2",
-    "19, 0.95, 2",
-  })
-  void changesStageOnTheSamePullFractionsTheVanillaBowModelBranchesOn(
-      final int heldTicks, final float expectedPull, final int expectedStage) {
-    assertEquals(expectedPull, heldTicks / PULL_TICKS, TOLERANCE, "pull fraction");
-
-    assertEquals(
-        (expectedStage - 1) * PIXEL, afterHolding(heldTicks).offsetX(), TOLERANCE, "stage offset");
   }
 
   @Test
@@ -62,11 +45,8 @@ class NockPlacementTest {
   }
 
   @Test
-  void holdsTheChargedCrossbowArrowOnePixelUpAndLeftOfTheFullyDrawnBowArrow() {
-    final NockPlacement placement = NockPlacement.forChargedCrossbow();
-
-    assertEquals(-PIXEL, placement.offsetX(), TOLERANCE, "offset x");
-    assertEquals(PIXEL, placement.offsetY(), TOLERANCE, "offset y");
+  void holdsAChargedCrossbowArrowWhereABarelyDrawnBowHoldsIts() {
+    assertEquals(afterHolding(0), NockPlacement.forChargedCrossbow());
   }
 
   @ParameterizedTest

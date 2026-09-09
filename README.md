@@ -23,7 +23,11 @@ Recovery follows vanilla exactly. An arrow fired in survival is picked back up a
 
 An arrow shot by a dispenser has no player behind it. Arrow effects account for that, so no effect misbehaves in a redstone contraption.
 
-The weapon shows which arrow it is about to fire. A drawn bow and a charged crossbow both draw the arrow that will actually leave them, at every pull stage, in either hand, in first and third person, and in the inventory. A vanilla arrow keeps the vanilla look exactly. Nothing about that is new art: the arrow's own item sprite is turned a quarter turn and drawn over the weapon, which is why an arrow added later gets it for nothing, and [ADR 0021](docs/adr/0021-the-nocked-arrow-is-drawn-over-the-weapon.md) covers why that beats shipping a bow model per arrow.
+The weapon shows which arrow it is about to fire. A drawn bow and a charged crossbow both draw the arrow that will actually leave them, at every pull stage, in either hand, and in first person as well as third. A vanilla arrow keeps the vanilla look exactly. Nothing about that is new art: the arrow's own item sprite is turned a quarter turn and drawn over the weapon, which is why an arrow added later gets it for nothing, and [ADR 0021](docs/adr/0021-the-nocked-arrow-is-drawn-over-the-weapon.md) covers why that beats shipping a bow model per arrow.
+
+It is the weapon in a hand that shows this, not the weapon in a slot. An inventory or hotbar icon is drawn down a different path that never reaches the renderer this hooks, so a charged crossbow in a slot looks the way it always has.
+
+Across a server, another player's charged crossbow shows its arrow, because the loaded stack rides on the crossbow itself. Another player's drawn bow shows one only while they hold the arrow in a hand, since the arrow a bow is about to fire is otherwise found by searching the shooter's inventory and a player's inventory is never sent to anyone else's client.
 
 ## Fire Patches
 
