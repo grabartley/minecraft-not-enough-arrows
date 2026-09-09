@@ -15,20 +15,11 @@ public final class NockedArrowLookup {
 
   private NockedArrowLookup() {}
 
-  public static Optional<NockedArrow> on(
-      final ItemStack weapon, @Nullable final LivingEntity holder) {
-    if (weapon.getItem() instanceof CrossbowItem) {
-      return chargedInto(weapon);
+  public static Optional<NockedArrow> chargedInto(final ItemStack weapon) {
+    if (!(weapon.getItem() instanceof CrossbowItem)) {
+      return Optional.empty();
     }
-    if (weapon.getItem() instanceof BowItem) {
-      return drawnOn(weapon, holder);
-    }
-    return Optional.empty();
-  }
-
-  private static Optional<NockedArrow> chargedInto(final ItemStack crossbow) {
-    final ChargedProjectilesComponent charged =
-        crossbow.get(DataComponentTypes.CHARGED_PROJECTILES);
+    final ChargedProjectilesComponent charged = weapon.get(DataComponentTypes.CHARGED_PROJECTILES);
     if (charged == null || charged.isEmpty()) {
       return Optional.empty();
     }
@@ -36,19 +27,22 @@ public final class NockedArrowLookup {
         .map(arrow -> new NockedArrow(arrow, NockPlacement.forChargedCrossbow()));
   }
 
-  private static Optional<NockedArrow> drawnOn(
-      final ItemStack bow, @Nullable final LivingEntity holder) {
-    if (holder == null || !holder.isUsingItem() || holder.getActiveItem() != bow) {
+  public static Optional<NockedArrow> drawnOn(
+      final ItemStack weapon, @Nullable final LivingEntity holder) {
+    if (!(weapon.getItem() instanceof BowItem)) {
       return Optional.empty();
     }
-    final ItemStack arrow = arrowFor(bow, holder);
+    if (holder == null || !holder.isUsingItem() || holder.getActiveItem() != weapon) {
+      return Optional.empty();
+    }
+    final ItemStack arrow = arrowFor(weapon, holder);
     if (arrow.isEmpty()) {
       return Optional.empty();
     }
     return Optional.of(
         new NockedArrow(
             arrow,
-            NockPlacement.forBowPull(bow.getMaxUseTime(holder), holder.getItemUseTimeLeft())));
+            NockPlacement.forBowPull(weapon.getMaxUseTime(holder), holder.getItemUseTimeLeft())));
   }
 
   private static ItemStack arrowFor(final ItemStack bow, final LivingEntity holder) {

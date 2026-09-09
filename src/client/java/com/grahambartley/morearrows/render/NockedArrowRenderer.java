@@ -14,7 +14,7 @@ public final class NockedArrowRenderer {
 
   private NockedArrowRenderer() {}
 
-  public static void render(
+  public static void renderDrawnBow(
       final ItemRenderer itemRenderer,
       @Nullable final LivingEntity holder,
       final ItemStack weapon,
@@ -26,26 +26,71 @@ public final class NockedArrowRenderer {
       final int light,
       final int overlay,
       final int seed) {
-    NockedArrowLookup.on(weapon, holder)
+    NockedArrowLookup.drawnOn(weapon, holder)
         .ifPresent(
-            nocked -> {
-              final BakedModel weaponModel = itemRenderer.getModel(weapon, world, holder, seed);
-              final BakedModel arrowModel =
-                  itemRenderer.getModel(nocked.arrow(), world, holder, seed);
+            nocked ->
+                draw(
+                    itemRenderer,
+                    nocked,
+                    itemRenderer.getModel(weapon, world, holder, seed),
+                    itemRenderer.getModel(nocked.arrow(), world, holder, seed),
+                    mode,
+                    leftHanded,
+                    matrices,
+                    vertexConsumers,
+                    light,
+                    overlay));
+  }
 
-              matrices.push();
-              weaponModel.getTransformation().getTransformation(mode).apply(leftHanded, matrices);
-              nocked.placement().applyTo(matrices);
-              itemRenderer.renderItem(
-                  nocked.arrow(),
-                  ModelTransformationMode.NONE,
-                  leftHanded,
-                  matrices,
-                  vertexConsumers,
-                  light,
-                  overlay,
-                  arrowModel);
-              matrices.pop();
-            });
+  public static void renderChargedCrossbow(
+      final ItemRenderer itemRenderer,
+      final ItemStack weapon,
+      final BakedModel weaponModel,
+      final ModelTransformationMode mode,
+      final boolean leftHanded,
+      final MatrixStack matrices,
+      final VertexConsumerProvider vertexConsumers,
+      final int light,
+      final int overlay) {
+    NockedArrowLookup.chargedInto(weapon)
+        .ifPresent(
+            nocked ->
+                draw(
+                    itemRenderer,
+                    nocked,
+                    weaponModel,
+                    itemRenderer.getModels().getModel(nocked.arrow()),
+                    mode,
+                    leftHanded,
+                    matrices,
+                    vertexConsumers,
+                    light,
+                    overlay));
+  }
+
+  private static void draw(
+      final ItemRenderer itemRenderer,
+      final NockedArrow nocked,
+      final BakedModel weaponModel,
+      final BakedModel arrowModel,
+      final ModelTransformationMode mode,
+      final boolean leftHanded,
+      final MatrixStack matrices,
+      final VertexConsumerProvider vertexConsumers,
+      final int light,
+      final int overlay) {
+    matrices.push();
+    weaponModel.getTransformation().getTransformation(mode).apply(leftHanded, matrices);
+    nocked.placement().applyTo(matrices);
+    itemRenderer.renderItem(
+        nocked.arrow(),
+        ModelTransformationMode.NONE,
+        leftHanded,
+        matrices,
+        vertexConsumers,
+        light,
+        overlay,
+        arrowModel);
+    matrices.pop();
   }
 }

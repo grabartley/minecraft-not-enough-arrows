@@ -1,6 +1,6 @@
 # ADR 0021: The nocked arrow is drawn over the weapon rather than modelled into it
 
-- **Status:** Accepted
+- **Status:** Accepted. The drawback about slots and dropped items is revised by [ADR 0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md).
 - **Date:** 2026-09-09
 
 ## Context
