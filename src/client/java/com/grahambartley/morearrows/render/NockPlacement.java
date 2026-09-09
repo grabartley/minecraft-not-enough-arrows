@@ -5,6 +5,7 @@ import net.minecraft.util.math.RotationAxis;
 
 public record NockPlacement(float offsetX, float offsetY) {
   private static final float ROTATION_DEGREES = 90.0F;
+  private static final float DEPTH_SCALE = 1.5F;
   private static final float PULL_TICKS = 20.0F;
   private static final float SHORT_PULL = 0.65F;
   private static final float FULL_PULL = 0.9F;
@@ -23,6 +24,7 @@ public record NockPlacement(float offsetX, float offsetY) {
   public void applyTo(final MatrixStack matrices) {
     matrices.translate(offsetX, offsetY, 0.0F);
     matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(ROTATION_DEGREES));
+    matrices.scale(1.0F, 1.0F, DEPTH_SCALE);
   }
 
   private static int pullStage(final float pull) {

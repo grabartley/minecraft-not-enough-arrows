@@ -19,6 +19,8 @@ The sprite is reused rather than redrawn because vanilla's arrow and this mod's 
 
 The overlay is drawn in the weapon's own model space, after the weapon's display transformation and before the half-block shift every item model gets. That is what makes one set of offsets correct wherever a weapon is held: first person and third person, left hand and right hand, all differ only in the display transformation the overlay inherits from the weapon.
 
+The overlay is also stretched in depth about its own centre, so it stands proud of the weapon on the front face and on the back face at once. Submitting it after the weapon into the same render layer is not enough on its own: vanilla can stack `layer1` over `layer0` at one depth because both layers come out of the same generator with bit-identical vertices, and the quarter turn here breaks that, so the two surfaces interpolate depth slightly differently and stipple against each other. Floating the arrow forward instead would fix the front and lose the back, because the face nearest a viewer standing behind the weapon is the one with the smaller depth.
+
 Only a `BaseArrowItem` gets an overlay. A vanilla arrow, a tipped arrow, and a spectral arrow are all left to render exactly as they do today.
 
 ## Consequences
@@ -29,7 +31,7 @@ No vanilla model is replaced, so a mod that does take over `minecraft:bow` keeps
 
 Accepted drawback: the offsets are measured against where vanilla draws its arrow, and vanilla's pull thresholds of 0.65 and 0.9 are copied out of `bow.json` rather than read from it. A resource pack that redraws `bow_pulling_N` with the arrow somewhere else, or a version that retunes those thresholds, misaligns the overlay. The failure is cosmetic and the constants sit together in one record, which is the trade for not owning forty-four textures.
 
-Accepted drawback: the overlay is coplanar with the weapon rather than floated in front of it, so it relies on being submitted after the weapon into the same render layer and winning on a less-or-equal depth test. That is how vanilla stacks `layer1` over `layer0` in any item model, but it is an ordering assumption rather than a geometric one, and adding depth instead would push the arrow through the weapon's back face when the weapon is seen from behind.
+Accepted drawback: standing the overlay proud makes the arrow half again as thick as the weapon it lies on, which is visible only edge on and reads as an arrow shaft rather than as a defect.
 
 Accepted drawback: a weapon drawn in an inventory or hotbar slot, or dropped on the ground, keeps the vanilla look. `DrawContext` and the item entity renderer both resolve the model themselves and call the renderer overload that takes an already-baked model, so neither surface enters the hook, and that overload carries no holder to ask what is nocked either. A hook there could answer for a charged crossbow and never for a drawn bow, and a surface where one weapon updates while the other silently does not is worse than one that does not update at all.
 

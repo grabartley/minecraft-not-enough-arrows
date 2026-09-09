@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows.render;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.client.util.math.MatrixStack;
 import org.joml.Vector3f;
@@ -83,14 +84,25 @@ class NockPlacementTest {
     assertEquals(11.0F, fletching[0] - tip[0], TOLERANCE, "fletching sits down and right of tip");
   }
 
-  @Test
-  void addsNoDepthOfItsOwnSoTheArrowStaysCoplanarWithTheWeaponItIsDrawnOver() {
-    final MatrixStack matrices = drawnAt(afterHolding(13));
+  @ParameterizedTest
+  @CsvSource({
+    "0.53125, 0.046875",
+    "0.46875, -0.046875",
+  })
+  void standsProudOfTheWeaponOnBothFacesSoNeitherSideCanFightItForDepth(
+      final float spriteFace, final float expectedDepth) {
+    final float weaponFace = spriteFace - 0.5F;
 
-    final Vector3f front =
-        matrices.peek().getPositionMatrix().transformPosition(new Vector3f(0.25F, 0.25F, 0.53125F));
+    final Vector3f drawn =
+        drawnAt(afterHolding(13))
+            .peek()
+            .getPositionMatrix()
+            .transformPosition(new Vector3f(0.25F, 0.25F, spriteFace));
 
-    assertEquals(0.03125F, front.z(), TOLERANCE);
+    assertEquals(expectedDepth, drawn.z(), TOLERANCE, "arrow face");
+    assertTrue(
+        Math.abs(drawn.z()) > Math.abs(weaponFace),
+        "arrow face " + drawn.z() + " must clear weapon face " + weaponFace);
   }
 
   private static NockPlacement afterHolding(final int ticks) {
