@@ -24,6 +24,10 @@ public class BaseArrowItem extends ArrowItem {
     this.arrowFactory = Objects.requireNonNull(arrowFactory, "arrowFactory");
   }
 
+  public static boolean isModArrow(final ItemStack stack) {
+    return stack.getItem() instanceof BaseArrowItem;
+  }
+
   @Override
   public PersistentProjectileEntity createArrow(
       final World world,

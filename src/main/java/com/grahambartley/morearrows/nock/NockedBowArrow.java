@@ -15,17 +15,17 @@ public final class NockedBowArrow {
   }
 
   public static ItemStack on(final ItemStack bow, @Nullable final LivingEntity holder) {
-    if (!(bow.getItem() instanceof BowItem)
-        || holder == null
-        || !holder.isUsingItem()
-        || holder.getActiveItem() != bow) {
+    if (!isDrawing(bow, holder)) {
       return ItemStack.EMPTY;
     }
     final ItemStack arrow = holder.getProjectileType(bow);
-    return isModArrow(arrow) ? arrow : ItemStack.EMPTY;
+    return BaseArrowItem.isModArrow(arrow) ? arrow : ItemStack.EMPTY;
   }
 
-  public static boolean isModArrow(final ItemStack stack) {
-    return stack.getItem() instanceof BaseArrowItem;
+  public static boolean isDrawing(final ItemStack bow, @Nullable final LivingEntity holder) {
+    return bow.getItem() instanceof BowItem
+        && holder != null
+        && holder.isUsingItem()
+        && holder.getActiveItem() == bow;
   }
 }

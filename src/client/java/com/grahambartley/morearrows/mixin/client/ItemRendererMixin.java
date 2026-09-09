@@ -1,8 +1,10 @@
 package com.grahambartley.morearrows.mixin.client;
 
+import com.grahambartley.morearrows.render.NockOverlayTarget;
 import com.grahambartley.morearrows.render.NockedArrowRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
@@ -24,7 +26,7 @@ public abstract class ItemRendererMixin {
               + "Lnet/minecraft/client/render/VertexConsumerProvider;"
               + "Lnet/minecraft/world/World;III)V",
       at = @At("TAIL"))
-  private void moreArrows$renderNockedArrow(
+  private void moreArrows$renderDrawnBowArrow(
       final LivingEntity holder,
       final ItemStack weapon,
       final ModelTransformationMode mode,
@@ -36,17 +38,37 @@ public abstract class ItemRendererMixin {
       final int overlay,
       final int seed,
       final CallbackInfo ci) {
-    NockedArrowRenderer.render(
+    NockedArrowRenderer.renderDrawnBow(
         (ItemRenderer) (Object) this,
         holder,
         weapon,
-        mode,
-        leftHanded,
-        matrices,
-        vertexConsumers,
         world,
-        light,
-        overlay,
-        seed);
+        seed,
+        new NockOverlayTarget(mode, leftHanded, matrices, vertexConsumers, light, overlay));
+  }
+
+  @Inject(
+      method =
+          "renderItem(Lnet/minecraft/item/ItemStack;"
+              + "Lnet/minecraft/client/render/model/json/ModelTransformationMode;Z"
+              + "Lnet/minecraft/client/util/math/MatrixStack;"
+              + "Lnet/minecraft/client/render/VertexConsumerProvider;II"
+              + "Lnet/minecraft/client/render/model/BakedModel;)V",
+      at = @At("TAIL"))
+  private void moreArrows$renderChargedCrossbowArrow(
+      final ItemStack weapon,
+      final ModelTransformationMode mode,
+      final boolean leftHanded,
+      final MatrixStack matrices,
+      final VertexConsumerProvider vertexConsumers,
+      final int light,
+      final int overlay,
+      final BakedModel weaponModel,
+      final CallbackInfo ci) {
+    NockedArrowRenderer.renderChargedCrossbow(
+        (ItemRenderer) (Object) this,
+        weapon,
+        weaponModel,
+        new NockOverlayTarget(mode, leftHanded, matrices, vertexConsumers, light, overlay));
   }
 }
