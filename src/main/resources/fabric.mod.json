@@ -59,6 +59,7 @@
       "com.grahambartley.morearrows.gametest.IncendiaryArrowEntityGameTest",
       "com.grahambartley.morearrows.gametest.IncendiaryServiceGameTest",
       "com.grahambartley.morearrows.gametest.ModItemGroupsGameTest",
+      "com.grahambartley.morearrows.gametest.NockedBowArrowGameTest",
       "com.grahambartley.morearrows.gametest.ModRecipesGameTest",
       "com.grahambartley.morearrows.gametest.ModSoundsGameTest",
       "com.grahambartley.morearrows.gametest.MoreArrowsCommandGameTest",

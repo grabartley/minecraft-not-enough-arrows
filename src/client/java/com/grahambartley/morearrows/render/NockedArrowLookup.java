@@ -1,7 +1,8 @@
 package com.grahambartley.morearrows.render;
 
-import com.grahambartley.morearrows.item.BaseArrowItem;
+import com.grahambartley.morearrows.nock.NockedBowArrow;
 import java.util.Optional;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.entity.LivingEntity;
@@ -40,16 +41,23 @@ public final class NockedArrowLookup {
     if (holder == null || !holder.isUsingItem() || holder.getActiveItem() != bow) {
       return Optional.empty();
     }
-    return modArrow(holder.getProjectileType(bow))
-        .map(
-            arrow ->
-                new NockedArrow(
-                    arrow,
-                    NockPlacement.forBowPull(
-                        bow.getMaxUseTime(holder), holder.getItemUseTimeLeft())));
+    final ItemStack arrow = arrowFor(bow, holder);
+    if (arrow.isEmpty()) {
+      return Optional.empty();
+    }
+    return Optional.of(
+        new NockedArrow(
+            arrow,
+            NockPlacement.forBowPull(bow.getMaxUseTime(holder), holder.getItemUseTimeLeft())));
+  }
+
+  private static ItemStack arrowFor(final ItemStack bow, final LivingEntity holder) {
+    return holder == MinecraftClient.getInstance().player
+        ? NockedBowArrow.on(bow, holder)
+        : NockedArrowSync.drawnBy(holder.getId());
   }
 
   private static Optional<ItemStack> modArrow(final ItemStack stack) {
-    return stack.getItem() instanceof BaseArrowItem ? Optional.of(stack) : Optional.empty();
+    return NockedBowArrow.isModArrow(stack) ? Optional.of(stack) : Optional.empty();
   }
 }

@@ -27,7 +27,7 @@ The weapon shows which arrow it is about to fire. A drawn bow and a charged cros
 
 A weapon shows this while it is held, and a charged crossbow shows it while it hangs in an item frame. A weapon sitting in an inventory or hotbar slot, or dropped on the ground, is drawn down a different path that never reaches the renderer this hooks, so it looks the way it always has. A bow in an item frame is drawn too but shows nothing, since a frame has nobody holding it to ask what is nocked.
 
-Across a server, another player's charged crossbow shows its arrow, because the loaded stack rides on the crossbow itself. Another player's drawn bow shows one only while they hold the arrow in a hand, since the arrow a bow is about to fire is otherwise found by searching the shooter's inventory and a player's inventory is never sent to anyone else's client.
+Across a server, everyone sees it. A charged crossbow needs no help, because the loaded stack rides on the crossbow itself. A drawn bow does: the arrow it is about to fire is found by searching the shooter's inventory, and a player's inventory is never sent to anyone else's client, so the server tells the clients watching that player which arrow is nocked. Your own bow does not wait on that round trip, and the message is sent once when the arrow changes rather than every tick.
 
 ## Fire Patches
 
