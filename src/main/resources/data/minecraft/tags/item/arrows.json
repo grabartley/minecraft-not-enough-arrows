@@ -9,6 +9,8 @@
     "more-arrows:gunpowder_arrow",
     "more-arrows:tnt_arrow",
     "more-arrows:fire_charge_arrow",
-    "more-arrows:incendiary_arrow"
+    "more-arrows:incendiary_arrow",
+    "more-arrows:gravity_arrow",
+    "more-arrows:ricochet_arrow"
   ]
 }

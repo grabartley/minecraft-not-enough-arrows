@@ -26,6 +26,8 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0016](0016-the-grapple-line-is-a-vanilla-leash-with-its-physics-switched-off.md) | The grapple line is a vanilla leash with its physics switched off |
 | [0017](0017-a-rope-holds-itself-up-rather-than-being-tracked.md) | A rope holds itself up rather than being tracked |
 | [0018](0018-a-redstone-signal-is-a-block-that-expires-three-ways.md) | A redstone signal is a block that expires three ways |
+| [0019](0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) | A gravity arrow only drops what a player could have broken |
+| [0020](0020-a-bounce-is-a-deflection-rather-than-a-landing.md) | A bounce is a deflection rather than a landing |
 
 ## Writing A New Record
 
