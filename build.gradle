@@ -22,10 +22,6 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven {
-		name = 'GeckoLib'
-		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-	}
-	maven {
 		name = 'Terraformers'
 		url 'https://maven.terraformersmc.com/'
 	}
@@ -80,7 +76,6 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-	modImplementation "software.bernie.geckolib:geckolib-fabric-1.21.1:4.7"
 
 	// Mod Menu is optional at runtime; never bundled. Dev-only dep so devs can launch with it.
 	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
@@ -298,6 +293,8 @@ modrinth {
 		: 'No changelog provided.'
 	dependencies {
 		required.project 'fabric-api'
-		required.project 'geckolib'
+		optional.project 'modmenu'
+		optional.project 'jei'
+		optional.project 'emi'
 	}
 }

@@ -8,6 +8,29 @@ Expands the arrow types available in Minecraft with new craftable arrows that ca
 
 [`docs/prd.md`](docs/prd.md) is the single statement of what More Arrows supports: the player goals it serves, who is allowed to do what, which side enforces each rule, and what it deliberately does not do. It carries no status, so read it for scope and the project board for progress.
 
+## Dependencies
+
+You need these installed for the mod to load at all. The loader will tell you if one is missing.
+
+| Required | Why |
+|---|---|
+| [Fabric Loader](https://fabricmc.net/use/installer/) 0.16.5 or newer | Loads the mod |
+| Minecraft 1.21.1 | The version this build targets |
+| Java 21 or newer | What the mod is compiled for |
+| [Fabric API](https://modrinth.com/mod/fabric-api) 0.107.0 or newer | Carries the commands, networking, item group, and rendering hooks the mod is built on |
+
+These are optional. The mod loads and plays correctly with none of them, with any one, and with all of them, and no arrow behaves differently because one is installed.
+
+| Optional | What you gain |
+|---|---|
+| [Mod Menu](https://modrinth.com/mod/modmenu) | A settings screen for every option, so you never have to type a command |
+| [EMI](https://modrinth.com/mod/emi) | Recipe lookup and an information page for each arrow |
+| [JEI](https://modrinth.com/mod/jei) | The same, if you prefer JEI |
+
+All three are client-side conveniences and a dedicated server needs none of them. Without a recipe viewer you lose the lookup and nothing else. Without Mod Menu you lose the settings screen, and every setting it edits stays reachable from the commands in the section below, which is the interface a server operator uses anyway. None of the three is bundled into the mod's jar, and the build fails if one ever is.
+
+[ADR 0023](docs/adr/0023-a-dependency-is-declared-where-its-absence-must-fail.md) covers why a dependency is declared where it is, and why a client-only library is never a hard requirement.
+
 ## Firing and recovery
 
 Every arrow this mod adds behaves like a vanilla arrow everywhere a vanilla arrow already works, rather than only on a bow:
