@@ -79,6 +79,7 @@ Out of the first release, deliberately.
 | Drawing all three projectiles on a Multishot crossbow | A charged crossbow shows one arrow, the first, which is also the first one it fires. One overlay reads as "loaded with this" rather than as a count ([ADR 0022](adr/0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md)) |
 | A nocked-arrow overlay on a bow outside a player's hand | A bow has a nocked arrow only while it is being pulled, and it can only be pulled in a hand. A bow in a slot is not withholding an answer, it has none ([ADR 0022](adr/0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md)) |
 | Bundling Mod Menu, EMI, or JEI into the jar | Library and interface mods stay separately installed. The build fails if any of them is ever bundled |
+| Closing the last window where a redstone signal runs long | A charge destroyed early and replaced at the same position by a shorter one keeps only the first charge's queued expiry, because vanilla dedupes queued ticks on block and position alone. The signal still ends on its own, and closing the window would mean re-booking a tick for a chunk that is not loaded ([ADR 0018](adr/0018-a-redstone-signal-is-a-block-that-expires-three-ways.md)) |
 | Changes to fletcher villager trades | The station adopts the block's interface. The profession is untouched |
 | Removing or downgrading any crafting table recipe | The load-bearing rule of the station. See [ADR 0002](adr/0002-crafting-table-always-works.md) |
 
@@ -272,6 +273,7 @@ A player standing at the lip of a ravine fires a rope arrow into the ceiling of 
 | ROPE-8 | Ropes decay on a configured switch, off by default. Each rope schedules its own recurring check, and a rope spared because decay was off books the next check, so turning decay on later still reaches ropes hung before the change |
 | ROPE-9 | The rope block has no item form, is never crafted, and drops nothing when broken. It is a route, not a resource |
 | ROPE-10 | Firing at an anchor that already carries a rope embeds the arrow and changes nothing |
+| ROPE-11 | No rope segment is placed anywhere the shooter may not build, through the same permission gate the fire, redstone, and gravity effects pass. A rope with no shooter behind it is checked against the world border alone. The column stops at the first position it may not use |
 
 **Not supported:** Horizontal or diagonal ropes. Ropes a player can place by hand. Recovering a rope as an item. Two ropes from one anchor block.
 
@@ -357,7 +359,7 @@ A player fires a redstone arrow at a block beside a door, a piston, or a dispens
 | REDSTONE-3 | The signal source is invisible, has no collision, has no item form, and drops nothing |
 | REDSTONE-4 | The signal lasts a configured duration and then ends. A duration of zero places nothing |
 | REDSTONE-5 | No signal is placed anywhere the shooter may not build, or anywhere that is not air |
-| REDSTONE-6 | No signal may outlive its configured duration under any interruption: a chunk unload mid-signal, an unclean shutdown, a clean shutdown, or the source being destroyed and replaced |
+| REDSTONE-6 | Every signal ends on its own, through any interruption: a chunk unload mid-signal, an unclean shutdown, a clean shutdown, or the source being destroyed and replaced. A signal may run longer than its configured duration only in the bounded case recorded in the deferred table, and may never run indefinitely |
 | REDSTONE-7 | Removing a signal only clears a position that still holds one, so a player who builds over an expiring signal keeps their block |
 
 **Not supported:** A permanent signal. A signal a player can pick up, mine, or place by hand. Choosing which face the signal appears on independently of where the arrow struck. Replacing the struck block.
@@ -610,7 +612,7 @@ Access control is stated in one place because it is the difference between a too
 | Emit a redstone signal | No | Only where they may build, and only into air | Same | n/a | Only inside the world border, and only into air |
 | Drop a block | No | Only where they may build | Same | n/a | Only inside the world border |
 | Pull themselves with a grapple | Yes | Yes | Yes | Yes | No, a dispensed grapple pulls nobody |
-| Hang a rope | Yes | Yes | Yes | Yes | Yes |
+| Hang a rope | No | Only where they may build | Same | n/a | Only inside the world border |
 | Teleport themselves | Yes | Yes | Yes | Yes | No |
 | Move another player with a recall arrow | Only if the operator enabled it | Same | Same | n/a | No |
 | Open the fletching station | Yes, if the operator enabled it | Yes | Yes | Yes | n/a |
@@ -710,7 +712,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | Requirement | Statement |
 |---|---|
 | PERSIST-1 | No in-memory effect may resume incorrectly after an interruption. Every one either resumes correctly or ends benignly, and none detonates, powers, or moves anything at a stale position |
-| PERSIST-2 | No redstone signal may outlive its configured duration through any of the four interruptions above |
+| PERSIST-2 | No redstone signal may survive indefinitely through any of the four interruptions above. A signal whose chunk unloads mid-duration expires as that chunk loads again, so a mechanism is never observed still powered |
 | PERSIST-3 | Configuration is per world. Two worlds on one server have independent settings |
 
 ### Accessibility
