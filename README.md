@@ -4,10 +4,9 @@ A Fabric mod for Minecraft 1.21.1.
 
 Expands the arrow types available in Minecraft with new craftable arrows that carry unique effects.
 
-## Planned features
+## What this mod is
 
-- Ender pearl arrow
-- Slime arrow
+[`docs/prd.md`](docs/prd.md) is the single statement of what More Arrows supports: the player goals it serves, who is allowed to do what, which side enforces each rule, and what it deliberately does not do. It carries no status, so read it for scope and the project board for progress.
 
 ## Firing and recovery
 
@@ -133,7 +132,7 @@ The glow ink arrow marks what it hits rather than hurting it, applying vanilla's
 | What it marks | Any living entity it strikes. The glowing effect is a status effect, so anything without status effects, such as a boat or an item frame, is not marked |
 | How long the mark lasts | `utility.glowDurationTicks` |
 | Who sees the outline | Every player on the server, because vanilla syncs the glow flag to all trackers rather than only to the shooter |
-| Damage | Half a heart at most. The mark is the point |
+| Damage | Set low enough that the arrow is not a weapon. Like any arrow it scales with how far the bow was drawn, so a full draw lands about a heart. The mark is the point |
 | Hitting a block | Nothing happens and the arrow embeds as any arrow does |
 | A duration of zero | No mark is applied at all, so the arrow becomes an inert tracer |
 
@@ -170,7 +169,7 @@ The wind arrow bursts on impact the way a wind charge does, shoving nearby entit
 | How hard | `utility.windPushStrength` at the centre, falling off linearly to nothing at the edge of the radius |
 | Which way | Directly away from the impact point. An entity standing exactly on it is pushed straight up rather than in an arbitrary direction |
 | Other players | Pushed by a velocity change that is sent to their client, so the shove is smooth rather than a visible teleport |
-| Damage | Half a heart at most. The displacement is the point |
+| Damage | Set low enough that the arrow is not a weapon. Like any arrow it scales with how far the bow was drawn, so a full draw lands about a heart. The displacement is the point |
 | The arrow afterwards | Spent. A wind arrow bursts rather than embedding, so unlike the mod's other arrows it is not recoverable from where it lands |
 
 Block interaction is deliberately vanilla's radius rather than the configured burst radius. The requirement is that wind-activated blocks behave as they do for a wind charge, and the surest way to hold that is to run vanilla's explosion with vanilla's numbers. `utility.windBurstRadius` governs the entity shove, which is the part vanilla gives no control over.
@@ -425,5 +424,6 @@ Neither viewer is bundled into the jar, and `./gradlew check` fails if either ev
 
 ## Documentation
 
+- [`docs/prd.md`](docs/prd.md) states what the mod is: its use cases, its numbered requirements, its permission matrix, and what it deliberately leaves out
 - [`docs/standards.md`](docs/standards.md) covers the engineering standards shared across these mods
 - [`docs/adr/`](docs/adr/) records the architecture decisions behind this mod and the reasoning for each
