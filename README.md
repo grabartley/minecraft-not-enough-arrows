@@ -19,7 +19,7 @@ You need these installed for the mod to load at all. The loader will tell you if
 | Java 21 or newer | What the mod is compiled for |
 | [Fabric API](https://modrinth.com/mod/fabric-api) 0.107.0 or newer | Carries the commands, networking, item group, and rendering hooks the mod is built on |
 
-These are optional. The mod loads and plays correctly with none of them, with any one, and with all of them, and installing one changes nothing about how the arrows behave.
+These are optional. The mod loads and plays correctly with none of them, with any one, and with all of them, and no arrow behaves differently because one is installed.
 
 | Optional | What you gain |
 |---|---|
@@ -27,7 +27,7 @@ These are optional. The mod loads and plays correctly with none of them, with an
 | [EMI](https://modrinth.com/mod/emi) | Recipe lookup and an information page for each arrow |
 | [JEI](https://modrinth.com/mod/jei) | The same, if you prefer JEI |
 
-All three are client-side conveniences. A dedicated server needs none of them, and a player without them sees no missing feature beyond the lookup itself. None is bundled into the mod's jar, and the build fails if one ever is.
+All three are client-side conveniences and a dedicated server needs none of them. Without a recipe viewer you lose the lookup and nothing else. Without Mod Menu you lose the settings screen, and every setting it edits stays reachable from the commands in the section below, which is the interface a server operator uses anyway. None of the three is bundled into the mod's jar, and the build fails if one ever is.
 
 [ADR 0023](docs/adr/0023-a-dependency-is-declared-where-its-absence-must-fail.md) covers why a dependency is declared where it is, and why a client-only library is never a hard requirement.
 

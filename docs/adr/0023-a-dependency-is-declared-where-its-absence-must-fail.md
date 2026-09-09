@@ -24,9 +24,9 @@ The trap underneath that is worth stating, because it is what makes the wrong an
 
 A dependency is declared according to what its absence must do.
 
-**If the mod cannot function without it, it is a hard `depends`, and it must be genuinely needed by both environments.** Only Fabric Loader, Minecraft, Java, and Fabric API qualify. Fabric API earns it: the main source set uses its command, entity event, lifecycle, gametest, item group, and networking modules, and the client source set uses four more.
+**If the mod cannot function without it, it is a hard `depends`, and it must be genuinely needed by both environments.** Only Fabric Loader, Minecraft, Java, and Fabric API qualify. Fabric API earns it: the main source set uses its command, entity event, lifecycle, gametest, item group, and networking modules, and the client source set adds rendering and block render layer on top of the lifecycle and networking modules it already shares with the main set.
 
-**If the mod works fine without it, it is never a hard dependency, whatever the build needs to compile.** Mod Menu, JEI, and EMI are integrations: each is `modCompileOnly` so the compat classes build, and each sits in `suggests` so a player is told it exists. None is bundled, and the build fails if any ever is.
+**If the mod works fine without it, it is never a hard dependency, whatever the build needs to compile.** Mod Menu, JEI, and EMI are integrations: each is `modCompileOnly` so the compat classes build, and each sits in `suggests` so a player is told it exists. Each also carries a development runtime entry, Mod Menu unconditionally and the two viewers behind `-Precipe_viewers=true`, so a developer can launch with them without any of that reaching a player. None is bundled, and the build fails if any ever is.
 
 **A library nothing imports is removed outright**, from all four locations at once, rather than left because removing it feels riskier than keeping it. Keeping it is the risk: it is a hard requirement doing nothing.
 
