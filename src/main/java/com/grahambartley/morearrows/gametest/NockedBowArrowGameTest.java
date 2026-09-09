@@ -17,8 +17,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 
 public final class NockedBowArrowGameTest implements FabricGameTest {
-  private static final String BATCH = "nocked-arrow";
-  private static final int TICK_LIMIT = 10;
   private static final BlockPos STANDING_ON = new BlockPos(0, 2, 0);
   private static final int WEAPON_SLOT = 0;
   private static final int QUIVER_SLOT = 1;
@@ -27,7 +25,7 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
   @CustomTestProvider
   public Collection<TestFunction> aDrawnBowReportsTheArrowItWillFire() {
     return ArrowTestSupport.perRegisteredArrow(
-        BATCH,
+        NockedArrowTestSupport.BATCH,
         "morearrows.drawnbowreportsitsarrow",
         NockedBowArrowGameTest::assertDrawnBowReportsItsArrow);
   }
@@ -46,7 +44,10 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void reportsNothingForABowDrawnOnAVanillaArrow(final TestContext context) {
     final ServerPlayerEntity player = archerWith(context, Items.ARROW);
     draw(context, player, Items.BOW, Hand.MAIN_HAND);
@@ -57,7 +58,10 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void reportsNothingWhileNobodyIsDrawingTheBow(final TestContext context) {
     final ServerPlayerEntity player = archerWith(context, ModArrows.TNT_ARROW.item());
     player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.BOW));
@@ -67,7 +71,10 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void reportsNothingWhileTheHolderIsDrawingSomethingThatIsNotABow(
       final TestContext context) {
     final ServerPlayerEntity player = archerWith(context, ModArrows.TNT_ARROW.item());
@@ -79,7 +86,10 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void readsTheArrowFromABowDrawnInTheOffHand(final TestContext context) {
     final ServerPlayerEntity player = archerWith(context, ModArrows.GRAPPLE_ARROW.item());
     draw(context, player, Items.BOW, Hand.OFF_HAND);

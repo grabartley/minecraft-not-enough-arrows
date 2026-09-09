@@ -9,9 +9,8 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 
 public final class NockedArrowChangesGameTest implements FabricGameTest {
-  private static final String BATCH = "nocked-arrow";
-  private static final int TICK_LIMIT = 10;
   private static final UUID AN_ARCHER = UUID.nameUUIDFromBytes("archer".getBytes());
+  private static final UUID ANOTHER_ARCHER = UUID.nameUUIDFromBytes("other archer".getBytes());
 
   private static ItemStack tntArrow() {
     return new ItemStack(ModArrows.TNT_ARROW.item());
@@ -21,7 +20,10 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     return new ItemStack(ModArrows.GRAPPLE_ARROW.item());
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void staysSilentForAnArcherWhoIsNotDrawingAnything(final TestContext context) {
     final NockedArrowChanges changes = new NockedArrowChanges();
 
@@ -34,7 +36,10 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void reportsAChangeWhenAnArcherStartsDrawingAModArrow(final TestContext context) {
     final NockedArrowChanges changes = new NockedArrowChanges();
 
@@ -43,7 +48,10 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void staysSilentWhileTheSameArrowStaysNocked(final TestContext context) {
     final NockedArrowChanges changes = new NockedArrowChanges();
     changes.record(AN_ARCHER, tntArrow());
@@ -54,7 +62,10 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void reportsAChangeWhenTheNockedArrowIsSwapped(final TestContext context) {
     final NockedArrowChanges changes = new NockedArrowChanges();
     changes.record(AN_ARCHER, tntArrow());
@@ -64,7 +75,10 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void reportsAChangeWhenAnArcherStopsDrawingThenStaysSilent(final TestContext context) {
     final NockedArrowChanges changes = new NockedArrowChanges();
     changes.record(AN_ARCHER, tntArrow());
@@ -77,7 +91,10 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
   public void resendsAfterAnArcherIsForgottenSoARejoinResyncs(final TestContext context) {
     final NockedArrowChanges changes = new NockedArrowChanges();
     changes.record(AN_ARCHER, tntArrow());
@@ -87,6 +104,42 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
     context.assertTrue(
         changes.record(AN_ARCHER, tntArrow()),
         "An archer who reconnects should be resent their nocked arrow");
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
+  public void tracksEachArcherApartSoOneDrawDoesNotSilenceAnother(final TestContext context) {
+    final NockedArrowChanges changes = new NockedArrowChanges();
+    changes.record(AN_ARCHER, tntArrow());
+
+    context.assertTrue(
+        changes.record(ANOTHER_ARCHER, tntArrow()),
+        "A second archer drawing the same arrow is still news to everyone watching them");
+    context.assertFalse(
+        changes.record(AN_ARCHER, tntArrow()),
+        "The first archer should stay silent while their own draw is unchanged");
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
+  public void resendsForEveryArcherOnceTheSlateIsCleared(final TestContext context) {
+    final NockedArrowChanges changes = new NockedArrowChanges();
+    changes.record(AN_ARCHER, tntArrow());
+    changes.record(ANOTHER_ARCHER, grappleArrow());
+
+    changes.clear();
+
+    context.assertTrue(
+        changes.record(AN_ARCHER, tntArrow()), "A cleared archer should be resent their arrow");
+    context.assertTrue(
+        changes.record(ANOTHER_ARCHER, grappleArrow()),
+        "Every cleared archer should be resent their arrow, not just the first");
     context.complete();
   }
 }
