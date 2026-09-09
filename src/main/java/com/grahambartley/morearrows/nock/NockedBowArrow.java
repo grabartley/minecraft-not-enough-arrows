@@ -11,15 +11,14 @@ public final class NockedBowArrow {
   private NockedBowArrow() {}
 
   public static ItemStack drawnBy(@Nullable final LivingEntity holder) {
-    if (holder == null) {
-      return ItemStack.EMPTY;
-    }
-    final ItemStack active = holder.getActiveItem();
-    return active.getItem() instanceof BowItem ? on(active, holder) : ItemStack.EMPTY;
+    return holder == null ? ItemStack.EMPTY : on(holder.getActiveItem(), holder);
   }
 
   public static ItemStack on(final ItemStack bow, @Nullable final LivingEntity holder) {
-    if (holder == null || !holder.isUsingItem() || holder.getActiveItem() != bow) {
+    if (!(bow.getItem() instanceof BowItem)
+        || holder == null
+        || !holder.isUsingItem()
+        || holder.getActiveItem() != bow) {
       return ItemStack.EMPTY;
     }
     final ItemStack arrow = holder.getProjectileType(bow);

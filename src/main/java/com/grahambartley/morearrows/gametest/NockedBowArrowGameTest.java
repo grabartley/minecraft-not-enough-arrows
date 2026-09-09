@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 public final class NockedBowArrowGameTest implements FabricGameTest {
   private static final String BATCH = "nocked-arrow";
   private static final int TICK_LIMIT = 10;
-  private static final BlockPos STANDING_ON = new BlockPos(0, 1, 0);
+  private static final BlockPos STANDING_ON = new BlockPos(0, 2, 0);
   private static final int WEAPON_SLOT = 0;
   private static final int QUIVER_SLOT = 1;
   private static final int A_QUIVER = 8;
