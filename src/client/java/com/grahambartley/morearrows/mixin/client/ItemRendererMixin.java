@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.mixin.client;
 
+import com.grahambartley.morearrows.render.NockOverlayTarget;
 import com.grahambartley.morearrows.render.NockedArrowRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -41,14 +42,9 @@ public abstract class ItemRendererMixin {
         (ItemRenderer) (Object) this,
         holder,
         weapon,
-        mode,
-        leftHanded,
-        matrices,
-        vertexConsumers,
         world,
-        light,
-        overlay,
-        seed);
+        seed,
+        new NockOverlayTarget(mode, leftHanded, matrices, vertexConsumers, light, overlay));
   }
 
   @Inject(
@@ -73,11 +69,6 @@ public abstract class ItemRendererMixin {
         (ItemRenderer) (Object) this,
         weapon,
         weaponModel,
-        mode,
-        leftHanded,
-        matrices,
-        vertexConsumers,
-        light,
-        overlay);
+        new NockOverlayTarget(mode, leftHanded, matrices, vertexConsumers, light, overlay));
   }
 }

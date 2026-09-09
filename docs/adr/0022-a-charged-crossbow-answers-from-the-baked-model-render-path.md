@@ -19,6 +19,8 @@ That split is what makes the second hook safe, rather than a flag tracking wheth
 
 The split follows what each weapon knows about itself. A crossbow carries its ammunition in its own `minecraft:charged_projectiles` component, so any surface that has the stack can answer, and every surface funnels through the baked model overload. A bow carries nothing: which arrow it will fire is a question about the player holding it, and only the holder-aware overload has one to ask.
 
+Which arrow a charged crossbow carries is decided in the main source set, beside the resolver [ADR 0021](0021-the-nocked-arrow-is-drawn-over-the-weapon.md) already put there for a drawn bow. Neither weapon's resolver is client-only, and both are questions about an `ItemStack` that no unit test can ask outside a booted game, so both live where a gametest can reach them. The client side is left holding only the placement and the draw.
+
 The baked model overload has no world, no holder, and no seed to resolve the arrow's model with, so the arrow's model is read from `ItemModels` directly instead of through the override-resolving `getModel`. Every arrow this mod ships is a plain generated item model with no overrides, so both routes return the same model.
 
 ## Consequences

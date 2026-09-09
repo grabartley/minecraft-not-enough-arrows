@@ -1,6 +1,6 @@
 # ADR 0021: The nocked arrow is drawn over the weapon rather than modelled into it
 
-- **Status:** Accepted. The drawback about slots and dropped items is revised by [ADR 0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md).
+- **Status:** Accepted. Which render path answers for which weapon is revised by [ADR 0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md), and the two consequences marked below no longer describe how the mod behaves.
 - **Date:** 2026-09-09
 
 ## Context
@@ -33,9 +33,9 @@ Accepted drawback: the offsets are measured against where vanilla draws its arro
 
 Accepted drawback: standing the overlay proud makes the arrow half again as thick as the weapon it lies on, which is visible only edge on and reads as an arrow shaft rather than as a defect.
 
-Accepted drawback: a weapon drawn in an inventory or hotbar slot, or dropped on the ground, keeps the vanilla look. `DrawContext` and the item entity renderer both resolve the model themselves and call the renderer overload that takes an already-baked model, so neither surface enters the hook, and that overload carries no holder to ask what is nocked either. A hook there could answer for a charged crossbow and never for a drawn bow, and a surface where one weapon updates while the other silently does not is worse than one that does not update at all.
+Accepted drawback, revised by [ADR 0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md): a weapon drawn in an inventory or hotbar slot, or dropped on the ground, keeps the vanilla look. `DrawContext` and the item entity renderer both resolve the model themselves and call the renderer overload that takes an already-baked model, so neither surface enters the hook, and that overload carries no holder to ask what is nocked either. A hook there could answer for a charged crossbow and never for a drawn bow, and a surface where one weapon updates while the other silently does not is worse than one that does not update at all.
 
-An item frame is the exception, and it comes for free rather than by design. The item frame renderer routes through the hooked overload with no holder, so a framed charged crossbow shows its arrow and a framed bow shows nothing, which is the same split for the same reason. It is worth knowing because a frame draws at the `FIXED` transform, which nothing else in this feature uses, so it is the cheapest place to see that the offsets really are transform independent.
+Revised by [ADR 0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md). An item frame is the exception, and it comes for free rather than by design. The item frame renderer routes through the hooked overload with no holder, so a framed charged crossbow shows its arrow and a framed bow shows nothing, which is the same split for the same reason. It is worth knowing because a frame draws at the `FIXED` transform, which nothing else in this feature uses, so it is the cheapest place to see that the offsets really are transform independent.
 
 A charged crossbow needs nothing to work for other players, because the loaded stack rides on the crossbow's own components and equipment is already synchronised. A drawn bow does need something. `PlayerEntity.getProjectileType` checks both hands and then searches the shooter's inventory, and a remote player's inventory is never sent to a watching client, so asking the question on the viewer's machine answers `EMPTY` for everyone except yourself.
 
