@@ -62,6 +62,8 @@
       "com.grahambartley.morearrows.gametest.ModRecipesGameTest",
       "com.grahambartley.morearrows.gametest.ModSoundsGameTest",
       "com.grahambartley.morearrows.gametest.MoreArrowsCommandGameTest",
+      "com.grahambartley.morearrows.gametest.NockedArrowChangesGameTest",
+      "com.grahambartley.morearrows.gametest.NockedBowArrowGameTest",
       "com.grahambartley.morearrows.gametest.RedstoneArrowEntityGameTest",
       "com.grahambartley.morearrows.gametest.RedstoneChargePlacerGameTest",
       "com.grahambartley.morearrows.gametest.RedstoneChargeServiceGameTest",

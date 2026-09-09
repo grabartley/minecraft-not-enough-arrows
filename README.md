@@ -23,6 +23,12 @@ Recovery follows vanilla exactly. An arrow fired in survival is picked back up a
 
 An arrow shot by a dispenser has no player behind it. Arrow effects account for that, so no effect misbehaves in a redstone contraption.
 
+The weapon shows which arrow it is about to fire. A drawn bow and a charged crossbow both draw the arrow that will actually leave them, at every pull stage, in either hand, and in first person as well as third. A vanilla arrow keeps the vanilla look exactly. Nothing about that is new art: the arrow's own item sprite is turned a quarter turn and drawn over the weapon, which is why an arrow added later gets it for nothing, and [ADR 0021](docs/adr/0021-the-nocked-arrow-is-drawn-over-the-weapon.md) covers why that beats shipping a bow model per arrow.
+
+A weapon shows this while it is held, and a charged crossbow shows it while it hangs in an item frame. A weapon sitting in an inventory or hotbar slot, or dropped on the ground, is drawn down a different path that never reaches the renderer this hooks, so it looks the way it always has. A bow in an item frame is drawn too but shows nothing, since a frame has nobody holding it to ask what is nocked.
+
+Across a server, everyone sees it. A charged crossbow needs no help, because the loaded stack rides on the crossbow itself. A drawn bow does: the arrow it is about to fire is found by searching the shooter's inventory, and a player's inventory is never sent to anyone else's client, so the server tells the clients watching that player which arrow is nocked. Your own bow does not wait on that round trip, and the message is sent once when the arrow changes rather than every tick.
+
 ## Fire Patches
 
 Arrows that leave fire behind share one system rather than each placing blocks of their own, so a server owner has one set of rules to reason about and one switch to turn all of it off.

@@ -7,6 +7,7 @@ import com.grahambartley.morearrows.fire.FirePatchService;
 import com.grahambartley.morearrows.fuse.FuseService;
 import com.grahambartley.morearrows.grapple.GrappleService;
 import com.grahambartley.morearrows.network.ModNetworking;
+import com.grahambartley.morearrows.nock.NockedArrowBroadcaster;
 import com.grahambartley.morearrows.redstone.RedstoneChargeService;
 import com.grahambartley.morearrows.server.ServerConfigSyncListener;
 import com.grahambartley.morearrows.server.ServerConfigUpdateReceiver;
@@ -33,6 +34,7 @@ public class MoreArrows implements ModInitializer {
     AnchorService.register();
     GrappleService.register();
     RedstoneChargeService.register();
+    NockedArrowBroadcaster.register();
     ServerConfigSyncListener.register();
     ServerConfigUpdateReceiver.register();
     CommandRegistrationCallback.EVENT.register(
