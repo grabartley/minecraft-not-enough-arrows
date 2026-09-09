@@ -28,6 +28,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0018](0018-a-redstone-signal-is-a-block-that-expires-three-ways.md) | A redstone signal is a block that expires three ways |
 | [0019](0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) | A gravity arrow only drops what a player could have broken |
 | [0020](0020-a-bounce-is-a-deflection-rather-than-a-landing.md) | A bounce is a deflection rather than a landing |
+| [0021](0021-the-nocked-arrow-is-drawn-over-the-weapon.md) | The nocked arrow is drawn over the weapon rather than modelled into it |
 
 ## Writing A New Record
 
