@@ -45,7 +45,7 @@ class NockPlacementTest {
   }
 
   @Test
-  void holdsAChargedCrossbowArrowWhereABarelyDrawnBowHoldsIts() {
+  void holdsAChargedCrossbowArrowWhereABarelyDrawnBowHoldsItsOwn() {
     assertEquals(afterHolding(0), NockPlacement.forChargedCrossbow());
   }
 
