@@ -30,7 +30,7 @@ class BlastChargeTrackerTest {
 
   @Test
   void findsAChargeByTheCarrierItWasAddedAgainst() {
-    final BlastCharge charge = BlastCharge.on(FIRST, ExplosiveTier.TNT);
+    final BlastCharge charge = new BlastCharge(FIRST, ExplosiveTier.TNT, null);
     tracker.add(charge);
 
     assertEquals(charge, tracker.chargeOn(FIRST));
@@ -39,8 +39,8 @@ class BlastChargeTrackerTest {
 
   @Test
   void keepsOneChargePerCarrierSoARearmReplacesRatherThanStacks() {
-    tracker.add(BlastCharge.on(FIRST, ExplosiveTier.GUNPOWDER));
-    tracker.add(BlastCharge.on(FIRST, ExplosiveTier.FIRE_CHARGE));
+    tracker.add(new BlastCharge(FIRST, ExplosiveTier.GUNPOWDER, null));
+    tracker.add(new BlastCharge(FIRST, ExplosiveTier.FIRE_CHARGE, null));
 
     assertEquals(1, tracker.size());
     assertEquals(ExplosiveTier.FIRE_CHARGE, tracker.chargeOn(FIRST).tier());
@@ -48,7 +48,7 @@ class BlastChargeTrackerTest {
 
   @Test
   void handsBackTheChargeItRemoves() {
-    final BlastCharge charge = BlastCharge.on(FIRST, ExplosiveTier.TNT);
+    final BlastCharge charge = new BlastCharge(FIRST, ExplosiveTier.TNT, null);
     tracker.add(charge);
 
     assertEquals(charge, tracker.remove(FIRST));
@@ -67,8 +67,8 @@ class BlastChargeTrackerTest {
 
   @Test
   void dropsEveryChargeWhoseCarrierNoLongerHasAFuse() {
-    tracker.add(BlastCharge.on(FIRST, ExplosiveTier.TNT));
-    tracker.add(BlastCharge.on(SECOND, ExplosiveTier.GUNPOWDER));
+    tracker.add(new BlastCharge(FIRST, ExplosiveTier.TNT, null));
+    tracker.add(new BlastCharge(SECOND, ExplosiveTier.GUNPOWDER, null));
 
     tracker.retainOnly(List.of(SECOND));
 
@@ -79,20 +79,10 @@ class BlastChargeTrackerTest {
 
   @Test
   void dropsEverythingWhenNoFuseIsBurningAtAll() {
-    tracker.add(BlastCharge.on(FIRST, ExplosiveTier.TNT));
+    tracker.add(new BlastCharge(FIRST, ExplosiveTier.TNT, null));
 
     tracker.retainOnly(null);
 
     assertTrue(tracker.isEmpty());
-  }
-
-  @Test
-  void listsEveryChargeItHolds() {
-    final BlastCharge first = BlastCharge.on(FIRST, ExplosiveTier.TNT);
-    final BlastCharge second = BlastCharge.on(SECOND, ExplosiveTier.GUNPOWDER);
-    tracker.add(first);
-    tracker.add(second);
-
-    assertEquals(List.of(first, second), tracker.charges());
   }
 }

@@ -1,15 +1,15 @@
 package com.grahambartley.morearrows.entity;
 
 import com.grahambartley.morearrows.arrow.ArrowImpact;
-import com.grahambartley.morearrows.blast.BlastCharge;
 import com.grahambartley.morearrows.blast.BlastService;
 import com.grahambartley.morearrows.explosive.ExplosiveTier;
 import com.grahambartley.morearrows.fuse.FuseService;
 import com.grahambartley.morearrows.server.ServerConfigService;
 import java.util.Objects;
+import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
@@ -45,11 +45,6 @@ public abstract class ExplosiveArrowEntity extends BaseArrowEntity {
     return tier;
   }
 
-  public BlastCharge chargeCarriedBy(final Entity carrier) {
-    return new BlastCharge(
-        carrier.getUuid(), tier, shootingPlayer().map(PlayerEntity::getUuid).orElse(null));
-  }
-
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
@@ -68,7 +63,12 @@ public abstract class ExplosiveArrowEntity extends BaseArrowEntity {
     }
 
     final int delayTicks = tier.in(ServerConfigService.get().explosive()).delayTicks();
-    BlastService.arm(world, carrier, chargeCarriedBy(carrier), delayTicks);
+    BlastService.arm(world, carrier, tier, shooterId(), delayTicks);
     return isRemoved() ? ArrowImpact.RETAIN : armed;
+  }
+
+  @Nullable
+  private UUID shooterId() {
+    return shooter().map(LivingEntity::getUuid).orElse(null);
   }
 }

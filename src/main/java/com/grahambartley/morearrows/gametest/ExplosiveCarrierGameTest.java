@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows.gametest;
 
 import com.grahambartley.morearrows.ModArrows;
+import com.grahambartley.morearrows.blast.BlastService;
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
 import com.grahambartley.morearrows.entity.ExplosiveArrowEntity;
 import com.grahambartley.morearrows.fuse.Fuse;
@@ -19,6 +20,11 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   private static final String BATCH = "explosive-carrier";
 
   private static final BlockPos WALKED_TO = new BlockPos(2, 3, 3);
+  private static final BlockPos NEIGHBOUR = new BlockPos(5, 3, 4);
+  private static final BlockPos SECOND_SHOOTER_STAND = new BlockPos(1, 2, 4);
+  private static final int SECOND_ARMING_TICK = 25;
+  private static final int BOTH_ARMED_TICK = 35;
+  private static final int CHAINED_CHECK_TICK = 50;
   private static final int NEARBY = 1;
   private static final int THE_COLUMN_ITSELF = 0;
   private static final int HANDOVER_TICK = UtilityArrowTestSupport.LANDING_TICK + 10;
@@ -30,6 +36,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   @BeforeBatch(batchId = BATCH)
   public void forgetFusesBeforeBatch(ServerWorld world) {
     FuseService.forget();
+    BlastService.forget();
   }
 
   @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
@@ -67,7 +74,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
           context.assertTrue(
               FuseService.fuseOn(context.getWorld(), target.getUuid()) != null,
               "This test needs the mob carrying the fuse before it walks");
-          walkTo(context, target, WALKED_TO);
+          moveTo(context, target, WALKED_TO);
         });
 
     context.runAtTick(
@@ -139,6 +146,43 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         });
   }
 
+  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 160)
+  public void aCarrierKilledByAnotherChargeDoesNotStillGoOff(TestContext context) {
+    final CowEntity first = fireIntoACow(context);
+    final CowEntity second = UtilityArrowTestSupport.liveTargetOnPedestalAt(context, NEIGHBOUR);
+
+    context.runAtTick(
+        SECOND_ARMING_TICK,
+        () ->
+            MockPlayerSupport.fireEastFromBow(
+                context,
+                MockPlayerSupport.playerAt(context, SECOND_SHOOTER_STAND),
+                ModArrows.FIRE_CHARGE_ARROW.item()));
+
+    context.runAtTick(
+        BOTH_ARMED_TICK,
+        () ->
+            context.assertTrue(
+                FuseService.fuseOn(context.getWorld(), second.getUuid()) != null,
+                "This test needs both mobs carrying a charge before the first one goes off"));
+
+    context.runAtTick(
+        CHAINED_CHECK_TICK,
+        () -> {
+          context.assertTrue(
+              first.isRemoved() || !first.isAlive(),
+              "This test needs the first charge to have gone off already");
+          context.assertTrue(
+              second.isRemoved() || !second.isAlive(),
+              "This test needs the first charge to have killed the second carrier");
+          context.assertTrue(
+              FuseService.fuseOn(context.getWorld(), second.getUuid()) == null,
+              "A carrier killed by another charge should take its own charge with it rather than"
+                  + " having it put back while the countdown is still being walked");
+          context.complete();
+        });
+  }
+
   private static CowEntity fireIntoACow(final TestContext context) {
     UtilityArrowTestSupport.raiseBackstop(context);
     final CowEntity target =
@@ -155,7 +199,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         ModArrows.FIRE_CHARGE_ARROW.item());
   }
 
-  private static void walkTo(
+  private static void moveTo(
       final TestContext context, final CowEntity target, final BlockPos relativePos) {
     final BlockPos absolute = context.getAbsolutePos(relativePos);
     target.refreshPositionAndAngles(

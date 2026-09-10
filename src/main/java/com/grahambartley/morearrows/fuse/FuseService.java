@@ -93,6 +93,9 @@ public final class FuseService {
     }
 
     for (final Fuse fuse : tracker.fuses()) {
+      if (tracker.fuseOn(fuse.hostId()) == null) {
+        continue;
+      }
       final Entity host = world.getEntity(fuse.hostId());
       if (host == null || host.isRemoved()) {
         holdWithoutHost(tracker, fuse);

@@ -32,7 +32,7 @@ class BlastChargeTest {
 
   @Test
   void reportsNoShooterForAChargeNobodyFired() {
-    final BlastCharge charge = BlastCharge.on(CARRIER, ExplosiveTier.GUNPOWDER);
+    final BlastCharge charge = new BlastCharge(CARRIER, ExplosiveTier.GUNPOWDER, null);
 
     assertEquals(Optional.empty(), charge.shooter());
     assertEquals(CARRIER, charge.carrierId());

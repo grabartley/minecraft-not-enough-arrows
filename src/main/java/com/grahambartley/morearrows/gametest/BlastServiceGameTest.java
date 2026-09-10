@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows.gametest;
 
 import com.grahambartley.morearrows.ModArrows;
+import com.grahambartley.morearrows.blast.BlastCharge;
 import com.grahambartley.morearrows.blast.BlastService;
 import com.grahambartley.morearrows.config.ExplosiveArrowConfig;
 import com.grahambartley.morearrows.config.ExplosiveTierConfig;
@@ -86,7 +87,8 @@ public final class BlastServiceGameTest implements FabricGameTest {
     final MoreArrowsConfig previous = ServerConfigService.get();
     try {
       ServerConfigHolder.set(config);
-      BlastService.detonate(context.getWorld(), arrow, arrow.chargeCarriedBy(arrow));
+      BlastService.detonate(
+          context.getWorld(), arrow, new BlastCharge(arrow.getUuid(), arrow.tier(), null));
     } finally {
       ServerConfigHolder.set(previous);
     }

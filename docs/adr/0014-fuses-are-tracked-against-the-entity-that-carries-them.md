@@ -13,7 +13,7 @@ The obvious owner is the arrow entity itself, with the remaining ticks written i
 
 A fuse is not owned by an arrow. It is owned by the server, tracked per world against the UUID of whatever entity carries it, and it detonates wherever that entity is when the countdown runs out.
 
-For an arrow embedded in a block, the carrier is the arrow entity. For an arrow that hit a mob, the carrier is the mob, and the arrow is resolved by vanilla as it always is. "The charge travels with the target" then costs nothing: the fuse already reads its position from the carrier every tick.
+For an arrow embedded in a block, the carrier is the arrow entity. For an arrow that hit a mob, the carrier is the mob, and the arrow is resolved by vanilla as it always is. ([ADR 0025](0025-an-explosive-arrow-hands-over-its-charge-without-a-hit.md) revises that last clause: the arrow is discarded without vanilla's resolution, because the arrow damage vanilla would deal kills the carrier and cancels the blast.) "The charge travels with the target" then costs nothing: the fuse already reads its position from the carrier every tick.
 
 The fuse knows nothing about explosions. When the countdown reaches zero it hands the world, the carrier, and the spent fuse to whoever is listening, and each arrow tier decides for itself what that means.
 

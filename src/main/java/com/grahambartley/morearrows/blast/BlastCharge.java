@@ -13,10 +13,6 @@ public record BlastCharge(UUID carrierId, ExplosiveTier tier, @Nullable UUID sho
     Objects.requireNonNull(tier, "A blast charge needs the tier that decides its power");
   }
 
-  public static BlastCharge on(final UUID carrierId, final ExplosiveTier tier) {
-    return new BlastCharge(carrierId, tier, null);
-  }
-
   public Optional<UUID> shooter() {
     return Optional.ofNullable(shooterId);
   }
