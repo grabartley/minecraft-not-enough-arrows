@@ -38,14 +38,6 @@ public final class FletchingStationResultSlot extends Slot {
   }
 
   @Override
-  public void onQuickTransfer(final ItemStack newItem, final ItemStack original) {
-    final int moved = original.getCount() - newItem.getCount();
-    if (moved > 0) {
-      onCrafted(newItem, moved);
-    }
-  }
-
-  @Override
   protected void onCrafted(final ItemStack stack, final int amount) {
     crafted += amount;
     onCrafted(stack);

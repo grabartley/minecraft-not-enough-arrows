@@ -3,12 +3,10 @@ package com.grahambartley.morearrows.fletching;
 import com.grahambartley.morearrows.recipe.FletchingRecipe;
 
 public final class FletchingStationSlots {
-  public static final int INPUT_COLUMNS = 3;
   public static final int INPUT_COUNT = FletchingRecipe.MAX_INPUTS;
 
-  public static final int PLAYER_COLUMNS = 9;
   public static final int PLAYER_MAIN_COUNT = 27;
-  public static final int HOTBAR_COUNT = PLAYER_COLUMNS;
+  public static final int HOTBAR_COUNT = 9;
   public static final int PLAYER_SLOT_COUNT = PLAYER_MAIN_COUNT + HOTBAR_COUNT;
 
   public static final int FIRST_INPUT_SLOT = 0;

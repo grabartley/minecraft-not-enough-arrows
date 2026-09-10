@@ -3,6 +3,8 @@ package com.grahambartley.morearrows.gametest;
 import com.grahambartley.morearrows.fletching.FletchingStationScreenHandler;
 import com.grahambartley.morearrows.fletching.FletchingStationSlots;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
@@ -210,8 +212,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
     context.assertTrue(
         context
             .getWorld()
-            .getEntitiesByClass(
-                net.minecraft.entity.ItemEntity.class, context.getTestBox(), entity -> true)
+            .getEntitiesByClass(ItemEntity.class, context.getTestBox(), entity -> true)
             .stream()
             .anyMatch(entity -> entity.getStack().isOf(Items.TNT)),
         "Inputs a full player cannot hold should be dropped rather than destroyed");
@@ -296,7 +297,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
 
     context.assertTrue(station.canUse(player), "A station on a fletching table should be usable");
 
-    context.setBlockState(FletchingStationSupport.TABLE, net.minecraft.block.Blocks.AIR);
+    context.setBlockState(FletchingStationSupport.TABLE, Blocks.AIR);
 
     context.assertFalse(
         station.canUse(player), "A station whose fletching table is gone should stop being usable");
@@ -341,9 +342,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
     return context
         .getWorld()
         .getEntitiesByClass(
-            net.minecraft.entity.ItemEntity.class,
-            context.getTestBox(),
-            entity -> entity.getStack().isOf(Items.ARROW))
+            ItemEntity.class, context.getTestBox(), entity -> entity.getStack().isOf(Items.ARROW))
         .stream()
         .mapToInt(entity -> entity.getStack().getCount())
         .sum();

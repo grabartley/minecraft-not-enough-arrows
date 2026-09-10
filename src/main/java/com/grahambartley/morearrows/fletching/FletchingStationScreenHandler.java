@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingResultInventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.screen.Property;
@@ -26,8 +27,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
   private final ScreenHandlerContext context;
   private final World world;
   private final CraftingResultInventory result = new CraftingResultInventory();
-  private final FletchingStationInventory input =
-      new FletchingStationInventory(FletchingStationSlots.INPUT_COUNT, this::onInputChanged);
+  private final SimpleInventory input = new SimpleInventory(FletchingStationSlots.INPUT_COUNT);
   private final Property selectedRecipe = Property.create();
 
   private List<RecipeEntry<FletchingRecipe>> availableRecipes = List.of();
@@ -43,6 +43,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     this.context = context;
     this.world = playerInventory.player.getWorld();
     this.selectedRecipe.set(NO_SELECTION);
+    this.input.addListener(changed -> onInputChanged());
 
     addInputSlots();
     addResultSlot(playerInventory.player);
@@ -135,11 +136,24 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
           FletchingStationSlots.TOTAL_SLOTS,
           false);
     }
-    return insertItem(
+    if (insertItem(
         slotStack,
         FletchingStationSlots.FIRST_INPUT_SLOT,
         FletchingStationSlots.RESULT_SLOT,
-        false);
+        false)) {
+      return true;
+    }
+    return index < FletchingStationSlots.FIRST_HOTBAR_SLOT
+        ? insertItem(
+            slotStack,
+            FletchingStationSlots.FIRST_HOTBAR_SLOT,
+            FletchingStationSlots.TOTAL_SLOTS,
+            false)
+        : insertItem(
+            slotStack,
+            FletchingStationSlots.FIRST_PLAYER_SLOT,
+            FletchingStationSlots.FIRST_HOTBAR_SLOT,
+            false);
   }
 
   private void addInputSlots() {

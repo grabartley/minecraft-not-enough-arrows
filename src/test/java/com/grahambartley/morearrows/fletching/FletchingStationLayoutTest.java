@@ -45,11 +45,11 @@ class FletchingStationLayoutTest {
   void wrapsTheInputGridAtTheDeclaredColumnCount() {
     assertEquals(
         FletchingStationLayout.INPUT_ORIGIN_X
-            + (FletchingStationSlots.INPUT_COLUMNS - 1) * FletchingStationLayout.SLOT_PITCH,
-        FletchingStationLayout.inputX(FletchingStationSlots.INPUT_COLUMNS - 1));
+            + (FletchingStationLayout.INPUT_COLUMNS - 1) * FletchingStationLayout.SLOT_PITCH,
+        FletchingStationLayout.inputX(FletchingStationLayout.INPUT_COLUMNS - 1));
     assertEquals(
         FletchingStationLayout.INPUT_ORIGIN_X,
-        FletchingStationLayout.inputX(FletchingStationSlots.INPUT_COLUMNS));
+        FletchingStationLayout.inputX(FletchingStationLayout.INPUT_COLUMNS));
   }
 
   @Test

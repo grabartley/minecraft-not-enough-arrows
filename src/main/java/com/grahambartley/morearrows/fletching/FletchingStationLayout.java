@@ -1,6 +1,9 @@
 package com.grahambartley.morearrows.fletching;
 
 public final class FletchingStationLayout {
+  public static final int INPUT_COLUMNS = 3;
+  public static final int PLAYER_COLUMNS = 9;
+
   public static final int SLOT_PITCH = 18;
   public static final int INPUT_ORIGIN_X = 30;
   public static final int INPUT_ORIGIN_Y = 17;
@@ -14,23 +17,23 @@ public final class FletchingStationLayout {
 
   public static int inputX(final int index) {
     requireInputIndex(index);
-    return INPUT_ORIGIN_X + (index % FletchingStationSlots.INPUT_COLUMNS) * SLOT_PITCH;
+    return INPUT_ORIGIN_X + (index % INPUT_COLUMNS) * SLOT_PITCH;
   }
 
   public static int inputY(final int index) {
     requireInputIndex(index);
-    return INPUT_ORIGIN_Y + (index / FletchingStationSlots.INPUT_COLUMNS) * SLOT_PITCH;
+    return INPUT_ORIGIN_Y + (index / INPUT_COLUMNS) * SLOT_PITCH;
   }
 
   public static int playerX(final int index) {
     requirePlayerIndex(index);
-    return PLAYER_ORIGIN_X + (index % FletchingStationSlots.PLAYER_COLUMNS) * SLOT_PITCH;
+    return PLAYER_ORIGIN_X + (index % PLAYER_COLUMNS) * SLOT_PITCH;
   }
 
   public static int playerY(final int index) {
     requirePlayerIndex(index);
     return index < FletchingStationSlots.PLAYER_MAIN_COUNT
-        ? PLAYER_ORIGIN_Y + (index / FletchingStationSlots.PLAYER_COLUMNS) * SLOT_PITCH
+        ? PLAYER_ORIGIN_Y + (index / PLAYER_COLUMNS) * SLOT_PITCH
         : HOTBAR_Y;
   }
 

@@ -59,7 +59,7 @@ public final class FletchingStationQuickMoveGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void shiftClickingWithNoRoomLeftInTheStationChangesNothing(TestContext context) {
+  public void shiftClickingIntoAFullStationFallsBackToTheRestOfTheInventory(TestContext context) {
     final ServerPlayerEntity player =
         MockPlayerSupport.playerAt(context, FletchingStationSupport.TABLE.east());
     final FletchingStationScreenHandler station =
@@ -81,6 +81,9 @@ public final class FletchingStationQuickMoveGameTest implements FabricGameTest {
         0,
         FletchingStationSupport.countInInputs(station, Items.ARROW),
         "Arrows squeezed into a full station");
+    context.assertTrue(
+        player.getInventory().getStack(FIRST_HOTBAR_INVENTORY_SLOT).isEmpty(),
+        "A full station should send the stack on to the main inventory the way vanilla does");
     context.complete();
   }
 }
