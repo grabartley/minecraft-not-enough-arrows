@@ -3,6 +3,7 @@
 	"package": "com.grahambartley.morearrows.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"FletchingTableBlockMixin",
 		"LevelStorageMixin"
 	],
 	"injectors": {
