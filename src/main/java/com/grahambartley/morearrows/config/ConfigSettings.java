@@ -5,6 +5,7 @@ public final class ConfigSettings {
   public static final String GRAPPLE = "grapple";
   public static final String UTILITY = "utility";
   public static final String PHYSICS = "physics";
+  public static final String FLETCHING = "fletching";
 
   public static final String EXPLOSIVE_GUNPOWDER = EXPLOSIVE + ".gunpowder";
   public static final String EXPLOSIVE_TNT = EXPLOSIVE + ".tnt";
@@ -55,6 +56,8 @@ public final class ConfigSettings {
   public static final String PHYSICS_GRAVITY_BLOCK_EXCLUSIONS = PHYSICS + ".gravityBlockExclusions";
   public static final String PHYSICS_RICOCHET_BOUNCE_COUNT = PHYSICS + ".ricochetBounceCount";
   public static final String PHYSICS_RICOCHET_RETAINS_DAMAGE = PHYSICS + ".ricochetRetainsDamage";
+
+  public static final String FLETCHING_STATION_ENABLED = FLETCHING + ".stationEnabled";
 
   public static final String ALL = "all";
 

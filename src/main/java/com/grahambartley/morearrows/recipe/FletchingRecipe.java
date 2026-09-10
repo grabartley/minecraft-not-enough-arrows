@@ -4,6 +4,7 @@ import com.grahambartley.morearrows.ModRecipes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.Recipe;
@@ -40,6 +41,10 @@ public record FletchingRecipe(String group, List<FletchingIngredient> inputs, It
 
   @Override
   public boolean matches(final FletchingRecipeInput input, final World world) {
+    return slotAssignment(input).isPresent();
+  }
+
+  public Optional<List<Integer>> slotAssignment(final FletchingRecipeInput input) {
     final List<Integer> occupiedSlots = occupiedSlots(input);
     final List<List<Integer>> candidateSlots =
         inputs.stream()
@@ -49,7 +54,7 @@ public record FletchingRecipe(String group, List<FletchingIngredient> inputs, It
                         .filter(slot -> ingredient.test(input.getStackInSlot(slot)))
                         .toList())
             .toList();
-    return FletchingSlotMatcher.matchesExactly(candidateSlots, occupiedSlots);
+    return FletchingSlotMatcher.assign(candidateSlots, occupiedSlots);
   }
 
   @Override

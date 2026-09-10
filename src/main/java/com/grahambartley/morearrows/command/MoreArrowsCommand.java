@@ -33,7 +33,8 @@ public final class MoreArrowsCommand {
                     .then(ExplosiveCommandNodes.build())
                     .then(GrappleCommandNodes.build())
                     .then(UtilityCommandNodes.build())
-                    .then(PhysicsCommandNodes.build())));
+                    .then(PhysicsCommandNodes.build())
+                    .then(FletchingCommandNodes.build())));
   }
 
   public static boolean isOperator(final ServerCommandSource source) {

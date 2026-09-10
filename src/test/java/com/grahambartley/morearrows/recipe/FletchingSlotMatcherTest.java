@@ -1,10 +1,12 @@
 package com.grahambartley.morearrows.recipe;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -72,32 +74,59 @@ class FletchingSlotMatcherTest {
 
   @ParameterizedTest(name = "{0}")
   @MethodSource("assignments")
-  void decidesWhetherEveryIngredientCanClaimItsOwnOccupiedSlot(
+  void decidesWhetherEveryIngredientCanClaimItsOwnOccupiedSlotAndNamesWhichOne(
       final String description,
       final List<List<Integer>> candidateSlotsPerIngredient,
       final List<Integer> occupiedSlots,
       final boolean expected) {
-    assertTrue(
-        expected == FletchingSlotMatcher.matchesExactly(candidateSlotsPerIngredient, occupiedSlots),
-        description);
+    final Optional<List<Integer>> assignment =
+        FletchingSlotMatcher.assign(candidateSlotsPerIngredient, occupiedSlots);
+
+    assertEquals(expected, assignment.isPresent(), description);
+    assignment.ifPresent(
+        slots -> {
+          assertEquals(candidateSlotsPerIngredient.size(), slots.size(), description);
+          assertEquals(slots.size(), new HashSet<>(slots).size(), description);
+          for (int index = 0; index < slots.size(); index++) {
+            assertTrue(
+                candidateSlotsPerIngredient.get(index).contains(slots.get(index)), description);
+            assertTrue(occupiedSlots.contains(slots.get(index)), description);
+          }
+        });
+  }
+
+  @Test
+  void claimsTheOnlyWorkableSlotForEachIngredientRatherThanTheFirstOneOffered() {
+    assertEquals(
+        Optional.of(List.of(0, 1, 2)),
+        FletchingSlotMatcher.assign(
+            List.of(List.of(0, 1, 2), List.of(1, 2), List.of(2)), List.of(0, 1, 2)));
+  }
+
+  @Test
+  void reportsNoAssignmentWhenTwoIngredientsCompeteForOneSlot() {
+    assertEquals(
+        Optional.empty(),
+        FletchingSlotMatcher.assign(List.of(List.of(0), List.of(0)), List.of(0, 1)));
   }
 
   @Test
   void ignoresDuplicateCandidateSlotsRatherThanCountingThemTwice() {
-    assertFalse(
-        FletchingSlotMatcher.matchesExactly(List.of(List.of(0, 0), List.of(0, 0)), List.of(0, 1)));
+    assertEquals(
+        Optional.empty(),
+        FletchingSlotMatcher.assign(List.of(List.of(0, 0), List.of(0, 0)), List.of(0, 1)));
   }
 
   @Test
   void acceptsAnySlotCollectionRatherThanRequiringLists() {
-    assertTrue(FletchingSlotMatcher.matchesExactly(List.of(Set.of(1), Set.of(0)), Set.of(0, 1)));
+    assertEquals(
+        Optional.of(List.of(1, 0)),
+        FletchingSlotMatcher.assign(List.of(Set.of(1), Set.of(0)), Set.of(0, 1)));
   }
 
   @Test
   void rejectsNullArguments() {
-    assertThrows(
-        NullPointerException.class, () -> FletchingSlotMatcher.matchesExactly(null, List.of()));
-    assertThrows(
-        NullPointerException.class, () -> FletchingSlotMatcher.matchesExactly(List.of(), null));
+    assertThrows(NullPointerException.class, () -> FletchingSlotMatcher.assign(null, List.of()));
+    assertThrows(NullPointerException.class, () -> FletchingSlotMatcher.assign(List.of(), null));
   }
 }

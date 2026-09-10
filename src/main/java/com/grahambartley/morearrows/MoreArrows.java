@@ -27,6 +27,7 @@ public class MoreArrows implements ModInitializer {
     ModArrows.register();
     ModItemGroups.register();
     ModRecipes.register();
+    ModScreenHandlers.register();
     ModSounds.register();
     ModNetworking.registerPayloads();
     FirePatchService.register();

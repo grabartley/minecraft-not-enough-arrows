@@ -20,9 +20,9 @@ class ServerConfigOptionsTest {
   }
 
   @Test
-  void ordersSectionsByArrowFamily() {
+  void ordersSectionsByFeatureFamilyWithTheArrowFamiliesFirst() {
     assertEquals(
-        List.of("explosive", "grapple", "utility", "physics"),
+        List.of("explosive", "grapple", "utility", "physics", "fletching"),
         ServerConfigOptions.sections().stream().map(ConfigSection::id).toList());
   }
 

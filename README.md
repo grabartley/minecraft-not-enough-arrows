@@ -404,7 +404,7 @@ Every server config option is adjustable at runtime, so a server owner on a head
 | `/morearrows config reset` | Operator (level 2) | Restores every setting to its default |
 | `/morearrows config <family> <option> <value>` | Operator (level 2) | Sets one option |
 
-`<family>` is `explosive`, `grapple`, `utility`, or `physics`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/morearrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
+`<family>` is `explosive`, `grapple`, `utility`, `physics`, or `fletching`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/morearrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
 
 Values are checked against the same bounds the config record enforces. A value outside them is rejected with an error naming the accepted range, rather than being silently clamped the way a hand-edited file is on load.
 
@@ -446,7 +446,23 @@ A recipe is an unordered list of ingredients, each with the count it demands, an
 | Shared items | Two ingredients that accept the same item need two separate stacks, exactly as shapeless crafting already behaves |
 | A bad recipe | Reported as a load error naming that one file, leaving the rest of the pack to load |
 
-The station interface itself ships separately. The recipe type, the station's screen, and the recipes the mod ships are each their own piece of work, and no arrow is blocked on any of them: [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
+The recipes the mod ships are their own piece of work, and no arrow is blocked on them: [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
+
+## Fletching Station
+
+The station is the screen handler behind the fletching table interface: nine input slots in a three by three grid plus one read-only result slot. Nine is the number a fletching recipe may declare, so the layout gives every ingredient a slot and nothing more, which is why the recipe type caps there. The station is a crafting surface rather than storage, so it holds nothing when nobody has it open, and each player who opens one gets their own inputs.
+
+| Rule | Behaviour |
+|---|---|
+| Who decides the result | The server. It matches the inputs against the registered recipe type and syncs the result stack, so what a player takes is only ever what the server produced. A client derives the same list from its own synced copy of the recipes to render, exactly as vanilla's stonecutter does |
+| Selecting a recipe | Validated against the server's own list of matching recipes. A selection outside that list is refused and changes nothing |
+| Taking the result | The withdrawal from every input slot is planned in full before a single stack is touched, so an interrupted take can neither duplicate nor destroy items. Once the inputs are gone the result is recomputed, which is why two takes against one set of inputs yield one result. Shift-clicking repeats while the inputs allow it, and any part of a result the player has no room for drops at their feet |
+| Shift-clicking | Moves stacks between the station and the inventory, falling back from hotbar to main inventory and back the way a crafting table does when the grid is full |
+| Closing the screen | Every item left in an input slot goes back to the player, or drops at their feet if the inventory is full. Nothing is destroyed |
+
+`fletching.stationEnabled` controls whether the station is reachable at all, so a server that wants the vanilla fletching table to keep doing nothing can have it. Crafting table recipes are untouched either way, per [ADR 0002](docs/adr/0002-crafting-table-always-works.md).
+
+The block interaction that opens the station and the screen that draws it are each their own piece of work, so on this build the handler is registered and reachable only from code.
 
 ## Recipe Viewers
 

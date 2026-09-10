@@ -9,7 +9,8 @@ public final class ServerConfigOptions {
           ExplosiveOptions.section(),
           GrappleOptions.section(),
           UtilityOptions.section(),
-          PhysicsOptions.section());
+          PhysicsOptions.section(),
+          FletchingOptions.section());
   private static final List<ConfigOption<MoreArrowsConfig>> ALL =
       SECTIONS.stream().flatMap(section -> section.options().stream()).toList();
 
