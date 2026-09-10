@@ -3,7 +3,7 @@
 # sphere pixel for pixel, with the tone turned inside out: a dark violet shell
 # around a core lit almost to white, where the pearl is a bright teal shell around
 # a core held almost to black. The two sit side by side in the creative tab and are
-# told apart twice over, by hue and by which half of the head is the bright half,
+# told apart twice over, by hue and by whether the shell or the core is the bright part,
 # so neither reading has to survive hotbar size alone.
 # O = 1A0E2B  shell, shadowed facet
 # d = 30194D  shell, inner shadow

@@ -16,7 +16,7 @@
 #
 # c = 6FE8C4  pearl, lit point
 # m = 2FB894  pearl, body
-# h = 03231C  pearl, dark core
+# h = 010D0A  pearl, dark core
 # d = 0E5A48  pearl, inner shadow
 # O = 04231D  pearl, collar, where the head meets the shaft
 # W = A8802F  shaft, grain highlight

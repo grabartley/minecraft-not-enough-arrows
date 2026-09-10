@@ -55,7 +55,7 @@
 # e = 6B614C  recipe list edge, lit, and the selected row's lit face
 # t = D8C69B  list row, lit face
 # r = A89168  list row, body
-# R = 544824  list row, shadowed face
+# R = 46381C  list row, shadowed face
 # H = F2E4C4  list row, hovered ring
 # b = C0A87C  list row, hovered body
 # s = 8A754C  list row, hovered inner shadow
