@@ -26,6 +26,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
   private static final BlockPos CENTRE = new BlockPos(3, 4, 3);
   private static final BlockPos NEARBY_BLOCK = new BlockPos(3, 3, 3);
   private static final float POWER = 4.0f;
+  private static final int DETONATE_NOW = 0;
 
   @BeforeBatch(batchId = BATCH)
   public void forgetFusesBeforeBatch(ServerWorld world) {
@@ -86,7 +87,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     final MoreArrowsConfig previous = ServerConfigService.get();
     try {
       ServerConfigHolder.set(config);
-      BlastService.detonate(context.getWorld(), arrow);
+      BlastService.arm(context.getWorld(), arrow, arrow.tier(), null, DETONATE_NOW);
     } finally {
       ServerConfigHolder.set(previous);
     }

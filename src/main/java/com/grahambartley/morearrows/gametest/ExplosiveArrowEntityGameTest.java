@@ -10,18 +10,15 @@ import java.util.Collection;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.test.CustomTestProvider;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFunction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "explosive-arrow";
-  private static final String ENTITY_HIT_BATCH = "explosive-arrow-entity-hit";
 
   @CustomTestProvider
   public Collection<TestFunction> tierFuseTests() {
@@ -94,59 +91,6 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               burning, "A fired " + arrow.id() + " should be burning its own fuse where it landed");
           context.complete();
-        });
-  }
-
-  @GameTest(
-      templateName = UtilityArrowTestSupport.TEMPLATE,
-      batchId = ENTITY_HIT_BATCH,
-      tickLimit = 120)
-  public void anArrowThatStrikesAnEntityKeepsItselfAndItsFuse(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
-    final CowEntity target =
-        UtilityArrowTestSupport.liveTargetOnPedestalAt(
-            context, UtilityArrowTestSupport.IMPACT_FACE);
-    final float healthBefore = target.getHealth();
-    MockPlayerSupport.fireEastFromBow(
-        context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
-        ModArrows.GUNPOWDER_ARROW.item());
-
-    context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK + 10,
-        () -> {
-          final ExplosiveArrowEntity landed = landedArrow(context, ModArrows.GUNPOWDER_ARROW);
-          context.assertTrue(
-              landed != null, "An arrow that struck an entity should keep itself and its fuse");
-          final Vec3d restingAt = landed.getPos();
-          final boolean burning = FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null;
-          final float healthAfter = target.getHealth();
-
-          context.runAtTick(
-              UtilityArrowTestSupport.LANDING_TICK + 20,
-              () -> {
-                final Vec3d stillAt = landed.getPos();
-                defuse(context, landed);
-                context.assertTrue(
-                    burning, "An arrow that struck an entity should be counting down");
-                context.assertEquals(
-                    healthAfter, healthBefore, "An explosive arrow deals no damage on contact");
-                context.assertTrue(
-                    stillAt.squaredDistanceTo(restingAt) < 1.0e-6,
-                    "An arrow that struck an entity should hold where it struck rather than drift,"
-                        + " but moved from "
-                        + restingAt
-                        + " to "
-                        + stillAt);
-                context.assertTrue(
-                    restingAt.squaredDistanceTo(target.getPos()) < 9.0,
-                    "An arrow should stop at the mob it struck rather than short of it, but rested"
-                        + " at "
-                        + restingAt
-                        + " with the target at "
-                        + target.getPos());
-                context.complete();
-              });
         });
   }
 

@@ -92,7 +92,11 @@ public final class FuseService {
       return;
     }
 
-    for (final Fuse fuse : tracker.fuses()) {
+    for (final Fuse snapshot : tracker.fuses()) {
+      final Fuse fuse = tracker.fuseOn(snapshot.hostId());
+      if (fuse == null) {
+        continue;
+      }
       final Entity host = world.getEntity(fuse.hostId());
       if (host == null || host.isRemoved()) {
         holdWithoutHost(tracker, fuse);

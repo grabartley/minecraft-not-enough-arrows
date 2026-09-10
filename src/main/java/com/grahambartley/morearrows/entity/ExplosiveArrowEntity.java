@@ -5,11 +5,11 @@ import com.grahambartley.morearrows.blast.BlastService;
 import com.grahambartley.morearrows.explosive.ExplosiveTier;
 import com.grahambartley.morearrows.fuse.FuseService;
 import com.grahambartley.morearrows.server.ServerConfigService;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
+import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ExplosiveArrowEntity extends BaseArrowEntity {
-  private final Set<Integer> struck = new HashSet<>();
   private final ExplosiveTier tier;
 
   protected ExplosiveArrowEntity(
@@ -49,39 +48,27 @@ public abstract class ExplosiveArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
-    return arm(world, ArrowImpact.DEFAULT);
+    return arm(world, this, ArrowImpact.DEFAULT);
   }
 
   @Override
   protected ArrowImpact onArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
-    struck.add(entityHitResult.getEntity().getId());
-    final ArrowImpact impact = arm(world, ArrowImpact.RETAIN);
-    if (isRemoved()) {
-      return impact;
-    }
-    setVelocity(entityHitResult.getPos().subtract(getPos()));
-    inGround = true;
-    return impact;
+    return arm(world, entityHitResult.getEntity(), ArrowImpact.DISCARD);
   }
 
-  @Override
-  protected boolean canHit(final Entity entity) {
-    return !struck.contains(entity.getId()) && super.canHit(entity);
-  }
-
-  private ArrowImpact arm(final ServerWorld world, final ArrowImpact armed) {
-    if (FuseService.fuseOn(world, getUuid()) != null) {
+  private ArrowImpact arm(final ServerWorld world, final Entity carrier, final ArrowImpact armed) {
+    if (FuseService.fuseOn(world, carrier.getUuid()) != null) {
       return armed;
     }
 
     final int delayTicks = tier.in(ServerConfigService.get().explosive()).delayTicks();
-    if (delayTicks <= 0) {
-      BlastService.detonate(world, this);
-      return ArrowImpact.RETAIN;
-    }
+    BlastService.arm(world, carrier, tier, shooterId(), delayTicks);
+    return isRemoved() ? ArrowImpact.RETAIN : armed;
+  }
 
-    FuseService.light(world, this, delayTicks);
-    return armed;
+  @Nullable
+  private UUID shooterId() {
+    return shooter().map(LivingEntity::getUuid).orElse(null);
   }
 }

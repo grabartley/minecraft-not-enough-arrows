@@ -43,6 +43,7 @@
       "com.grahambartley.morearrows.gametest.ChargedCrossbowArrowGameTest",
       "com.grahambartley.morearrows.gametest.CountdownBroadcasterGameTest",
       "com.grahambartley.morearrows.gametest.ExplosiveArrowEntityGameTest",
+      "com.grahambartley.morearrows.gametest.ExplosiveCarrierGameTest",
       "com.grahambartley.morearrows.gametest.FallingBlocksGameTest",
       "com.grahambartley.morearrows.gametest.FirePatchPlacerGameTest",
       "com.grahambartley.morearrows.gametest.FirePatchServiceGameTest",
