@@ -411,7 +411,7 @@ A player fires an explosive arrow. It embeds, or sticks in whatever it hit, and 
 | BLAST-4 | A configured fuse of zero detonates on contact. It is supported and is not the default for any tier |
 | BLAST-5 | A configured power of zero detonates without an explosion, so an operator can neutralise a tier without removing its arrow |
 | BLAST-6 | A fuse is owned by the server and tracked against the entity carrying it, so an arrow that struck a mob hands its fuse to that mob and detonates wherever the mob ends up |
-| BLAST-7 | An explosive arrow that strikes an entity keeps itself rather than being consumed, and deals no arrow damage on contact. The blast is the whole payload |
+| BLAST-7 | An explosive arrow that strikes an entity hands its charge to that entity and is consumed, dealing no arrow damage on contact. The charge travels with the entity and goes off wherever it ends up. The blast is the whole payload |
 | BLAST-8 | Re-hitting an arrow that is already counting down neither restarts nor stacks its fuse |
 | BLAST-9 | A fuse whose carrier cannot be found holds rather than burning down, resumes when the carrier returns, and is abandoned if the carrier stays missing. Nothing detonates from a carrier that no longer exists |
 | BLAST-10 | A carrier that dies, and a player who disconnects, take their fuse with them immediately |

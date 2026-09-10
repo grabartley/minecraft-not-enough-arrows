@@ -86,7 +86,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     final MoreArrowsConfig previous = ServerConfigService.get();
     try {
       ServerConfigHolder.set(config);
-      BlastService.detonate(context.getWorld(), arrow);
+      BlastService.detonate(context.getWorld(), arrow, arrow.chargeCarriedBy(arrow));
     } finally {
       ServerConfigHolder.set(previous);
     }

@@ -234,11 +234,11 @@ Each tier is shorter-fused and stronger than the one below it, so the ladder rea
 | Terrain damage | `explosive.damageTerrain`, **off by default**. The gunpowder arrow is craftable from gunpowder alone, which makes it the cheapest way to reach a build from range, so a fresh install cannot be used to grief terrain until an operator turns it on |
 | Entity damage | `explosive.damageEntities`, on by default, and independent of the terrain switch. Turning it off stops the blast hurting anything, but vanilla still throws entities clear of an explosion, so a blast with damage off is a shove rather than nothing |
 | A fuse already burning | Re-hitting an arrow that is already counting down does not restart or stack its fuse |
-| Hitting an entity | The arrow keeps itself rather than being consumed on contact, because vanilla would discard it and the fuse it carries would die with it. It arms and holds at the point it struck, counting down there, the same way vanilla parks an arrow in the block it hits. A Piercing crossbow buys no extra reach on an explosive arrow, because it stops on the first target it touches |
-| Contact damage | None. An explosive arrow that strikes a mob deals no arrow damage on the way past, because skipping vanilla's resolution is what keeps the fuse alive. The blast is the whole payload, and it lands a moment later |
+| Hitting an entity | The arrow hands its fuse to the mob it struck and is consumed. The countdown then belongs to that mob, so the charge travels with it and goes off wherever it ends up rather than at the point of impact. A Piercing crossbow buys no extra reach on an explosive arrow, because it stops on the first target it touches |
+| Contact damage | None. An explosive arrow that strikes a mob deals no arrow damage on the way past. The blast is the whole payload, and it lands a moment later. [ADR 0025](docs/adr/0025-an-explosive-arrow-hands-over-its-charge-without-a-hit.md) covers why dealing that damage would defeat the mechanic |
 | A delay of zero | Detonates on contact, supported but not the default |
 | A power of zero | Detonates without an explosion, so an operator can disable a tier's blast without removing the arrow |
-| Losing the arrow | A fuse whose arrow is destroyed mid-countdown is held briefly and then abandoned, so nothing detonates from an arrow that no longer exists |
+| Losing the carrier | A fuse whose carrier goes missing mid-countdown is held briefly and then abandoned, so nothing detonates from a carrier that no longer exists. A carrier that dies takes its charge with it immediately |
 | The fire the top tier leaves | The shared fire patch system, sized by `explosive.firePatchRadius` and `explosive.firePatchDurationTicks`, which is time-boxed and asks the world for permission before placing anything. [ADR 0012](docs/adr/0012-fire-patches-are-server-owned-and-time-boxed.md) covers it |
 
 ## Incendiary Arrow
