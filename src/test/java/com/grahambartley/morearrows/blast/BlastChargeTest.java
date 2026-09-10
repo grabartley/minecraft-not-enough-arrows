@@ -2,7 +2,6 @@ package com.grahambartley.morearrows.blast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.morearrows.explosive.ExplosiveTier;
 import java.util.Optional;
@@ -46,9 +45,9 @@ class BlastChargeTest {
   }
 
   @Test
-  void treatsTwoChargesOnTheSameCarrierWithTheSameTierAsEqual() {
-    assertTrue(
-        new BlastCharge(CARRIER, ExplosiveTier.TNT, SHOOTER)
-            .equals(new BlastCharge(CARRIER, ExplosiveTier.TNT, SHOOTER)));
+  void treatsTwoChargesWithTheSameCarrierTierAndShooterAsEqual() {
+    assertEquals(
+        new BlastCharge(CARRIER, ExplosiveTier.TNT, SHOOTER),
+        new BlastCharge(CARRIER, ExplosiveTier.TNT, SHOOTER));
   }
 }

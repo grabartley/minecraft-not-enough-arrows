@@ -23,8 +23,8 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   private static final BlockPos NEIGHBOUR = new BlockPos(5, 3, 4);
   private static final BlockPos SECOND_SHOOTER_STAND = new BlockPos(1, 2, 4);
   private static final int SECOND_ARMING_TICK = 25;
-  private static final int BOTH_ARMED_TICK = 35;
-  private static final int CHAINED_CHECK_TICK = 50;
+  private static final int BOTH_ARMED_TICK = SECOND_ARMING_TICK + 10;
+  private static final int CHAINED_CHECK_TICK = SECOND_ARMING_TICK + 25;
   private static final int NEARBY = 1;
   private static final int THE_COLUMN_ITSELF = 0;
   private static final int HANDOVER_TICK = UtilityArrowTestSupport.LANDING_TICK + 10;

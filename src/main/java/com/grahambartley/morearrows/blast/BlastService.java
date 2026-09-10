@@ -52,7 +52,7 @@ public final class BlastService {
     FuseService.light(world, carrier, delayTicks);
   }
 
-  public static void detonate(
+  private static void detonate(
       @Nullable final ServerWorld world,
       @Nullable final Entity carrier,
       @Nullable final BlastCharge charge) {
