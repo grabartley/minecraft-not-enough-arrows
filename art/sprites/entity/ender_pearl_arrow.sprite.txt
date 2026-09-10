@@ -7,9 +7,10 @@
 # The item sprite's dark core is the one thing worth carrying over, and it is also
 # the one thing that survives being drawn four times around the axis: it sits on
 # the centre line, so the mirrored copies land core on core rather than lit edge on
-# shadow. Everything else about the head is mass and tone along its length, three
-# rows at the shoulder swelling to five and tapering to a single lit pixel at the
-# point. Held darker than the glow ink sac, which is the other teal head in the air.
+# shadow. Everything else about the head is mass and tone along its length: it stands
+# the full five rows of the profile band the moment it leaves the collar, holds that
+# for three columns, then tapers to a single lit pixel at the point. Held darker than
+# the glow ink sac, which is the other teal head in the air.
 #
 # canvas = 32
 #
