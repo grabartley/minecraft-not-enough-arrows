@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.network;
 
+import com.grahambartley.morearrows.network.CountdownPayloads.CountdownS2CPayload;
 import com.grahambartley.morearrows.network.NockedArrowPayloads.NockedArrowS2CPayload;
 import com.grahambartley.morearrows.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
 import com.grahambartley.morearrows.network.ServerConfigPayloads.UpdateServerConfigC2SPayload;
@@ -13,6 +14,7 @@ public final class ModNetworking {
     PayloadTypeRegistry.playS2C()
         .register(SyncServerConfigS2CPayload.ID, SyncServerConfigS2CPayload.CODEC);
     PayloadTypeRegistry.playS2C().register(NockedArrowS2CPayload.ID, NockedArrowS2CPayload.CODEC);
+    PayloadTypeRegistry.playS2C().register(CountdownS2CPayload.ID, CountdownS2CPayload.CODEC);
     PayloadTypeRegistry.playC2S()
         .register(UpdateServerConfigC2SPayload.ID, UpdateServerConfigC2SPayload.CODEC);
   }

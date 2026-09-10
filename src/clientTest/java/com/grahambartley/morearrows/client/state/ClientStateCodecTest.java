@@ -31,8 +31,8 @@ class ClientStateCodecTest {
     assertEquals(
         new ClientState(false, false, 0.5f),
         ClientStateCodec.decode(
-            "{\"showCountdownHud\": false, \"playCountdownSound\": false,"
-                + " \"countdownHudScale\": 0.5}"));
+            "{\"showCountdownRing\": false, \"playCountdownSound\": false,"
+                + " \"countdownRingScale\": 0.5}"));
   }
 
   @ParameterizedTest

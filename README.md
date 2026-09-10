@@ -84,6 +84,24 @@ The fuse itself knows nothing about explosions. It signals that a countdown fini
 
 Because the blast position is read from the carrier at the moment the fuse expires, there is no path that detonates at a stale position. Fuse state is server-owned and lives in memory only, so a restart mid-countdown defuses what was burning rather than resuming it.
 
+A burning fuse is also drawn. Look at an armed arrow and a ring appears beside it, emptying as the fuse burns down, so a charge you have spotted tells you how long you have without a number on your screen.
+
+| Rule | Behaviour |
+|---|---|
+| Where it is drawn | In the world, beside the arrow that is counting down, turned to face you wherever you stand |
+| When it appears | Only while you are looking near enough to the arrow to have picked it out, so sweeping a room shows you the charge you are actually looking at rather than a list of everything armed nearby. Terrain hides it like anything else in the world |
+| What it shows | How much of the fuse is left, as an arc that empties. Urgency reads from the length of the arc as well as its colour, so it does not depend on telling red from amber |
+| How smoothly | It sweeps continuously rather than stepping twenty times a second, because it is drawn from the remaining ticks minus the frame's own tick delta |
+| Who sees it | Any player who looks at the arrow, not only whoever fired it |
+| Where the number comes from | The server announces a fuse once, with its full length and the time left, and the client counts down from there. It shows the blast coming rather than deciding when it lands, and [ADR 0024](docs/adr/0024-the-countdown-is-a-ring-in-the-world.md) covers why it is not sent every tick |
+| Turning it off | `client.showCountdownRing`, a per-player preference that changes nothing for anyone else |
+| Making it bigger | `client.countdownRingScale` |
+| Turning the beep off | `client.playCountdownSound`. The server decides whether a beep happens and how loud, and this decides whether you hear it, so it can mute a beep the server is playing and cannot bring back one `explosive.beepVolume` already silenced |
+
+The beep is the telegraph that does not depend on where you are looking, which is what covers the player already running from a charge. The ring is what tells you how long is left once you have found it.
+
+Those three are client state rather than server config, so they live in the client's own file and are never sent anywhere. A player muting the countdown for themselves does not mute it for the person standing beside them.
+
 ## Block Anchors
 
 Arrows that attach themselves to the world share one anchoring system rather than each deciding for itself what counts as something worth holding onto, so the grapple arrow and the rope arrow agree on where an arrow may take hold. The grapple goes further and takes a tracked hold, because a pull has to know when the block under it is gone. A rope only borrows the question, since the rope block answers for its own support once it is placed.

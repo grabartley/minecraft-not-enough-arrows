@@ -3,7 +3,8 @@
 	"package": "com.grahambartley.morearrows.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ItemRendererMixin"
+		"ItemRendererMixin",
+		"SoundSystemMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

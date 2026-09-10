@@ -434,15 +434,16 @@ A player near an armed explosive arrow, or a player carrying one stuck in them, 
 
 | Requirement | Statement |
 |---|---|
-| COUNT-1 | While a fuse the player can see is burning, its remaining time is drawn on that player's screen |
-| COUNT-2 | Every player who can see the carrier gets the readout, not only the shooter. The telegraph is counterplay, and it is worth most to the person it is aimed at |
-| COUNT-3 | A client preference suppresses the readout for that client alone, and changes nothing for anyone else |
-| COUNT-4 | A client preference scales the readout, within the bounds the client state record enforces |
+| COUNT-1 | While a fuse is burning, how much of it remains is drawn in the world beside the arrow carrying it, as a ring that empties |
+| COUNT-2 | The ring is shown to any player looking at the carrier, not only the shooter, and only while they are looking at it. The unconditional half of the telegraph is the beep, which does not depend on where a player is looking and is what covers a player already running |
+| COUNT-3 | A client preference suppresses the ring for that client alone, and changes nothing for anyone else |
+| COUNT-4 | A client preference scales the ring, within the bounds the client state record enforces |
 | COUNT-5 | A client preference suppresses the countdown beep for that client alone. It can mute a beep the server is playing and cannot unmute one the server is not |
-| COUNT-6 | The readout does not depend on particles, and does not distinguish a fuse about to detonate from one that just started by colour alone |
-| COUNT-7 | Neither preference changes the fuse's timing, its cadence, or its detonation |
+| COUNT-6 | The ring does not depend on particles, and does not distinguish a fuse about to detonate from one that just started by colour alone: the length of the arc carries it |
+| COUNT-7 | The ring empties smoothly rather than stepping once per tick, so it reads as time running out rather than as a stutter |
+| COUNT-8 | No preference changes the fuse's timing, its cadence, or its detonation |
 
-**Not supported:** A readout for a fuse the player cannot see. A client preference that affects any other player. Muting the beep for everyone from a client, which is the server volume setting's job.
+**Not supported:** A ring for a fuse the player is not looking at, or one behind terrain. A numeric countdown. A client preference that affects any other player. Muting the beep for everyone from a client, which is the server volume setting's job.
 
 **Enforcement:** Split. The server owns the fuse and is the only thing that knows the remaining time, so it tells the clients that can see the carrier, on change rather than per tick. Whether to draw or play what it was told is the client's own decision and is never sent anywhere.
 
@@ -721,8 +722,8 @@ Four ways a world can interrupt something, and what each thing does about it.
 |---|---|
 | A11Y-1 | No state distinction relies on colour alone. A fuse about to detonate, a selected station recipe, and a hovered recipe row must each differ by more than colour |
 | A11Y-2 | No effect's readability may depend on particles. Particles are culled on reduced particle settings and a meaningful number of players run Minimal, so a silhouette must be geometry |
-| A11Y-3 | The explosive countdown is legible by ear and by eye independently. A player who has muted it can still see it, and a player who cannot see it can still hear it |
-| A11Y-4 | The countdown readout is scalable by the player |
+| A11Y-3 | The explosive countdown is legible by ear and by eye independently. A player who has muted it can still see it by looking at the arrow, and a player not looking at the arrow still hears it |
+| A11Y-4 | The countdown ring is scalable by the player |
 | A11Y-5 | Every interface renders correctly at GUI scales 1 through 4 |
 | A11Y-6 | Every player-facing string resolves through the language file, so the mod is translatable |
 

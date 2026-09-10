@@ -9,10 +9,10 @@ import java.util.List;
 
 public final class ClientStateOptions {
   public static final String SECTION = "client";
-  public static final String SHOW_COUNTDOWN_HUD = SECTION + ".showCountdownHud";
+  public static final String SHOW_COUNTDOWN_RING = SECTION + ".showCountdownRing";
   public static final String PLAY_COUNTDOWN_SOUND = SECTION + ".playCountdownSound";
-  public static final String COUNTDOWN_HUD_SCALE = SECTION + ".countdownHudScale";
-  public static final float COUNTDOWN_HUD_SCALE_STEP = 0.05f;
+  public static final String COUNTDOWN_RING_SCALE = SECTION + ".countdownRingScale";
+  public static final float COUNTDOWN_RING_SCALE_STEP = 0.05f;
 
   private static final List<ConfigOption<ClientState>> OPTIONS = buildOptions();
   private static final ConfigSection<ClientState> CLIENT_SECTION =
@@ -31,17 +31,19 @@ public final class ClientStateOptions {
   private static List<ConfigOption<ClientState>> buildOptions() {
     return List.of(
         new BooleanOption<>(
-            SHOW_COUNTDOWN_HUD, ClientState::showCountdownHud, ClientState::withShowCountdownHud),
+            SHOW_COUNTDOWN_RING,
+            ClientState::showCountdownRing,
+            ClientState::withShowCountdownRing),
         new BooleanOption<>(
             PLAY_COUNTDOWN_SOUND,
             ClientState::playCountdownSound,
             ClientState::withPlayCountdownSound),
         new FloatOption<>(
-            COUNTDOWN_HUD_SCALE,
-            ClientState.COUNTDOWN_HUD_SCALE_MIN,
-            ClientState.COUNTDOWN_HUD_SCALE_MAX,
-            COUNTDOWN_HUD_SCALE_STEP,
-            ClientState::countdownHudScale,
-            ClientState::withCountdownHudScale));
+            COUNTDOWN_RING_SCALE,
+            ClientState.COUNTDOWN_RING_SCALE_MIN,
+            ClientState.COUNTDOWN_RING_SCALE_MAX,
+            COUNTDOWN_RING_SCALE_STEP,
+            ClientState::countdownRingScale,
+            ClientState::withCountdownRingScale));
   }
 }

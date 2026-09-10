@@ -20,15 +20,15 @@ class ClientStateTest {
   void defaultsShowTheCountdownAndPlayItsSound() {
     final ClientState defaults = ClientState.defaults();
 
-    assertTrue(defaults.showCountdownHud());
+    assertTrue(defaults.showCountdownRing());
     assertTrue(defaults.playCountdownSound());
-    assertEquals(1.0f, defaults.countdownHudScale());
+    assertEquals(1.0f, defaults.countdownRingScale());
   }
 
   @ParameterizedTest
   @CsvSource({"0.1, 0.5", "0.5, 0.5", "1.0, 1.0", "2.0, 2.0", "9.0, 2.0"})
   void clampsTheHudScaleRatherThanRejectingIt(final float given, final float expected) {
-    assertEquals(expected, new ClientState(true, true, given).countdownHudScale());
+    assertEquals(expected, new ClientState(true, true, given).countdownRingScale());
   }
 
   @Test
@@ -55,64 +55,64 @@ class ClientStateTest {
     final ClientState read =
         ClientState.fromJson(
             parse(
-                "{\"showCountdownHud\":false,"
-                    + "\"playCountdownSound\":false,\"countdownHudScale\":1.5}"));
+                "{\"showCountdownRing\":false,"
+                    + "\"playCountdownSound\":false,\"countdownRingScale\":1.5}"));
 
-    assertFalse(read.showCountdownHud());
+    assertFalse(read.showCountdownRing());
     assertFalse(read.playCountdownSound());
-    assertEquals(1.5f, read.countdownHudScale());
+    assertEquals(1.5f, read.countdownRingScale());
   }
 
   @Test
   void keepsKnownValuesWhenOneKeyIsMissing() {
-    final ClientState read = ClientState.fromJson(parse("{\"showCountdownHud\":false}"));
+    final ClientState read = ClientState.fromJson(parse("{\"showCountdownRing\":false}"));
 
-    assertFalse(read.showCountdownHud());
+    assertFalse(read.showCountdownRing());
     assertTrue(read.playCountdownSound());
-    assertEquals(1.0f, read.countdownHudScale());
+    assertEquals(1.0f, read.countdownRingScale());
   }
 
   @ParameterizedTest
   @ValueSource(
       strings = {
-        "{\"showCountdownHud\":\"yes\"}",
-        "{\"showCountdownHud\":7}",
-        "{\"showCountdownHud\":[]}",
-        "{\"showCountdownHud\":{}}"
+        "{\"showCountdownRing\":\"yes\"}",
+        "{\"showCountdownRing\":7}",
+        "{\"showCountdownRing\":[]}",
+        "{\"showCountdownRing\":{}}"
       })
   void fallsBackToTheDefaultWhenABooleanIsNotABoolean(final String json) {
-    assertTrue(ClientState.fromJson(parse(json)).showCountdownHud());
+    assertTrue(ClientState.fromJson(parse(json)).showCountdownRing());
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"{\"countdownHudScale\":\"big\"}", "{\"countdownHudScale\":[]}"})
+  @ValueSource(strings = {"{\"countdownRingScale\":\"big\"}", "{\"countdownRingScale\":[]}"})
   void fallsBackToTheDefaultWhenTheScaleIsNotANumber(final String json) {
-    assertEquals(1.0f, ClientState.fromJson(parse(json)).countdownHudScale());
+    assertEquals(1.0f, ClientState.fromJson(parse(json)).countdownRingScale());
   }
 
   @Test
   void clampsAnOutOfRangeScaleReadFromADocument() {
     assertEquals(
-        ClientState.COUNTDOWN_HUD_SCALE_MAX,
-        ClientState.fromJson(parse("{\"countdownHudScale\":99}")).countdownHudScale());
+        ClientState.COUNTDOWN_RING_SCALE_MAX,
+        ClientState.fromJson(parse("{\"countdownRingScale\":99}")).countdownRingScale());
   }
 
   @Test
   void changesOneValueAtATime() {
     final ClientState defaults = ClientState.defaults();
 
-    assertEquals(new ClientState(false, true, 1.0f), defaults.withShowCountdownHud(false));
+    assertEquals(new ClientState(false, true, 1.0f), defaults.withShowCountdownRing(false));
     assertEquals(new ClientState(true, false, 1.0f), defaults.withPlayCountdownSound(false));
-    assertEquals(new ClientState(true, true, 2.0f), defaults.withCountdownHudScale(2.0f));
+    assertEquals(new ClientState(true, true, 2.0f), defaults.withCountdownRingScale(2.0f));
   }
 
   @Test
   void writesEveryKeyOutSoTheFileIsSelfDescribing() {
     final JsonObject json = ClientState.defaults().toJson();
 
-    assertTrue(json.has("showCountdownHud"));
+    assertTrue(json.has("showCountdownRing"));
     assertTrue(json.has("playCountdownSound"));
-    assertTrue(json.has("countdownHudScale"));
+    assertTrue(json.has("countdownRingScale"));
   }
 
   private static JsonObject parse(final String json) {
