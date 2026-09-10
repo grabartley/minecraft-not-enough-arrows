@@ -450,25 +450,19 @@ The recipes the mod ships are their own piece of work, and no arrow is blocked o
 
 ## Fletching Station
 
-The station is the interface the vanilla fletching table never had. Right-clicking a `minecraft:fletching_table` opens it, and that is the only change the block sees: it is not replaced by a mod block, it gains no block entity, and its blockstate is untouched, so a fletcher villager still claims it as a job site and uninstalling the mod leaves ordinary vanilla fletching tables behind. Sneaking suppresses the interaction the way it does for every other block, so placing a block against a fletching table still works. [ADR 0025](docs/adr/0025-the-station-is-an-interface-borrowed-from-the-vanilla-block.md) covers why the interface is borrowed from the vanilla block rather than built on one of the mod's own.
-
-| Region | Slots | Purpose |
-|---|---|---|
-| Inputs | Nine, in a three by three grid | One slot for every ingredient a fletching recipe may declare, which is why the recipe type caps at nine |
-| Result | One | Read only. It shows what the selected recipe produces and refuses anything placed into it |
-| Player inventory | Thirty-six | The usual main inventory and hotbar |
+The station is the screen handler behind the fletching table interface: nine input slots in a three by three grid plus one read-only result slot. Nine is the number a fletching recipe may declare, so the layout gives every ingredient a slot and nothing more, which is why the recipe type caps there. The station is a crafting surface rather than storage, so it holds nothing when nobody has it open, and each player who opens one gets their own inputs.
 
 | Rule | Behaviour |
 |---|---|
 | Who decides the result | The server. It matches the inputs against the registered recipe type and syncs the result stack, so what a player takes is only ever what the server produced. A client derives the same list from its own synced copy of the recipes to render, exactly as vanilla's stonecutter does |
 | Selecting a recipe | Validated against the server's own list of matching recipes. A selection outside that list is refused and changes nothing |
 | Taking the result | The withdrawal from every input slot is planned in full before a single stack is touched, so an interrupted take can neither duplicate nor destroy items. Once the inputs are gone the result is recomputed, which is why two takes against one set of inputs yield one result. Shift-clicking repeats while the inputs allow it, and any part of a result the player has no room for drops at their feet |
+| Shift-clicking | Moves stacks between the station and the inventory, falling back from hotbar to main inventory and back the way a crafting table does when the grid is full |
 | Closing the screen | Every item left in an input slot goes back to the player, or drops at their feet if the inventory is full. Nothing is destroyed |
-| Storage | None. The station holds nothing when nobody has it open, and two players who open the same table get their own input slots |
 
-`fletching.stationEnabled` turns the whole station off, and it takes effect on the very next interaction with no restart. With it off, right-clicking a fletching table does exactly what vanilla does, which is nothing. Crafting table recipes are untouched either way, per [ADR 0002](docs/adr/0002-crafting-table-always-works.md).
+`fletching.stationEnabled` controls whether the station is reachable at all, so a server that wants the vanilla fletching table to keep doing nothing can have it. Crafting table recipes are untouched either way, per [ADR 0002](docs/adr/0002-crafting-table-always-works.md).
 
-The station's own screen ships separately, so until it lands the server opens a handler the client has no screen registered for.
+The block interaction that opens the station and the screen that draws it are each their own piece of work, so on this build the handler is registered and reachable only from code.
 
 ## Recipe Viewers
 
