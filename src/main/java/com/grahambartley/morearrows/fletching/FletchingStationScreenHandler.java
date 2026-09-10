@@ -45,7 +45,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     this.selectedRecipe.set(NO_SELECTION);
 
     addInputSlots();
-    addResultSlot();
+    addResultSlot(playerInventory.player);
     addPlayerSlots(playerInventory);
     addProperty(selectedRecipe);
   }
@@ -56,10 +56,6 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
 
   public List<RecipeEntry<FletchingRecipe>> getAvailableRecipes() {
     return availableRecipes;
-  }
-
-  public boolean canCraft() {
-    return !result.getStack(0).isEmpty();
   }
 
   @Override
@@ -91,7 +87,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
 
     final ItemStack slotStack = slot.getStack();
     final ItemStack original = slotStack.copy();
-    if (!moveOut(index, slotStack, original)) {
+    if (!moveOut(index, slot, slotStack, original)) {
       return ItemStack.EMPTY;
     }
 
@@ -105,6 +101,9 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     }
 
     slot.onTakeItem(player, slotStack);
+    if (FletchingStationSlots.isResult(index)) {
+      player.dropItem(slotStack, false);
+    }
     sendContentUpdates();
     return original;
   }
@@ -116,7 +115,8 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     context.run((closedWorld, pos) -> dropInventory(player, input));
   }
 
-  private boolean moveOut(final int index, final ItemStack slotStack, final ItemStack original) {
+  private boolean moveOut(
+      final int index, final Slot slot, final ItemStack slotStack, final ItemStack original) {
     if (FletchingStationSlots.isResult(index)) {
       if (!insertItem(
           slotStack,
@@ -125,7 +125,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
           true)) {
         return false;
       }
-      slots.get(index).onQuickTransfer(slotStack, original);
+      slot.onQuickTransfer(slotStack, original);
       return true;
     }
     if (FletchingStationSlots.isInput(index)) {
@@ -148,25 +148,24 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
           new Slot(
               input,
               index,
-              FletchingStationSlots.inputX(index),
-              FletchingStationSlots.inputY(index)));
+              FletchingStationLayout.inputX(index),
+              FletchingStationLayout.inputY(index)));
     }
   }
 
-  private void addResultSlot() {
+  private void addResultSlot(final PlayerEntity player) {
     addSlot(
         new FletchingStationResultSlot(
+            player,
             result,
             0,
-            FletchingStationSlots.RESULT_X,
-            FletchingStationSlots.RESULT_Y,
+            FletchingStationLayout.RESULT_X,
+            FletchingStationLayout.RESULT_Y,
             this::onResultTaken));
   }
 
   private void addPlayerSlots(final PlayerInventory playerInventory) {
-    final int playerSlotCount =
-        FletchingStationSlots.PLAYER_MAIN_COUNT + FletchingStationSlots.HOTBAR_COUNT;
-    for (int index = 0; index < playerSlotCount; index++) {
+    for (int index = 0; index < FletchingStationSlots.PLAYER_SLOT_COUNT; index++) {
       final int inventoryIndex =
           index < FletchingStationSlots.PLAYER_MAIN_COUNT
               ? index + FletchingStationSlots.HOTBAR_COUNT
@@ -175,8 +174,8 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
           new Slot(
               playerInventory,
               inventoryIndex,
-              FletchingStationSlots.playerX(index),
-              FletchingStationSlots.playerY(index)));
+              FletchingStationLayout.playerX(index),
+              FletchingStationLayout.playerY(index)));
     }
   }
 

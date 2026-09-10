@@ -17,6 +17,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   private static final String BATCH = "fletching-station";
   private static final int TOO_FEW_ARROWS = FletchingTestSupport.ARROWS_CONSUMED - 1;
   private static final int A_SPARE_ARROW = 1;
+  private static final int ROOM_FOR_HALF_A_CRAFT = 60;
 
   @BeforeBatch(batchId = BATCH)
   public void installTheFletchingRecipeBeforeBatch(ServerWorld world) {
@@ -218,6 +219,50 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   }
 
   @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aResultThePlayerHasOnlyPartialRoomForIsDroppedRatherThanDestroyed(
+      TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    fillInventory(player);
+    player.getInventory().setStack(0, new ItemStack(Items.ARROW, ROOM_FOR_HALF_A_CRAFT));
+    FletchingStationSupport.loadInputs(station);
+
+    FletchingStationSupport.shiftClick(station, player, FletchingStationSlots.RESULT_SLOT);
+
+    context.assertEquals(
+        Items.ARROW.getMaxCount(),
+        FletchingStationSupport.countHeld(player, Items.ARROW),
+        "Arrows the player has room for after a partial take");
+    context.assertEquals(
+        FletchingTestSupport.ARROWS_PRODUCED - (Items.ARROW.getMaxCount() - ROOM_FOR_HALF_A_CRAFT),
+        droppedArrows(context),
+        "Arrows dropped because the player had no room for them");
+    context.complete();
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void oneShiftClickCraftsAsManyTimesAsTheInputsAllow(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station
+        .getSlot(0)
+        .setStack(new ItemStack(Items.ARROW, FletchingTestSupport.ARROWS_CONSUMED * 2));
+    station.getSlot(1).setStack(new ItemStack(Items.TNT, FletchingTestSupport.TNT_CONSUMED * 2));
+
+    FletchingStationSupport.shiftClick(station, player, FletchingStationSlots.RESULT_SLOT);
+
+    context.assertEquals(
+        FletchingTestSupport.ARROWS_PRODUCED * 2,
+        FletchingStationSupport.countHeld(player, Items.ARROW),
+        "Arrows granted by one shift click over inputs worth two crafts");
+    context.assertEquals(
+        0,
+        FletchingStationSupport.countInInputs(station, Items.TNT),
+        "Tnt left after one shift click over inputs worth two crafts");
+    context.complete();
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theResultSlotRefusesAnythingPlacedIntoIt(TestContext context) {
     final FletchingStationScreenHandler station = station(context);
 
@@ -290,6 +335,18 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   private static FletchingStationScreenHandler station(
       final TestContext context, final ServerPlayerEntity player) {
     return FletchingStationSupport.openStation(context, player);
+  }
+
+  private static int droppedArrows(final TestContext context) {
+    return context
+        .getWorld()
+        .getEntitiesByClass(
+            net.minecraft.entity.ItemEntity.class,
+            context.getTestBox(),
+            entity -> entity.getStack().isOf(Items.ARROW))
+        .stream()
+        .mapToInt(entity -> entity.getStack().getCount())
+        .sum();
   }
 
   private static void fillInventory(final ServerPlayerEntity player) {

@@ -450,7 +450,7 @@ The recipes the mod ships are their own piece of work, and no arrow is blocked o
 
 ## Fletching Station
 
-The station is the interface the vanilla fletching table never had. Right-clicking a `minecraft:fletching_table` opens it, and that is the only change the block sees: it is not replaced by a mod block, it gains no block entity, and its blockstate is untouched, so a fletcher villager still claims it as a job site and uninstalling the mod leaves ordinary vanilla fletching tables behind. Sneaking suppresses the interaction the way it does for every other block, so placing a block against a fletching table still works.
+The station is the interface the vanilla fletching table never had. Right-clicking a `minecraft:fletching_table` opens it, and that is the only change the block sees: it is not replaced by a mod block, it gains no block entity, and its blockstate is untouched, so a fletcher villager still claims it as a job site and uninstalling the mod leaves ordinary vanilla fletching tables behind. Sneaking suppresses the interaction the way it does for every other block, so placing a block against a fletching table still works. [ADR 0025](docs/adr/0025-the-station-is-an-interface-borrowed-from-the-vanilla-block.md) covers why the interface is borrowed from the vanilla block rather than built on one of the mod's own.
 
 | Region | Slots | Purpose |
 |---|---|---|
@@ -460,9 +460,9 @@ The station is the interface the vanilla fletching table never had. Right-clicki
 
 | Rule | Behaviour |
 |---|---|
-| Who decides the result | The server. It matches the inputs against the registered recipe type and hands the client a result to display. No client class decides what a recipe produces |
+| Who decides the result | The server. It matches the inputs against the registered recipe type and syncs the result stack, so what a player takes is only ever what the server produced. A client derives the same list from its own synced copy of the recipes to render, exactly as vanilla's stonecutter does |
 | Selecting a recipe | Validated against the server's own list of matching recipes. A selection outside that list is refused and changes nothing |
-| Taking the result | The withdrawal from every input slot is planned in full before a single stack is touched, so an interrupted take can neither duplicate nor destroy items. Once the inputs are gone the result is recomputed, which is why two takes against one set of inputs yield one result |
+| Taking the result | The withdrawal from every input slot is planned in full before a single stack is touched, so an interrupted take can neither duplicate nor destroy items. Once the inputs are gone the result is recomputed, which is why two takes against one set of inputs yield one result. Shift-clicking repeats while the inputs allow it, and any part of a result the player has no room for drops at their feet |
 | Closing the screen | Every item left in an input slot goes back to the player, or drops at their feet if the inventory is full. Nothing is destroyed |
 | Storage | None. The station holds nothing when nobody has it open, and two players who open the same table get their own input slots |
 

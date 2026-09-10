@@ -11,7 +11,6 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.AfterBatch;
-import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.ActionResult;
@@ -27,11 +26,6 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   private static final String BATCH = "fletching-station-interaction";
   private static final BlockPos TABLE = FletchingStationSupport.TABLE;
   private static final BlockPos AGAINST_THE_TABLE = TABLE.up();
-
-  @BeforeBatch(batchId = BATCH)
-  public void enableTheStationBeforeBatch(ServerWorld world) {
-    ServerConfigHolder.set(configuredStationEnabled(true));
-  }
 
   @AfterBatch(batchId = BATCH)
   public void restoreDefaultConfigAfterBatch(ServerWorld world) {

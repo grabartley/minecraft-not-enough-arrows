@@ -32,6 +32,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md) | A charged crossbow answers from the baked model render path |
 | [0023](0023-a-dependency-is-declared-where-its-absence-must-fail.md) | A dependency is declared where its absence must fail |
 | [0024](0024-the-countdown-is-a-ring-in-the-world.md) | The countdown is a ring in the world, counted down on the client |
+| [0025](0025-the-station-is-an-interface-borrowed-from-the-vanilla-block.md) | The station is an interface borrowed from the vanilla block |
 
 ## Writing A New Record
 

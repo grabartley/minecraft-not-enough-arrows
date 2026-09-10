@@ -1,7 +1,6 @@
 package com.grahambartley.morearrows.recipe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -75,19 +74,7 @@ class FletchingSlotMatcherTest {
 
   @ParameterizedTest(name = "{0}")
   @MethodSource("assignments")
-  void decidesWhetherEveryIngredientCanClaimItsOwnOccupiedSlot(
-      final String description,
-      final List<List<Integer>> candidateSlotsPerIngredient,
-      final List<Integer> occupiedSlots,
-      final boolean expected) {
-    assertTrue(
-        expected == FletchingSlotMatcher.matchesExactly(candidateSlotsPerIngredient, occupiedSlots),
-        description);
-  }
-
-  @ParameterizedTest(name = "{0}")
-  @MethodSource("assignments")
-  void namesTheSlotEachIngredientClaimsWheneverAnAssignmentExists(
+  void decidesWhetherEveryIngredientCanClaimItsOwnOccupiedSlotAndNamesWhichOne(
       final String description,
       final List<List<Integer>> candidateSlotsPerIngredient,
       final List<Integer> occupiedSlots,
@@ -125,21 +112,20 @@ class FletchingSlotMatcherTest {
 
   @Test
   void ignoresDuplicateCandidateSlotsRatherThanCountingThemTwice() {
-    assertFalse(
-        FletchingSlotMatcher.matchesExactly(List.of(List.of(0, 0), List.of(0, 0)), List.of(0, 1)));
+    assertEquals(
+        Optional.empty(),
+        FletchingSlotMatcher.assign(List.of(List.of(0, 0), List.of(0, 0)), List.of(0, 1)));
   }
 
   @Test
   void acceptsAnySlotCollectionRatherThanRequiringLists() {
-    assertTrue(FletchingSlotMatcher.matchesExactly(List.of(Set.of(1), Set.of(0)), Set.of(0, 1)));
+    assertEquals(
+        Optional.of(List.of(1, 0)),
+        FletchingSlotMatcher.assign(List.of(Set.of(1), Set.of(0)), Set.of(0, 1)));
   }
 
   @Test
   void rejectsNullArguments() {
-    assertThrows(
-        NullPointerException.class, () -> FletchingSlotMatcher.matchesExactly(null, List.of()));
-    assertThrows(
-        NullPointerException.class, () -> FletchingSlotMatcher.matchesExactly(List.of(), null));
     assertThrows(NullPointerException.class, () -> FletchingSlotMatcher.assign(null, List.of()));
     assertThrows(NullPointerException.class, () -> FletchingSlotMatcher.assign(List.of(), null));
   }

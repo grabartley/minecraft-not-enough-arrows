@@ -14,12 +14,6 @@ public final class FletchingSlotMatcher {
 
   private FletchingSlotMatcher() {}
 
-  public static boolean matchesExactly(
-      final List<? extends Collection<Integer>> candidateSlotsPerIngredient,
-      final Collection<Integer> occupiedSlots) {
-    return assign(candidateSlotsPerIngredient, occupiedSlots).isPresent();
-  }
-
   public static Optional<List<Integer>> assign(
       final List<? extends Collection<Integer>> candidateSlotsPerIngredient,
       final Collection<Integer> occupiedSlots) {
