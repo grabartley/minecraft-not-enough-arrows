@@ -22,7 +22,7 @@ class CountdownSyncTest {
   void aBurningFuseIsRemembered() {
     CountdownSync.accept(CARRIER, 60, 60);
 
-    assertEquals(List.of(new Countdown(CARRIER, 60, 60)), CountdownSync.mostUrgentFirst());
+    assertEquals(List.of(new Countdown(CARRIER, 60, 60)), CountdownSync.burning());
   }
 
   @Test
@@ -30,7 +30,7 @@ class CountdownSyncTest {
     CountdownSync.accept(CARRIER, 60, 60);
     CountdownSync.accept(CARRIER, 0, 0);
 
-    assertTrue(CountdownSync.mostUrgentFirst().isEmpty());
+    assertTrue(CountdownSync.burning().isEmpty());
   }
 
   @Test
@@ -41,8 +41,8 @@ class CountdownSyncTest {
     CountdownSync.burnDown();
 
     assertEquals(
-        List.of(new Countdown(OTHER_CARRIER, 40, 39), new Countdown(CARRIER, 60, 59)),
-        CountdownSync.mostUrgentFirst());
+        List.of(new Countdown(CARRIER, 60, 59), new Countdown(OTHER_CARRIER, 40, 39)),
+        CountdownSync.burning());
   }
 
   @Test
@@ -52,15 +52,7 @@ class CountdownSyncTest {
     CountdownSync.burnDown();
     CountdownSync.burnDown();
 
-    assertTrue(CountdownSync.mostUrgentFirst().isEmpty());
-  }
-
-  @Test
-  void theMostUrgentFuseComesFirst() {
-    CountdownSync.accept(CARRIER, 60, 50);
-    CountdownSync.accept(OTHER_CARRIER, 60, 10);
-
-    assertEquals(OTHER_CARRIER, CountdownSync.mostUrgentFirst().get(0).carrierId());
+    assertTrue(CountdownSync.burning().isEmpty());
   }
 
   @Test
@@ -69,7 +61,7 @@ class CountdownSyncTest {
 
     CountdownSync.forget(CARRIER);
 
-    assertTrue(CountdownSync.mostUrgentFirst().isEmpty());
+    assertTrue(CountdownSync.burning().isEmpty());
   }
 
   @Test
@@ -77,6 +69,6 @@ class CountdownSyncTest {
     CountdownSync.accept(CARRIER, 60, 60);
     CountdownSync.accept(CARRIER, 40, 40);
 
-    assertEquals(List.of(new Countdown(CARRIER, 40, 40)), CountdownSync.mostUrgentFirst());
+    assertEquals(List.of(new Countdown(CARRIER, 40, 40)), CountdownSync.burning());
   }
 }

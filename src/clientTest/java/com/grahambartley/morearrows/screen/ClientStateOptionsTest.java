@@ -32,7 +32,8 @@ class ClientStateOptionsTest {
   @Test
   void listsEveryPerInstallationSetting() {
     assertEquals(
-        List.of("client.showCountdownHud", "client.playCountdownSound", "client.countdownHudScale"),
+        List.of(
+            "client.showCountdownRing", "client.playCountdownSound", "client.countdownRingScale"),
         ClientStateOptions.options().stream().map(ConfigOption::id).toList());
   }
 

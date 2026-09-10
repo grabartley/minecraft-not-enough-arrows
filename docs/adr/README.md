@@ -31,7 +31,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0021](0021-the-nocked-arrow-is-drawn-over-the-weapon.md) | The nocked arrow is drawn over the weapon rather than modelled into it |
 | [0022](0022-a-charged-crossbow-answers-from-the-baked-model-render-path.md) | A charged crossbow answers from the baked model render path |
 | [0023](0023-a-dependency-is-declared-where-its-absence-must-fail.md) | A dependency is declared where its absence must fail |
-| [0024](0024-the-countdown-is-sent-once-and-counted-down-locally.md) | The countdown is sent once and counted down on the client |
+| [0024](0024-the-countdown-is-a-ring-in-the-world.md) | The countdown is a ring in the world, counted down on the client |
 
 ## Writing A New Record
 

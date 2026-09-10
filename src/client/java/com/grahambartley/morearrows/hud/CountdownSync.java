@@ -1,7 +1,5 @@
 package com.grahambartley.morearrows.hud;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +28,8 @@ public final class CountdownSync {
     BURNING.values().removeIf(countdown -> !countdown.isBurning());
   }
 
-  public static List<Countdown> mostUrgentFirst() {
-    final List<Countdown> burning = new ArrayList<>(BURNING.values());
-    burning.sort(Comparator.comparingInt(Countdown::remainingTicks));
-    return List.copyOf(burning);
+  public static List<Countdown> burning() {
+    return List.copyOf(BURNING.values());
   }
 
   public static void forget(final int carrierId) {

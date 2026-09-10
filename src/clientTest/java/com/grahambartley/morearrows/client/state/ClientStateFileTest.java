@@ -57,7 +57,7 @@ class ClientStateFileTest {
 
   @Test
   void leavesAValidFileInPlace() throws IOException {
-    final Path path = write("{\"countdownHudScale\":1.5}");
+    final Path path = write("{\"countdownRingScale\":1.5}");
 
     ClientStateFile.load(path);
 
@@ -67,20 +67,20 @@ class ClientStateFileTest {
 
   @Test
   void readsValuesFromAValidFile() throws IOException {
-    final Path path = write("{\"showCountdownHud\":false,\"countdownHudScale\":1.5}");
+    final Path path = write("{\"showCountdownRing\":false,\"countdownRingScale\":1.5}");
 
     final ClientState loaded = ClientStateFile.load(path);
 
-    assertFalse(loaded.showCountdownHud());
-    assertEquals(1.5f, loaded.countdownHudScale());
+    assertFalse(loaded.showCountdownRing());
+    assertEquals(1.5f, loaded.countdownRingScale());
   }
 
   @Test
   void clampsAnOutOfRangeValueRatherThanRefusingToStart() throws IOException {
-    final Path path = write("{\"countdownHudScale\":99999}");
+    final Path path = write("{\"countdownRingScale\":99999}");
 
     assertEquals(
-        ClientState.COUNTDOWN_HUD_SCALE_MAX, ClientStateFile.load(path).countdownHudScale());
+        ClientState.COUNTDOWN_RING_SCALE_MAX, ClientStateFile.load(path).countdownRingScale());
   }
 
   @Test

@@ -31,11 +31,11 @@ class ClientStateServiceTest {
 
   @Test
   void publishesTheLoadedStateForTheRestOfTheClient() throws IOException {
-    write("{\"countdownHudScale\":1.5}");
+    write("{\"countdownRingScale\":1.5}");
 
     ClientStateService.loadFromConfigDir(configDir);
 
-    assertEquals(1.5f, ClientStateService.get().countdownHudScale());
+    assertEquals(1.5f, ClientStateService.get().countdownRingScale());
     assertEquals(ClientStateHolder.get(), ClientStateService.get());
   }
 
@@ -49,7 +49,7 @@ class ClientStateServiceTest {
 
   @Test
   void leavesAnExistingFileAloneOnLoad() throws IOException {
-    final String contents = "{\"showCountdownHud\": false}";
+    final String contents = "{\"showCountdownRing\": false}";
     write(contents);
 
     ClientStateService.loadFromConfigDir(configDir);

@@ -1,7 +1,7 @@
 package com.grahambartley.morearrows;
 
 import com.grahambartley.morearrows.client.state.ClientStateService;
-import com.grahambartley.morearrows.hud.CountdownHudRenderer;
+import com.grahambartley.morearrows.hud.CountdownRingRenderer;
 import com.grahambartley.morearrows.hud.CountdownSync;
 import com.grahambartley.morearrows.network.ModNetworkingClient;
 import com.grahambartley.morearrows.render.ArrowRendererRegistrar;
@@ -15,7 +15,7 @@ public class MoreArrowsClient implements ClientModInitializer {
     ArrowRendererRegistrar.registerAll();
     BlockRenderLayerRegistrar.registerAll();
     CountdownSync.register();
-    CountdownHudRenderer.register();
+    CountdownRingRenderer.register();
     ModNetworkingClient.registerReceivers();
   }
 }
