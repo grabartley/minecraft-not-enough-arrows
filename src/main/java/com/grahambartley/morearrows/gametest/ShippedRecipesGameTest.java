@@ -2,15 +2,16 @@ package com.grahambartley.morearrows.gametest;
 
 import com.grahambartley.morearrows.ModRecipes;
 import com.grahambartley.morearrows.arrow.RegisteredArrow;
-import com.grahambartley.morearrows.recipe.FletchingIngredient;
 import com.grahambartley.morearrows.recipe.FletchingRecipe;
 import com.grahambartley.morearrows.recipe.FletchingRecipeInput;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Ingredient;
@@ -115,8 +116,8 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     final RecipeManager recipes = recipeManager(context);
     final ShapedRecipe table = craftingRecipe(context, recipes, arrow.id());
     final FletchingRecipe station = stationRecipe(context, recipes, stationRecipeId(arrow));
-    final Map<Item, Integer> tableCost = costOf(table);
-    final Map<Item, Integer> stationCost = costOf(station);
+    final List<Cost> tableCost = costOf(table);
+    final List<Cost> stationCost = costOf(station);
     final int tableYield = table.getResult(registries(context)).getCount();
     final int stationYield = station.result().getCount();
 
@@ -139,29 +140,58 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  private static Map<Item, Integer> costOf(final ShapedRecipe recipe) {
-    final Map<Item, Integer> cost = new LinkedHashMap<>();
-    for (final Ingredient ingredient : recipe.getIngredients()) {
-      if (!ingredient.isEmpty()) {
-        cost.merge(oneOf(ingredient).getItem(), 1, Integer::sum);
+  private static List<Cost> costOf(final ShapedRecipe recipe) {
+    return tally(
+        recipe.getIngredients().stream()
+            .filter(ingredient -> !ingredient.isEmpty())
+            .map(ingredient -> new Cost(ingredient, 1))
+            .toList());
+  }
+
+  private static List<Cost> costOf(final FletchingRecipe recipe) {
+    return tally(
+        recipe.inputs().stream()
+            .map(input -> new Cost(input.ingredient(), input.count()))
+            .toList());
+  }
+
+  private static List<Cost> tally(final List<Cost> entries) {
+    final List<Cost> tallied = new ArrayList<>();
+    for (final Cost entry : entries) {
+      final int existing = indexOfIngredient(tallied, entry.ingredient());
+      if (existing < 0) {
+        tallied.add(entry);
+      } else {
+        tallied.set(
+            existing, new Cost(entry.ingredient(), tallied.get(existing).count() + entry.count()));
       }
     }
-    return cost;
+    tallied.sort(Comparator.comparing(Cost::toString));
+    return tallied;
   }
 
-  private static Map<Item, Integer> costOf(final FletchingRecipe recipe) {
-    final Map<Item, Integer> cost = new LinkedHashMap<>();
-    for (final FletchingIngredient input : recipe.inputs()) {
-      cost.merge(oneOf(input.ingredient()).getItem(), input.count(), Integer::sum);
+  private static int indexOfIngredient(final List<Cost> entries, final Ingredient ingredient) {
+    for (int index = 0; index < entries.size(); index++) {
+      if (entries.get(index).ingredient().equals(ingredient)) {
+        return index;
+      }
     }
-    return cost;
+    return -1;
   }
 
-  private static String describe(final Map<Item, Integer> cost) {
-    return cost.entrySet().stream()
-        .map(entry -> entry.getValue() + " x " + entry.getKey())
-        .reduce((left, right) -> left + ", " + right)
-        .orElse("nothing");
+  private static String describe(final List<Cost> cost) {
+    return cost.stream().map(Cost::toString).collect(Collectors.joining(", "));
+  }
+
+  private record Cost(Ingredient ingredient, int count) {
+    @Override
+    public String toString() {
+      return count
+          + " x "
+          + Arrays.stream(ingredient.getMatchingStacks())
+              .map(stack -> stack.getItem().toString())
+              .collect(Collectors.joining("|"));
+    }
   }
 
   private static ShapedRecipe craftingRecipe(

@@ -505,7 +505,7 @@ The shaft is a plain arrow for every arrow except the two that sit further up th
 | Gravity | `minecraft:arrow` | `minecraft:slime_ball` |
 | Ricochet | `minecraft:arrow` | `minecraft:iron_nugget` |
 
-Because the ladder is discounted at every rung, the multiplier compounds: twelve gunpowder arrows off one gunpowder feed a TNT craft that would otherwise have cost a full eight, so the deeper tiers gain more from the station than the shallow ones do without any tier needing a rate of its own.
+Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own.
 
 Station recipes live in `data/more-arrows/recipe/fletching/` and crafting table recipes in `data/more-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
 
