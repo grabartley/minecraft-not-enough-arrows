@@ -496,7 +496,36 @@ The station is the screen handler behind the fletching table interface: nine inp
 
 `fletching.stationEnabled` controls whether the station is reachable at all, so a server that wants the vanilla fletching table to keep doing nothing can have it. Crafting table recipes are untouched either way, per [ADR 0002](docs/adr/0002-crafting-table-always-works.md).
 
-The block interaction that opens the station and the screen that draws it are each their own piece of work, so on this build the handler is registered and reachable only from code. The screen's texture is already in the repo ahead of the screen, and the Textures section tabulates every region it hands the implementation.
+### Opening It
+
+Right-clicking a vanilla `minecraft:fletching_table` opens the station. The block itself is untouched: it is not replaced by a mod block, it gains no block entity, and its blockstate is unchanged, so a world full of fletching tables stays a world full of vanilla fletching tables and uninstalling the mod leaves them all behind. The fletcher villager's job site runs through the point-of-interest system rather than through player interaction, which is what makes attaching an interface to the block safe, and a fletcher keeps its profession either way.
+
+| Interaction | Outcome |
+|---|---|
+| Right-clicking the table | The station opens |
+| Right-clicking while sneaking with something in hand | Nothing opens and the held block places, following the vanilla rule that a sneak with a full hand is a placement rather than a use |
+| Right-clicking while sneaking empty-handed | The station opens, the same answer vanilla gives for its own containers |
+| Right-clicking with `fletching.stationEnabled` off | Nothing at all, exactly as vanilla behaves |
+
+The decision is made on both sides from the same rule: the server owns it and opens the screen, and the client answers identically from its synced copy of the config so it does not briefly predict a block placement the server is about to refuse. In the few ticks between joining and that config arriving the client has no answer to give, so it stands aside and lets vanilla's own prediction run, which the server corrects the way it corrects any other mispredicted placement.
+
+A spectator is passed over, and the reason is worth stating precisely because the obvious reason is wrong. A fletching table is a `CraftingTableBlock` that overrides only `onUse`, so it inherits a perfectly good screen handler factory, and vanilla's spectator branch runs before `onUse` and opens a crafting screen from it. That screen closes itself on the next tick, because the handler looks for a crafting table and finds a fletching table. None of that is this mod's business. What matters is the order and the asymmetry: the mod's server-side hook runs at the head of the method, ahead of that spectator branch, so it could preempt it, while Fabric's client-side hook returns early for spectators and never reaches the mod at all. A station offered to a spectator would therefore exist on the server side only. The mod declines to offer one and leaves vanilla's answer exactly as it found it.
+
+A connection that never declared it can receive this mod's payloads is passed over too, which is how a player on a vanilla client keeps their connection instead of being disconnected by a screen they have no way to draw. [ADR 0026](docs/adr/0026-the-station-opens-only-for-a-client-that-can-draw-it.md) covers what that costs them.
+
+### The Screen
+
+The screen presents the three by three input grid, the result slot, and a single column of recipes in the forty pixels the layout leaves between them, scrolled by wheel or by dragging the scroller. Three rows are visible at a time.
+
+| Part | Behaviour |
+|---|---|
+| Recipe rows | Each row draws the recipe's own result and its count, so the better exchange rate is readable without selecting anything first. A row is idle, hovered, or selected, and the three differ by where the lit face sits rather than by hue |
+| Selecting a row | Sends the selection to the server, which validates it against its own list. The screen predicts the result so the click feels immediate, and the server's own value overwrites that prediction on the next sync |
+| The result slot | Shows the stack the server produced, count included |
+| An empty list | Draws the empty well and a disabled scroller. There are no recipes to name, and the station's own art carries a disabled scroller state for exactly this |
+| A list that fits | Draws the same disabled scroller, since there is nothing to scroll to |
+
+Scroll position, row hit-testing, and where the scroller sits along its travel are one class of pure arithmetic with no Minecraft types in it, so they are unit tested rather than eyeballed.
 
 ## Recipe Viewers
 

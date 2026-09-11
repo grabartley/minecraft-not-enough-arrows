@@ -13,6 +13,7 @@
   "item.more-arrows.ricochet_arrow": "Ricochet Arrow",
   "block.more-arrows.rope": "Rope",
   "block.more-arrows.redstone_charge": "Redstone Charge",
+  "container.more-arrows.fletching_station": "Fletching Station",
   "command.more-arrows.help.header": "More Arrows commands:",
   "command.more-arrows.help.entry": "- /%s",
   "command.more-arrows.status.header": "More Arrows settings:",

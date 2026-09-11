@@ -51,6 +51,7 @@
       "com.grahambartley.morearrows.gametest.FletchingRecipeGameTest",
       "com.grahambartley.morearrows.gametest.FletchingRecipeInputGameTest",
       "com.grahambartley.morearrows.gametest.FletchingRecipeSerializerGameTest",
+      "com.grahambartley.morearrows.gametest.FletchingStationInteractionGameTest",
       "com.grahambartley.morearrows.gametest.FletchingStationQuickMoveGameTest",
       "com.grahambartley.morearrows.gametest.FletchingStationScreenHandlerGameTest",
       "com.grahambartley.morearrows.gametest.FletchingWithdrawalGameTest",
