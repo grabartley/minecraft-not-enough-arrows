@@ -75,6 +75,21 @@ public final class PearlArrivalServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anArrivalWhereTheShooterAlreadyStandsIsNotAnArrival(TestContext context) {
+    final PlayerEntity shooter = MockPlayerSupport.mortalPlayerAt(context, SHOOTER_STAND);
+    final float unharmed = shooter.getHealth();
+
+    context.assertFalse(
+        arrive(context, shooter, shooter.getPos(), EnderArrowConfig.defaults()),
+        "An arrow that came back down on its own shooter has nowhere to send them");
+    context.assertEquals(
+        shooter.getHealth(),
+        unharmed,
+        "A teleport that moved nobody should charge nobody arrival damage");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anArrowWithNobodyBehindItMovesNobody(TestContext context) {
     context.assertFalse(
         arrive(context, null, destinationNearby(context), EnderArrowConfig.defaults()),

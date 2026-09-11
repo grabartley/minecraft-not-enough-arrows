@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows.ender;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,15 +19,22 @@ public final class EnderLanding {
   public static List<Vec3d> candidates(final Vec3d anchor) {
     Objects.requireNonNull(anchor, "anchor");
 
-    final List<Vec3d> candidates = new ArrayList<>();
-    candidates.add(anchor);
+    final List<Vec3d> ring = new ArrayList<>();
     for (int x = -NEIGHBOUR_OFFSET; x <= NEIGHBOUR_OFFSET; x++) {
       for (int z = -NEIGHBOUR_OFFSET; z <= NEIGHBOUR_OFFSET; z++) {
         if (x != 0 || z != 0) {
-          candidates.add(anchor.add(x, 0.0, z));
+          ring.add(anchor.add(x, 0.0, z));
         }
       }
     }
+    ring.sort(
+        Comparator.<Vec3d>comparingDouble(anchor::squaredDistanceTo)
+            .thenComparingDouble(Vec3d::getX)
+            .thenComparingDouble(Vec3d::getZ));
+
+    final List<Vec3d> candidates = new ArrayList<>();
+    candidates.add(anchor);
+    candidates.addAll(ring);
     return List.copyOf(candidates);
   }
 

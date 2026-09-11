@@ -14,6 +14,7 @@ public final class EnderLandingGameTest implements FabricGameTest {
   private static final String BATCH = "ender-landing";
   private static final BlockPos SUBJECT_STAND = new BlockPos(1, 3, 1);
   private static final BlockPos ANCHOR = new BlockPos(3, 3, 3);
+  private static final BlockPos MIDAIR_ANCHOR = new BlockPos(3, 5, 3);
   private static final double ON_THE_ANCHOR = 0.5;
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
@@ -61,6 +62,22 @@ public final class EnderLandingGameTest implements FabricGameTest {
 
     context.assertFalse(
         landing.isPresent(), "A solid anchor and solid neighbours offer no landing");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anAnchorWithNoGroundUnderItStillTakesTheEntity(TestContext context) {
+    final Vec3d anchor = context.getAbsolute(Vec3d.ofBottomCenter(MIDAIR_ANCHOR));
+
+    final Optional<Vec3d> landing =
+        EnderLanding.forEntity(context.getWorld(), subject(context), anchor);
+
+    context.assertTrue(
+        landing.isPresent(),
+        "An anchor a jumping shooter occupies should still be somewhere to land");
+    context.assertTrue(
+        landing.get().equals(anchor),
+        "With nothing supported nearby the anchor itself is the landing, but was " + landing.get());
     context.complete();
   }
 

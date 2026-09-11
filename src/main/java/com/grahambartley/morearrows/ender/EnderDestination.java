@@ -19,6 +19,13 @@ public final class EnderDestination {
       return false;
     }
     return Reach.isWithin(origin, destination, maxRangeBlocks)
+        && isInsideBorder(border, destination);
+  }
+
+  public static boolean isInsideBorder(
+      @Nullable final WorldBorder border, @Nullable final Vec3d destination) {
+    return border != null
+        && destination != null
         && border.contains(BlockPos.ofFloored(destination));
   }
 }

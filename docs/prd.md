@@ -294,7 +294,7 @@ A player fires an ender pearl arrow at a ledge they cannot reach and arrives on 
 | PEARL-3 | Arrival applies a configured amount of damage, defaulting to what a thrown vanilla ender pearl deals. Zero applies none |
 | PEARL-4 | An impact beyond the configured maximum range, measured from the shooter, teleports nobody and embeds |
 | PEARL-5 | A destination outside the world border teleports nobody and embeds |
-| PEARL-6 | The arrow is spent when it teleported someone, and recovered like any other arrow when it did not |
+| PEARL-6 | The arrow is spent when it teleported someone. An arrow that struck a block and teleported nobody embeds and is recovered like any other arrow, and one that struck an entity is spent on that hit whether or not the teleport resolved |
 
 **Not supported:** Teleporting between dimensions. Teleporting anyone other than the shooter. Remembering a destination between shots.
 
@@ -315,9 +315,9 @@ A player fires a recall arrow at something across a gap, and it arrives at their
 | RECALL-3 | An arrow with no shooter moves nothing |
 | RECALL-4 | Players are not moved unless a server setting turns it on, and that setting is off by default. With it off, a struck player takes an ordinary arrow hit and stays where they are |
 | RECALL-5 | An entity struck beyond the configured maximum range, measured from the shooter, is not moved |
-| RECALL-6 | The arrival position must not suffocate the arriving entity or drop it through the floor |
+| RECALL-6 | The arrival position must not suffocate the arriving entity or leave it inside a block. Where the shooter is airborne and no supported position is available, the entity arrives at the shooter and falls as the shooter is about to |
 | RECALL-7 | A moved player's position change reaches their client as a real teleport rather than a desync |
-| RECALL-8 | The arrow is spent when it moved something and recovered when it did not |
+| RECALL-8 | The arrow is spent when it moved something, and recovered when it struck a block and moved nothing. An arrow that struck a living thing it was not allowed to move is spent on that hit like any other arrow |
 
 **Not supported:** Moving anything that is not a living entity. Cross-dimension recall. Recalling an entity to anywhere other than the shooter.
 

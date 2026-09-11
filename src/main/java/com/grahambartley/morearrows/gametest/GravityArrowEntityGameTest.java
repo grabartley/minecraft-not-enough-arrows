@@ -12,7 +12,7 @@ import net.minecraft.test.TestContext;
 public final class GravityArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "gravity-arrow";
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowFiredFromABowDropsTheBlockItStrikes(TestContext context) {
     fireAt(context, Blocks.STONE);
 
@@ -24,7 +24,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void aDroppedBlockRePlacesItselfWhereItLands(TestContext context) {
     fireAt(context, Blocks.STONE);
 
@@ -36,7 +36,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowIsSpentByTheBlockItDrops(TestContext context) {
     fireAt(context, Blocks.STONE);
 
@@ -48,7 +48,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowThatCannotMoveWhatItStrikesEmbedsInsteadOfVanishing(TestContext context) {
     fireAt(context, Blocks.BEDROCK);
 
@@ -67,7 +67,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
     context.setBlockState(PhysicsArrowTestSupport.LANDING_BLOCK, Blocks.AIR);
     context.setBlockState(PhysicsArrowTestSupport.TARGET_BLOCK, target);
     final ServerPlayerEntity shooter =
-        MockPlayerSupport.playerAt(context, PhysicsArrowTestSupport.SHOOTER_STAND);
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAVITY_ARROW.item());
     PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
   }

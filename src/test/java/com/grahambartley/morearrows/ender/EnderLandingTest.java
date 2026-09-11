@@ -29,6 +29,30 @@ class EnderLandingTest {
   }
 
   @Test
+  void offersTheNearestNeighbourBeforeADiagonalOne() {
+    final List<Vec3d> candidates = candidates();
+    final int orthogonal = candidates.indexOf(ANCHOR.add(1.0, 0.0, 0.0));
+    final int diagonal = candidates.indexOf(ANCHOR.add(1.0, 0.0, 1.0));
+
+    assertTrue(
+        orthogonal < diagonal,
+        "A neighbour one block away should be offered before one 1.41 blocks away");
+  }
+
+  @ParameterizedTest(name = "{0}")
+  @MethodSource("candidates")
+  void offersNoCandidateNearerThanTheOneBeforeIt(final Vec3d candidate) {
+    final List<Vec3d> candidates = candidates();
+    final int at = candidates.indexOf(candidate);
+
+    assertTrue(
+        at == 0
+            || ANCHOR.squaredDistanceTo(candidates.get(at - 1))
+                <= ANCHOR.squaredDistanceTo(candidate),
+        "Candidates should run nearest first");
+  }
+
+  @Test
   void offersNoPositionTwice() {
     assertEquals(candidates().size(), new HashSet<>(candidates()).size());
   }

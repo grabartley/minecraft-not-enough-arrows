@@ -8,10 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 final class PhysicsArrowTestSupport {
-  static final String TEMPLATE = "more-arrows:fire_pad";
-  static final BlockPos SHOOTER_STAND = new BlockPos(1, 2, 3);
-  static final BlockPos TARGET_BLOCK = new BlockPos(6, 3, 3);
-  static final BlockPos LANDING_BLOCK = new BlockPos(6, 2, 3);
+  static final BlockPos TARGET_BLOCK = FiringRangeSupport.BACKSTOP;
+  static final BlockPos LANDING_BLOCK = TARGET_BLOCK.down();
   static final Vec3d OUT_OF_THE_LANE = new Vec3d(1.5, 2.0, 5.5);
   static final int IMPACT_TICK = 5;
   static final int SETTLED_TICK = 40;

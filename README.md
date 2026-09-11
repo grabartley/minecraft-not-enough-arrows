@@ -305,7 +305,7 @@ The ender pearl arrow is a vanilla ender pearl with a bow behind it. It flies wh
 | Arrival damage | `ender.pearlArrivalDamage`, five by default, which is what a thrown vanilla pearl deals. Zero applies none, so an operator can have the travel without the cost |
 | How far it reaches | `ender.pearlMaxRangeBlocks`, sixty four by default, measured from the shooter to the impact point. An arrow landing further away embeds without teleporting, mirroring how `grapple.maxRangeBlocks` behaves |
 | Where it will not go | Outside the world border. The teleport places no block, so the block protection check that the fire patch and gravity systems make does not apply, but the border does and a destination beyond it is refused rather than clamped. [ADR 0029](docs/adr/0029-a-teleport-is-refused-rather-than-relocated.md) covers why |
-| The arrow afterwards | Spent, if it teleported someone. An arrow that teleported nobody, because it was out of range, past the border, or fired by a dispenser, embeds and is recovered like any other arrow |
+| The arrow afterwards | Spent, if it teleported someone. An arrow that struck a block and teleported nobody, because it was out of range, past the border, or fired by a dispenser, embeds and is recovered like any other arrow. An arrow that struck an entity is spent either way, because that is what vanilla does with any arrow that hits something alive |
 
 Both settings are read fresh on every impact, so an operator changing either takes effect on the next shot without a restart. Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one ender pearl, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
@@ -321,8 +321,8 @@ It is also the only thing in the mod that moves a player who did not choose to b
 | Moving a player | `ender.recallAffectsPlayers`, **off by default**. With it off a struck player takes an ordinary arrow hit and stays where they are. With it on they are moved, and because the server owns the decision a modified client cannot recall a player on a server that has it off |
 | Who it moves them to | The shooting player. An arrow with no player behind it, from a dispenser, moves nothing |
 | How far it reaches | `ender.recallMaxRangeBlocks`, thirty two by default, measured between the shooter and the entity struck. Beyond it nothing moves |
-| Where they arrive | The shooter's own position if the arriving entity fits there, and the nearest neighbouring column that both fits it and has ground under it otherwise, so a recall never suffocates what it moved or drops it through the floor |
-| The arrow afterwards | Spent when it moved something, recovered when it struck a block |
+| Where they arrive | The shooter's own position if the arriving entity fits there, and otherwise the nearest neighbouring column that both fits it and has ground under it, so a recall never leaves anything inside a block. A shooter who is airborne, mid-jump or otherwise, has no supported column anywhere near them, and what arrives is placed at their position and falls the same way they are about to |
+| The arrow afterwards | Spent when it moved something, and recovered when it struck a block and moved nothing. An arrow that struck a living thing it was not allowed to move, such as a player with the setting off, is spent on that hit like any other arrow |
 
 Its range is deliberately shorter than the ender pearl arrow's. Moving yourself somewhere you can see is a traversal tool, and moving something else to you is a weapon, so the weapon reaches half as far.
 

@@ -2,12 +2,10 @@ package com.grahambartley.morearrows.ender;
 
 import com.grahambartley.morearrows.config.EnderArrowConfig;
 import com.grahambartley.morearrows.server.ServerConfigService;
-import java.util.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class RecallService {
@@ -40,7 +38,9 @@ public final class RecallService {
       return false;
     }
 
-    final Optional<Vec3d> landing = EnderLanding.forEntity(world, living, shooter.getPos());
-    return landing.isPresent() && EnderTeleport.move(world, living, landing.get());
+    return EnderLanding.forEntity(world, living, shooter.getPos())
+        .filter(landing -> EnderDestination.isInsideBorder(world.getWorldBorder(), landing))
+        .map(landing -> EnderTeleport.move(world, living, landing))
+        .orElse(false);
   }
 }

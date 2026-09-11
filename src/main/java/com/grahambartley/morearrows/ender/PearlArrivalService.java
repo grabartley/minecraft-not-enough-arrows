@@ -8,6 +8,7 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class PearlArrivalService {
+  public static final double SAME_PLACE_DISTANCE = 1.0e-3;
 
   private PearlArrivalService() {}
 
@@ -24,6 +25,9 @@ public final class PearlArrivalService {
       @Nullable final Vec3d destination,
       @Nullable final EnderArrowConfig config) {
     if (world == null || shooter == null || destination == null || config == null) {
+      return false;
+    }
+    if (shooter.getPos().distanceTo(destination) < SAME_PLACE_DISTANCE) {
       return false;
     }
     if (!EnderDestination.isReachable(

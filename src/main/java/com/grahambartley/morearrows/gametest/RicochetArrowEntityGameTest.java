@@ -41,7 +41,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
     ServerConfigHolder.reset();
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGlancesOffAWallInsteadOfEmbedding(TestContext context) {
     raiseWalls(context);
     fireEast(context);
@@ -57,7 +57,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aBounceSendsTheArrowBackTheWayItCame(TestContext context) {
     raiseWalls(context);
     fireEast(context);
@@ -76,7 +76,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowOutOfBouncesEmbedsInTheNextWallItMeets(TestContext context) {
     raiseWalls(context);
     fireEast(context);
@@ -116,7 +116,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowThatSurvivesAReloadDoesNotGetItsBouncesBack(TestContext context) {
     raiseWalls(context);
     fireEast(context);
@@ -146,7 +146,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aBounceCarriesTheArrowsDamageWhenTheSettingsSaySo(TestContext context) {
     raiseWalls(context);
     fireEast(context);
@@ -177,7 +177,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void hittingAnEntityIsANormalHitRatherThanABounce(TestContext context) {
     raiseWalls(context);
     final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_IN_THE_LANE);

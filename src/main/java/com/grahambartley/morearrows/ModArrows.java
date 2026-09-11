@@ -194,6 +194,16 @@ public final class ModArrows {
     return new GravityArrowEntity(GRAVITY_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 
+  private static RicochetArrowEntity ricochetArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RicochetArrowEntity(RICOCHET_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
   private static EnderPearlArrowEntity enderPearlArrow(
       final World world,
       final double x,
@@ -212,15 +222,5 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new RecallArrowEntity(RECALL_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RicochetArrowEntity ricochetArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RicochetArrowEntity(RICOCHET_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

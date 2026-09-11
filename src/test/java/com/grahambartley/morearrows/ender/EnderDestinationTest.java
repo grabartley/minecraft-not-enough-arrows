@@ -47,6 +47,22 @@ class EnderDestinationTest {
   }
 
   @Test
+  void aPositionInsideTheBorderIsJudgedOnItsOwnWithoutARange() {
+    assertTrue(EnderDestination.isInsideBorder(tightBorder(), ORIGIN));
+  }
+
+  @Test
+  void aPositionOutsideTheBorderIsJudgedOnItsOwnWithoutARange() {
+    assertFalse(EnderDestination.isInsideBorder(tightBorder(), ORIGIN.add(BORDER_SIZE, 0.0, 0.0)));
+  }
+
+  @Test
+  void nowhereIsNeverInsideTheBorder() {
+    assertFalse(EnderDestination.isInsideBorder(tightBorder(), null));
+    assertFalse(EnderDestination.isInsideBorder(null, ORIGIN));
+  }
+
+  @Test
   void aTeleportWithNoBorderToCheckAgainstIsRefused() {
     assertFalse(EnderDestination.isReachable(null, ORIGIN, ORIGIN, MAX_RANGE));
   }
