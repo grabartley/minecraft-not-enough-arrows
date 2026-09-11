@@ -35,6 +35,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0025](0025-an-explosive-arrow-hands-over-its-charge-without-a-hit.md) | An explosive arrow hands over its charge without landing a hit |
 | [0026](0026-the-station-opens-only-for-a-client-that-can-draw-it.md) | The station opens only for a client that can draw it |
 | [0027](0027-the-station-pays-one-uniform-multiplier.md) | The station pays one uniform multiplier on the yield |
+| [0028](0028-one-layout-drives-both-recipe-viewers.md) | One layout drives both recipe viewers |
 
 ## Writing A New Record
 

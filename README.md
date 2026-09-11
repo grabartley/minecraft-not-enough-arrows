@@ -556,16 +556,20 @@ Scroll position, row hit-testing, and where the scroller sits along its travel a
 
 ## Recipe Viewers
 
-[EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei) both show an information page beside each of the mod's arrows, covering what the arrow does beyond what its recipe already says. Neither viewer holds content of its own. Both read one shared list, so the two can never disagree about what an arrow does.
+[EMI](https://modrinth.com/mod/emi) and [JEI](https://modrinth.com/mod/jei) each show two things: an information page beside every arrow, covering what the arrow does beyond what its recipe already says, and the fletching station's own recipe category, so the station's better exchange rate is discoverable rather than hidden inside the station screen. Neither viewer holds content of its own. Both read the same shared pieces, so the two can never disagree about what an arrow does or what the station charges.
 
 | Piece | Holds |
 |---|---|
 | `InfoEntry` | The items an entry covers and the translation keys describing them |
 | `RecipeViewerInfo` | The entry list, built from the arrows the mod registered |
+| `StationRecipes` | Every loaded station recipe, sorted by id so both viewers list them in one order |
+| `FletchingRecipeLayout` | Where the input slots, the arrow, and the result sit, so a recipe is laid out the same way in either viewer, per [ADR 0028](docs/adr/0028-one-layout-drives-both-recipe-viewers.md) |
 | `en_us.json` | Every word a player reads |
-| `MoreArrowsEmiPlugin` | The adapter that hands that list to EMI, holding no content of its own |
+| `MoreArrowsEmiPlugin` and `MoreArrowsJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
 
-The list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
+The info list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
+
+The station category takes the fletching table as its workstation and its icon, and the recipes come from the loaded datapack rather than from code, so a pack that changes the rates or adds arrows of its own shows up in both viewers with no further work. Looking up an arrow finds the station recipe that makes it, and looking up an ingredient finds what it goes into, because each input slot carries the count the station demands and the result slot carries the count it returns. That is the whole point of the integration: the crafting table recipe and the station recipe sit side by side asking for the same items, and the only thing that differs is the number that comes out.
 
 Neither viewer is bundled into the jar, and `./gradlew check` fails if either ever is.
 

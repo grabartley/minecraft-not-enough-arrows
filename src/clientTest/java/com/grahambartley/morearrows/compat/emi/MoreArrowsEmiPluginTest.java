@@ -1,5 +1,6 @@
 package com.grahambartley.morearrows.compat.emi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -10,6 +11,7 @@ import com.grahambartley.morearrows.compat.info.InfoEntry;
 import com.grahambartley.morearrows.compat.info.InfoKeys;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipe;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +39,11 @@ class MoreArrowsEmiPluginTest {
     return InfoEntry.of(itemId, InfoKeys.description(itemId), InfoKeys.FIRING_KEY);
   }
 
+  private final List<EmiRegistry> stationRegistrations = new ArrayList<>();
+  private final EmiStationRegistrar station = stationRegistrations::add;
+
   private MoreArrowsEmiPlugin pluginFor(final InfoEntry... entries) {
-    return new MoreArrowsEmiPlugin(recipes, () -> List.of(entries));
+    return new MoreArrowsEmiPlugin(recipes, () -> List.of(entries), station);
   }
 
   @Test
@@ -71,13 +76,30 @@ class MoreArrowsEmiPluginTest {
   }
 
   @Test
+  void handsTheStationItsOwnRegistrarExactlyOnce() {
+    pluginFor(entryFor(TNT_ARROW)).register(registry);
+
+    assertEquals(List.of(registry), stationRegistrations);
+  }
+
+  @Test
+  void registersTheStationEvenWhenNoArrowCarriesAnInfoEntry() {
+    pluginFor().register(registry);
+
+    assertEquals(List.of(registry), stationRegistrations);
+  }
+
+  @Test
   void rejectsANullRegistry() {
     assertThrows(NullPointerException.class, () -> pluginFor().register(null));
   }
 
   @Test
   void rejectsCollaboratorsItWasNeverGiven() {
-    assertThrows(NullPointerException.class, () -> new MoreArrowsEmiPlugin(null, List::of));
-    assertThrows(NullPointerException.class, () -> new MoreArrowsEmiPlugin(recipes, null));
+    assertThrows(
+        NullPointerException.class, () -> new MoreArrowsEmiPlugin(null, List::of, station));
+    assertThrows(NullPointerException.class, () -> new MoreArrowsEmiPlugin(recipes, null, station));
+    assertThrows(
+        NullPointerException.class, () -> new MoreArrowsEmiPlugin(recipes, List::of, null));
   }
 }

@@ -85,6 +85,7 @@
       "com.grahambartley.morearrows.gametest.ServerConfigServiceGameTest",
       "com.grahambartley.morearrows.gametest.ServerConfigUpdateReceiverGameTest",
       "com.grahambartley.morearrows.gametest.ShippedRecipesGameTest",
+      "com.grahambartley.morearrows.gametest.StationRecipesGameTest",
       "com.grahambartley.morearrows.gametest.WindArrowEntityGameTest",
       "com.grahambartley.morearrows.gametest.WindBurstServiceGameTest"
     ]
