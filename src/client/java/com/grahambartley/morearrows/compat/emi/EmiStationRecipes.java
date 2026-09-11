@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 
 public final class EmiStationRecipes implements EmiStationRegistrar {
 
-  private final EmiRecipeCategory category =
+  private static final EmiRecipeCategory CATEGORY =
       new EmiRecipeCategory(ModRecipes.FLETCHING_ID, EmiStack.of(Blocks.FLETCHING_TABLE)) {
         @Override
         public Text getName() {
@@ -21,10 +21,10 @@ public final class EmiStationRecipes implements EmiStationRegistrar {
 
   @Override
   public void register(final EmiRegistry registry) {
-    registry.addCategory(category);
-    registry.addWorkstation(category, EmiStack.of(Blocks.FLETCHING_TABLE));
+    registry.addCategory(CATEGORY);
+    registry.addWorkstation(CATEGORY, EmiStack.of(Blocks.FLETCHING_TABLE));
     StationRecipes.from(registry.getRecipeManager()).stream()
-        .map(entry -> new FletchingEmiRecipe(category, entry))
+        .map(entry -> new FletchingEmiRecipe(CATEGORY, entry))
         .forEach(registry::addRecipe);
   }
 }
