@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "com.grahambartley.notenougharrows.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"ItemRendererMixin",
+		"SoundSystemMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

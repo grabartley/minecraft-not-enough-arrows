@@ -1,0 +1,20 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "not-enough-arrows:tnt_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:fire_charge"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:fire_charge_arrow",
+    "count": 12
+  }
+}

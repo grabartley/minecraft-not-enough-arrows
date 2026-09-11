@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "not-enough-arrows:item/incendiary_arrow"
+  }
+}

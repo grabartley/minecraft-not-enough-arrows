@@ -1,18 +1,18 @@
 {
   "replace": false,
   "values": [
-    "more-arrows:grapple_arrow",
-    "more-arrows:rope_arrow",
-    "more-arrows:glow_ink_arrow",
-    "more-arrows:redstone_arrow",
-    "more-arrows:wind_arrow",
-    "more-arrows:gunpowder_arrow",
-    "more-arrows:tnt_arrow",
-    "more-arrows:fire_charge_arrow",
-    "more-arrows:incendiary_arrow",
-    "more-arrows:gravity_arrow",
-    "more-arrows:ricochet_arrow",
-    "more-arrows:ender_pearl_arrow",
-    "more-arrows:recall_arrow"
+    "not-enough-arrows:grapple_arrow",
+    "not-enough-arrows:rope_arrow",
+    "not-enough-arrows:glow_ink_arrow",
+    "not-enough-arrows:redstone_arrow",
+    "not-enough-arrows:wind_arrow",
+    "not-enough-arrows:gunpowder_arrow",
+    "not-enough-arrows:tnt_arrow",
+    "not-enough-arrows:fire_charge_arrow",
+    "not-enough-arrows:incendiary_arrow",
+    "not-enough-arrows:gravity_arrow",
+    "not-enough-arrows:ricochet_arrow",
+    "not-enough-arrows:ender_pearl_arrow",
+    "not-enough-arrows:recall_arrow"
   ]
 }

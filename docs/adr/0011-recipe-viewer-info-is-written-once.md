@@ -13,7 +13,7 @@ It is worse here than for settings, because [ADR 0002](0002-crafting-table-alway
 
 ## Decision
 
-Info content lives in one place, `com.grahambartley.morearrows.compat.info`, and neither viewer plugin holds content of its own.
+Info content lives in one place, `com.grahambartley.notenougharrows.compat.info`, and neither viewer plugin holds content of its own.
 
 An `InfoEntry` names the items it covers and the translation keys that describe them. It holds keys rather than strings, so every player-facing word resolves through the language file and no prose is compiled into a class. `RecipeViewerInfo` builds the entry list, one entry per item, from the arrows the mod actually registered rather than from a hand-written list, so an arrow cannot ship without an entry.
 
@@ -27,6 +27,6 @@ The entries name items by `Identifier` and not by `Item`. That keeps the whole l
 
 The viewer plugins shrink to adapters. Each one walks `RecipeViewerInfo.arrowEntries()`, resolves the identifiers against the item registry, and hands the result to its own API. Adding a viewer is a new adapter and no new content.
 
-Adding an arrow means adding one `info.more-arrows.<path>` key to the language file. The entry itself appears with no further edit, because it is derived from registration.
+Adding an arrow means adding one `info.not-enough-arrows.<path>` key to the language file. The entry itself appears with no further edit, because it is derived from registration.
 
 Accepted drawback: forgetting that language key is quiet. The viewer shows the raw key rather than falling back to something readable, and no build step catches it, because language files are client resources and the gametest suite runs on a dedicated server where they are never loaded. The guard is the same one that covers item names and settings labels, which is that a missing key is obvious the first time the item is looked at in game.

@@ -1,0 +1,20 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "not-enough-arrows:ender_pearl_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:fermented_spider_eye"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:recall_arrow",
+    "count": 12
+  }
+}

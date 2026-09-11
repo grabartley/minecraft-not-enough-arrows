@@ -11,7 +11,7 @@ The cheap option is to add those fields to the existing configuration record. It
 
 ## Decision
 
-Client state is a second store, with its own record, codec, file, holder, and service, living in the client source set under `com.grahambartley.morearrows.client.state`. It is stored in the client config directory rather than in a world save, and it is never sent anywhere.
+Client state is a second store, with its own record, codec, file, holder, and service, living in the client source set under `com.grahambartley.notenougharrows.client.state`. It is stored in the client config directory rather than in a world save, and it is never sent anywhere.
 
 The separation is enforced by the build rather than by discipline. The classes live in the client source set, so the dedicated server cannot load them, and `verifyMainSourceSideSafety` fails the build if anything under `src/main/java` so much as names the package.
 

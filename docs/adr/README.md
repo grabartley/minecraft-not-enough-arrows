@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-These records capture **why** More Arrows is built the way it is. They are not specifications: what the mod does lives in [`../prd.md`](../prd.md), and what is currently being built lives on the project board.
+These records capture **why** Not Enough Arrows is built the way it is. They are not specifications: what the mod does lives in [`../prd.md`](../prd.md), and what is currently being built lives on the project board.
 
 A record is historical. When a decision changes, add a new record superseding the old one rather than editing it, so the reasoning behind the original choice is not lost. The one edit an existing record may take is a pointer to the record that supersedes or revises it, in its header and beside any consequence that no longer holds, because a reader who lands on a stale conclusion by search has no other way to find the record that moved it.
 
