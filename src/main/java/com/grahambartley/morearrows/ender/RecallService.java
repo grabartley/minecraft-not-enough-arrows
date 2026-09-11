@@ -2,6 +2,7 @@ package com.grahambartley.morearrows.ender;
 
 import com.grahambartley.morearrows.config.EnderArrowConfig;
 import com.grahambartley.morearrows.server.ServerConfigService;
+import com.grahambartley.morearrows.world.Reach;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,8 +34,7 @@ public final class RecallService {
     if (living instanceof PlayerEntity && !config.recallAffectsPlayers()) {
       return false;
     }
-    if (!EnderDestination.isReachable(
-        world.getWorldBorder(), living.getPos(), shooter.getPos(), config.recallMaxRangeBlocks())) {
+    if (!Reach.isWithin(living.getPos(), shooter.getPos(), config.recallMaxRangeBlocks())) {
       return false;
     }
 

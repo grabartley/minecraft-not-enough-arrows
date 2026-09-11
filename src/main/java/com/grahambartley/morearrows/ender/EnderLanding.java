@@ -46,10 +46,11 @@ public final class EnderLanding {
       return Optional.empty();
     }
 
+    final boolean anchorFits = fits(world, subject, anchor);
     return candidates(anchor).stream()
         .filter(candidate -> fits(world, subject, candidate) && isSupported(world, candidate))
         .findFirst()
-        .or(() -> fits(world, subject, anchor) ? Optional.of(anchor) : Optional.empty());
+        .or(() -> anchorFits ? Optional.of(anchor) : Optional.empty());
   }
 
   private static boolean fits(

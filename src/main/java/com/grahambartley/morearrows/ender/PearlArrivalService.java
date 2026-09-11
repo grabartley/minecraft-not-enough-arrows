@@ -8,7 +8,7 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class PearlArrivalService {
-  public static final double SAME_PLACE_DISTANCE = 1.0e-3;
+  private static final double SAME_PLACE_DISTANCE = 1.0e-3;
 
   private PearlArrivalService() {}
 

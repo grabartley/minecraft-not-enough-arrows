@@ -295,6 +295,7 @@ A player fires an ender pearl arrow at a ledge they cannot reach and arrives on 
 | PEARL-4 | An impact beyond the configured maximum range, measured from the shooter, teleports nobody and embeds |
 | PEARL-5 | A destination outside the world border teleports nobody and embeds |
 | PEARL-6 | The arrow is spent when it teleported someone. An arrow that struck a block and teleported nobody embeds and is recovered like any other arrow, and one that struck an entity is spent on that hit whether or not the teleport resolved |
+| PEARL-7 | An impact at the position the shooter already occupies teleports nobody and charges no arrival damage |
 
 **Not supported:** Teleporting between dimensions. Teleporting anyone other than the shooter. Remembering a destination between shots.
 

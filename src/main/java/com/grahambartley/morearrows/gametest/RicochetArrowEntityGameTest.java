@@ -209,7 +209,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
   }
 
   private static void raiseWalls(final TestContext context) {
-    for (final BlockPos wall : new BlockPos[] {PhysicsArrowTestSupport.TARGET_BLOCK, WEST_WALL}) {
+    for (final BlockPos wall : new BlockPos[] {FiringRangeSupport.BACKSTOP, WEST_WALL}) {
       context.setBlockState(wall.down(), Blocks.STONE);
       context.setBlockState(wall, Blocks.STONE);
       context.setBlockState(wall.up(), Blocks.STONE);

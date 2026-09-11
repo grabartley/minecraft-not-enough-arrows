@@ -1,6 +1,7 @@
 package com.grahambartley.morearrows.ender;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -9,11 +10,11 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class EnderTeleport {
-  public static final int PARTICLE_COUNT = 32;
-  public static final double PARTICLE_SPREAD = 0.5;
-  public static final double PARTICLE_SPEED = 0.1;
-  public static final float SOUND_VOLUME = 1.0f;
-  public static final float SOUND_PITCH = 1.0f;
+  private static final int PARTICLE_COUNT = 32;
+  private static final double PARTICLE_SPREAD = 0.5;
+  private static final double PARTICLE_SPEED = 0.1;
+  private static final float SOUND_VOLUME = 1.0f;
+  private static final float SOUND_PITCH = 1.0f;
 
   private EnderTeleport() {}
 
@@ -36,12 +37,15 @@ public final class EnderTeleport {
     subject.velocityModified = true;
     subject.onLanding();
 
-    announce(world, departure);
-    announce(world, destination);
+    final SoundCategory channel =
+        subject instanceof PlayerEntity ? SoundCategory.PLAYERS : SoundCategory.NEUTRAL;
+    announce(world, departure, channel);
+    announce(world, destination, channel);
     return true;
   }
 
-  private static void announce(final ServerWorld world, final Vec3d at) {
+  private static void announce(
+      final ServerWorld world, final Vec3d at, final SoundCategory channel) {
     world.spawnParticles(
         ParticleTypes.PORTAL,
         at.getX(),
@@ -58,7 +62,7 @@ public final class EnderTeleport {
         at.getY(),
         at.getZ(),
         SoundEvents.ENTITY_ENDERMAN_TELEPORT,
-        SoundCategory.PLAYERS,
+        channel,
         SOUND_VOLUME,
         SOUND_PITCH);
   }

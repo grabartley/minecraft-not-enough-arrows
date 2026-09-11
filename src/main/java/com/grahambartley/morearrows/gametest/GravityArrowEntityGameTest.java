@@ -19,7 +19,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         PhysicsArrowTestSupport.SETTLED_TICK,
         () -> {
-          context.expectBlock(Blocks.AIR, PhysicsArrowTestSupport.TARGET_BLOCK);
+          context.expectBlock(Blocks.AIR, FiringRangeSupport.BACKSTOP);
           context.complete();
         });
   }
@@ -55,7 +55,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         PhysicsArrowTestSupport.SETTLED_TICK,
         () -> {
-          context.expectBlock(Blocks.BEDROCK, PhysicsArrowTestSupport.TARGET_BLOCK);
+          context.expectBlock(Blocks.BEDROCK, FiringRangeSupport.BACKSTOP);
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, GravityArrowEntity.class) != null,
               "An arrow that moved nothing should embed and stay recoverable");
@@ -65,7 +65,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
 
   private static void fireAt(final TestContext context, final Block target) {
     context.setBlockState(PhysicsArrowTestSupport.LANDING_BLOCK, Blocks.AIR);
-    context.setBlockState(PhysicsArrowTestSupport.TARGET_BLOCK, target);
+    context.setBlockState(FiringRangeSupport.BACKSTOP, target);
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAVITY_ARROW.item());

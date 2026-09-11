@@ -8,8 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 final class PhysicsArrowTestSupport {
-  static final BlockPos TARGET_BLOCK = FiringRangeSupport.BACKSTOP;
-  static final BlockPos LANDING_BLOCK = TARGET_BLOCK.down();
+  static final BlockPos LANDING_BLOCK = FiringRangeSupport.BACKSTOP.down();
   static final Vec3d OUT_OF_THE_LANE = new Vec3d(1.5, 2.0, 5.5);
   static final int IMPACT_TICK = 5;
   static final int SETTLED_TICK = 40;

@@ -20,6 +20,9 @@ public final class EnderLandingGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityLandsOnTheAnchorWhenItFitsThere(TestContext context) {
     final Vec3d anchor = context.getAbsolute(Vec3d.ofBottomCenter(ANCHOR));
+    context.assertFalse(
+        context.getBlockState(ANCHOR.down()).isAir(),
+        "This test is about a supported anchor, so it needs ground under it");
 
     final Optional<Vec3d> landing =
         EnderLanding.forEntity(context.getWorld(), subject(context), anchor);
@@ -68,6 +71,9 @@ public final class EnderLandingGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anAnchorWithNoGroundUnderItStillTakesTheEntity(TestContext context) {
     final Vec3d anchor = context.getAbsolute(Vec3d.ofBottomCenter(MIDAIR_ANCHOR));
+    context.assertTrue(
+        context.getBlockState(MIDAIR_ANCHOR.down()).isAir(),
+        "This test is about an unsupported anchor, so it needs nothing under it");
 
     final Optional<Vec3d> landing =
         EnderLanding.forEntity(context.getWorld(), subject(context), anchor);
