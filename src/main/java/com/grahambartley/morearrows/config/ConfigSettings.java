@@ -59,7 +59,6 @@ public final class ConfigSettings {
   public static final String PHYSICS_RICOCHET_RETAINS_DAMAGE = PHYSICS + ".ricochetRetainsDamage";
 
   public static final String ENDER_PEARL_MAX_RANGE_BLOCKS = ENDER + ".pearlMaxRangeBlocks";
-  public static final String ENDER_PEARL_ARRIVAL_DAMAGE = ENDER + ".pearlArrivalDamage";
   public static final String ENDER_RECALL_MAX_RANGE_BLOCKS = ENDER + ".recallMaxRangeBlocks";
   public static final String ENDER_RECALL_AFFECTS_PLAYERS = ENDER + ".recallAffectsPlayers";
 

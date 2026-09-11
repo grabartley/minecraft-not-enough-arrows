@@ -19,13 +19,6 @@ class EnderArrowConfigTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"-1.0, 0.0", "0.0, 0.0", "5.0, 5.0", "20.0, 20.0", "99.0, 20.0"})
-  void clampsArrivalDamage(final float given, final float expected) {
-    assertEquals(
-        expected, EnderArrowConfig.defaults().withPearlArrivalDamage(given).pearlArrivalDamage());
-  }
-
-  @ParameterizedTest
   @CsvSource({"0, 4", "4, 4", "32, 32", "128, 128", "999, 128"})
   void clampsRecallRange(final int given, final int expected) {
     assertEquals(
@@ -36,11 +29,6 @@ class EnderArrowConfigTest {
   @Test
   void leavesPlayersOutOfReachOfTheRecallArrowByDefault() {
     assertFalse(EnderArrowConfig.defaults().recallAffectsPlayers());
-  }
-
-  @Test
-  void arrivesAsHardAsAThrownPearlByDefault() {
-    assertEquals(5.0f, EnderArrowConfig.defaults().pearlArrivalDamage());
   }
 
   @Test
@@ -63,14 +51,13 @@ class EnderArrowConfigTest {
             JsonParser.parseString("{\"pearlMaxRangeBlocks\":16}").getAsJsonObject());
 
     assertEquals(16, parsed.pearlMaxRangeBlocks());
-    assertEquals(EnderArrowConfig.DEFAULT_PEARL_ARRIVAL_DAMAGE, parsed.pearlArrivalDamage());
     assertEquals(EnderArrowConfig.DEFAULT_RECALL_MAX_RANGE_BLOCKS, parsed.recallMaxRangeBlocks());
     assertEquals(EnderArrowConfig.DEFAULT_RECALL_AFFECTS_PLAYERS, parsed.recallAffectsPlayers());
   }
 
   @Test
   void roundTripsThroughJson() {
-    final EnderArrowConfig original = new EnderArrowConfig(96, 12.5f, 8, true);
+    final EnderArrowConfig original = new EnderArrowConfig(96, 8, true);
 
     assertEquals(original, EnderArrowConfig.fromJson(original.toJson()));
   }

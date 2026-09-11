@@ -72,7 +72,7 @@ class MoreArrowsConfigTest {
 
   @Test
   void replacesOnlyTheEnderFamily() {
-    final EnderArrowConfig replacement = new EnderArrowConfig(96, 0.0f, 8, true);
+    final EnderArrowConfig replacement = new EnderArrowConfig(96, 8, true);
     final MoreArrowsConfig updated = MoreArrowsConfig.defaults().withEnder(replacement);
 
     assertEquals(replacement, updated.ender());
@@ -155,7 +155,7 @@ class MoreArrowsConfigTest {
             new GrappleArrowConfig(127, 3.9f, 0.2f, false, false, 127, true),
             new UtilityArrowConfig(5999, 1199, 1, 15.5f, 7.5f),
             new PhysicsArrowConfig(8, List.of("minecraft:bedrock"), 16, false),
-            new EnderArrowConfig(96, 12.5f, 8, true),
+            new EnderArrowConfig(96, 8, true),
             new FletchingStationConfig(false));
 
     assertEquals(original, MoreArrowsConfig.fromJson(original.toJson()));

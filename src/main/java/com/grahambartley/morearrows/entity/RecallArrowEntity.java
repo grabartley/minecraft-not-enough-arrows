@@ -10,10 +10,12 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class RecallArrowEntity extends BaseArrowEntity {
+  private static final double NO_DAMAGE = 0.0;
 
   public RecallArrowEntity(
       final EntityType<? extends RecallArrowEntity> entityType, final World world) {
     super(entityType, world);
+    setDamage(NO_DAMAGE);
   }
 
   public RecallArrowEntity(
@@ -25,12 +27,13 @@ public class RecallArrowEntity extends BaseArrowEntity {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     super(entityType, world, x, y, z, stack, weapon);
+    setDamage(NO_DAMAGE);
   }
 
   @Override
   protected ArrowImpact onArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
     RecallService.recall(world, shootingPlayer().orElse(null), entityHitResult.getEntity());
-    return ArrowImpact.DEFAULT;
+    return ArrowImpact.DISCARD;
   }
 }

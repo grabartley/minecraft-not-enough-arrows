@@ -34,13 +34,6 @@ public final class PearlArrivalService {
         world.getWorldBorder(), shooter.getPos(), destination, config.pearlMaxRangeBlocks())) {
       return false;
     }
-    if (!EnderTeleport.move(world, shooter, destination)) {
-      return false;
-    }
-
-    if (config.pearlArrivalDamage() > 0.0f) {
-      shooter.damage(world.getDamageSources().fall(), config.pearlArrivalDamage());
-    }
-    return true;
+    return EnderTeleport.move(world, shooter, destination);
   }
 }

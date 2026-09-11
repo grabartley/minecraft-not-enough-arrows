@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class EnderOptions {
-  public static final float ARRIVAL_DAMAGE_STEP = 0.5f;
 
   private EnderOptions() {}
 
@@ -31,13 +30,6 @@ public final class EnderOptions {
             EnderArrowConfig.PEARL_MAX_RANGE_BLOCKS_MAX,
             config -> config.ender().pearlMaxRangeBlocks(),
             (config, value) -> ender(config, it -> it.withPearlMaxRangeBlocks(value))),
-        new FloatOption<>(
-            ConfigSettings.ENDER_PEARL_ARRIVAL_DAMAGE,
-            EnderArrowConfig.PEARL_ARRIVAL_DAMAGE_MIN,
-            EnderArrowConfig.PEARL_ARRIVAL_DAMAGE_MAX,
-            ARRIVAL_DAMAGE_STEP,
-            config -> config.ender().pearlArrivalDamage(),
-            (config, value) -> ender(config, it -> it.withPearlArrivalDamage(value))),
         new IntOption<>(
             ConfigSettings.ENDER_RECALL_MAX_RANGE_BLOCKS,
             EnderArrowConfig.RECALL_MAX_RANGE_BLOCKS_MIN,

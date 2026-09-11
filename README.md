@@ -296,34 +296,35 @@ Its recipe is the one place this mod's content departs from the issue that speci
 
 ## Ender Pearl Arrow
 
-The ender pearl arrow is a vanilla ender pearl with a bow behind it. It flies where a bow can reach rather than where an arm can throw, and wherever it comes to rest the shooter arrives, taking the same knock a thrown pearl gives them.
+The ender pearl arrow is a vanilla ender pearl with a bow behind it. It flies where a bow can reach rather than where an arm can throw, and wherever it comes to rest the shooter arrives. Unlike a thrown pearl it costs nothing to arrive, and it is the mod's one arrow that does no damage of any kind.
 
 | Rule | Behaviour |
 |---|---|
 | Who moves | The shooting player, and nobody else. An arrow with no player behind it, from a dispenser, embeds and teleports nobody, the same answer the grapple arrow gives |
 | Where they arrive | The point of impact. Hitting a living entity puts the shooter where that entity stands rather than doing nothing |
-| Arrival damage | `ender.pearlArrivalDamage`, five by default, which is what a thrown vanilla pearl deals. Zero applies none, so an operator can have the travel without the cost |
-| An impact where the shooter already stands | Teleports nobody and charges no arrival damage, so an arrow that came back down on the shooter it was fired by is an ordinary arrow hit |
+| Damage | None, to anything. It hurts neither what it strikes nor the shooter on arrival, which is where it parts company with a thrown vanilla pearl: this is a traversal tool and it costs no health to use |
+| An impact where the shooter already stands | Teleports nobody, so an arrow that came back down on the shooter it was fired by does nothing at all |
 | How far it reaches | `ender.pearlMaxRangeBlocks`, sixty four by default, measured from the shooter to the impact point. An arrow landing further away embeds without teleporting, mirroring how `grapple.maxRangeBlocks` behaves |
 | Where it will not go | Outside the world border. The teleport places no block, so the block protection check that the fire patch and gravity systems make does not apply, but the border does and a destination beyond it is refused rather than clamped. [ADR 0029](docs/adr/0029-a-teleport-is-refused-rather-than-relocated.md) covers why |
-| The arrow afterwards | Spent, if it teleported someone. An arrow that struck a block and teleported nobody, because it was out of range, past the border, or fired by a dispenser, embeds and is recovered like any other arrow. An arrow that struck an entity is spent either way, because that is what vanilla does with any arrow that hits something alive |
+| The arrow afterwards | Spent, if it teleported someone, and spent on any entity it strikes. An arrow that struck a block and teleported nobody, because it was out of range, past the border, or fired by a dispenser, embeds and is recovered like any other arrow |
 
 Both settings are read fresh on every impact, so an operator changing either takes effect on the next shot without a restart. Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one ender pearl, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
 ## Recall Arrow
 
-The recall arrow is the ender pearl arrow read backwards. It strikes a living thing and brings that thing to the shooter, which is why it is crafted from an ender pearl arrow and a fermented spider eye, the ingredient vanilla already uses to invert an effect.
+The recall arrow is the ender pearl arrow read backwards. It strikes something and brings that thing to the shooter, which is why it is crafted from an ender pearl arrow and a fermented spider eye, the ingredient vanilla already uses to invert an effect. Like the arrow it is built from, it does no damage.
 
 It is also the only thing in the mod that moves a player who did not choose to be moved, from whatever range a bow reaches, so it takes the same answer [ADR 0019](docs/adr/0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) gives for terrain: the conservative default needs no operator configuration to be safe, and the permissive behaviour is opt-in.
 
 | Rule | Behaviour |
 |---|---|
-| What moves | The living entity it strikes. Hitting a block does nothing and the arrow embeds and is recovered, and a boat, a minecart or a dropped item is never moved |
-| Moving a player | `ender.recallAffectsPlayers`, **off by default**. With it off a struck player takes an ordinary arrow hit and stays where they are. With it on they are moved, and because the server owns the decision a modified client cannot recall a player on a server that has it off |
+| What moves | Anything alive, and any vehicle, so a mob, a player, a boat and a minecart are all valid targets. A dropped item, an experience orb and an arrow in flight are not, and neither is a boss: the ender dragon and the wither are excluded outright and no setting changes that. Hitting a block does nothing and the arrow embeds and is recovered |
+| Moving a player | `ender.recallAffectsPlayers`, **off by default**. With it off a struck player stays where they are, and so does a vehicle carrying one, because recalling the boat would move its passenger just as surely as hitting them directly. With it on both move, and because the server owns the decision a modified client cannot recall a player on a server that has it off |
 | Who it moves them to | The shooting player. An arrow with no player behind it, from a dispenser, moves nothing |
 | How far it reaches | `ender.recallMaxRangeBlocks`, thirty two by default, measured between the shooter and the entity struck. Beyond it nothing moves |
 | Where they arrive | The shooter's own position when it fits the arriving entity and has ground under it, otherwise the nearest neighbouring column that does, and the shooter's own position as a last resort, so a recall never leaves anything inside a block. That last resort is what covers an airborne shooter, who has no supported column anywhere near them: what arrives is placed at their position and falls the same way they are about to |
-| The arrow afterwards | Spent when it moved something, and recovered when it struck a block and moved nothing. An arrow that struck a living thing it was not allowed to move, such as a player with the setting off, is spent on that hit like any other arrow |
+| Damage | None. The arrow passes its effect on and disappears, hurting neither what it strikes nor anything else |
+| The arrow afterwards | Spent on anything it strikes, whether or not it moved it, and recovered when it struck a block and moved nothing |
 
 Its range is deliberately shorter than the ender pearl arrow's. Moving yourself somewhere you can see is a traversal tool, and moving something else to you is a weapon, so the weapon reaches half as far.
 

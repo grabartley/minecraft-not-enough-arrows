@@ -21,7 +21,6 @@ class EnderOptionsTest {
     assertEquals(
         List.of(
             "ender.pearlMaxRangeBlocks",
-            "ender.pearlArrivalDamage",
             "ender.recallMaxRangeBlocks",
             "ender.recallAffectsPlayers"),
         EnderOptions.options().stream().map(ConfigOption::id).toList());

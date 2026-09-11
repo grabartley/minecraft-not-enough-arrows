@@ -19,12 +19,6 @@ public final class EnderCommandNodes {
                 EnderArrowConfig.PEARL_MAX_RANGE_BLOCKS_MAX,
                 (current, value) -> change(current, ender -> ender.withPearlMaxRangeBlocks(value))))
         .then(
-            ConfigOptionNodes.floatOption(
-                ConfigSettings.ENDER_PEARL_ARRIVAL_DAMAGE,
-                EnderArrowConfig.PEARL_ARRIVAL_DAMAGE_MIN,
-                EnderArrowConfig.PEARL_ARRIVAL_DAMAGE_MAX,
-                (current, value) -> change(current, ender -> ender.withPearlArrivalDamage(value))))
-        .then(
             ConfigOptionNodes.intOption(
                 ConfigSettings.ENDER_RECALL_MAX_RANGE_BLOCKS,
                 EnderArrowConfig.RECALL_MAX_RANGE_BLOCKS_MIN,

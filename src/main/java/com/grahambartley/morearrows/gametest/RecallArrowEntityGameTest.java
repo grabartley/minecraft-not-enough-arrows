@@ -38,6 +38,24 @@ public final class RecallArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  public void anArrowFiredFromABowHurtsNothingItStrikes(TestContext context) {
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_IN_THE_LANE);
+    final float unharmed = target.getHealth();
+    fireEast(context);
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.assertEquals(
+              target.getHealth(),
+              unharmed,
+              "The recall arrow moves what it strikes rather than hurting it");
+          context.dontExpectEntity(ModArrows.RECALL_ARROW.entityType());
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void anArrowThatStrikesABlockMovesNothingAndEmbeds(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
     fireEast(context);

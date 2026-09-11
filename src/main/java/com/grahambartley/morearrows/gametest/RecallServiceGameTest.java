@@ -6,6 +6,7 @@ import com.grahambartley.morearrows.config.ServerConfigHolder;
 import com.grahambartley.morearrows.ender.RecallService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
@@ -89,13 +90,88 @@ public final class RecallServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void somethingThatIsNotAliveIsNeverRecalled(TestContext context) {
+  public void aDroppedItemIsNeverRecalled(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final Entity struck = context.spawnItem(Items.ARROW, TARGET_STAND);
 
     context.assertFalse(
         recall(context, shooter, struck, allowingPlayers()),
-        "A dropped item is not a living thing and should never be recalled");
+        "A dropped item is neither alive nor a vehicle and should never be recalled");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anExperienceOrbIsNeverRecalled(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.EXPERIENCE_ORB, TARGET_STAND);
+
+    context.assertFalse(
+        recall(context, shooter, struck, allowingPlayers()),
+        "An experience orb is neither alive nor a vehicle and should never be recalled");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aBoatIsBroughtToTheShooter(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.BOAT, TARGET_STAND);
+
+    context.assertTrue(
+        recall(context, shooter, struck, EnderArrowConfig.defaults()),
+        "A boat is a vehicle and should be recalled");
+    context.assertTrue(
+        struck.getPos().distanceTo(shooter.getPos()) <= ARRIVED_WITHIN,
+        "The boat should arrive at the shooter, but sat at " + struck.getPos());
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aMinecartIsBroughtToTheShooter(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.MINECART, TARGET_STAND);
+
+    context.assertTrue(
+        recall(context, shooter, struck, EnderArrowConfig.defaults()),
+        "A minecart is a vehicle and should be recalled");
+    context.assertTrue(
+        struck.getPos().distanceTo(shooter.getPos()) <= ARRIVED_WITHIN,
+        "The minecart should arrive at the shooter, but sat at " + struck.getPos());
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aVehicleCarryingAPlayerObeysThePlayerSwitch(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.BOAT, TARGET_STAND);
+    final ServerPlayerEntity rider = MockPlayerSupport.playerAt(context, TARGET_STAND);
+    rider.startRiding(struck, true);
+
+    context.assertTrue(struck.hasPlayerRider(), "The rider should be aboard for this test");
+    context.assertFalse(
+        recall(context, shooter, struck, EnderArrowConfig.defaults()),
+        "Recalling a boat must not move the player riding it while the switch is off");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aWitherIsNeverRecalled(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.WITHER, TARGET_STAND);
+
+    context.assertFalse(
+        recall(context, shooter, struck, allowingPlayers()),
+        "A boss is never recalled, whatever an operator has configured");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anEnderDragonIsNeverRecalled(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.ENDER_DRAGON, TARGET_STAND);
+
+    context.assertFalse(
+        recall(context, shooter, struck, allowingPlayers()),
+        "A boss is never recalled, whatever an operator has configured");
     context.complete();
   }
 

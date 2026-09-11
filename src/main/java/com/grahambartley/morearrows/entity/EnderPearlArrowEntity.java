@@ -12,10 +12,12 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class EnderPearlArrowEntity extends BaseArrowEntity {
+  private static final double NO_DAMAGE = 0.0;
 
   public EnderPearlArrowEntity(
       final EntityType<? extends EnderPearlArrowEntity> entityType, final World world) {
     super(entityType, world);
+    setDamage(NO_DAMAGE);
   }
 
   public EnderPearlArrowEntity(
@@ -27,6 +29,7 @@ public class EnderPearlArrowEntity extends BaseArrowEntity {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     super(entityType, world, x, y, z, stack, weapon);
+    setDamage(NO_DAMAGE);
   }
 
   @Override
@@ -41,7 +44,7 @@ public class EnderPearlArrowEntity extends BaseArrowEntity {
   protected ArrowImpact onArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
     teleportShooterTo(world, entityHitResult.getEntity().getPos());
-    return ArrowImpact.DEFAULT;
+    return ArrowImpact.DISCARD;
   }
 
   private boolean teleportShooterTo(final ServerWorld world, final Vec3d destination) {
