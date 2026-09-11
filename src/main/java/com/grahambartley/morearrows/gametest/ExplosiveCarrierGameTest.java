@@ -27,11 +27,9 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   private static final int CHAINED_CHECK_TICK = SECOND_ARMING_TICK + 25;
   private static final int NEARBY = 1;
   private static final int THE_COLUMN_ITSELF = 0;
-  private static final int HANDOVER_TICK = UtilityArrowTestSupport.LANDING_TICK + 10;
+  private static final int HANDOVER_TICK = FiringRangeSupport.LANDING_TICK + 10;
   private static final int BLAST_TICK =
-      UtilityArrowTestSupport.LANDING_TICK
-          + ExplosiveArrowConfig.DEFAULT_FIRE_CHARGE.delayTicks()
-          + 20;
+      FiringRangeSupport.LANDING_TICK + ExplosiveArrowConfig.DEFAULT_FIRE_CHARGE.delayTicks() + 20;
 
   @BeforeBatch(batchId = BATCH)
   public void forgetFusesBeforeBatch(ServerWorld world) {
@@ -39,7 +37,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
     BlastService.forget();
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
   public void anArrowThatStrikesAMobHandsItsFuseToThatMob(TestContext context) {
     final CowEntity target = fireIntoACow(context);
     final float healthBefore = target.getHealth();
@@ -63,7 +61,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 140)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 140)
   public void aChargeGoesOffWhereItsCarrierEndedUpRatherThanWhereItStruck(TestContext context) {
     final CowEntity target = fireIntoACow(context);
     context.setBlockState(WALKED_TO.down(), Blocks.STONE);
@@ -84,13 +82,13 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
               fireWithin(context, WALKED_TO, NEARBY),
               "The charge should go off where its carrier ended up");
           context.assertFalse(
-              fireWithin(context, UtilityArrowTestSupport.IMPACT_FACE, THE_COLUMN_ITSELF),
+              fireWithin(context, FiringRangeSupport.IMPACT_FACE, THE_COLUMN_ITSELF),
               "The charge should leave nothing behind where the arrow struck");
           context.complete();
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 140)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 140)
   public void aCarrierKilledMidCountdownTakesItsChargeWithIt(TestContext context) {
     final CowEntity target = fireIntoACow(context);
 
@@ -107,7 +105,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         BLAST_TICK,
         () -> {
           context.assertFalse(
-              fireWithin(context, UtilityArrowTestSupport.IMPACT_FACE, NEARBY),
+              fireWithin(context, FiringRangeSupport.IMPACT_FACE, NEARBY),
               "A carrier killed mid countdown should take its charge with it");
           context.assertTrue(
               FuseService.fuseOn(context.getWorld(), target.getUuid()) == null,
@@ -116,7 +114,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 140)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 140)
   public void aSecondArrowDoesNotRestartAFuseAlreadyBurningOnTheSameMob(TestContext context) {
     final CowEntity target = fireIntoACow(context);
 
@@ -146,10 +144,10 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 160)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 160)
   public void aCarrierKilledByAnotherChargeDoesNotStillGoOff(TestContext context) {
     final CowEntity first = fireIntoACow(context);
-    final CowEntity second = UtilityArrowTestSupport.liveTargetOnPedestalAt(context, NEIGHBOUR);
+    final CowEntity second = FiringRangeSupport.liveTargetOnPedestalAt(context, NEIGHBOUR);
 
     context.runAtTick(
         SECOND_ARMING_TICK,
@@ -184,10 +182,9 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   }
 
   private static CowEntity fireIntoACow(final TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     final CowEntity target =
-        UtilityArrowTestSupport.liveTargetOnPedestalAt(
-            context, UtilityArrowTestSupport.IMPACT_FACE);
+        FiringRangeSupport.liveTargetOnPedestalAt(context, FiringRangeSupport.IMPACT_FACE);
     fireAtTheCow(context);
     return target;
   }
@@ -195,7 +192,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   private static void fireAtTheCow(final TestContext context) {
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.FIRE_CHARGE_ARROW.item());
   }
 

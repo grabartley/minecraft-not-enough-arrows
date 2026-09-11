@@ -72,7 +72,7 @@ Out of the first release, deliberately.
 | Restoring blocks a gravity arrow dropped | Once a block is airborne it is a vanilla falling block, and where it lands is not something the arrow gets a say in |
 | Permanent light placement from the glow ink arrow | The arrow marks entities. Lighting terrain is a different tool |
 | Teleporting between dimensions | Both ender arrows resolve within the world they were fired in |
-| Recalling anything that is not a living entity | Boats, minecarts, and dropped items are not moved by the recall arrow |
+| Recalling loose objects or bosses | Dropped items, experience orbs and projectiles in flight are not moved by the recall arrow, and neither is the ender dragon or the wither |
 | Positional fletching recipes | A recipe cannot say "this ingredient goes in this slot". A station with a handful of slots gains nothing from positional rules and loses a player every time they get the order wrong ([ADR 0013](adr/0013-fletching-recipes-are-an-unordered-list-of-counted-ingredients.md)) |
 | Persisting fuses, fire patches, grapple sessions, and block anchors across a restart | All four are measured in seconds to a minute. Writing them into the world save costs more than it returns, and each one's failure mode on restart is benign ([ADR 0012](adr/0012-fire-patches-are-server-owned-and-time-boxed.md), [ADR 0014](adr/0014-fuses-are-tracked-against-the-entity-that-carries-them.md)) |
 | Generating the arrows item tag from the registry | The tag is data and the registry is code, so the two can drift. A test audits the live tag against the registry, which catches the mistake rather than preventing it. Preventing it needs a data generation source set the repository does not have ([ADR 0009](adr/0009-arrows-reach-vanilla-weapons-through-vanilla-hooks.md)) |
@@ -291,10 +291,11 @@ A player fires an ender pearl arrow at a ledge they cannot reach and arrives on 
 |---|---|
 | PEARL-1 | The arrow teleports its shooting player to the point of impact. An arrow with no shooter teleports nobody and embeds |
 | PEARL-2 | Striking a living entity teleports the shooter to that entity's position rather than doing nothing |
-| PEARL-3 | Arrival applies a configured amount of damage, defaulting to what a thrown vanilla ender pearl deals. Zero applies none |
+| PEARL-3 | The arrow does no damage: it hurts neither what it strikes nor the shooter on arrival |
 | PEARL-4 | An impact beyond the configured maximum range, measured from the shooter, teleports nobody and embeds |
 | PEARL-5 | A destination outside the world border teleports nobody and embeds |
-| PEARL-6 | The arrow is spent when it teleported someone, and recovered like any other arrow when it did not |
+| PEARL-6 | The arrow is spent when it teleported someone, and on any entity it strikes. An arrow that struck a block and teleported nobody embeds and is recovered like any other arrow |
+| PEARL-7 | An impact at the position the shooter already occupies teleports nobody and does nothing |
 
 **Not supported:** Teleporting between dimensions. Teleporting anyone other than the shooter. Remembering a destination between shots.
 
@@ -310,16 +311,17 @@ A player fires a recall arrow at something across a gap, and it arrives at their
 
 | Requirement | Statement |
 |---|---|
-| RECALL-1 | The arrow teleports the living entity it strikes to the shooting player's position |
+| RECALL-1 | The arrow teleports what it strikes to the shooting player's position, where that is anything alive or any vehicle |
 | RECALL-2 | Striking a block does nothing. The arrow embeds and is recovered |
 | RECALL-3 | An arrow with no shooter moves nothing |
-| RECALL-4 | Players are not moved unless a server setting turns it on, and that setting is off by default. With it off, a struck player takes an ordinary arrow hit and stays where they are |
+| RECALL-4 | Players are not moved unless a server setting turns it on, and that setting is off by default. With it off, neither a struck player nor a vehicle carrying one is moved |
 | RECALL-5 | An entity struck beyond the configured maximum range, measured from the shooter, is not moved |
-| RECALL-6 | The arrival position must not suffocate the arriving entity or drop it through the floor |
+| RECALL-6 | The arrival position must not suffocate the arriving entity or leave it inside a block. Where the shooter is airborne and no supported position is available, the entity arrives at the shooter and falls as the shooter is about to |
 | RECALL-7 | A moved player's position change reaches their client as a real teleport rather than a desync |
-| RECALL-8 | The arrow is spent when it moved something and recovered when it did not |
+| RECALL-8 | The arrow is spent on anything it strikes, and recovered when it struck a block and moved nothing |
+| RECALL-9 | The arrow does no damage to what it strikes |
 
-**Not supported:** Moving anything that is not a living entity. Cross-dimension recall. Recalling an entity to anywhere other than the shooter.
+**Not supported:** Moving a dropped item, an experience orb, a projectile in flight, or any other entity that is neither alive nor a vehicle. Moving a boss: the ender dragon and the wither are excluded and no setting changes that. Cross-dimension recall. Recalling an entity to anywhere other than the shooter.
 
 **Enforcement:** Server, including the player switch. A modified client cannot recall a player on a server where the setting is off, because the server decides whether the effect resolves at all.
 

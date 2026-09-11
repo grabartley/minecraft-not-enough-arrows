@@ -34,6 +34,7 @@ public final class MoreArrowsCommand {
                     .then(GrappleCommandNodes.build())
                     .then(UtilityCommandNodes.build())
                     .then(PhysicsCommandNodes.build())
+                    .then(EnderCommandNodes.build())
                     .then(FletchingCommandNodes.build())));
   }
 

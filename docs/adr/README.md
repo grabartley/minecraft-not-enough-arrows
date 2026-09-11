@@ -36,6 +36,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0026](0026-the-station-opens-only-for-a-client-that-can-draw-it.md) | The station opens only for a client that can draw it |
 | [0027](0027-the-station-pays-one-uniform-multiplier.md) | The station pays one uniform multiplier on the yield |
 | [0028](0028-one-layout-drives-both-recipe-viewers.md) | One layout drives both recipe viewers |
+| [0029](0029-a-teleport-is-refused-rather-than-relocated.md) | A teleport is refused rather than relocated |
 
 ## Writing A New Record
 

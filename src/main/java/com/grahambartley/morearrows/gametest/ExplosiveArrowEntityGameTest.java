@@ -28,17 +28,17 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
         tierTest("firecharge", ModArrows.FIRE_CHARGE_ARROW, ExplosiveTier.FIRE_CHARGE));
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
   public void theTopTierLeavesFireWhereItDetonates(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.FIRE_CHARGE_ARROW.item());
 
     context.runAtTick(
         ExplosiveArrowConfig.DEFAULT_FIRE_CHARGE.delayTicks()
-            + UtilityArrowTestSupport.LANDING_TICK
+            + FiringRangeSupport.LANDING_TICK
             + 20,
         () -> {
           context.assertTrue(
@@ -65,7 +65,7 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
     return new TestFunction(
         BATCH,
         "morearrows.explosivearrowlightsitsfuse." + label,
-        UtilityArrowTestSupport.TEMPLATE,
+        FiringRangeSupport.TEMPLATE,
         80,
         0L,
         true,
@@ -74,14 +74,14 @@ public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
 
   private static void assertFuseLights(
       final TestContext context, final RegisteredArrow<?> arrow, final ExplosiveTier tier) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         arrow.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK,
+        FiringRangeSupport.LANDING_TICK,
         () -> {
           final ExplosiveArrowEntity landed = landedArrow(context, arrow);
           context.assertTrue(

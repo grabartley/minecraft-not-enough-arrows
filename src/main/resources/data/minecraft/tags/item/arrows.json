@@ -11,6 +11,8 @@
     "more-arrows:fire_charge_arrow",
     "more-arrows:incendiary_arrow",
     "more-arrows:gravity_arrow",
-    "more-arrows:ricochet_arrow"
+    "more-arrows:ricochet_arrow",
+    "more-arrows:ender_pearl_arrow",
+    "more-arrows:recall_arrow"
   ]
 }

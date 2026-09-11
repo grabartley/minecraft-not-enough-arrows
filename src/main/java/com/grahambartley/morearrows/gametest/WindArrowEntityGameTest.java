@@ -12,18 +12,18 @@ public final class WindArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "wind-arrow";
   private static final BlockPos BYSTANDER_STAND = new BlockPos(5, 3, 4);
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowShovesABystanderNearItsImpact(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     final ArmorStandEntity bystander =
-        UtilityArrowTestSupport.standOnPedestalAt(context, BYSTANDER_STAND);
+        FiringRangeSupport.standOnPedestalAt(context, BYSTANDER_STAND);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.WIND_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK,
+        FiringRangeSupport.LANDING_TICK,
         () -> {
           context.assertFalse(
               bystander.getVelocity().equals(Vec3d.ZERO),
@@ -32,16 +32,16 @@ public final class WindArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowIsSpentByItsOwnBurstRatherThanEmbedding(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.WIND_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK,
+        FiringRangeSupport.LANDING_TICK,
         () -> {
           context.dontExpectEntity(ModArrows.WIND_ARROW.entityType());
           context.complete();

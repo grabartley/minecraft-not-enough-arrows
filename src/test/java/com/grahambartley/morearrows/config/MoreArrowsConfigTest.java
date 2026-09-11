@@ -18,12 +18,14 @@ class MoreArrowsConfigTest {
     assertEquals(GrappleArrowConfig.defaults(), defaults.grapple());
     assertEquals(UtilityArrowConfig.defaults(), defaults.utility());
     assertEquals(PhysicsArrowConfig.defaults(), defaults.physics());
+    assertEquals(EnderArrowConfig.defaults(), defaults.ender());
     assertEquals(FletchingStationConfig.defaults(), defaults.fletching());
   }
 
   @Test
   void substitutesDefaultsForNullFamilies() {
-    assertEquals(MoreArrowsConfig.defaults(), new MoreArrowsConfig(null, null, null, null, null));
+    assertEquals(
+        MoreArrowsConfig.defaults(), new MoreArrowsConfig(null, null, null, null, null, null));
   }
 
   @Test
@@ -69,12 +71,23 @@ class MoreArrowsConfigTest {
   }
 
   @Test
+  void replacesOnlyTheEnderFamily() {
+    final EnderArrowConfig replacement = new EnderArrowConfig(96, 8, true);
+    final MoreArrowsConfig updated = MoreArrowsConfig.defaults().withEnder(replacement);
+
+    assertEquals(replacement, updated.ender());
+    assertEquals(PhysicsArrowConfig.defaults(), updated.physics());
+    assertEquals(FletchingStationConfig.defaults(), updated.fletching());
+  }
+
+  @Test
   void replacesOnlyTheFletchingFamily() {
     final FletchingStationConfig replacement = new FletchingStationConfig(false);
     final MoreArrowsConfig updated = MoreArrowsConfig.defaults().withFletching(replacement);
 
     assertEquals(replacement, updated.fletching());
     assertEquals(PhysicsArrowConfig.defaults(), updated.physics());
+    assertEquals(EnderArrowConfig.defaults(), updated.ender());
     assertEquals(UtilityArrowConfig.defaults(), updated.utility());
   }
 
@@ -102,6 +115,7 @@ class MoreArrowsConfigTest {
     assertEquals(ExplosiveArrowConfig.defaults(), parsed.explosive());
     assertEquals(UtilityArrowConfig.defaults(), parsed.utility());
     assertEquals(PhysicsArrowConfig.defaults(), parsed.physics());
+    assertEquals(EnderArrowConfig.defaults(), parsed.ender());
     assertEquals(FletchingStationConfig.defaults(), parsed.fletching());
   }
 
@@ -113,6 +127,7 @@ class MoreArrowsConfigTest {
     assertTrue(json.get("grapple").isJsonObject());
     assertTrue(json.get("utility").isJsonObject());
     assertTrue(json.get("physics").isJsonObject());
+    assertTrue(json.get("ender").isJsonObject());
     assertTrue(json.get("fletching").isJsonObject());
   }
 
@@ -140,6 +155,7 @@ class MoreArrowsConfigTest {
             new GrappleArrowConfig(127, 3.9f, 0.2f, false, false, 127, true),
             new UtilityArrowConfig(5999, 1199, 1, 15.5f, 7.5f),
             new PhysicsArrowConfig(8, List.of("minecraft:bedrock"), 16, false),
+            new EnderArrowConfig(96, 8, true),
             new FletchingStationConfig(false));
 
     assertEquals(original, MoreArrowsConfig.fromJson(original.toJson()));

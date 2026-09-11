@@ -1,21 +1,44 @@
 package com.grahambartley.morearrows.gametest;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.entity.DispenserBlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-final class UtilityArrowTestSupport {
+final class FiringRangeSupport {
   static final String TEMPLATE = "more-arrows:fire_pad";
   static final BlockPos SHOOTER_STAND = new BlockPos(1, 2, 3);
   static final BlockPos BACKSTOP = new BlockPos(6, 3, 3);
   static final BlockPos IMPACT_FACE = new BlockPos(5, 3, 3);
   static final int LANDING_TICK = 15;
+  static final long DISPENSER_TRIGGER_TICKS = 2L;
 
-  private UtilityArrowTestSupport() {}
+  private FiringRangeSupport() {}
+
+  static <E extends Entity> E firedArrow(final TestContext context, final Class<E> type) {
+    return context.getWorld().getEntitiesByClass(type, context.getTestBox(), arrow -> true).stream()
+        .findFirst()
+        .orElse(null);
+  }
+
+  static void dispenseEast(
+      final TestContext context, final BlockPos relativePos, final Item arrow) {
+    context.setBlockState(
+        relativePos,
+        Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, Direction.EAST));
+    final DispenserBlockEntity dispenser = context.getBlockEntity(relativePos);
+    dispenser.setStack(0, new ItemStack(arrow, 1));
+    context.putAndRemoveRedstoneBlock(relativePos.up(), DISPENSER_TRIGGER_TICKS);
+  }
 
   static void raiseBackstop(final TestContext context) {
     context.setBlockState(BACKSTOP, Blocks.STONE);
