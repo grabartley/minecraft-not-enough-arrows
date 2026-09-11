@@ -125,6 +125,12 @@ class FletchingRecipeLayoutTest {
     assertThrows(
         IllegalArgumentException.class, () -> FletchingRecipeLayout.sizedToFit(inputCount));
     assertThrows(IllegalArgumentException.class, () -> FletchingRecipeLayout.rows(inputCount));
+    assertThrows(IllegalArgumentException.class, () -> FletchingRecipeLayout.width(inputCount));
+    assertThrows(IllegalArgumentException.class, () -> FletchingRecipeLayout.height(inputCount));
+    assertThrows(
+        IllegalArgumentException.class, () -> FletchingRecipeLayout.centredIn(inputCount, 9));
+    assertThrows(
+        IllegalArgumentException.class, () -> FletchingRecipeLayout.centredIn(1, inputCount));
   }
 
   @Test

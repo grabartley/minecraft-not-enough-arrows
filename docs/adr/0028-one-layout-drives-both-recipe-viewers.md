@@ -23,6 +23,8 @@ It is constructed two ways, which is how the sizing disagreement is settled rath
 
 The two viewers cannot drift apart on layout, because there is only one set of coordinates. A change to the shape is made once and lands in both.
 
+What that buys is one shape, not pixel identity. The two viewers disagree about what a slot coordinate means: EMI places the slot frame, while JEI places the sixteen pixel ingredient and draws the frame around it, one pixel out for an input and five for a result. So a recipe is laid out the same way in both and still differs by a pixel or two where the frames land. Chasing that out would mean modelling each viewer's frame insets in the shared layout, which trades the single set of coordinates for exactly the per-viewer arithmetic this record exists to avoid.
+
 The sizing difference is now impossible to express by accident. Before this split, positions were computed from the recipe's own input count while JEI's bounds were computed from the maximum, and the mismatch was silent: every shipped recipe has two inputs, so every JEI page drew its content in the corner of a box sized for nine. A layout that cannot be asked for positions without also being told its bounds cannot reproduce that.
 
 Putting `StationRecipes` in the main source set is what makes it testable. The build forbids `compat` classes from the main source set so a dedicated server never loads viewer code, and gametests live in the main source set, so a listing class in `compat` could only have been covered by mocks. In main it is covered against the real loaded datapack.
@@ -30,3 +32,7 @@ Putting `StationRecipes` in the main source set is what makes it testable. The b
 Accepted drawback: the layout class is shared by two adapters that do not otherwise resemble each other, so a change made for one viewer's benefit has to be checked against the other. That is the cost of the guarantee, and it is cheaper than the alternative, where the check never happens because nobody notices the drift.
 
 Accepted drawback: pixel positions are unit tested against their own arithmetic, which proves slots sit inside their bounds and share a centre line but cannot prove the result looks right. Only running both viewers does that, which is why this change ships with captures from each.
+
+Accepted drawback: the EMI adapter carries the coverage and the JEI adapter does not. `EmiStationRegistrar` is a seam the plugin's tests inject, so EMI's wiring is exercised in a plain JVM, while JEI's category and registration touch `Blocks`, `Registries`, and `MinecraftClient` with no equivalent seam and are covered by the captures instead. That asymmetry is a decision rather than an oversight: a second seam would buy tests that assert delegation and nothing more.
+
+`EmiStationRecipes` holds the one `EmiRecipeCategory`, which EMI matches by identity, in a static field built from `Blocks.FLETCHING_TABLE`. That is why the plugin reaches it through `EmiStationRegistrar` rather than directly: loading the class in a unit test would drag `Blocks` static initialisation into a plain JVM, where it fails verification and takes the whole test class with it. No unit test may reference `EmiStationRecipes`.

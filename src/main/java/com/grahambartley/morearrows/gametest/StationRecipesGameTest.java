@@ -28,27 +28,24 @@ public final class StationRecipesGameTest implements FabricGameTest {
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
   public void ordersRecipesTheSameWayForEveryViewerThatAsks(TestContext context) {
     final RecipeManager recipes = recipes(context);
-    final List<Identifier> first = ids(StationRecipes.from(recipes));
-    final List<Identifier> second = ids(StationRecipes.from(recipes));
+    final List<Identifier> listed = ids(StationRecipes.from(recipes));
     final List<Identifier> sorted =
-        first.stream().sorted(Comparator.comparing(Identifier::toString)).toList();
+        listed.stream().sorted(Comparator.comparing(Identifier::toString)).toList();
 
     context.assertTrue(
-        first.equals(second),
-        "Two viewers asking for the same recipes should be given the same order");
-    context.assertTrue(
-        first.equals(sorted), "The station recipe list should be sorted by id but was " + first);
+        listed.equals(sorted),
+        "Every viewer should be given one sorted order but was given " + listed);
     context.complete();
   }
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
-  public void listsOnlyStationRecipesAndNeverACraftingTableOne(TestContext context) {
+  public void namesEveryStationRecipeUnderTheFletchingFolder(TestContext context) {
     ids(StationRecipes.from(recipes(context)))
         .forEach(
             id ->
                 context.assertTrue(
                     id.getPath().startsWith("fletching/"),
-                    "The station list should hold only station recipes but held " + id));
+                    "Every station recipe should be named under fletching/ but found " + id));
     context.complete();
   }
 

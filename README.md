@@ -563,7 +563,7 @@ Scroll position, row hit-testing, and where the scroller sits along its travel a
 | `InfoEntry` | The items an entry covers and the translation keys describing them |
 | `RecipeViewerInfo` | The entry list, built from the arrows the mod registered |
 | `StationRecipes` | Every loaded station recipe, sorted by id so both viewers list them in one order |
-| `FletchingRecipeLayout` | Where the input slots, the arrow, and the result sit, so a recipe is drawn the same shape in either viewer, per [ADR 0028](docs/adr/0028-one-layout-drives-both-recipe-viewers.md) |
+| `FletchingRecipeLayout` | Where the input slots, the arrow, and the result sit, so a recipe is laid out the same way in either viewer, per [ADR 0028](docs/adr/0028-one-layout-drives-both-recipe-viewers.md) |
 | `en_us.json` | Every word a player reads |
 | `MoreArrowsEmiPlugin` and `MoreArrowsJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
 
