@@ -480,7 +480,34 @@ A recipe is an unordered list of ingredients, each with the count it demands, an
 | Shared items | Two ingredients that accept the same item need two separate stacks, exactly as shapeless crafting already behaves |
 | A bad recipe | Reported as a load error naming that one file, leaving the rest of the pack to load |
 
-The recipes the mod ships are their own piece of work, and no arrow is blocked on them: [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
+### The Rates The Mod Ships
+
+Every arrow ships with a station recipe that asks for exactly what its crafting table recipe asks for, eight shafts around one ingredient, and returns twelve arrows where the table returns eight. That is one and a half times, which is the multiplier a stonecutter already gives over a crafting table, and it is the same multiplier for every arrow so the bargain is one number a player learns once rather than eleven they have to look up. [ADR 0027](docs/adr/0027-the-station-pays-one-uniform-multiplier.md) covers why the rate is uniform and why it lands on the yield rather than on the inputs.
+
+| Route | Shafts | Ingredient | Arrows out |
+|---|---|---|---|
+| Crafting table | 8 | 1 | 8 |
+| Fletching station | 8 | 1 | 12 |
+
+The shaft is a plain arrow for every arrow except the two that sit further up the explosive ladder, which are built from the tier below them at both routes alike:
+
+| Arrow | Shaft | Ingredient |
+|---|---|---|
+| Grapple | `minecraft:arrow` | `minecraft:tripwire_hook` |
+| Rope | `minecraft:arrow` | `minecraft:lead` |
+| Glow ink | `minecraft:arrow` | `minecraft:glow_ink_sac` |
+| Redstone | `minecraft:arrow` | `minecraft:redstone` |
+| Wind | `minecraft:arrow` | `minecraft:wind_charge` |
+| Gunpowder | `minecraft:arrow` | `minecraft:gunpowder` |
+| TNT | `more-arrows:gunpowder_arrow` | `minecraft:tnt` |
+| Fire charge | `more-arrows:tnt_arrow` | `minecraft:fire_charge` |
+| Incendiary | `minecraft:arrow` | `minecraft:fire_charge` |
+| Gravity | `minecraft:arrow` | `minecraft:slime_ball` |
+| Ricochet | `minecraft:arrow` | `minecraft:iron_nugget` |
+
+Because the ladder is discounted at every rung, the multiplier compounds: twelve gunpowder arrows off one gunpowder feed a TNT craft that would otherwise have cost a full eight, so the deeper tiers gain more from the station than the shallow ones do without any tier needing a rate of its own.
+
+Station recipes live in `data/more-arrows/recipe/fletching/` and crafting table recipes in `data/more-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
 
 ## Fletching Station
 

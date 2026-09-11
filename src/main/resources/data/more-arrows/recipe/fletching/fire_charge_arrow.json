@@ -1,0 +1,21 @@
+{
+  "type": "more-arrows:fletching",
+  "group": "more_arrows_arrows",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "more-arrows:tnt_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:fire_charge"
+      }
+    }
+  ],
+  "result": {
+    "id": "more-arrows:fire_charge_arrow",
+    "count": 12
+  }
+}

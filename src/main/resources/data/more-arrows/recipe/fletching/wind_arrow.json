@@ -1,0 +1,21 @@
+{
+  "type": "more-arrows:fletching",
+  "group": "more_arrows_arrows",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:wind_charge"
+      }
+    }
+  ],
+  "result": {
+    "id": "more-arrows:wind_arrow",
+    "count": 12
+  }
+}
