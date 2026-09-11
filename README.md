@@ -294,6 +294,38 @@ The ricochet arrow glances off the surfaces it hits instead of embedding in them
 
 Its recipe is the one place this mod's content departs from the issue that specified it. The issue asked for a tripwire hook, which is already the grapple arrow's ingredient, and two identical shaped recipes would have left one of the two arrows uncraftable. An iron nugget is the centre instead, which is also the warm iron the arrow's art is built from. Like every arrow in the mod, it is craftable at a crafting table from eight arrows around that one nugget, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
+## Ender Pearl Arrow
+
+The ender pearl arrow is a vanilla ender pearl with a bow behind it. It flies where a bow can reach rather than where an arm can throw, and wherever it comes to rest the shooter arrives, taking the same knock a thrown pearl gives them.
+
+| Rule | Behaviour |
+|---|---|
+| Who moves | The shooting player, and nobody else. An arrow with no player behind it, from a dispenser, embeds and teleports nobody, the same answer the grapple arrow gives |
+| Where they arrive | The point of impact. Hitting a living entity puts the shooter where that entity stands rather than doing nothing |
+| Arrival damage | `ender.pearlArrivalDamage`, five by default, which is what a thrown vanilla pearl deals. Zero applies none, so an operator can have the travel without the cost |
+| How far it reaches | `ender.pearlMaxRangeBlocks`, sixty four by default, measured from the shooter to the impact point. An arrow landing further away embeds without teleporting, mirroring how `grapple.maxRangeBlocks` behaves |
+| Where it will not go | Outside the world border. The teleport places no block, so the block protection check that the fire patch and gravity systems make does not apply, but the border does and a destination beyond it is refused rather than clamped. [ADR 0029](docs/adr/0029-a-teleport-is-refused-rather-than-relocated.md) covers why |
+| The arrow afterwards | Spent, if it teleported someone. An arrow that teleported nobody, because it was out of range, past the border, or fired by a dispenser, embeds and is recovered like any other arrow |
+
+Both settings are read fresh on every impact, so an operator changing either takes effect on the next shot without a restart. Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one ender pearl, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+
+## Recall Arrow
+
+The recall arrow is the ender pearl arrow read backwards. It strikes a living thing and brings that thing to the shooter, which is why it is crafted from an ender pearl arrow and a fermented spider eye, the ingredient vanilla already uses to invert an effect.
+
+It is also the only thing in the mod that moves a player who did not choose to be moved, from whatever range a bow reaches, so it takes the same answer [ADR 0019](docs/adr/0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) gives for terrain: the conservative default needs no operator configuration to be safe, and the permissive behaviour is opt-in.
+
+| Rule | Behaviour |
+|---|---|
+| What moves | The living entity it strikes. Hitting a block does nothing and the arrow embeds and is recovered, and a boat, a minecart or a dropped item is never moved |
+| Moving a player | `ender.recallAffectsPlayers`, **off by default**. With it off a struck player takes an ordinary arrow hit and stays where they are. With it on they are moved, and because the server owns the decision a modified client cannot recall a player on a server that has it off |
+| Who it moves them to | The shooting player. An arrow with no player behind it, from a dispenser, moves nothing |
+| How far it reaches | `ender.recallMaxRangeBlocks`, thirty two by default, measured between the shooter and the entity struck. Beyond it nothing moves |
+| Where they arrive | The shooter's own position if the arriving entity fits there, and the nearest neighbouring column that both fits it and has ground under it otherwise, so a recall never suffocates what it moved or drops it through the floor |
+| The arrow afterwards | Spent when it moved something, recovered when it struck a block |
+
+Its range is deliberately shorter than the ender pearl arrow's. Moving yourself somewhere you can see is a traversal tool, and moving something else to you is a weapon, so the weapon reaches half as far.
+
 ## Sounds
 
 The mod's sound assets live under `assets/more-arrows/sounds/` and are declared in `assets/more-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
@@ -438,7 +470,7 @@ Every server config option is adjustable at runtime, so a server owner on a head
 | `/morearrows config reset` | Operator (level 2) | Restores every setting to its default |
 | `/morearrows config <family> <option> <value>` | Operator (level 2) | Sets one option |
 
-`<family>` is `explosive`, `grapple`, `utility`, `physics`, or `fletching`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/morearrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
+`<family>` is `explosive`, `grapple`, `utility`, `physics`, `ender`, or `fletching`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/morearrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
 
 Values are checked against the same bounds the config record enforces. A value outside them is rejected with an error naming the accepted range, rather than being silently clamped the way a hand-edited file is on load.
 
@@ -482,14 +514,14 @@ A recipe is an unordered list of ingredients, each with the count it demands, an
 
 ### The Rates The Mod Ships
 
-Every arrow ships with a station recipe that asks for exactly what its crafting table recipe asks for, eight shafts around one ingredient, and returns twelve arrows where the table returns eight. That is one and a half times, which is the multiplier a stonecutter gives over a crafting table on stairs, and it is the same multiplier for every arrow so the bargain is one number a player learns once rather than eleven they have to look up. [ADR 0027](docs/adr/0027-the-station-pays-one-uniform-multiplier.md) covers why the rate is uniform and why it lands on the yield rather than on the inputs.
+Every arrow ships with a station recipe that asks for exactly what its crafting table recipe asks for, eight shafts around one ingredient, and returns twelve arrows where the table returns eight. That is one and a half times, which is the multiplier a stonecutter gives over a crafting table on stairs, and it is the same multiplier for every arrow so the bargain is one number a player learns once rather than thirteen they have to look up. [ADR 0027](docs/adr/0027-the-station-pays-one-uniform-multiplier.md) covers why the rate is uniform and why it lands on the yield rather than on the inputs.
 
 | Route | Shafts | Ingredient | Arrows out |
 |---|---|---|---|
 | Crafting table | 8 | 1 | 8 |
 | Fletching station | 8 | 1 | 12 |
 
-The shaft is a plain arrow for every arrow except the two that sit further up the explosive ladder, which are built from the tier below them at both routes alike:
+The shaft is a plain arrow for every arrow except the three that are built from another of this mod's arrows, two rungs up the explosive ladder and one up the ender ladder, at both routes alike:
 
 | Arrow | Shaft | Ingredient |
 |---|---|---|
@@ -504,8 +536,10 @@ The shaft is a plain arrow for every arrow except the two that sit further up th
 | Incendiary | `minecraft:arrow` | `minecraft:fire_charge` |
 | Gravity | `minecraft:arrow` | `minecraft:slime_ball` |
 | Ricochet | `minecraft:arrow` | `minecraft:iron_nugget` |
+| Ender pearl | `minecraft:arrow` | `minecraft:ender_pearl` |
+| Recall | `more-arrows:ender_pearl_arrow` | `minecraft:fermented_spider_eye` |
 
-Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own.
+Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own. The recall arrow sits on the ender ladder rather than the explosive one and compounds the same way, at two and a quarter times, because it is built from ender pearl arrows that were themselves discounted.
 
 Station recipes live in `data/more-arrows/recipe/fletching/` and crafting table recipes in `data/more-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
 

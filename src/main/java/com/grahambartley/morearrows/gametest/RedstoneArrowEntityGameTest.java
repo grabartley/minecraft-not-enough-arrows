@@ -21,33 +21,33 @@ public final class RedstoneArrowEntityGameTest implements FabricGameTest {
     RedstoneChargeService.forget();
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowChargesTheFaceItStrikes(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.REDSTONE_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK,
+        FiringRangeSupport.LANDING_TICK,
         () -> {
-          context.expectBlock(ModBlocks.REDSTONE_CHARGE, UtilityArrowTestSupport.IMPACT_FACE);
+          context.expectBlock(ModBlocks.REDSTONE_CHARGE, FiringRangeSupport.IMPACT_FACE);
           context.complete();
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aChargedFaceLightsARedstoneLampBesideIt(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     context.setBlockState(LAMP, Blocks.REDSTONE_LAMP);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.REDSTONE_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK + 5,
+        FiringRangeSupport.LANDING_TICK + 5,
         () -> {
           context.checkBlockState(
               LAMP,

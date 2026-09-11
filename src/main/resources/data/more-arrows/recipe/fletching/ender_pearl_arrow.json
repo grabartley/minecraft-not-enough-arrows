@@ -1,0 +1,20 @@
+{
+  "type": "more-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:ender_pearl"
+      }
+    }
+  ],
+  "result": {
+    "id": "more-arrows:ender_pearl_arrow",
+    "count": 12
+  }
+}

@@ -1,6 +1,6 @@
 package com.grahambartley.morearrows.grapple;
 
-import java.util.Objects;
+import com.grahambartley.morearrows.world.Reach;
 import net.minecraft.util.math.Vec3d;
 
 public final class GrapplePull {
@@ -16,7 +16,7 @@ public final class GrapplePull {
 
   public static boolean isWithinRange(
       final Vec3d puller, final Vec3d target, final int maxRangeBlocks) {
-    return maxRangeBlocks > 0 && distanceBetween(puller, target) <= maxRangeBlocks;
+    return Reach.isWithin(puller, target, maxRangeBlocks);
   }
 
   public static double speedAt(
@@ -55,8 +55,6 @@ public final class GrapplePull {
   }
 
   private static double distanceBetween(final Vec3d puller, final Vec3d target) {
-    Objects.requireNonNull(puller, "puller");
-    Objects.requireNonNull(target, "target");
-    return puller.distanceTo(target);
+    return Reach.between(puller, target);
   }
 }

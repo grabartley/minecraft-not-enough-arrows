@@ -180,8 +180,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = PhysicsArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void hittingAnEntityIsANormalHitRatherThanABounce(TestContext context) {
     raiseWalls(context);
-    final CowEntity target =
-        UtilityArrowTestSupport.liveTargetOnPedestalAt(context, TARGET_IN_THE_LANE);
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_IN_THE_LANE);
     final float unharmed = target.getHealth();
     fireEast(context);
 
@@ -200,7 +199,7 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
   }
 
   private static RicochetArrowEntity firedArrow(final TestContext context) {
-    return PhysicsArrowTestSupport.firedArrow(context, RicochetArrowEntity.class);
+    return FiringRangeSupport.firedArrow(context, RicochetArrowEntity.class);
   }
 
   private static void fireEast(final TestContext context) {

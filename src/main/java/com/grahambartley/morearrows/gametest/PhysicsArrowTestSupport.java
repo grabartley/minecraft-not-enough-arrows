@@ -2,7 +2,6 @@ package com.grahambartley.morearrows.gametest;
 
 import com.grahambartley.morearrows.config.PhysicsArrowConfig;
 import java.util.List;
-import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -30,11 +29,5 @@ final class PhysicsArrowTestSupport {
 
   static void stepOutOfTheLane(final TestContext context, final ServerPlayerEntity shooter) {
     MockPlayerSupport.moveTo(context, shooter, OUT_OF_THE_LANE);
-  }
-
-  static <E extends Entity> E firedArrow(final TestContext context, final Class<E> type) {
-    return context.getWorld().getEntitiesByClass(type, context.getTestBox(), arrow -> true).stream()
-        .findFirst()
-        .orElse(null);
   }
 }

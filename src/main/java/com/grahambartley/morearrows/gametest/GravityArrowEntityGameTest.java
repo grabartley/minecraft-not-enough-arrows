@@ -57,7 +57,7 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
         () -> {
           context.expectBlock(Blocks.BEDROCK, PhysicsArrowTestSupport.TARGET_BLOCK);
           context.assertTrue(
-              PhysicsArrowTestSupport.firedArrow(context, GravityArrowEntity.class) != null,
+              FiringRangeSupport.firedArrow(context, GravityArrowEntity.class) != null,
               "An arrow that moved nothing should embed and stay recoverable");
           context.complete();
         });

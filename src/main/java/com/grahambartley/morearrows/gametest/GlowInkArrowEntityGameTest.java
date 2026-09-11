@@ -12,34 +12,34 @@ public final class GlowInkArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "glow-ink-arrow";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowMarksTheEntityItHits(TestContext context) {
-    final CowEntity target = UtilityArrowTestSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.GLOW_INK_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK,
+        FiringRangeSupport.LANDING_TICK,
         () -> {
           context.expectEntityHasEffect(target, StatusEffects.GLOWING, 0);
           context.complete();
         });
   }
 
-  @GameTest(templateName = UtilityArrowTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowThatHitsOnlyABlockMarksNothingAndDoesNotError(TestContext context) {
-    UtilityArrowTestSupport.raiseBackstop(context);
+    FiringRangeSupport.raiseBackstop(context);
     final CowEntity bystander =
-        UtilityArrowTestSupport.liveTargetOnPedestalAt(context, new BlockPos(3, 3, 5));
+        FiringRangeSupport.liveTargetOnPedestalAt(context, new BlockPos(3, 3, 5));
     MockPlayerSupport.fireEastFromBow(
         context,
-        MockPlayerSupport.playerAt(context, UtilityArrowTestSupport.SHOOTER_STAND),
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.GLOW_INK_ARROW.item());
 
     context.runAtTick(
-        UtilityArrowTestSupport.LANDING_TICK,
+        FiringRangeSupport.LANDING_TICK,
         () -> {
           context.assertTrue(
               bystander.getStatusEffect(StatusEffects.GLOWING) == null,

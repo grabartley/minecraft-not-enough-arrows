@@ -41,6 +41,7 @@ class MoreArrowsCommandTest {
         "morearrows config grapple maxrangeblocks 64",
         "morearrows config utility redstonesignalstrength 7",
         "morearrows config physics ricochetbouncecount 2",
+        "morearrows config ender pearlmaxrangeblocks 64",
       })
   void everyFamilyIsReachableByAnOperator(String command) {
     assertTrue(CommandParsing.accepts(dispatcher, operator, command));
@@ -54,6 +55,7 @@ class MoreArrowsCommandTest {
         "morearrows config grapple maxrangeblocks 64",
         "morearrows config utility redstonesignalstrength 7",
         "morearrows config physics ricochetbouncecount 2",
+        "morearrows config ender pearlmaxrangeblocks 64",
       })
   void mutatingCommandsAreGatedBehindOperatorPermission(String command) {
     assertFalse(CommandParsing.accepts(dispatcher, everyone, command));

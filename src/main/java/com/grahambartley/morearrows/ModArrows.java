@@ -4,12 +4,14 @@ import com.grahambartley.morearrows.arrow.ArrowCatalog;
 import com.grahambartley.morearrows.arrow.ArrowDefinition;
 import com.grahambartley.morearrows.arrow.ArrowRegistrar;
 import com.grahambartley.morearrows.arrow.RegisteredArrow;
+import com.grahambartley.morearrows.entity.EnderPearlArrowEntity;
 import com.grahambartley.morearrows.entity.FireChargeArrowEntity;
 import com.grahambartley.morearrows.entity.GlowInkArrowEntity;
 import com.grahambartley.morearrows.entity.GrappleArrowEntity;
 import com.grahambartley.morearrows.entity.GravityArrowEntity;
 import com.grahambartley.morearrows.entity.GunpowderArrowEntity;
 import com.grahambartley.morearrows.entity.IncendiaryArrowEntity;
+import com.grahambartley.morearrows.entity.RecallArrowEntity;
 import com.grahambartley.morearrows.entity.RedstoneArrowEntity;
 import com.grahambartley.morearrows.entity.RicochetArrowEntity;
 import com.grahambartley.morearrows.entity.RopeArrowEntity;
@@ -68,6 +70,15 @@ public final class ModArrows {
   public static final RegisteredArrow<RicochetArrowEntity> RICOCHET_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of("ricochet_arrow", RicochetArrowEntity::new, ModArrows::ricochetArrow));
+
+  public static final RegisteredArrow<EnderPearlArrowEntity> ENDER_PEARL_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "ender_pearl_arrow", EnderPearlArrowEntity::new, ModArrows::enderPearlArrow));
+
+  public static final RegisteredArrow<RecallArrowEntity> RECALL_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("recall_arrow", RecallArrowEntity::new, ModArrows::recallArrow));
 
   private ModArrows() {}
 
@@ -181,6 +192,26 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new GravityArrowEntity(GRAVITY_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static EnderPearlArrowEntity enderPearlArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new EnderPearlArrowEntity(ENDER_PEARL_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static RecallArrowEntity recallArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RecallArrowEntity(RECALL_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 
   private static RicochetArrowEntity ricochetArrow(
