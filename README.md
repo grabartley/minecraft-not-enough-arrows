@@ -496,7 +496,32 @@ The station is the screen handler behind the fletching table interface: nine inp
 
 `fletching.stationEnabled` controls whether the station is reachable at all, so a server that wants the vanilla fletching table to keep doing nothing can have it. Crafting table recipes are untouched either way, per [ADR 0002](docs/adr/0002-crafting-table-always-works.md).
 
-The block interaction that opens the station and the screen that draws it are each their own piece of work, so on this build the handler is registered and reachable only from code. The screen's texture is already in the repo ahead of the screen, and the Textures section tabulates every region it hands the implementation.
+### Opening It
+
+Right-clicking a vanilla `minecraft:fletching_table` opens the station. The block itself is untouched: it is not replaced by a mod block, it gains no block entity, and its blockstate is unchanged, so a world full of fletching tables stays a world full of vanilla fletching tables and uninstalling the mod leaves them all behind. The fletcher villager's job site runs through the point-of-interest system rather than through player interaction, which is what makes attaching an interface to the block safe, and a fletcher keeps its profession either way.
+
+| Interaction | Outcome |
+|---|---|
+| Right-clicking the table | The station opens |
+| Right-clicking while sneaking with something in hand | Nothing opens and the held block places, following the vanilla rule that a sneak with a full hand is a placement rather than a use |
+| Right-clicking while sneaking empty-handed | The station opens, the same answer vanilla gives for its own containers |
+| Right-clicking with `fletching.stationEnabled` off | Nothing at all, exactly as vanilla behaves |
+
+The decision is made on both sides from the same rule: the server owns it and opens the screen, and the client answers identically from its synced copy of the config so it does not briefly predict a block placement the server is about to refuse.
+
+### The Screen
+
+The screen presents the three by three input grid, the result slot, and a single column of recipes in the forty pixels the layout leaves between them, scrolled by wheel or by dragging the scroller. Three rows are visible at a time.
+
+| Part | Behaviour |
+|---|---|
+| Recipe rows | Each row draws the recipe's own result and its count, so the better exchange rate is readable without selecting anything first. A row is idle, hovered, or selected, and the three differ by where the lit face sits rather than by hue |
+| Selecting a row | Sends the selection to the server, which validates it against its own list. The screen decides nothing about what a recipe produces |
+| The result slot | Shows the stack the server produced, count included |
+| An empty list | Draws the empty well and a disabled scroller. There are no recipes to name, and the station's own art carries a disabled scroller state for exactly this |
+| A list that fits | Draws the same disabled scroller, since there is nothing to scroll to |
+
+Scroll position, row hit-testing, and where the scroller sits along its travel are one class of pure arithmetic with no Minecraft types in it, so they are unit tested rather than eyeballed.
 
 ## Recipe Viewers
 

@@ -5,7 +5,7 @@
   "name": "More Arrows",
   "description": "Expands the arrow types available in Minecraft with new craftable arrows that carry unique effects.",
   "authors": [
-    "Vit\u00f3ria Vedana",
+    "Vitória Vedana",
     "Graham Bartley"
   ],
   "contact": {
@@ -51,6 +51,7 @@
       "com.grahambartley.morearrows.gametest.FletchingRecipeGameTest",
       "com.grahambartley.morearrows.gametest.FletchingRecipeInputGameTest",
       "com.grahambartley.morearrows.gametest.FletchingRecipeSerializerGameTest",
+      "com.grahambartley.morearrows.gametest.FletchingStationInteractionGameTest",
       "com.grahambartley.morearrows.gametest.FletchingStationQuickMoveGameTest",
       "com.grahambartley.morearrows.gametest.FletchingStationScreenHandlerGameTest",
       "com.grahambartley.morearrows.gametest.FletchingWithdrawalGameTest",
