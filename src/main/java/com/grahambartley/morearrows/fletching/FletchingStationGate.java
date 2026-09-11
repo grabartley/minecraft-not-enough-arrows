@@ -6,12 +6,16 @@ public final class FletchingStationGate {
   public static boolean opensStation(
       final boolean stationEnabled,
       final boolean fletchingTable,
+      final boolean spectator,
       final boolean cancellingInteraction,
       final boolean handsEmpty) {
-    return stationEnabled && fletchingTable && !sneakPlacing(cancellingInteraction, handsEmpty);
+    return stationEnabled
+        && fletchingTable
+        && !spectator
+        && !sneakPlacing(cancellingInteraction, handsEmpty);
   }
 
-  public static boolean sneakPlacing(
+  private static boolean sneakPlacing(
       final boolean cancellingInteraction, final boolean handsEmpty) {
     return cancellingInteraction && !handsEmpty;
   }

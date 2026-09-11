@@ -2,6 +2,7 @@ package com.grahambartley.morearrows.gametest;
 
 import com.grahambartley.morearrows.ModArrows;
 import com.grahambartley.morearrows.config.MoreArrowsConfig;
+import com.grahambartley.morearrows.fletching.FletchingStationInteraction;
 import com.grahambartley.morearrows.fletching.FletchingStationScreenHandler;
 import com.grahambartley.morearrows.server.ServerConfigService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.input.CraftingRecipeInput;
+import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -33,11 +35,13 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   private static final String BATCH = "fletching-station-interaction";
   private static final String TEMPLATE = "more-arrows:fire_pad";
   private static final int TICK_LIMIT = 40;
+  private static final int SETTLE_TICKS = 20;
 
   private static final BlockPos TABLE = new BlockPos(3, 2, 3);
   private static final BlockPos ABOVE_TABLE = new BlockPos(3, 3, 3);
   private static final BlockPos BESIDE_TABLE = new BlockPos(4, 2, 3);
 
+  private static final String ENABLE_STATION = "morearrows config fletching stationenabled true";
   private static final String DISABLE_STATION = "morearrows config fletching stationenabled false";
   private static final String RESET_CONFIG = "morearrows config reset";
 
@@ -56,29 +60,57 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
-  public void usingAFletchingTableOpensTheStation(TestContext context) {
+  public void aFletchingTableOffersTheStation(TestContext context) {
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
-    use(context, player);
+    context.assertTrue(
+        offersStation(context, player, TABLE),
+        "An enabled station should be offered when a player uses a fletching table");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  public void theOfferedStationOpensOntoTheTableItWasOfferedFrom(TestContext context) {
+    final ServerPlayerEntity player = playerAtAFletchingTable(context);
+
+    FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
 
     context.assertTrue(
         player.currentScreenHandler instanceof FletchingStationScreenHandler,
-        "Using a fletching table should leave the station open for the player");
+        "Opening the station should leave the station's own screen handler in front of the player");
+    context.assertTrue(
+        player.currentScreenHandler.canUse(player),
+        "The opened station should be bound to the fletching table it was opened from");
+
+    context.removeBlock(TABLE);
+    context.assertFalse(
+        player.currentScreenHandler.canUse(player),
+        "A station whose fletching table is gone should no longer be usable");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  public void aDisabledStationIsNeverOffered(TestContext context) {
+    final ServerPlayerEntity player = playerAtAFletchingTable(context);
+    context.assertTrue(
+        run(context, DISABLE_STATION), "An operator should be able to disable the station");
+
+    context.assertFalse(
+        offersStation(context, player, TABLE),
+        "A disabled station should not be offered when the table is used");
     context.complete();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aDisabledStationLeavesTheTableDoingNothingAtAll(TestContext context) {
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
-    context.assertTrue(
-        run(context, DISABLE_STATION), "An operator should be able to disable the station");
+    run(context, DISABLE_STATION);
 
-    use(context, player);
+    use(context, player, TABLE);
 
     context.assertFalse(
         player.currentScreenHandler instanceof FletchingStationScreenHandler,
         "A disabled station should not open when the table is used");
-    run(context, RESET_CONFIG);
     context.complete();
   }
 
@@ -86,17 +118,15 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   public void reEnablingTheStationTakesEffectOnTheNextUseWithNoRestart(TestContext context) {
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     run(context, DISABLE_STATION);
-    use(context, player);
+    context.assertFalse(
+        offersStation(context, player, TABLE), "The station should start this test disabled");
 
     context.assertTrue(
-        run(context, "morearrows config fletching stationenabled true"),
-        "An operator should be able to re-enable the station");
-    use(context, player);
+        run(context, ENABLE_STATION), "An operator should be able to re-enable the station");
 
     context.assertTrue(
-        player.currentScreenHandler instanceof FletchingStationScreenHandler,
-        "Re-enabling the station should open it on the very next use");
-    run(context, RESET_CONFIG);
+        offersStation(context, player, TABLE),
+        "Re-enabling the station should offer it on the very next use, with no restart");
     context.complete();
   }
 
@@ -107,7 +137,11 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.STONE));
     player.setSneaking(true);
 
-    use(context, player);
+    context.assertFalse(
+        offersStation(context, player, TABLE),
+        "Sneak placing against the table should not offer the station");
+
+    use(context, player, TABLE);
 
     context.assertFalse(
         player.currentScreenHandler instanceof FletchingStationScreenHandler,
@@ -119,15 +153,54 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
-  public void sneakingWithEmptyHandsStillOpensTheStation(TestContext context) {
+  public void sneakingWithEmptyHandsStillOffersTheStation(TestContext context) {
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     player.setSneaking(true);
 
-    use(context, player);
+    context.assertTrue(
+        offersStation(context, player, TABLE),
+        "Sneaking with nothing to place should still offer the station");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  public void noOtherBlockIsEverMistakenForTheStation(TestContext context) {
+    final ServerPlayerEntity player = playerAtAFletchingTable(context);
+    context.setBlockState(BESIDE_TABLE, Blocks.CHEST);
+
+    context.assertFalse(
+        offersStation(context, player, BESIDE_TABLE),
+        "A block that is not a fletching table should never offer the station");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  public void everyOtherBlockKeepsItsOwnInteractionUntouched(TestContext context) {
+    final ServerPlayerEntity player = playerAtAFletchingTable(context);
+    context.setBlockState(BESIDE_TABLE, Blocks.CHEST);
+
+    use(context, player, BESIDE_TABLE);
 
     context.assertTrue(
+        player.currentScreenHandler instanceof GenericContainerScreenHandler,
+        "A chest beside the station must still open its own vanilla screen");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  public void aClientThatCouldNotDrawTheStationIsNeverSentIt(TestContext context) {
+    final ServerPlayerEntity player = playerAtAFletchingTable(context);
+
+    context.assertFalse(
+        FletchingStationInteraction.canDrawTheStation(player),
+        "A connection that never declared it can receive this mod's payloads has no station to"
+            + " draw, so it must never be sent one");
+
+    use(context, player, TABLE);
+
+    context.assertFalse(
         player.currentScreenHandler instanceof FletchingStationScreenHandler,
-        "Sneaking with nothing to place should still open the station");
+        "A client that cannot draw the station must not have one opened on it");
     context.complete();
   }
 
@@ -135,7 +208,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   public void theStationLeavesAPlainVanillaFletchingTableBehind(TestContext context) {
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
-    use(context, player);
+    FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
 
     context.assertTrue(
         context.getBlockState(TABLE).isOf(Blocks.FLETCHING_TABLE),
@@ -150,7 +223,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   public void aUsedFletchingTableIsStillAFletcherJobSite(TestContext context) {
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
-    use(context, player);
+    FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
 
     context.assertTrue(
         context
@@ -169,29 +242,53 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     fletcher.setVillagerData(
         fletcher.getVillagerData().withProfession(VillagerProfession.FLETCHER));
 
-    use(context, player);
+    FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
 
-    context.assertTrue(
-        fletcher.getVillagerData().getProfession() == VillagerProfession.FLETCHER,
-        "Opening the station must not disturb an existing fletcher's profession");
-    context.complete();
+    context.runAtTick(
+        SETTLE_TICKS,
+        () -> {
+          context.assertTrue(
+              fletcher.getVillagerData().getProfession() == VillagerProfession.FLETCHER,
+              "Opening the station must not disturb an existing fletcher's profession");
+          context.assertTrue(
+              context
+                  .getWorld()
+                  .getPointOfInterestStorage()
+                  .hasTypeAt(PointOfInterestTypes.FLETCHER, context.getAbsolutePos(TABLE)),
+              "The fletcher's job site should survive the station being opened beside it");
+          context.complete();
+        });
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
-  public void aDisabledStationLeavesTheCraftingTableRecipesWorking(TestContext context) {
-    run(context, DISABLE_STATION);
+  public void theStationSettingNeverChangesWhatACraftingTableProduces(TestContext context) {
+    run(context, RESET_CONFIG);
+    final ItemStack withTheStationOn = craftATntArrow(context);
 
-    final ItemStack crafted = craftATntArrow(context);
+    run(context, DISABLE_STATION);
+    final ItemStack withTheStationOff = craftATntArrow(context);
 
     context.assertTrue(
-        crafted.isOf(ModArrows.TNT_ARROW.item()),
+        withTheStationOff.isOf(ModArrows.TNT_ARROW.item()),
         "A crafting table recipe must still produce its arrow while the station is disabled");
     context.assertEquals(
         TNT_ARROWS_PER_CRAFT,
-        crafted.getCount(),
+        withTheStationOff.getCount(),
         "Crafting table yield while the station is disabled");
-    run(context, RESET_CONFIG);
+    context.assertEquals(
+        withTheStationOn.getCount(),
+        withTheStationOff.getCount(),
+        "Crafting table yield should not move when the station setting does");
     context.complete();
+  }
+
+  private static boolean offersStation(
+      final TestContext context, final ServerPlayerEntity player, final BlockPos target) {
+    return FletchingStationInteraction.opensStation(
+        ServerConfigService.get().fletching().stationEnabled(),
+        player,
+        context.getWorld(),
+        context.getAbsolutePos(target));
   }
 
   private static ItemStack craftATntArrow(final TestContext context) {
@@ -221,12 +318,18 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   }
 
   private static ServerPlayerEntity playerAtAFletchingTable(final TestContext context) {
+    run(context, RESET_CONFIG);
     context.setBlockState(TABLE, Blocks.FLETCHING_TABLE);
-    return context.createMockCreativeServerPlayerInWorld();
+
+    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final Vec3d beside = Vec3d.ofBottomCenter(context.getAbsolutePos(BESIDE_TABLE));
+    player.refreshPositionAndAngles(beside.getX(), beside.getY(), beside.getZ(), 0f, 0f);
+    return player;
   }
 
-  private static void use(final TestContext context, final ServerPlayerEntity player) {
-    final BlockPos pos = context.getAbsolutePos(TABLE);
+  private static void use(
+      final TestContext context, final ServerPlayerEntity player, final BlockPos target) {
+    final BlockPos pos = context.getAbsolutePos(target);
     player.interactionManager.interactBlock(
         player,
         context.getWorld(),

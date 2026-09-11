@@ -24,9 +24,11 @@ public class FletchingStationScreen extends HandledScreen<FletchingStationScreen
   @Override
   protected void init() {
     super.init();
-    recipeList =
-        new FletchingRecipeListWidget(
-            handler, textRenderer, client.world.getRegistryManager(), this::select);
+    if (recipeList == null) {
+      recipeList =
+          new FletchingRecipeListWidget(
+              handler, textRenderer, client.world.getRegistryManager(), this::select);
+    }
   }
 
   @Override

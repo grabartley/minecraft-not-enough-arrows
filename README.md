@@ -507,7 +507,9 @@ Right-clicking a vanilla `minecraft:fletching_table` opens the station. The bloc
 | Right-clicking while sneaking empty-handed | The station opens, the same answer vanilla gives for its own containers |
 | Right-clicking with `fletching.stationEnabled` off | Nothing at all, exactly as vanilla behaves |
 
-The decision is made on both sides from the same rule: the server owns it and opens the screen, and the client answers identically from its synced copy of the config so it does not briefly predict a block placement the server is about to refuse.
+The decision is made on both sides from the same rule: the server owns it and opens the screen, and the client answers identically from its synced copy of the config so it does not briefly predict a block placement the server is about to refuse. Until that config has synced, the client defers and lets the server answer alone.
+
+A spectator is passed over, because vanilla passes them over: a fletching table offers vanilla no screen handler factory, so a spectator right-clicking one has always got nothing. A connection that never declared it can receive this mod's payloads is passed over too, which is how a player on a vanilla client keeps their connection instead of being disconnected by a screen they have no way to draw. [ADR 0026](docs/adr/0026-the-station-opens-only-for-a-client-that-can-draw-it.md) covers what that costs them.
 
 ### The Screen
 
@@ -516,7 +518,7 @@ The screen presents the three by three input grid, the result slot, and a single
 | Part | Behaviour |
 |---|---|
 | Recipe rows | Each row draws the recipe's own result and its count, so the better exchange rate is readable without selecting anything first. A row is idle, hovered, or selected, and the three differ by where the lit face sits rather than by hue |
-| Selecting a row | Sends the selection to the server, which validates it against its own list. The screen decides nothing about what a recipe produces |
+| Selecting a row | Sends the selection to the server, which validates it against its own list. The screen predicts the result so the click feels immediate, and the server's own value overwrites that prediction on the next sync |
 | The result slot | Shows the stack the server produced, count included |
 | An empty list | Draws the empty well and a disabled scroller. There are no recipes to name, and the station's own art carries a disabled scroller state for exactly this |
 | A list that fits | Draws the same disabled scroller, since there is nothing to scroll to |

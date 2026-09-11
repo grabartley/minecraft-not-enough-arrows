@@ -18,6 +18,7 @@ public final class FletchingRecipeListWidget {
   private final RegistryWrapper.WrapperLookup registries;
   private final IntConsumer onSelect;
 
+  private List<RecipeEntry<FletchingRecipe>> lastSeen = List.of();
   private float amount;
   private boolean dragging;
 
@@ -38,7 +39,7 @@ public final class FletchingRecipeListWidget {
       final int top,
       final int mouseX,
       final int mouseY) {
-    final List<RecipeEntry<FletchingRecipe>> recipes = handler.getAvailableRecipes();
+    final List<RecipeEntry<FletchingRecipe>> recipes = recipesOnOffer();
     final int count = recipes.size();
     final float scroll = amount(count);
 
@@ -65,7 +66,7 @@ public final class FletchingRecipeListWidget {
       final int top,
       final int mouseX,
       final int mouseY) {
-    final List<RecipeEntry<FletchingRecipe>> recipes = handler.getAvailableRecipes();
+    final List<RecipeEntry<FletchingRecipe>> recipes = recipesOnOffer();
     final int count = recipes.size();
     final int hovered =
         rowAt(
@@ -85,7 +86,7 @@ public final class FletchingRecipeListWidget {
       final double mouseX, final double mouseY, final int left, final int top) {
     dragging = false;
 
-    final int count = handler.getAvailableRecipes().size();
+    final int count = recipesOnOffer().size();
     final float scroll = amount(count);
     final int clicked =
         rowAt(
@@ -113,7 +114,7 @@ public final class FletchingRecipeListWidget {
   }
 
   public boolean mouseDragged(final double mouseY, final int top) {
-    if (!dragging || !FletchingListGeometry.scrollable(handler.getAvailableRecipes().size())) {
+    if (!dragging || !FletchingListGeometry.scrollable(recipesOnOffer().size())) {
       return false;
     }
     amount = FletchingListGeometry.amountFromDrag(mouseY, top + FletchingListGeometry.TRACK_Y);
@@ -125,7 +126,7 @@ public final class FletchingRecipeListWidget {
   }
 
   public boolean mouseScrolled(final double verticalAmount) {
-    final int count = handler.getAvailableRecipes().size();
+    final int count = recipesOnOffer().size();
     if (!FletchingListGeometry.scrollable(count)) {
       return false;
     }
@@ -189,5 +190,15 @@ public final class FletchingRecipeListWidget {
 
   private float amount(final int recipeCount) {
     return FletchingListGeometry.scrollable(recipeCount) ? amount : 0f;
+  }
+
+  private List<RecipeEntry<FletchingRecipe>> recipesOnOffer() {
+    final List<RecipeEntry<FletchingRecipe>> recipes = handler.getAvailableRecipes();
+    if (recipes != lastSeen) {
+      lastSeen = recipes;
+      amount = 0f;
+      dragging = false;
+    }
+    return recipes;
   }
 }

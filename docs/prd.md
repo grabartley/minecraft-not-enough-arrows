@@ -616,7 +616,7 @@ Access control is stated in one place because it is the difference between a too
 | Hang a rope | No | Only where they may build | Same | n/a | Only inside the world border |
 | Teleport themselves | Yes | Yes | Yes | Yes | No |
 | Move another player with a recall arrow | Only if the operator enabled it | Same | Same | n/a | No |
-| Open the fletching station | Yes, if the operator enabled it | Yes | Yes | Yes | n/a |
+| Open the fletching station | Yes, if the operator enabled it | Yes | Yes | No, the station's screen is this mod's own and a client without the mod has none to draw ([ADR 0026](adr/0026-the-station-opens-only-for-a-client-that-can-draw-it.md)) | n/a |
 
 | Requirement | Statement |
 |---|---|

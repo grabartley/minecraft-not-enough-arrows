@@ -21,6 +21,10 @@ public final class FletchingStationClientInteraction {
       return ActionResult.PASS;
     }
 
+    if (!ClientConfigHolder.isSynced()) {
+      return ActionResult.PASS;
+    }
+
     final boolean stationEnabled = ClientConfigHolder.get().fletching().stationEnabled();
     return FletchingStationInteraction.opensStation(
             stationEnabled, player, world, hit.getBlockPos())
