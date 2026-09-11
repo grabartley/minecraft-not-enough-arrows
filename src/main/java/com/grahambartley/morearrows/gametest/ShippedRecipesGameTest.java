@@ -1,17 +1,16 @@
 package com.grahambartley.morearrows.gametest;
 
-import com.grahambartley.morearrows.ModArrows;
 import com.grahambartley.morearrows.ModRecipes;
 import com.grahambartley.morearrows.arrow.RegisteredArrow;
 import com.grahambartley.morearrows.recipe.FletchingIngredient;
 import com.grahambartley.morearrows.recipe.FletchingRecipe;
 import com.grahambartley.morearrows.recipe.FletchingRecipeInput;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Ingredient;
@@ -28,28 +27,35 @@ import net.minecraft.util.Identifier;
 
 public final class ShippedRecipesGameTest implements FabricGameTest {
 
-  private static final String BATCH_ID = "shipped-recipes";
-  private static final int TICK_LIMIT = 10;
+  private static final String BATCH = "shipped-recipes";
   private static final int CRAFTING_TABLE_YIELD = 8;
   private static final int STATION_YIELD = 12;
 
   @CustomTestProvider
   public Collection<TestFunction> everyArrowKeepsItsCraftingTableRecipe() {
-    return perArrow(
-        "craftingtable", ShippedRecipesGameTest::craftingTableRecipeStillYieldsItsEightArrows);
+    return ArrowTestSupport.perRegisteredArrow(
+        BATCH,
+        "morearrows.craftingtablerecipeyieldseight",
+        ShippedRecipesGameTest::assertCraftingTableRecipeYieldsEight);
   }
 
   @CustomTestProvider
   public Collection<TestFunction> everyArrowHasAStationRecipe() {
-    return perArrow("station", ShippedRecipesGameTest::stationRecipeYieldsItsTwelveArrows);
+    return ArrowTestSupport.perRegisteredArrow(
+        BATCH,
+        "morearrows.stationrecipeyieldstwelve",
+        ShippedRecipesGameTest::assertStationRecipeYieldsTwelve);
   }
 
   @CustomTestProvider
-  public Collection<TestFunction> everyStationRecipeBeatsTheCraftingTable() {
-    return perArrow("rate", ShippedRecipesGameTest::stationBeatsTheCraftingTablePerIngredient);
+  public Collection<TestFunction> everyStationRecipeCostsTheSameAndYieldsMore() {
+    return ArrowTestSupport.perRegisteredArrow(
+        BATCH,
+        "morearrows.stationcoststhesameandyieldsmore",
+        ShippedRecipesGameTest::assertStationCostsTheSameAndYieldsMore);
   }
 
-  private static void craftingTableRecipeStillYieldsItsEightArrows(
+  private static void assertCraftingTableRecipeYieldsEight(
       final TestContext context, final RegisteredArrow<?> arrow) {
     final RecipeManager recipes = recipeManager(context);
     final Identifier id = arrow.id();
@@ -77,7 +83,7 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  private static void stationRecipeYieldsItsTwelveArrows(
+  private static void assertStationRecipeYieldsTwelve(
       final TestContext context, final RegisteredArrow<?> arrow) {
     final RecipeManager recipes = recipeManager(context);
     final Identifier id = stationRecipeId(arrow);
@@ -104,51 +110,58 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     context.complete();
   }
 
-  private static void stationBeatsTheCraftingTablePerIngredient(
+  private static void assertStationCostsTheSameAndYieldsMore(
       final TestContext context, final RegisteredArrow<?> arrow) {
     final RecipeManager recipes = recipeManager(context);
     final ShapedRecipe table = craftingRecipe(context, recipes, arrow.id());
     final FletchingRecipe station = stationRecipe(context, recipes, stationRecipeId(arrow));
-    final ItemStack centre = oneOf(centreIngredientOf(table));
-
-    final Optional<FletchingIngredient> stationCentre =
-        station.inputs().stream().filter(input -> input.ingredient().test(centre)).findFirst();
-
-    context.assertTrue(
-        stationCentre.isPresent(),
-        "The station recipe for " + arrow.id() + " should still ask for " + centre.getItem());
-
-    final int tablePerIngredient = table.getResult(registries(context)).getCount();
-    final int stationPerIngredient = station.result().getCount() / stationCentre.get().count();
+    final Map<Item, Integer> tableCost = costOf(table);
+    final Map<Item, Integer> stationCost = costOf(station);
+    final int tableYield = table.getResult(registries(context)).getCount();
+    final int stationYield = station.result().getCount();
 
     context.assertTrue(
-        stationPerIngredient > tablePerIngredient,
-        "The station should give more "
+        tableCost.equals(stationCost),
+        "The station should ask for exactly what the crafting table asks for to make "
             + arrow.id()
-            + " per "
-            + centre.getItem()
-            + " than the crafting table, but gave "
-            + stationPerIngredient
+            + ", but asks for "
+            + describe(stationCost)
             + " against "
-            + tablePerIngredient);
+            + describe(tableCost));
+    context.assertTrue(
+        stationYield > tableYield,
+        "The station should yield more "
+            + arrow.id()
+            + " than the crafting table for the same cost, but yielded "
+            + stationYield
+            + " against "
+            + tableYield);
     context.complete();
   }
 
-  private static Collection<TestFunction> perArrow(
-      final String behaviour, final BiConsumer<TestContext, RegisteredArrow<?>> body) {
-    final List<TestFunction> functions = new ArrayList<>();
-    for (final RegisteredArrow<?> arrow : ModArrows.registered()) {
-      functions.add(
-          new TestFunction(
-              BATCH_ID,
-              "shippedrecipes." + behaviour + "." + arrow.id().getPath(),
-              FabricGameTest.EMPTY_STRUCTURE,
-              TICK_LIMIT,
-              0L,
-              true,
-              context -> body.accept(context, arrow)));
+  private static Map<Item, Integer> costOf(final ShapedRecipe recipe) {
+    final Map<Item, Integer> cost = new LinkedHashMap<>();
+    for (final Ingredient ingredient : recipe.getIngredients()) {
+      if (!ingredient.isEmpty()) {
+        cost.merge(oneOf(ingredient).getItem(), 1, Integer::sum);
+      }
     }
-    return functions;
+    return cost;
+  }
+
+  private static Map<Item, Integer> costOf(final FletchingRecipe recipe) {
+    final Map<Item, Integer> cost = new LinkedHashMap<>();
+    for (final FletchingIngredient input : recipe.inputs()) {
+      cost.merge(oneOf(input.ingredient()).getItem(), input.count(), Integer::sum);
+    }
+    return cost;
+  }
+
+  private static String describe(final Map<Item, Integer> cost) {
+    return cost.entrySet().stream()
+        .map(entry -> entry.getValue() + " x " + entry.getKey())
+        .reduce((left, right) -> left + ", " + right)
+        .orElse("nothing");
   }
 
   private static ShapedRecipe craftingRecipe(
@@ -177,12 +190,9 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     return CraftingRecipeInput.create(
         recipe.getWidth(),
         recipe.getHeight(),
-        recipe.getIngredients().stream().map(ShippedRecipesGameTest::oneOf).toList());
-  }
-
-  private static Ingredient centreIngredientOf(final ShapedRecipe recipe) {
-    final int centre = recipe.getHeight() / 2 * recipe.getWidth() + recipe.getWidth() / 2;
-    return recipe.getIngredients().get(centre);
+        recipe.getIngredients().stream()
+            .map(ingredient -> ingredient.isEmpty() ? ItemStack.EMPTY : oneOf(ingredient))
+            .toList());
   }
 
   private static FletchingRecipeInput stationInputsOf(final FletchingRecipe recipe) {
@@ -193,8 +203,7 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
   }
 
   private static ItemStack oneOf(final Ingredient ingredient) {
-    final ItemStack[] matching = ingredient.getMatchingStacks();
-    return matching.length == 0 ? ItemStack.EMPTY : matching[0].copyWithCount(1);
+    return ingredient.getMatchingStacks()[0].copyWithCount(1);
   }
 
   private static Identifier stationRecipeId(final RegisteredArrow<?> arrow) {

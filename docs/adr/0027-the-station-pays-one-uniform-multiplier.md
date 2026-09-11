@@ -15,7 +15,7 @@ There is also a choice about whether the rate is one number or eleven. Per-arrow
 
 Every station recipe takes exactly what its crafting table recipe takes, eight shafts around one ingredient, and returns twelve arrows where the crafting table returns eight.
 
-The rate is the same for every arrow, and it is one and a half times, which is the multiplier a stonecutter already gives a player over a crafting table.
+The rate is the same for every arrow, and it is one and a half times, which is the multiplier a stonecutter gives a player over a crafting table on stairs.
 
 The discount lands on the yield rather than on the shafts, so the scarce half of the pair is what gets stretched.
 
@@ -23,7 +23,7 @@ The discount lands on the yield rather than on the shafts, so the scarce half of
 
 The bargain is one sentence: the station gives you twelve where the table gives you eight. A player learns it once and it holds for every arrow in the mod, including arrows that do not exist yet. Adding an arrow means adding its two recipes at the settled rate, not reopening a balance table.
 
-Holding the inputs identical to the crafting table recipe is what makes the comparison readable in a recipe viewer. The two recipes sit side by side asking for the same items, and the only thing that differs is the number that comes out, which is the whole point of the station being discoverable at all.
+Holding the inputs identical to the crafting table recipe is what will make the comparison readable once a recipe viewer can show the station at all. Neither viewer plugin registers a category for `more-arrows:fletching` yet, which is STATION-15 in the PRD and still open. When it lands, the two recipes will sit side by side asking for the same items with only the number that comes out differing, and that readability is the reason the inputs are held identical rather than separately tuned.
 
 The explosive ladder compounds the discount without needing a rate of its own. A TNT arrow is built from gunpowder arrows and a fire charge arrow from TNT arrows, so a player who takes the station route at every rung pays the discounted price at every rung. The deeper tiers therefore gain more from the station than the shallow ones, which is the right shape for a reward and falls out of the uniform rate rather than being tuned in.
 
