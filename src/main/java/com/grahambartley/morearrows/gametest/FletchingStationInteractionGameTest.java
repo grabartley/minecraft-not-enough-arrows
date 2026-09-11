@@ -40,6 +40,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   private static final BlockPos TABLE = new BlockPos(3, 2, 3);
   private static final BlockPos ABOVE_TABLE = new BlockPos(3, 3, 3);
   private static final BlockPos BESIDE_TABLE = new BlockPos(4, 2, 3);
+  private static final BlockPos ACROSS_THE_ROOM = new BlockPos(1, 2, 1);
 
   private static final String ENABLE_STATION = "morearrows config fletching stationenabled true";
   private static final String DISABLE_STATION = "morearrows config fletching stationenabled false";
@@ -61,6 +62,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aFletchingTableOffersTheStation(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
     context.assertTrue(
@@ -71,6 +73,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void theOfferedStationOpensOntoTheTableItWasOfferedFrom(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
     FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
@@ -91,6 +94,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aDisabledStationIsNeverOffered(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     context.assertTrue(
         run(context, DISABLE_STATION), "An operator should be able to disable the station");
@@ -103,6 +107,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aDisabledStationLeavesTheTableDoingNothingAtAll(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     run(context, DISABLE_STATION);
 
@@ -116,6 +121,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void reEnablingTheStationTakesEffectOnTheNextUseWithNoRestart(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     run(context, DISABLE_STATION);
     context.assertFalse(
@@ -133,6 +139,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void sneakingWithABlockInHandPlacesAgainstTheTableRatherThanOpeningIt(
       TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.STONE));
     player.setSneaking(true);
@@ -154,6 +161,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void sneakingWithEmptyHandsStillOffersTheStation(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     player.setSneaking(true);
 
@@ -165,21 +173,23 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void noOtherBlockIsEverMistakenForTheStation(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
-    context.setBlockState(BESIDE_TABLE, Blocks.CHEST);
+    context.setBlockState(ACROSS_THE_ROOM, Blocks.CHEST);
 
     context.assertFalse(
-        offersStation(context, player, BESIDE_TABLE),
+        offersStation(context, player, ACROSS_THE_ROOM),
         "A block that is not a fletching table should never offer the station");
     context.complete();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void everyOtherBlockKeepsItsOwnInteractionUntouched(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
-    context.setBlockState(BESIDE_TABLE, Blocks.CHEST);
+    context.setBlockState(ACROSS_THE_ROOM, Blocks.CHEST);
 
-    use(context, player, BESIDE_TABLE);
+    use(context, player, ACROSS_THE_ROOM);
 
     context.assertTrue(
         player.currentScreenHandler instanceof GenericContainerScreenHandler,
@@ -189,6 +199,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aClientThatCouldNotDrawTheStationIsNeverSentIt(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
     context.assertFalse(
@@ -206,6 +217,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void theStationLeavesAPlainVanillaFletchingTableBehind(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
     FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
@@ -221,6 +233,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aUsedFletchingTableIsStillAFletcherJobSite(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
 
     FletchingStationInteraction.openFor(player, context.getWorld(), context.getAbsolutePos(TABLE));
@@ -236,6 +249,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void anExistingFletcherKeepsItsProfessionWhenTheStationOpens(TestContext context) {
+    run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
     final VillagerEntity fletcher = context.spawnEntity(EntityType.VILLAGER, BESIDE_TABLE);
     fletcher.setAiDisabled(true);
@@ -263,6 +277,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void theStationSettingNeverChangesWhatACraftingTableProduces(TestContext context) {
     run(context, RESET_CONFIG);
+
     final ItemStack withTheStationOn = craftATntArrow(context);
 
     run(context, DISABLE_STATION);
@@ -318,13 +333,8 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   }
 
   private static ServerPlayerEntity playerAtAFletchingTable(final TestContext context) {
-    run(context, RESET_CONFIG);
     context.setBlockState(TABLE, Blocks.FLETCHING_TABLE);
-
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
-    final Vec3d beside = Vec3d.ofBottomCenter(context.getAbsolutePos(BESIDE_TABLE));
-    player.refreshPositionAndAngles(beside.getX(), beside.getY(), beside.getZ(), 0f, 0f);
-    return player;
+    return MockPlayerSupport.playerAt(context, BESIDE_TABLE);
   }
 
   private static void use(

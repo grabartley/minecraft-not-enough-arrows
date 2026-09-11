@@ -17,10 +17,7 @@ public final class FletchingRecipeListWidget {
   private final TextRenderer textRenderer;
   private final RegistryWrapper.WrapperLookup registries;
   private final IntConsumer onSelect;
-
-  private List<RecipeEntry<FletchingRecipe>> lastSeen = List.of();
-  private float amount;
-  private boolean dragging;
+  private final FletchingListScroll scroll = new FletchingListScroll();
 
   public FletchingRecipeListWidget(
       final FletchingStationScreenHandler handler,
@@ -39,14 +36,14 @@ public final class FletchingRecipeListWidget {
       final int top,
       final int mouseX,
       final int mouseY) {
-    final List<RecipeEntry<FletchingRecipe>> recipes = recipesOnOffer();
+    final List<RecipeEntry<FletchingRecipe>> recipes = recipesAfterSyncingScroll();
     final int count = recipes.size();
-    final float scroll = amount(count);
+    final float amount = scroll.amount(count);
 
     final int listLeft = left + FletchingListGeometry.LIST_X;
     final int listTop = top + FletchingListGeometry.LIST_Y;
-    final int first = FletchingListGeometry.topRow(count, scroll);
-    final int hovered = rowAt(count, scroll, listLeft, listTop, mouseX, mouseY);
+    final int first = FletchingListGeometry.topRow(count, amount);
+    final int hovered = rowAt(count, amount, listLeft, listTop, mouseX, mouseY);
     final int selected = handler.getSelectedRecipe();
 
     for (int row = 0; row < FletchingListGeometry.visibleRows(count); row++) {
@@ -57,7 +54,7 @@ public final class FletchingRecipeListWidget {
       drawRow(context, recipes.get(index), index, selected, hovered, listLeft, listTop, row);
     }
 
-    drawScroller(context, left, top, count, scroll);
+    drawScroller(context, left, top, count, amount);
   }
 
   public void renderTooltip(
@@ -66,12 +63,11 @@ public final class FletchingRecipeListWidget {
       final int top,
       final int mouseX,
       final int mouseY) {
-    final List<RecipeEntry<FletchingRecipe>> recipes = recipesOnOffer();
-    final int count = recipes.size();
+    final List<RecipeEntry<FletchingRecipe>> recipes = recipesAfterSyncingScroll();
     final int hovered =
         rowAt(
-            count,
-            amount(count),
+            recipes.size(),
+            scroll.amount(recipes.size()),
             left + FletchingListGeometry.LIST_X,
             top + FletchingListGeometry.LIST_Y,
             mouseX,
@@ -84,19 +80,17 @@ public final class FletchingRecipeListWidget {
 
   public boolean mouseClicked(
       final double mouseX, final double mouseY, final int left, final int top) {
-    dragging = false;
-
-    final int count = recipesOnOffer().size();
-    final float scroll = amount(count);
+    final int count = recipesAfterSyncingScroll().size();
     final int clicked =
         rowAt(
             count,
-            scroll,
+            scroll.amount(count),
             left + FletchingListGeometry.LIST_X,
             top + FletchingListGeometry.LIST_Y,
             mouseX,
             mouseY);
     if (clicked != FletchingListGeometry.NO_ROW) {
+      scroll.endDrag();
       onSelect.accept(clicked);
       return true;
     }
@@ -105,33 +99,24 @@ public final class FletchingRecipeListWidget {
         mouseX - (left + FletchingListGeometry.TRACK_X),
         mouseY - (top + FletchingListGeometry.TRACK_Y),
         count)) {
-      dragging = true;
-      amount = FletchingListGeometry.amountFromDrag(mouseY, top + FletchingListGeometry.TRACK_Y);
-      return true;
+      return scroll.startDrag(count, mouseY, top + FletchingListGeometry.TRACK_Y);
     }
 
+    scroll.endDrag();
     return false;
   }
 
   public boolean mouseDragged(final double mouseY, final int top) {
-    if (!dragging || !FletchingListGeometry.scrollable(recipesOnOffer().size())) {
-      return false;
-    }
-    amount = FletchingListGeometry.amountFromDrag(mouseY, top + FletchingListGeometry.TRACK_Y);
-    return true;
+    final int count = recipesAfterSyncingScroll().size();
+    return scroll.drag(count, mouseY, top + FletchingListGeometry.TRACK_Y);
   }
 
   public void mouseReleased() {
-    dragging = false;
+    scroll.endDrag();
   }
 
   public boolean mouseScrolled(final double verticalAmount) {
-    final int count = recipesOnOffer().size();
-    if (!FletchingListGeometry.scrollable(count)) {
-      return false;
-    }
-    amount = FletchingListGeometry.amountAfterScroll(count, amount(count), verticalAmount);
-    return true;
+    return scroll.wheel(recipesAfterSyncingScroll().size(), verticalAmount);
   }
 
   private void drawRow(
@@ -163,11 +148,11 @@ public final class FletchingRecipeListWidget {
       final int left,
       final int top,
       final int count,
-      final float scroll) {
+      final float amount) {
     context.drawTexture(
         FletchingStationTextures.SHEET,
         left + FletchingListGeometry.TRACK_X,
-        top + FletchingListGeometry.TRACK_Y + FletchingListGeometry.scrollerOffsetY(scroll),
+        top + FletchingListGeometry.TRACK_Y + FletchingListGeometry.scrollerOffsetY(amount),
         FletchingStationTextures.scrollerU(FletchingListGeometry.scrollable(count)),
         FletchingStationTextures.SCROLLER_V,
         FletchingListGeometry.SCROLLER_WIDTH,
@@ -180,25 +165,17 @@ public final class FletchingRecipeListWidget {
 
   private int rowAt(
       final int count,
-      final float scroll,
+      final float amount,
       final int listLeft,
       final int listTop,
       final double mouseX,
       final double mouseY) {
-    return FletchingListGeometry.rowAtOffset(count, scroll, mouseX - listLeft, mouseY - listTop);
+    return FletchingListGeometry.rowAtOffset(count, amount, mouseX - listLeft, mouseY - listTop);
   }
 
-  private float amount(final int recipeCount) {
-    return FletchingListGeometry.scrollable(recipeCount) ? amount : 0f;
-  }
-
-  private List<RecipeEntry<FletchingRecipe>> recipesOnOffer() {
+  private List<RecipeEntry<FletchingRecipe>> recipesAfterSyncingScroll() {
     final List<RecipeEntry<FletchingRecipe>> recipes = handler.getAvailableRecipes();
-    if (recipes != lastSeen) {
-      lastSeen = recipes;
-      amount = 0f;
-      dragging = false;
-    }
+    scroll.follow(recipes);
     return recipes;
   }
 }

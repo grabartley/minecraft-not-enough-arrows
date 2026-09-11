@@ -507,9 +507,11 @@ Right-clicking a vanilla `minecraft:fletching_table` opens the station. The bloc
 | Right-clicking while sneaking empty-handed | The station opens, the same answer vanilla gives for its own containers |
 | Right-clicking with `fletching.stationEnabled` off | Nothing at all, exactly as vanilla behaves |
 
-The decision is made on both sides from the same rule: the server owns it and opens the screen, and the client answers identically from its synced copy of the config so it does not briefly predict a block placement the server is about to refuse. Until that config has synced, the client defers and lets the server answer alone.
+The decision is made on both sides from the same rule: the server owns it and opens the screen, and the client answers identically from its synced copy of the config so it does not briefly predict a block placement the server is about to refuse. In the few ticks between joining and that config arriving the client has no answer to give, so it stands aside and lets vanilla's own prediction run, which the server corrects the way it corrects any other mispredicted placement.
 
-A spectator is passed over, because vanilla passes them over: a fletching table offers vanilla no screen handler factory, so a spectator right-clicking one has always got nothing. A connection that never declared it can receive this mod's payloads is passed over too, which is how a player on a vanilla client keeps their connection instead of being disconnected by a screen they have no way to draw. [ADR 0026](docs/adr/0026-the-station-opens-only-for-a-client-that-can-draw-it.md) covers what that costs them.
+A spectator is passed over, and the reason is worth stating precisely because the obvious reason is wrong. A fletching table is a `CraftingTableBlock` that overrides only `onUse`, so it inherits a perfectly good screen handler factory, and vanilla's spectator branch runs before `onUse` and opens a crafting screen from it. That screen closes itself on the next tick, because the handler looks for a crafting table and finds a fletching table. None of that is this mod's business. What matters is that the branch runs ahead of everything the mod hooks, and that Fabric's client-side hook skips spectators while its server-side hook does not, so a station added for a spectator would be added on one side only. The mod declines to add one and leaves vanilla's answer exactly as it found it.
+
+A connection that never declared it can receive this mod's payloads is passed over too, which is how a player on a vanilla client keeps their connection instead of being disconnected by a screen they have no way to draw. [ADR 0026](docs/adr/0026-the-station-opens-only-for-a-client-that-can-draw-it.md) covers what that costs them.
 
 ### The Screen
 
