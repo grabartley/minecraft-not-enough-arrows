@@ -308,7 +308,7 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/more-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, or `entity/` to match. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
+Texture assets live under `assets/more-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, `entity/`, or `gui/container/` to match. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
 
 | Texture | Source | Used for |
 |---|---|---|
@@ -319,6 +319,12 @@ Texture assets live under `assets/more-arrows/textures/`, and each ships alongsi
 | `textures/item/redstone_arrow.png` | `art/sprites/item/redstone_arrow.sprite.txt` | The redstone arrow's item sprite |
 | `textures/item/gravity_arrow.png` | `art/sprites/item/gravity_arrow.sprite.txt` | The gravity arrow's item sprite |
 | `textures/item/ricochet_arrow.png` | `art/sprites/item/ricochet_arrow.sprite.txt` | The ricochet arrow's item sprite |
+| `textures/item/gunpowder_arrow.png` | `art/sprites/item/gunpowder_arrow.sprite.txt` | The gunpowder arrow's item sprite |
+| `textures/item/tnt_arrow.png` | `art/sprites/item/tnt_arrow.sprite.txt` | The TNT arrow's item sprite |
+| `textures/item/fire_charge_arrow.png` | `art/sprites/item/fire_charge_arrow.sprite.txt` | The fire charge arrow's item sprite |
+| `textures/item/incendiary_arrow.png` | `art/sprites/item/incendiary_arrow.sprite.txt` | The incendiary arrow's item sprite |
+| `textures/item/ender_pearl_arrow.png` | `art/sprites/item/ender_pearl_arrow.sprite.txt` | The ender pearl arrow's item sprite |
+| `textures/item/recall_arrow.png` | `art/sprites/item/recall_arrow.sprite.txt` | The recall arrow's item sprite |
 | `textures/block/rope.png` | `art/sprites/block/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | `art/sprites/entity/grapple_arrow.sprite.txt` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | `art/sprites/entity/rope_arrow.sprite.txt` | The rope arrow in flight and planted in a block |
@@ -331,6 +337,9 @@ Texture assets live under `assets/more-arrows/textures/`, and each ships alongsi
 | `textures/entity/arrow/incendiary_arrow.png` | `art/sprites/entity/incendiary_arrow.sprite.txt` | The incendiary arrow in flight and planted in a block |
 | `textures/entity/arrow/gravity_arrow.png` | `art/sprites/entity/gravity_arrow.sprite.txt` | The gravity arrow in flight and planted in a block |
 | `textures/entity/arrow/ricochet_arrow.png` | `art/sprites/entity/ricochet_arrow.sprite.txt` | The ricochet arrow in flight and planted in a block |
+| `textures/entity/arrow/ender_pearl_arrow.png` | `art/sprites/entity/ender_pearl_arrow.sprite.txt` | The ender pearl arrow in flight and planted in a block |
+| `textures/entity/arrow/recall_arrow.png` | `art/sprites/entity/recall_arrow.sprite.txt` | The recall arrow in flight and planted in a block |
+| `textures/gui/container/fletching_station.png` | `art/sprites/gui/container/fletching_station.sprite.txt` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
 
@@ -355,6 +364,31 @@ The incendiary arrow is the exception and is deliberately not part of that ladde
 The two physics arrows are the family the mirrored profile costs the most, because both item sprites say what their arrow does with something that sits off the axis. The gravity arrow's second, smaller cube falling away beneath the head cannot come along at all: mirrored, it reads as two cubes rather than as one falling. The ricochet arrow's crook is worse, because a crook mirrored onto itself is two crooks facing each other. Both had to be rebuilt symmetrically, and each ended up carrying its identity in a silhouette nothing else in the mod uses.
 
 The gravity arrow is the only blunt head here. It is a full five by five slime cube with a flat front where every other arrow tapers to a point, keeping slime's darker inner cube inside the paler shell so it is read as slime rather than as any green block, and that squared-off silhouette is what says weight while it is still moving. The ricochet arrow is the only head with no shoulder: every other arrow meets its shaft at the head's widest point and tapers only forward, which is the shape of something that bites into a surface, and this one narrows at both ends so there is nothing on it for a surface to catch. Its tone also runs the opposite way to the explosive family, dark at the back with the light on the front face rather than an even grey with its darkest pixel leading, which is what separates it from the unbarbed gunpowder blade without asking warm-against-cold iron to carry the whole distinction. The near black outer facet is doing real work too, because the head is warm and the shaft is warm, and without a hard edge between them the head dissolves into the shaft at flight size.
+
+The two ender arrows are the mod's only matched pair, and they are the only place where two arrows are meant to be read against each other rather than apart. Each is the same sphere: the ender pearl arrow is a bright teal shell around a core held almost to black, and the recall arrow is a dark violet shell around a core lit almost to white. The recipe inverts a pearl and so does the sprite, which is what stops the recall arrow reading as a second green arrow beside it in the creative tab. The pearl also has the glow ink sac to get away from, and that is settled on silhouette and on where the dark sits rather than on hue, because the sac is teal too: the pearl is the roundest and heaviest head in the item set where the sac is a lump slung under the axis, and the sac is uniformly bright where the pearl is hollowed through the middle. In flight both keep the core on the centre line, which is the one place a feature survives the mirrored profile, so the pair separates in the air the same way it does in the hand.
+
+The fletching station screen is the mod's only interface texture, and it is one 256 by 256 sheet carrying the panel, every slot well, and the five row and scroller states, so the screen reads every region it needs out of a single texture. The slot coordinates are not the sheet's to choose: `FletchingStationLayout` already fixes the input grid, the result, and the player inventory at what happen to be the vanilla crafting table's own coordinates, and the sheet draws wells under those. What the sheet does choose is the forty pixels the layout leaves between the input grid and the result. The station picks a recipe the way a stonecutter does, so that strip carries a recipe list and its scrollbar rather than the crafting table's arrow, and forty pixels buys one column of recipes and a scrollbar rather than the stonecutter's four columns. Three sixteen by eighteen rows are visible at a time and the rest are scrolled to. The three row states separate on where the lit face sits before they separate on hue, since a state a player cannot tell apart from another is not a state: idle is raised with the light up and left, hovered closes that into a bright ring on all four sides, and selected inverts the bevel outright into a dark recess lit from below and right. Desaturate all three and they are still three different controls.
+
+Every region the screen draws is fixed, so the implementation reads coordinates rather than measuring pixels:
+
+| Region | Origin | Size |
+|---|---|---|
+| Panel | `0,0` | 176 x 166 |
+| Input slot wells | `29,16` | 18 x 18 each, pitch 18, three by three |
+| Result slot well | `123,34` | 18 x 18 |
+| Recipe list floor | `87,16` | 16 x 54, three 16 by 18 rows visible |
+| Scroll track floor | `107,16` | 12 x 54, the scroller travels 39 of it |
+| Player inventory wells | `7,83` | 18 x 18 each, pitch 18, nine by three |
+| Hotbar wells | `7,141` | 18 x 18 each, pitch 18, nine |
+| Title anchor | `8,6` | |
+| Inventory label | `8,72` | |
+| List row, idle | `0,166` | 16 x 18 |
+| List row, hovered | `16,166` | 16 x 18 |
+| List row, selected | `32,166` | 16 x 18 |
+| Scroller | `48,166` | 12 x 15 |
+| Scroller, disabled | `60,166` | 12 x 15 |
+
+The input and result slots deliberately carry no art of their own, because a player reads a slot by its bevel and a station that decorated its slots would be claiming they behave unusually when they do not.
 
 The rope block is the one texture with a tiling contract, because a descent stacks it vertically and any mismatch across the tile boundary reads as a seam running the whole length of the drop. Its strand grooves step one column per row on a four row cycle, and sixteen divides by four, so row fifteen hands off to row zero mid-diagonal and the twist runs unbroken. Anything that changes the number of rows in that cycle to something other than a factor of sixteen puts a seam back. The single whipping band is what a ladder gets from its rungs, a repeat that tells a player the block is climbable, and it sits away from the tile boundary so it never reads as the seam it is not.
 
@@ -462,7 +496,7 @@ The station is the screen handler behind the fletching table interface: nine inp
 
 `fletching.stationEnabled` controls whether the station is reachable at all, so a server that wants the vanilla fletching table to keep doing nothing can have it. Crafting table recipes are untouched either way, per [ADR 0002](docs/adr/0002-crafting-table-always-works.md).
 
-The block interaction that opens the station and the screen that draws it are each their own piece of work, so on this build the handler is registered and reachable only from code.
+The block interaction that opens the station and the screen that draws it are each their own piece of work, so on this build the handler is registered and reachable only from code. The screen's texture is already in the repo ahead of the screen, and the Textures section tabulates every region it hands the implementation.
 
 ## Recipe Viewers
 

@@ -1,0 +1,33 @@
+# Recall arrow, the inbound half of the ender pair.
+# The recipe inverts a pearl and so does the sprite. It is the ender pearl arrow's
+# sphere pixel for pixel, with the tone turned inside out: a dark violet shell
+# around a core lit almost to white, where the pearl is a bright teal shell around
+# a core held almost to black. The two sit side by side in the creative tab and are
+# told apart twice over, by hue and by whether the shell or the core is the bright part,
+# so neither reading has to survive hotbar size alone.
+# O = 1A0E2B  shell, shadowed facet
+# d = 30194D  shell, inner shadow
+# h = EFE0FF  core, the throw held in reserve
+# m = 4E2E78  shell, body
+# c = 8A63C6  shell, lit facet
+# S = 896727  shaft, lit face
+# s = 281E0B  shaft, shadow face
+# F = E0E0E0  fletching, light
+# f = C6C6C6  fletching, mid
+# x = 3F3F3F  fletching, dark
+..........ccmd..
+.........cchmdO.
+........cchhhdOO
+.........cmhmOO.
+..........mmdO..
+..........SsdO..
+.........Ss.....
+........Ss......
+.......Ss.......
+......Ss........
+.....Ss.........
+...Ffs..........
+..FfFx..........
+..xFx...........
+...x............
+................

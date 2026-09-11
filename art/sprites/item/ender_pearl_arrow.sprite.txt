@@ -1,0 +1,33 @@
+# Ender pearl arrow, the outbound half of the ender pair.
+# The glow ink sac is already teal, so hue cannot carry this one on its own. The
+# pearl separates from it on two things instead. It is the roundest and heaviest
+# head in the item set, a clean sphere where the sac is a lump slung under the
+# axis, and it is hollowed by a dark cross through its middle that nothing else
+# carries. The sac is uniformly bright; the pearl is bright shell around a near
+# black centre, so the two read apart by where the dark sits rather than by colour.
+# O = 04231D  pearl, shadowed facet
+# d = 0E5A48  pearl, inner shadow
+# h = 010D0A  pearl, dark core
+# m = 2FB894  pearl, body
+# c = 6FE8C4  pearl, lit facet
+# S = 896727  shaft, lit face
+# s = 281E0B  shaft, shadow face
+# F = E0E0E0  fletching, light
+# f = C6C6C6  fletching, mid
+# x = 3F3F3F  fletching, dark
+..........ccmd..
+.........cchmdO.
+........cchhhdOO
+.........cmhmOO.
+..........mmdO..
+..........SsdO..
+.........Ss.....
+........Ss......
+.......Ss.......
+......Ss........
+.....Ss.........
+...Ffs..........
+..FfFx..........
+..xFx...........
+...x............
+................
