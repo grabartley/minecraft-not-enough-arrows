@@ -41,6 +41,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   private static final BlockPos ABOVE_TABLE = new BlockPos(3, 3, 3);
   private static final BlockPos BESIDE_TABLE = new BlockPos(4, 2, 3);
   private static final BlockPos ACROSS_THE_ROOM = new BlockPos(1, 2, 1);
+  private static final BlockPos THE_FLETCHERS_CORNER = new BlockPos(5, 2, 5);
 
   private static final String ENABLE_STATION = "morearrows config fletching stationenabled true";
   private static final String DISABLE_STATION = "morearrows config fletching stationenabled false";
@@ -251,7 +252,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
   public void anExistingFletcherKeepsItsProfessionWhenTheStationOpens(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
-    final VillagerEntity fletcher = context.spawnEntity(EntityType.VILLAGER, BESIDE_TABLE);
+    final VillagerEntity fletcher = context.spawnEntity(EntityType.VILLAGER, THE_FLETCHERS_CORNER);
     fletcher.setAiDisabled(true);
     fletcher.setVillagerData(
         fletcher.getVillagerData().withProfession(VillagerProfession.FLETCHER));

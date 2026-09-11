@@ -41,7 +41,7 @@ class FletchingListScrollTest {
   }
 
   @Test
-  void adifferentSetOfRecipesSendsTheListBackToItsFirstRow() {
+  void aDifferentSetOfRecipesSendsTheListBackToItsFirstRow() {
     final FletchingListScroll scroll = scrolledToTheBottom();
 
     assertTrue(scroll.follow(THREE));
