@@ -1,0 +1,20 @@
+{
+  "type": "more-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:lead"
+      }
+    }
+  ],
+  "result": {
+    "id": "more-arrows:rope_arrow",
+    "count": 12
+  }
+}

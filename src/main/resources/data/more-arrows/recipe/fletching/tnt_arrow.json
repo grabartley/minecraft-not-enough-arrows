@@ -1,0 +1,20 @@
+{
+  "type": "more-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "more-arrows:gunpowder_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:tnt"
+      }
+    }
+  ],
+  "result": {
+    "id": "more-arrows:tnt_arrow",
+    "count": 12
+  }
+}
