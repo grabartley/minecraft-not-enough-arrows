@@ -182,9 +182,7 @@ tasks.register("verifyMainSourceSideSafety") {
 			"com.grahambartley.notenougharrows.screen.",
 			"com.grahambartley.notenougharrows.mixin.client.",
 			"com.grahambartley.notenougharrows.NotEnoughArrowsClient",
-			"com.grahambartley.notenougharrows.NotEnoughArrowsDataGenerator",
 			"com.grahambartley.notenougharrows.NotEnoughArrowsModMenu",
-			"com.grahambartley.notenougharrows.ModKeyBindings",
 			"com.grahambartley.notenougharrows.network.ModNetworkingClient"
 		]
 		def violations = []

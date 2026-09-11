@@ -145,6 +145,42 @@ public final class NotEnoughArrowsCommandGameTest implements FabricGameTest {
     context.complete();
   }
 
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void theAliasReadsStatusWithoutOperatorPermission(TestContext context) {
+    context.assertTrue(
+        run(context, operator(context).withLevel(0), "nea status"),
+        "Status output should be readable through the alias without operator permission");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void theAliasChangesASettingForAnOperator(TestContext context) {
+    ServerConfigService.update(context.getWorld().getServer(), NotEnoughArrowsConfig.defaults());
+
+    context.assertTrue(
+        run(context, operator(context), "nea config grapple maxrangeblocks 64"),
+        "An operator should be able to set a config value through the alias");
+    context.assertEquals(
+        64,
+        ServerConfigService.get().grapple().maxRangeBlocks(),
+        "Live config after the command ran through the alias");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void theAliasRefusesAMutationFromANonOperator(TestContext context) {
+    ServerConfigService.update(context.getWorld().getServer(), NotEnoughArrowsConfig.defaults());
+
+    context.assertFalse(
+        run(context, operator(context).withLevel(0), "nea config grapple maxrangeblocks 64"),
+        "A non-operator should not be able to set a config value through the alias");
+    context.assertEquals(
+        GrappleArrowConfig.DEFAULT_MAX_RANGE_BLOCKS,
+        ServerConfigService.get().grapple().maxRangeBlocks(),
+        "Live config after a refused command through the alias");
+    context.complete();
+  }
+
   private static ServerCommandSource operator(final TestContext context) {
     return context.getWorld().getServer().getCommandSource();
   }

@@ -565,6 +565,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 | CONFIG-13 | Client preferences live in a separate store, in the client configuration directory, and are never sent anywhere. Editing them changes nothing another player can observe |
 | CONFIG-14 | The configuration reaching a client is encoded with the same codec used to read and write the file, so the wire format cannot drift from the file format. The encoded payload is bounded |
 | CONFIG-15 | A malformed sync degrades to defaults on the client rather than failing loudly, because a client does not own that state |
+| CONFIG-16 | The command tree is reachable under a short alias as well as the full mod name. The alias is a redirect onto the same tree rather than a second tree, so the two roots cannot offer different subcommands or different permission gating |
 
 **Not supported:** Per-player server settings. Per-dimension settings. A setting reachable from the screen but not from a command. A client changing a server setting it does not have permission for.
 
@@ -606,8 +607,8 @@ Access control is stated in one place because it is the difference between a too
 |---|---|---|---|---|---|
 | Craft any arrow | Yes | Yes | Yes | Yes, it is server-side recipe data | n/a |
 | Fire any arrow | Yes | Yes | Yes | Yes | Yes |
-| Run `/notenougharrows` | Yes | Yes | Yes | Yes | n/a |
-| Run `/notenougharrows status` | Yes | Yes | Yes | Yes | n/a |
+| Run `/notenougharrows`, or its `/nea` alias | Yes | Yes | Yes | Yes | n/a |
+| Run `/notenougharrows status`, or its `/nea` alias | Yes | Yes | Yes | Yes | n/a |
 | Change any server setting | No | No | Yes | No | n/a |
 | Reset every setting to defaults | No | No | Yes | No | n/a |
 | Change own client preferences | Yes | Yes | Yes | No, there is no client state without the mod | n/a |
@@ -622,7 +623,7 @@ Access control is stated in one place because it is the difference between a too
 
 | Requirement | Statement |
 |---|---|
-| PERM-1 | Every mutating command node requires operator permission level 2. The root command and the status subcommand are open to anyone |
+| PERM-1 | Every mutating command node requires operator permission level 2. The root command and the status subcommand are open to anyone. This holds identically under the alias, which reaches the same nodes |
 | PERM-2 | A configuration update arriving from a client is re-checked against operator permission on the server, regardless of what the client's own screen believed |
 | PERM-3 | A refused configuration update is answered with a fresh sync, which puts the refusing client's view back onto the server's values |
 | PERM-4 | The settings screen presents server settings as read-only to a player who is not an operator, and shows the reason. That presentation is a courtesy, not the enforcement: PERM-2 is |

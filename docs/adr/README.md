@@ -37,6 +37,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0027](0027-the-station-pays-one-uniform-multiplier.md) | The station pays one uniform multiplier on the yield |
 | [0028](0028-one-layout-drives-both-recipe-viewers.md) | One layout drives both recipe viewers |
 | [0029](0029-a-teleport-is-refused-rather-than-relocated.md) | A teleport is refused rather than relocated |
+| [0030](0030-the-rename-is-a-clean-break.md) | The rename is a clean break |
 
 ## Writing A New Record
 

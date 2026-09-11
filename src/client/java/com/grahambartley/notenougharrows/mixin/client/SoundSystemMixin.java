@@ -16,7 +16,7 @@ public class SoundSystemMixin {
       method = "play(Lnet/minecraft/client/sound/SoundInstance;)V",
       at = @At("HEAD"),
       cancellable = true)
-  private void not_enough_arrows$muteCountdownBeep(
+  private void notEnoughArrows$muteCountdownBeep(
       final SoundInstance sound, final CallbackInfo info) {
     if (CountdownMute.silences(sound.getId(), ClientStateService.get().playCountdownSound())) {
       info.cancel();
