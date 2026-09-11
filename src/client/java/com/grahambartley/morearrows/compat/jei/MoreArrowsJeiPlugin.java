@@ -61,7 +61,11 @@ public final class MoreArrowsJeiPlugin implements IModPlugin {
 
   private static List<RecipeEntry<FletchingRecipe>> loadedStationRecipes() {
     final ClientWorld world = MinecraftClient.getInstance().world;
-    return world == null ? List.of() : StationRecipes.from(world.getRecipeManager());
+    if (world == null) {
+      MoreArrows.LOGGER.warn("No world is loaded, so JEI is being given no station recipes");
+      return List.of();
+    }
+    return StationRecipes.from(world.getRecipeManager());
   }
 
   private static List<ItemStack> stacksOf(final InfoEntry entry) {

@@ -1,6 +1,6 @@
 package com.grahambartley.morearrows.compat.emi;
 
-import com.grahambartley.morearrows.MoreArrows;
+import com.grahambartley.morearrows.ModRecipes;
 import com.grahambartley.morearrows.fletching.FletchingStationInteraction;
 import com.grahambartley.morearrows.recipe.StationRecipes;
 import dev.emi.emi.api.EmiRegistry;
@@ -8,14 +8,11 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.block.Blocks;
 import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 
 public final class EmiStationRecipes implements EmiStationRegistrar {
 
-  public static final Identifier CATEGORY_ID = Identifier.of(MoreArrows.MOD_ID, "fletching");
-
   private final EmiRecipeCategory category =
-      new EmiRecipeCategory(CATEGORY_ID, EmiStack.of(Blocks.FLETCHING_TABLE)) {
+      new EmiRecipeCategory(ModRecipes.FLETCHING_ID, EmiStack.of(Blocks.FLETCHING_TABLE)) {
         @Override
         public Text getName() {
           return Text.translatable(FletchingStationInteraction.TITLE_KEY);

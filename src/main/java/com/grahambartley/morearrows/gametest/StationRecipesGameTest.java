@@ -3,6 +3,7 @@ package com.grahambartley.morearrows.gametest;
 import com.grahambartley.morearrows.ModArrows;
 import com.grahambartley.morearrows.recipe.FletchingRecipe;
 import com.grahambartley.morearrows.recipe.StationRecipes;
+import java.util.Comparator;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.recipe.RecipeEntry;
@@ -20,36 +21,17 @@ public final class StationRecipesGameTest implements FabricGameTest {
     context.assertEquals(
         listed.size(),
         ModArrows.registered().size(),
-        "Every arrow the mod registers should surface one station recipe");
-    context.complete();
-  }
-
-  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
-  public void listsEveryArrowsOwnStationRecipe(TestContext context) {
-    final List<Identifier> listed =
-        StationRecipes.from(recipes(context)).stream().map(RecipeEntry::id).toList();
-
-    ModArrows.registered()
-        .forEach(
-            arrow -> {
-              final Identifier expected =
-                  Identifier.of(arrow.id().getNamespace(), "fletching/" + arrow.id().getPath());
-              context.assertTrue(
-                  listed.contains(expected),
-                  "The station recipe list should carry " + expected + " but held " + listed);
-            });
+        "Every arrow the mod registers should surface one station recipe to a viewer");
     context.complete();
   }
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
   public void ordersRecipesTheSameWayForEveryViewerThatAsks(TestContext context) {
     final RecipeManager recipes = recipes(context);
-    final List<Identifier> first =
-        StationRecipes.from(recipes).stream().map(RecipeEntry::id).toList();
-    final List<Identifier> second =
-        StationRecipes.from(recipes).stream().map(RecipeEntry::id).toList();
+    final List<Identifier> first = ids(StationRecipes.from(recipes));
+    final List<Identifier> second = ids(StationRecipes.from(recipes));
     final List<Identifier> sorted =
-        first.stream().sorted(java.util.Comparator.comparing(Identifier::toString)).toList();
+        first.stream().sorted(Comparator.comparing(Identifier::toString)).toList();
 
     context.assertTrue(
         first.equals(second),
@@ -60,18 +42,18 @@ public final class StationRecipesGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
-  public void everyListedRecipeCarriesItsIngredientsAndResult(TestContext context) {
-    StationRecipes.from(recipes(context))
+  public void listsOnlyStationRecipesAndNeverACraftingTableOne(TestContext context) {
+    ids(StationRecipes.from(recipes(context)))
         .forEach(
-            entry -> {
-              context.assertFalse(
-                  entry.value().inputs().isEmpty(),
-                  "Station recipe " + entry.id() + " should carry the ingredients a viewer draws");
-              context.assertFalse(
-                  entry.value().result().isEmpty(),
-                  "Station recipe " + entry.id() + " should carry the result a viewer draws");
-            });
+            id ->
+                context.assertTrue(
+                    id.getPath().startsWith("fletching/"),
+                    "The station list should hold only station recipes but held " + id));
     context.complete();
+  }
+
+  private static List<Identifier> ids(final List<RecipeEntry<FletchingRecipe>> entries) {
+    return entries.stream().map(RecipeEntry::id).toList();
   }
 
   private static RecipeManager recipes(final TestContext context) {

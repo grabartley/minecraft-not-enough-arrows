@@ -1,6 +1,6 @@
 package com.grahambartley.morearrows.compat.emi;
 
-import com.grahambartley.morearrows.compat.info.FletchingRecipeLayout;
+import com.grahambartley.morearrows.compat.layout.FletchingRecipeLayout;
 import com.grahambartley.morearrows.recipe.FletchingIngredient;
 import com.grahambartley.morearrows.recipe.FletchingRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
@@ -67,20 +67,12 @@ public final class FletchingEmiRecipe implements EmiRecipe {
   @Override
   public void addWidgets(final WidgetHolder widgets) {
     Objects.requireNonNull(widgets, "widgets");
-    final int count = inputs.size();
+    final FletchingRecipeLayout layout = FletchingRecipeLayout.sizedToFit(inputs.size());
 
-    for (int index = 0; index < count; index++) {
-      widgets.addSlot(
-          inputs.get(index),
-          FletchingRecipeLayout.inputX(index),
-          FletchingRecipeLayout.inputY(index, count));
+    for (int index = 0; index < inputs.size(); index++) {
+      widgets.addSlot(inputs.get(index), layout.inputX(index), layout.inputY(index));
     }
-    widgets.addTexture(
-        EmiTexture.EMPTY_ARROW,
-        FletchingRecipeLayout.arrowX(count),
-        FletchingRecipeLayout.arrowY(count));
-    widgets
-        .addSlot(output, FletchingRecipeLayout.outputX(count), FletchingRecipeLayout.outputY(count))
-        .recipeContext(this);
+    widgets.addTexture(EmiTexture.EMPTY_ARROW, layout.arrowX(), layout.arrowY());
+    widgets.addSlot(output, layout.outputX(), layout.outputY()).recipeContext(this);
   }
 }
