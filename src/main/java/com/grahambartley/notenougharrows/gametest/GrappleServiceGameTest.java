@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.anchor.AnchorService;
 import com.grahambartley.notenougharrows.config.GrappleArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
 import com.grahambartley.notenougharrows.config.ServerConfigHolder;
+import com.grahambartley.notenougharrows.grapple.GrappleProgress;
 import com.grahambartley.notenougharrows.grapple.GrapplePull;
 import com.grahambartley.notenougharrows.grapple.GrappleService;
 import com.grahambartley.notenougharrows.grapple.GrappleSession;
@@ -26,6 +27,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   private static final BlockPos PLAYER_STAND = new BlockPos(0, 3, 0);
   private static final BlockPos SECOND_STAND = new BlockPos(2, 3, 0);
   private static final BlockPos HIGH_ANCHOR = new BlockPos(5, 5, 5);
+  private static final BlockPos FAR_ANCHOR = new BlockPos(6, 5, 6);
   private static final BlockPos SECOND_ANCHOR = new BlockPos(1, 5, 1);
   private static final BlockPos FLOOR_UNDERFOOT = new BlockPos(0, 2, 0);
   private static final BlockPos OPEN_AIR = new BlockPos(3, 5, 3);
@@ -36,6 +38,8 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   private static final int RAMP_ASSERT_TICK = 20;
   private static final int SAMPLED_PULL_TICKS = 4;
   private static final int OVERRUN_MARGIN_TICKS = 10;
+  private static final int STOPPED_MARGIN_TICKS = 3;
+  private static final double CLOSING_STEP = 0.1;
   private static final double SPEED_TOLERANCE = 0.01;
 
   @BeforeBatch(batchId = MockPlayerSupport.BATCH)
@@ -50,7 +54,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
 
     final GrappleSession session =
-        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.assertTrue(session != null, "A grapple within range should hand back a session");
     context.assertTrue(
@@ -72,7 +76,8 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     try {
       ServerConfigHolder.set(configWithMaxRange(GrappleArrowConfig.MAX_RANGE_BLOCKS_MIN));
       session =
-          GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+          GrappleService.start(
+              context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
     } finally {
       ServerConfigHolder.set(previous);
     }
@@ -92,7 +97,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
 
     final GrappleSession session =
-        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(OPEN_AIR));
+        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(OPEN_AIR), null);
 
     context.assertTrue(session == null, "Open air should not hold a grapple");
     context.assertTrue(
@@ -107,8 +112,8 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.setBlockState(SECOND_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
 
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(SECOND_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(SECOND_ANCHOR), null);
 
     context.assertEquals(
         GrappleService.sessionOf(context.getWorld(), player.getUuid()).anchor(),
@@ -126,7 +131,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final Vec3d[] strongestPull = {Vec3d.ZERO};
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.runAtEveryTick(
         () -> {
@@ -152,7 +157,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final List<Double> commanded = new ArrayList<>();
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.runAtEveryTick(
         () -> {
@@ -203,7 +208,8 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
 
     context.assertTrue(
-        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(FLOOR_UNDERFOOT))
+        GrappleService.start(
+                context.getWorld(), player, context.getAbsolutePos(FLOOR_UNDERFOOT), null)
             != null,
         "A grapple onto the block underfoot should still start a session");
 
@@ -221,7 +227,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   public void aSessionEndsWhenTheAnchorBlockIsBroken(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.runAtTick(BREAK_TICK, () -> context.setBlockState(HIGH_ANCHOR, Blocks.AIR));
     context.runAtTick(
@@ -239,9 +245,17 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final GrappleSession session =
-        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
     context.assertTrue(session != null, "A grapple across the arena should start");
 
+    context.runAtEveryTick(
+        () -> MockPlayerSupport.creepToward(context, player, HIGH_ANCHOR, CLOSING_STEP));
+    context.runAtTick(
+        session.remainingTicks() - OVERRUN_MARGIN_TICKS,
+        () ->
+            context.assertTrue(
+                GrappleService.sessionOf(context.getWorld(), player.getUuid()) != null,
+                "A grapple still closing on its anchor should still be pulling"));
     context.runAtTick(
         session.remainingTicks() + OVERRUN_MARGIN_TICKS,
         () -> {
@@ -252,11 +266,37 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
+  public void aPullThatStopsClosingOnItsAnchorEndsRatherThanStalling(TestContext context) {
+    context.setBlockState(FAR_ANCHOR, Blocks.STONE);
+    final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
+    final GrappleSession session =
+        GrappleService.start(context.getWorld(), player, context.getAbsolutePos(FAR_ANCHOR), null);
+
+    context.assertTrue(session != null, "A grapple across the arena should start");
+    context.assertTrue(
+        session.remainingTicks() > GrappleProgress.IDLE_TICKS_LIMIT + STOPPED_MARGIN_TICKS,
+        "This pull must have ticks left when it stops closing, or it proves nothing, had "
+            + session.remainingTicks());
+
+    context.runAtTick(
+        GrappleProgress.IDLE_TICKS_LIMIT + STOPPED_MARGIN_TICKS,
+        () -> {
+          context.assertTrue(
+              GrappleService.sessionOf(context.getWorld(), player.getUuid()) == null,
+              "A pull held against an obstruction should end rather than stall silently");
+          context.assertTrue(
+              AnchorService.anchorOf(context.getWorld(), player.getUuid()) == null,
+              "A pull that ended on an obstruction should give up the block it held");
+          context.complete();
+        });
+  }
+
   @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
   public void releasingAGrappleGivesUpItsAnchorToo(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.assertTrue(
         GrappleService.release(context.getWorld(), player.getUuid()) != null,
@@ -271,7 +311,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   public void aPlayerWhoLeavesIsNoLongerPulledInAnyWorld(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     GrappleService.stopPullingEverywhere(player.getUuid());
 
@@ -286,8 +326,8 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity first = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final ServerPlayerEntity second = MockPlayerSupport.playerAt(context, SECOND_STAND);
-    GrappleService.start(context.getWorld(), first, context.getAbsolutePos(HIGH_ANCHOR));
-    GrappleService.start(context.getWorld(), second, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), first, context.getAbsolutePos(HIGH_ANCHOR), null);
+    GrappleService.start(context.getWorld(), second, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.assertEquals(
         GrappleService.sessionOf(context.getWorld(), first.getUuid()).anchor(),
@@ -309,7 +349,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   public void aPulledPlayerIsNotCountedAsFloatingWhileTheyAreBeingPulled(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR));
+    GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.runAtTick(BREAK_TICK, () -> player.networkHandler.floatingTicks = FLOATING_TICKS);
     context.runAtTick(

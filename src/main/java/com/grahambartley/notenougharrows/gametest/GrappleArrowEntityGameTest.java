@@ -34,6 +34,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final double FAR_BEYOND_A_LEAD = 24.0;
   private static final int LETTING_GO_TICKS = 15;
   private static final int STRETCH_TICKS = 4;
+  private static final double CLOSING_STEP = 0.1;
 
   @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
@@ -130,6 +131,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final GrappleArrowEntity[] reloadedArrow = {null};
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
+    keepTheShooterClosing(context, shooter);
 
     context.runAtTick(
         LANDING_TICK,
@@ -228,6 +230,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
+    keepTheShooterClosing(context, shooter);
 
     context.runAtTick(
         LANDING_TICK,
@@ -257,6 +260,16 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
                   + landed.getVelocity());
           assertNoLeadWasDropped(context);
           context.complete();
+        });
+  }
+
+  private static void keepTheShooterClosing(
+      final TestContext context, final ServerPlayerEntity shooter) {
+    context.runAtEveryTick(
+        () -> {
+          if (context.getTick() < LANDING_TICK) {
+            MockPlayerSupport.creepToward(context, shooter, WALL_BASE, CLOSING_STEP);
+          }
         });
   }
 

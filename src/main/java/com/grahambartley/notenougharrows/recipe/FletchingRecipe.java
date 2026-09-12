@@ -79,6 +79,11 @@ public record FletchingRecipe(String group, List<FletchingIngredient> inputs, It
   }
 
   @Override
+  public boolean isIgnoredInRecipeBook() {
+    return true;
+  }
+
+  @Override
   public DefaultedList<Ingredient> getIngredients() {
     final DefaultedList<Ingredient> ingredients =
         DefaultedList.ofSize(inputs.size(), Ingredient.EMPTY);

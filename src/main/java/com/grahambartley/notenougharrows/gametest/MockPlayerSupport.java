@@ -27,6 +27,20 @@ final class MockPlayerSupport {
     player.setVelocity(Vec3d.ZERO);
   }
 
+  static void creepToward(
+      final TestContext context,
+      final PlayerEntity player,
+      final BlockPos relativeAnchor,
+      final double step) {
+    final Vec3d target = Vec3d.ofCenter(context.getAbsolutePos(relativeAnchor));
+    final Vec3d closer =
+        player
+            .getPos()
+            .add(target.subtract(player.getBoundingBox().getCenter()).normalize().multiply(step));
+    player.refreshPositionAndAngles(
+        closer.getX(), closer.getY(), closer.getZ(), player.getYaw(), player.getPitch());
+  }
+
   static void fireEastFromBow(
       final TestContext context, final ServerPlayerEntity shooter, final Item arrow) {
     shooter.setYaw(EASTWARD_YAW);

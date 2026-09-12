@@ -31,6 +31,28 @@ All three are client-side conveniences and a dedicated server needs none of them
 
 [ADR 0023](docs/adr/0023-a-dependency-is-declared-where-its-absence-must-fail.md) covers why a dependency is declared where it is, and why a client-only library is never a hard requirement.
 
+## Arrow Reference
+
+Thirteen arrows ship in the first release. Every one is craftable at a crafting table in the vanilla tipped-arrow shape, eight of a base arrow around one ingredient, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station. The sections below each arrow's row carry the full rules.
+
+| Arrow | What it does | Ring | Centre |
+|---|---|---|---|
+| [Grapple](#grapple-arrow) | Hooks the block it hits and reels its shooter to it | Arrow | Tripwire hook |
+| [Rope](#rope-arrow) | Hangs a climbable rope beneath the block it hits | Arrow | Lead |
+| [Glow ink](#glow-ink-arrow) | Outlines what it hits through terrain for everyone | Arrow | Glow ink sac |
+| [Redstone](#redstone-arrow) | Powers the block it hits for a time, then stops | Arrow | Redstone dust |
+| [Wind](#wind-arrow) | Shoves everything around the impact, sparing the shooter | Arrow | Wind charge |
+| [Gunpowder](#explosive-arrows) | The first explosive tier, a delayed blast | Arrow | Gunpowder |
+| [TNT](#explosive-arrows) | The second explosive tier, a bigger blast | Gunpowder arrow | TNT |
+| [Fire charge](#explosive-arrows) | The third explosive tier, a blast that leaves fire | TNT arrow | Fire charge |
+| [Incendiary](#incendiary-arrow) | Sets everything near it alight and lays fire, never explodes | Arrow | Fire charge |
+| [Gravity](#gravity-arrow) | Drops the block it strikes as a falling block | Arrow | Slime ball |
+| [Ricochet](#ricochet-arrow) | Bounces off blocks instead of embedding | Arrow | Iron nugget |
+| [Ender pearl](#ender-pearl-arrow) | Teleports the shooter to wherever it lands | Arrow | Ender pearl |
+| [Recall](#recall-arrow) | Brings whatever it strikes back to the shooter | Ender pearl arrow | Fermented spider eye |
+
+The incendiary arrow and the fire charge arrow share an ingredient and nothing else: one is a fire charge ringed by plain arrows, the other a fire charge ringed by TNT arrows, so the two recipes cannot collide.
+
 ## Firing and recovery
 
 Every arrow this mod adds behaves like a vanilla arrow everywhere a vanilla arrow already works, rather than only on a bow:
@@ -128,17 +150,29 @@ The grapple arrow hooks into the first block it hits and reels its shooter to it
 | How the player moves | The server sets the player's velocity toward the anchor each tick and lets vanilla send the velocity update the client already knows how to apply. Nothing is ever repositioned, so the client's own movement prediction is never fought |
 | Speed | The pull accelerates rather than running at one flat speed: it builds by `grapple.pullAcceleration` blocks per tick until it reaches `grapple.pullSpeed`, then holds there. Both are read fresh every tick, so an operator changing either mid-pull changes how fast that pull moves. The pull's tick budget is worked out once when it starts, so a mid-pull change moves the player without extending the time it has |
 | Gravity | The pull carries the gravity the client is about to subtract, so the speed it builds to is the speed the player actually travels rather than an upper bound gravity quietly eats into |
-| One at a time | A player is pulled by at most one grapple. Firing again replaces the first and takes the new anchor with it, rather than stacking a second pull |
-| Arrival | The pull stops once the player is within reach of the anchor |
-| Losing the block | The anchor is released the moment its block is broken or replaced, and the session ends with it |
-| Running long | Every session carries a tick budget worked out from the distance it set out to cover and the ramp it takes to get up to speed, so a pull that cannot finish ends rather than stalling forever |
-| Leaving | Dying or disconnecting ends the pull |
+| One at a time | A player is pulled by at most one grapple. Firing again ends the first, hands its block back, and takes the new anchor, rather than stacking a second pull |
+| Pulling downward | A pull onto an anchor below the player is held to a descent cap well under the top speed a climb reaches, so a downward grapple lowers a player rather than firing them into the floor. The tick budget is worked out at the capped speed, so a descent is given the time it actually needs |
+
+Every way a pull can end runs through one cleanup path, so the session is dropped, the block is handed back, and the line comes off the arrow no matter which case fired, and [ADR 0031](docs/adr/0031-every-way-a-grapple-ends-runs-through-one-path.md) covers why that is one path rather than one per case. What differs between them is who owns the landing and where the arrow ends up:
+
+| How it ends | Fall damage | The arrow |
+|---|---|---|
+| The player reaches the anchor | Cancelled, per `grapple.cancelFallDamageOnArrival` | Handed back to the shooter, per `grapple.returnArrowOnArrival` |
+| The pull stops closing on its anchor for a full second, because something is in the way | Cancelled, since the pull left the player where they are | Left planted, to be picked up |
+| The pull runs out of its tick budget | Cancelled, for the same reason | Left planted |
+| The player fires another grapple | Cancelled, so a chained grapple does not land the fall of the one before it | Left planted |
+| The anchor block is broken or replaced | Left standing, so the player drops naturally | Left planted |
+| The player dies, disconnects, or changes dimension | Left standing | Left planted |
+
+Cancelling a fall covers the landing rather than the moment: the fall a player is already carrying is cleared, and the next landing they take is spared. Only the next one, and only a fall, so a grapple never pays for a second drop or for anything else that hurts. An arrow is handed back only where the pull actually arrived, which is why no ending can duplicate it and none of them can lose it silently.
 
 The server counts the consecutive ticks a player spends airborne without descending and disconnects anyone past its limit, which is the check that stops flight hacks. A pull is the mod deliberately holding a player in the air, so the mod clears that counter for as long as it is pulling, and [ADR 0015](docs/adr/0015-the-mod-owns-the-flight-check-while-it-moves-a-player.md) covers why. Without it, a slow pull across a long distance disconnects the very player it is carrying.
 
 A line renders between the player and the arrow they are hanging from, so the pull reads as a grapple rather than as the player being dragged by nothing. The arrow is leashed to the player it is hauling, which is the same attachment vanilla already uses for a lead, so vanilla draws the line and synchronises it. That means the line appears for everyone who can see the arrow rather than only for the player being pulled, including anyone who comes into range part way through the pull, and it disappears the moment the pull ends because the arrow lets go. The leash's own physics is switched off rather than merely unused, and [ADR 0016](docs/adr/0016-the-grapple-line-is-a-vanilla-leash-with-its-physics-switched-off.md) covers why that is not optional. The line is a drawn attachment only, and the grapple session stays the one thing that decides when it ends.
 
-Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it.
+Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it, and no pull survives into the next start.
+
+Obstruction is read as the pull failing to close on its anchor rather than as a collision, because the pull is a velocity the client applies and the server only ever sees where the client reports arriving. A second of no progress is the line between a player caught on a ledge for a moment and a player held against a wall, and it sits below the shortest tick budget any pull carries, so an obstructed pull always ends on the obstruction rather than quietly waiting out its clock.
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one tripwire hook, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
@@ -446,6 +480,51 @@ The mod keeps two separate stores, and which one a setting lives in decides who 
 
 Server config decides gameplay and is authoritative. Client state holds interface preferences only, so editing it changes nothing another player can observe. Either file falls back to defaults if it is missing or malformed, keeping a copy of the broken file beside it rather than overwriting it.
 
+Server config is per world and it persists. It is written into the world save the moment it changes, so it survives a restart, and a second world on the same server carries its own settings rather than inheriting the first world's. A fresh world starts on the defaults below.
+
+### Every Setting
+
+Values are clamped to their range when a hand-edited file is loaded and rejected outright with the accepted range when they arrive through a command or the settings screen.
+
+| Setting | Default | Range |
+|---|---|---|
+| `explosive.gunpowder.delayTicks` | 60 | 0 to 200 |
+| `explosive.gunpowder.power` | 4.0 | 0.0 to 20.0 |
+| `explosive.tnt.delayTicks` | 50 | 0 to 200 |
+| `explosive.tnt.power` | 6.0 | 0.0 to 20.0 |
+| `explosive.fireCharge.delayTicks` | 40 | 0 to 200 |
+| `explosive.fireCharge.power` | 8.0 | 0.0 to 20.0 |
+| `explosive.damageTerrain` | off | on or off |
+| `explosive.damageEntities` | on | on or off |
+| `explosive.firePatchRadius` | 2 | 0 to 8 |
+| `explosive.firePatchDurationTicks` | 200 | 0 to 6000 |
+| `explosive.beepVolume` | 1.0 | 0.0 to 2.0 |
+| `explosive.incendiary.burnRadius` | 3 | 0 to 8 |
+| `explosive.incendiary.igniteSeconds` | 5 | 0 to 60 |
+| `explosive.incendiary.ignitesBlocks` | on | on or off |
+| `grapple.maxRangeBlocks` | 32 | 4 to 128 |
+| `grapple.pullSpeed` | 1.5 | 0.1 to 4.0 |
+| `grapple.pullAcceleration` | 0.15 | 0.01 to 4.0 |
+| `grapple.cancelFallDamageOnArrival` | on | on or off |
+| `grapple.returnArrowOnArrival` | on | on or off |
+| `grapple.ropeLengthBlocks` | 16 | 1 to 128 |
+| `grapple.ropesDecay` | off | on or off |
+| `utility.glowDurationTicks` | 200 | 0 to 6000 |
+| `utility.redstoneSignalDurationTicks` | 40 | 0 to 1200 |
+| `utility.redstoneSignalStrength` | 15 | 1 to 15 |
+| `utility.windBurstRadius` | 3.0 | 0.5 to 16.0 |
+| `utility.windPushStrength` | 1.0 | 0.0 to 8.0 |
+| `physics.gravityImpactRadius` | 0 | 0 to 8 |
+| `physics.gravityBlockExclusions` | empty | up to 256 block ids |
+| `physics.ricochetBounceCount` | 3 | 0 to 16 |
+| `physics.ricochetRetainsDamage` | on | on or off |
+| `ender.pearlMaxRangeBlocks` | 64 | 4 to 128 |
+| `ender.recallMaxRangeBlocks` | 32 | 4 to 128 |
+| `ender.recallAffectsPlayers` | off | on or off |
+| `fletching.stationEnabled` | on | on or off |
+
+The descent cap a downward grapple is held to is not a setting. It exists so `grapple.pullSpeed` can be raised for the climb it was written for without turning every downward shot into a drop the player cannot survive.
+
 ## Settings Screen
 
 Every option is also editable in game through [Mod Menu](https://modrinth.com/mod/modmenu), so a player never has to type a command or edit a file. The screen lists the same settings the command tree exposes, in the same order, with each control constrained to the same range the config record enforces.
@@ -476,6 +555,8 @@ Every server config option is adjustable at runtime, so a server owner on a head
 
 `<family>` is `explosive`, `grapple`, `utility`, `physics`, `ender`, or `fletching`, mirroring how the config file nests its settings. `/notenougharrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/notenougharrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
 
+Every setting in [Every Setting](#every-setting) is reachable this way, under the family its name starts with, and every one of them needs operator level 2 to change. Reading is not gated: `/notenougharrows status` prints them all for anyone who asks.
+
 Values are checked against the same bounds the config record enforces. A value outside them is rejected with an error naming the accepted range, rather than being silently clamped the way a hand-edited file is on load.
 
 The gravity arrow block exclusion list is edited rather than replaced:
@@ -489,6 +570,8 @@ The gravity arrow block exclusion list is edited rather than replaced:
 ## Fletching Recipes
 
 The fletching table station has its own recipe type, `not-enough-arrows:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
+
+Station recipes stay out of the vanilla recipe book. The book only understands the recipe types vanilla ships, and a modded type reaching it produces a warning naming this mod once per recipe on every world join. The station is not the crafting table and its recipes were never craftable from the book, so they are declared as ignored by it, which is both the honest description and the thing that keeps a clean join log clean. Both recipe viewers read the recipes directly and are unaffected, and the crafting table route is untouched.
 
 A recipe is an unordered list of ingredients, each with the count it demands, and one result carrying its own count:
 

@@ -1,9 +1,11 @@
 package com.grahambartley.notenougharrows.grapple;
 
 import com.grahambartley.notenougharrows.anchor.AnchorService;
+import com.grahambartley.notenougharrows.anchor.AnchorSite;
 import com.grahambartley.notenougharrows.config.GrappleArrowConfig;
 import com.grahambartley.notenougharrows.server.PlayerExit;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
+import com.grahambartley.notenougharrows.world.Reach;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +35,8 @@ public final class GrappleService {
   public static GrappleSession start(
       @Nullable final ServerWorld world,
       @Nullable final PlayerEntity player,
-      @Nullable final BlockPos anchorPos) {
+      @Nullable final BlockPos anchorPos,
+      @Nullable final UUID arrowId) {
     if (world == null || player == null || anchorPos == null) {
       return null;
     }
@@ -41,9 +44,12 @@ public final class GrappleService {
     final GrappleArrowConfig config = ServerConfigService.get().grapple();
     final Vec3d origin = pullOrigin(player);
     final Vec3d target = Vec3d.ofCenter(anchorPos);
-    if (!GrapplePull.isWithinRange(origin, target, config.maxRangeBlocks())) {
+    if (!GrapplePull.isWithinRange(origin, target, config.maxRangeBlocks())
+        || !AnchorSite.isSuitable(world, anchorPos)) {
       return null;
     }
+
+    end(world, player.getUuid(), GrappleEnding.CANCELLED);
     if (AnchorService.anchor(world, player.getUuid(), anchorPos) == null) {
       return null;
     }
@@ -51,9 +57,11 @@ public final class GrappleService {
     final GrappleSession session =
         GrappleSession.beginning(
             player.getUuid(),
+            arrowId,
             anchorPos,
             GrapplePull.lifetimeTicks(
-                origin, target, config.pullSpeed(), config.pullAcceleration()));
+                origin, target, config.pullSpeed(), config.pullAcceleration()),
+            Reach.between(origin, target));
     trackerFor(world).add(session);
     return session;
   }
@@ -68,23 +76,41 @@ public final class GrappleService {
   @Nullable
   public static GrappleSession release(
       @Nullable final ServerWorld world, @Nullable final UUID playerId) {
+    return end(world, playerId, GrappleEnding.CANCELLED);
+  }
+
+  @Nullable
+  public static GrappleSession end(
+      @Nullable final ServerWorld world,
+      @Nullable final UUID playerId,
+      final GrappleEnding ending) {
     final GrappleTracker tracker = trackerIn(world);
-    if (tracker == null) {
-      return null;
-    }
-    final GrappleSession released = tracker.remove(playerId);
-    if (released != null) {
-      AnchorService.release(world, playerId);
-    }
-    return released;
+    return tracker == null ? null : endIn(world, tracker, playerId, ending);
   }
 
   public static void stopPullingEverywhere(@Nullable final UUID playerId) {
-    TRACKERS.values().forEach(tracker -> tracker.remove(playerId));
+    TRACKERS
+        .values()
+        .forEach(tracker -> endIn(null, tracker, playerId, GrappleEnding.SHOOTER_GONE));
   }
 
   public static void forget() {
     TRACKERS.clear();
+  }
+
+  @Nullable
+  private static GrappleSession endIn(
+      @Nullable final ServerWorld world,
+      final GrappleTracker tracker,
+      @Nullable final UUID playerId,
+      final GrappleEnding ending) {
+    final GrappleSession ended = tracker.remove(playerId);
+    if (ended == null) {
+      return null;
+    }
+    AnchorService.release(world, playerId);
+    GrappleArrival.settle(world, ended, ending);
+    return ended;
   }
 
   private static void pullGrapplesIn(final ServerWorld world) {
@@ -95,26 +121,47 @@ public final class GrappleService {
 
     final GrappleArrowConfig config = ServerConfigService.get().grapple();
     for (final GrappleSession session : tracker.sessions()) {
-      if (!(world.getEntity(session.playerId()) instanceof ServerPlayerEntity player)
-          || player.isRemoved()
-          || !session.holdsOnto(AnchorService.anchorOf(world, session.playerId()))) {
-        release(world, session.playerId());
-        continue;
+      final GrappleEnding ending = pullOnce(world, tracker, session, config);
+      if (ending != null) {
+        end(world, session.playerId(), ending);
       }
-
-      final GrappleSession pulled = session.pulled();
-      if (pulled.hasExpired() || GrapplePull.hasArrived(pullOrigin(player), session.target())) {
-        release(world, session.playerId());
-        continue;
-      }
-
-      tracker.add(pulled);
-      pullTowardAnchor(
-          player,
-          session.target(),
-          GrapplePull.speedAt(
-              session.pulledTicks(), config.pullSpeed(), config.pullAcceleration()));
     }
+  }
+
+  @Nullable
+  private static GrappleEnding pullOnce(
+      final ServerWorld world,
+      final GrappleTracker tracker,
+      final GrappleSession session,
+      final GrappleArrowConfig config) {
+    if (!(world.getEntity(session.playerId()) instanceof ServerPlayerEntity player)
+        || player.isRemoved()) {
+      return GrappleEnding.SHOOTER_GONE;
+    }
+    if (!session.holdsOnto(AnchorService.anchorOf(world, session.playerId()))) {
+      return GrappleEnding.ANCHOR_LOST;
+    }
+
+    final Vec3d origin = pullOrigin(player);
+    final Vec3d target = session.target();
+    if (GrapplePull.hasArrived(origin, target)) {
+      return GrappleEnding.ARRIVED;
+    }
+
+    final GrappleSession pulled = session.pulled(Reach.between(origin, target));
+    if (pulled.hasExpired()) {
+      return GrappleEnding.OUT_OF_TIME;
+    }
+    if (pulled.hasStopped()) {
+      return GrappleEnding.OBSTRUCTED;
+    }
+
+    tracker.add(pulled);
+    pullTowardAnchor(
+        player,
+        target,
+        GrapplePull.speedAt(session.pulledTicks(), config.pullSpeed(), config.pullAcceleration()));
+    return null;
   }
 
   private static void pullTowardAnchor(

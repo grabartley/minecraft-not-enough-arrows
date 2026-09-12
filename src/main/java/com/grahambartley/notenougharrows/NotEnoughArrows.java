@@ -7,6 +7,7 @@ import com.grahambartley.notenougharrows.countdown.CountdownBroadcaster;
 import com.grahambartley.notenougharrows.fire.FirePatchService;
 import com.grahambartley.notenougharrows.fletching.FletchingStationInteraction;
 import com.grahambartley.notenougharrows.fuse.FuseService;
+import com.grahambartley.notenougharrows.grapple.GrappleFallGuard;
 import com.grahambartley.notenougharrows.grapple.GrappleService;
 import com.grahambartley.notenougharrows.network.ModNetworking;
 import com.grahambartley.notenougharrows.nock.NockedArrowBroadcaster;
@@ -37,6 +38,7 @@ public class NotEnoughArrows implements ModInitializer {
     BlastService.register();
     AnchorService.register();
     GrappleService.register();
+    GrappleFallGuard.register();
     RedstoneChargeService.register();
     NockedArrowBroadcaster.register();
     FletchingStationInteraction.register();
