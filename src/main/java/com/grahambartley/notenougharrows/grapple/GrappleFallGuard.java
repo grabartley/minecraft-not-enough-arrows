@@ -20,7 +20,7 @@ public final class GrappleFallGuard {
 
   public static void register() {
     ServerLivingEntityEvents.ALLOW_DAMAGE.register(GrappleFallGuard::allowDamage);
-    ServerTickEvents.END_WORLD_TICK.register(GrappleFallGuard::releaseWhoeverLandedIn);
+    ServerTickEvents.START_WORLD_TICK.register(GrappleFallGuard::releaseWhoeverLandedIn);
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
     PlayerExit.whenLeaving(GrappleFallGuard::release);
   }
@@ -58,12 +58,15 @@ public final class GrappleFallGuard {
     return false;
   }
 
+  private static boolean hasLanded(final LivingEntity subject) {
+    return subject.isOnGround() || subject.isTouchingWater();
+  }
+
   private static void releaseWhoeverLandedIn(final ServerWorld world) {
     if (SPARED.isEmpty()) {
       return;
     }
     SPARED.removeIf(
-        playerId ->
-            world.getEntity(playerId) instanceof LivingEntity landed && landed.isOnGround());
+        playerId -> world.getEntity(playerId) instanceof LivingEntity landed && hasLanded(landed));
   }
 }

@@ -45,7 +45,7 @@ public final class GrappleService {
     final Vec3d origin = pullOrigin(player);
     final Vec3d target = Vec3d.ofCenter(anchorPos);
     if (!GrapplePull.isWithinRange(origin, target, config.maxRangeBlocks())
-        || !canAnchorAt(world, anchorPos)) {
+        || !AnchorSite.isSuitable(world, anchorPos)) {
       return null;
     }
 
@@ -83,9 +83,7 @@ public final class GrappleService {
   }
 
   public static void stopPullingEverywhere(@Nullable final UUID playerId) {
-    TRACKERS
-        .values()
-        .forEach(tracker -> endIn(null, tracker, playerId, GrappleEnding.SHOOTER_GONE));
+    TRACKERS.values().forEach(tracker -> endEverywhereFor(tracker, playerId));
   }
 
   public static void forget() {
@@ -94,7 +92,7 @@ public final class GrappleService {
 
   @Nullable
   private static GrappleSession endIn(
-      @Nullable final ServerWorld world,
+      final ServerWorld world,
       final GrappleTracker tracker,
       @Nullable final UUID playerId,
       final GrappleEnding ending) {
@@ -102,13 +100,16 @@ public final class GrappleService {
     if (ended == null) {
       return null;
     }
-    if (world == null) {
-      AnchorService.releaseEverywhere(playerId);
-    } else {
-      AnchorService.release(world, playerId);
-    }
+    AnchorService.release(world, playerId);
     GrappleArrival.settle(world, ended, ending);
     return ended;
+  }
+
+  private static void endEverywhereFor(
+      final GrappleTracker tracker, @Nullable final UUID playerId) {
+    if (tracker.remove(playerId) != null) {
+      AnchorService.releaseEverywhere(playerId);
+    }
   }
 
   private static void pullGrapplesIn(final ServerWorld world) {
@@ -168,10 +169,6 @@ public final class GrappleService {
         GrapplePull.velocity(pullOrigin(player), target, pullSpeed, player.getFinalGravity()));
     player.velocityModified = true;
     GrappleFlightCheck.clearFloatingCountFor(player);
-  }
-
-  private static boolean canAnchorAt(final ServerWorld world, final BlockPos anchorPos) {
-    return AnchorSite.isSuitable(world, anchorPos);
   }
 
   private static Vec3d pullOrigin(final PlayerEntity player) {
