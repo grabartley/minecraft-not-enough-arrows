@@ -1,8 +1,8 @@
-# More Arrows: Product Requirements
+# Not Enough Arrows: Product Requirements
 
 ## How To Read This Document
 
-This document says **what More Arrows is**: which player goals it serves, who is allowed to do what, which side of the client and server boundary enforces each rule, and what the mod deliberately does not do. Every requirement carries a stable identifier so it can be cited from an issue, a commit, or a review.
+This document says **what Not Enough Arrows is**: which player goals it serves, who is allowed to do what, which side of the client and server boundary enforces each rule, and what the mod deliberately does not do. Every requirement carries a stable identifier so it can be cited from an issue, a commit, or a review.
 
 It holds **no status**. Nothing here says what is built, in progress, or blocked, and no issue is linked as a progress pointer. Progress lives on the project board. A requirement belongs here whether it shipped a year ago or has not been started, because both are equally part of what the mod is. If merging a pull request would require editing this document, something in it is status and should be taken out.
 
@@ -20,7 +20,7 @@ Meanwhile the fletching table sits in villages doing nothing. It has no interfac
 
 ### What The Mod Is
 
-More Arrows turns the bow into a toolkit. It adds craftable arrows that carry an effect on impact instead of, or alongside, damage: arrows that move the player, arrows that move the world, arrows that mark, trigger, burn, or explode. Each is crafted from ordinary materials in the shape players already know from tipped arrows, and each works everywhere a vanilla arrow works, including crossbows and dispensers. It also gives the fletching table the interface it never had, as a station that offers the same arrows at a better exchange rate.
+Not Enough Arrows turns the bow into a toolkit. It adds craftable arrows that carry an effect on impact instead of, or alongside, damage: arrows that move the player, arrows that move the world, arrows that mark, trigger, burn, or explode. Each is crafted from ordinary materials in the shape players already know from tipped arrows, and each works everywhere a vanilla arrow works, including crossbows and dispensers. It also gives the fletching table the interface it never had, as a station that offers the same arrows at a better exchange rate.
 
 The mod is built for a dedicated server full of strangers first. Every effect that touches the world asks the world for permission before it acts, every destructive default is the conservative one, and every setting an operator could want is reachable from a command line over SSH without a client mod installed.
 
@@ -117,9 +117,9 @@ Out of the first release, deliberately.
 | **Carrier** | The entity a fuse is tracked against: the arrow entity when it embedded in a block, or the struck mob when it hit one |
 | **Blast** | What a fuse dispatches on expiry. Each explosive tier decides for itself what its blast means |
 | **Fletching station** | The interface attached to the vanilla `minecraft:fletching_table` block, offering this mod's arrows at a better exchange rate than a crafting table |
-| **Fletching recipe** | A recipe of type `more-arrows:fletching`: an unordered list of one to nine counted ingredients and one result stack |
-| **Server config** | The authoritative, per-world settings record, persisted at `<world>/more-arrows/server-config.json` and synced to clients |
-| **Client state** | Per-installation interface preferences, persisted at `<config>/more-arrows/client-state.json`, never sent anywhere |
+| **Fletching recipe** | A recipe of type `not-enough-arrows:fletching`: an unordered list of one to nine counted ingredients and one result stack |
+| **Server config** | The authoritative, per-world settings record, persisted at `<world>/not-enough-arrows/server-config.json` and synced to clients |
+| **Client state** | Per-installation interface preferences, persisted at `<config>/not-enough-arrows/client-state.json`, never sent anywhere |
 | **Option catalog** | The single description of every setting, from which the status output and the settings screen are both built |
 
 ### Geometry
@@ -565,6 +565,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 | CONFIG-13 | Client preferences live in a separate store, in the client configuration directory, and are never sent anywhere. Editing them changes nothing another player can observe |
 | CONFIG-14 | The configuration reaching a client is encoded with the same codec used to read and write the file, so the wire format cannot drift from the file format. The encoded payload is bounded |
 | CONFIG-15 | A malformed sync degrades to defaults on the client rather than failing loudly, because a client does not own that state |
+| CONFIG-16 | The command tree is reachable under a short alias as well as the full mod name. The alias is a redirect onto the same tree rather than a second tree, so the two roots cannot offer different subcommands or different permission gating |
 
 **Not supported:** Per-player server settings. Per-dimension settings. A setting reachable from the screen but not from a command. A client changing a server setting it does not have permission for.
 
@@ -606,8 +607,8 @@ Access control is stated in one place because it is the difference between a too
 |---|---|---|---|---|---|
 | Craft any arrow | Yes | Yes | Yes | Yes, it is server-side recipe data | n/a |
 | Fire any arrow | Yes | Yes | Yes | Yes | Yes |
-| Run `/morearrows` | Yes | Yes | Yes | Yes | n/a |
-| Run `/morearrows status` | Yes | Yes | Yes | Yes | n/a |
+| Run `/notenougharrows`, or its `/nea` alias | Yes | Yes | Yes | Yes | n/a |
+| Run `/notenougharrows status`, or its `/nea` alias | Yes | Yes | Yes | Yes | n/a |
 | Change any server setting | No | No | Yes | No | n/a |
 | Reset every setting to defaults | No | No | Yes | No | n/a |
 | Change own client preferences | Yes | Yes | Yes | No, there is no client state without the mod | n/a |
@@ -622,7 +623,7 @@ Access control is stated in one place because it is the difference between a too
 
 | Requirement | Statement |
 |---|---|
-| PERM-1 | Every mutating command node requires operator permission level 2. The root command and the status subcommand are open to anyone |
+| PERM-1 | Every mutating command node requires operator permission level 2. The root command and the status subcommand are open to anyone. This holds identically under the alias, which reaches the same nodes |
 | PERM-2 | A configuration update arriving from a client is re-checked against operator permission on the server, regardless of what the client's own screen believed |
 | PERM-3 | A refused configuration update is answered with a fresh sync, which puts the refusing client's view back onto the server's values |
 | PERM-4 | The settings screen presents server settings as read-only to a player who is not an operator, and shows the reason. That presentation is a courtesy, not the enforcement: PERM-2 is |

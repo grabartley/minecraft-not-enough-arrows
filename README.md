@@ -1,4 +1,4 @@
-# More Arrows
+# Not Enough Arrows
 
 A Fabric mod for Minecraft 1.21.1.
 
@@ -6,7 +6,7 @@ Expands the arrow types available in Minecraft with new craftable arrows that ca
 
 ## What this mod is
 
-[`docs/prd.md`](docs/prd.md) is the single statement of what More Arrows supports: the player goals it serves, who is allowed to do what, which side enforces each rule, and what it deliberately does not do. It carries no status, so read it for scope and the project board for progress.
+[`docs/prd.md`](docs/prd.md) is the single statement of what Not Enough Arrows supports: the player goals it serves, who is allowed to do what, which side enforces each rule, and what it deliberately does not do. It carries no status, so read it for scope and the project board for progress.
 
 ## Dependencies
 
@@ -330,11 +330,11 @@ Its range is deliberately shorter than the ender pearl arrow's. Moving yourself 
 
 ## Sounds
 
-The mod's sound assets live under `assets/more-arrows/sounds/` and are declared in `assets/more-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
+The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
 
 | Sound | Used for |
 |---|---|
-| `more-arrows:countdown_beep` | The single beep every explosive arrow plays while its fuse burns |
+| `not-enough-arrows:countdown_beep` | The single beep every explosive arrow plays while its fuse burns |
 
 The countdown communicates urgency through cadence rather than through different sounds: one short beep is replayed at a shortening interval as detonation approaches, so a player who hears the beeps speeding up knows to move. Keeping it to one asset is what makes that escalation smooth, because the interval is the only thing changing.
 
@@ -342,7 +342,7 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/more-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, `entity/`, or `gui/container/` to match. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
+Texture assets live under `assets/not-enough-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, `entity/`, or `gui/container/` to match. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
 
 | Texture | Source | Used for |
 |---|---|---|
@@ -441,8 +441,8 @@ The mod keeps two separate stores, and which one a setting lives in decides who 
 
 | Store | Location | Owner | Reaches clients by |
 |---|---|---|---|
-| Server config | `<world>/more-arrows/server-config.json` | Server operator, per world | Sync on join and on change |
-| Client state | `<config>/more-arrows/client-state.json` | The player, per installation | Never sent anywhere |
+| Server config | `<world>/not-enough-arrows/server-config.json` | Server operator, per world | Sync on join and on change |
+| Client state | `<config>/not-enough-arrows/client-state.json` | The player, per installation | Never sent anywhere |
 
 Server config decides gameplay and is authoritative. Client state holds interface preferences only, so editing it changes nothing another player can observe. Either file falls back to defaults if it is missing or malformed, keeping a copy of the broken file beside it rather than overwriting it.
 
@@ -467,32 +467,34 @@ Every server config option is adjustable at runtime, so a server owner on a head
 
 | Command | Permission | Purpose |
 |---|---|---|
-| `/morearrows` | Anyone | Lists the commands the caller is allowed to run |
-| `/morearrows status` | Anyone | Prints every setting and its current value |
-| `/morearrows config reset` | Operator (level 2) | Restores every setting to its default |
-| `/morearrows config <family> <option> <value>` | Operator (level 2) | Sets one option |
+| `/notenougharrows` | Anyone | Lists the commands the caller is allowed to run |
+| `/notenougharrows status` | Anyone | Prints every setting and its current value |
+| `/notenougharrows config reset` | Operator (level 2) | Restores every setting to its default |
+| `/notenougharrows config <family> <option> <value>` | Operator (level 2) | Sets one option |
 
-`<family>` is `explosive`, `grapple`, `utility`, `physics`, `ender`, or `fletching`, mirroring how the config file nests its settings. `/morearrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/morearrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
+`/nea` is an alias for `/notenougharrows` and reaches the same command tree, so `/nea status` and `/notenougharrows status` are the same command and the operator gating applies identically to both. The help output lists the canonical root.
+
+`<family>` is `explosive`, `grapple`, `utility`, `physics`, `ender`, or `fletching`, mirroring how the config file nests its settings. `/notenougharrows status` prints setting names in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it. The settings screen and `/notenougharrows status` both read one shared option catalog, so a setting can never appear in one and be missing from the other.
 
 Values are checked against the same bounds the config record enforces. A value outside them is rejected with an error naming the accepted range, rather than being silently clamped the way a hand-edited file is on load.
 
 The gravity arrow block exclusion list is edited rather than replaced:
 
 ```
-/morearrows config physics gravityblockexclusions add <block>
-/morearrows config physics gravityblockexclusions remove <block>
-/morearrows config physics gravityblockexclusions clear
+/notenougharrows config physics gravityblockexclusions add <block>
+/notenougharrows config physics gravityblockexclusions remove <block>
+/notenougharrows config physics gravityblockexclusions clear
 ```
 
 ## Fletching Recipes
 
-The fletching table station has its own recipe type, `more-arrows:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
+The fletching table station has its own recipe type, `not-enough-arrows:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
 
 A recipe is an unordered list of ingredients, each with the count it demands, and one result carrying its own count:
 
 ```json
 {
-"type": "more-arrows:fletching",
+"type": "not-enough-arrows:fletching",
 "ingredients": [
 	{ "ingredient": { "item": "minecraft:arrow" }, "count": 4 },
 	{ "ingredient": { "item": "minecraft:tnt" } }
@@ -533,17 +535,17 @@ The shaft is a plain arrow for every arrow except the three that are built from 
 | Redstone | `minecraft:arrow` | `minecraft:redstone` |
 | Wind | `minecraft:arrow` | `minecraft:wind_charge` |
 | Gunpowder | `minecraft:arrow` | `minecraft:gunpowder` |
-| TNT | `more-arrows:gunpowder_arrow` | `minecraft:tnt` |
-| Fire charge | `more-arrows:tnt_arrow` | `minecraft:fire_charge` |
+| TNT | `not-enough-arrows:gunpowder_arrow` | `minecraft:tnt` |
+| Fire charge | `not-enough-arrows:tnt_arrow` | `minecraft:fire_charge` |
 | Incendiary | `minecraft:arrow` | `minecraft:fire_charge` |
 | Gravity | `minecraft:arrow` | `minecraft:slime_ball` |
 | Ricochet | `minecraft:arrow` | `minecraft:iron_nugget` |
 | Ender pearl | `minecraft:arrow` | `minecraft:ender_pearl` |
-| Recall | `more-arrows:ender_pearl_arrow` | `minecraft:fermented_spider_eye` |
+| Recall | `not-enough-arrows:ender_pearl_arrow` | `minecraft:fermented_spider_eye` |
 
 Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own. The recall arrow sits on the ender ladder rather than the explosive one and compounds the same way, at two and a quarter times, because it is built from ender pearl arrows that were themselves discounted.
 
-Station recipes live in `data/more-arrows/recipe/fletching/` and crafting table recipes in `data/more-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
+Station recipes live in `data/not-enough-arrows/recipe/fletching/` and crafting table recipes in `data/not-enough-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
 
 ## Fletching Station
 
@@ -601,7 +603,7 @@ Scroll position, row hit-testing, and where the scroller sits along its travel a
 | `StationRecipes` | Every loaded station recipe, sorted by id so both viewers list them in one order |
 | `FletchingRecipeLayout` | Where the input slots, the arrow, and the result sit, so a recipe is laid out the same way in either viewer, per [ADR 0028](docs/adr/0028-one-layout-drives-both-recipe-viewers.md) |
 | `en_us.json` | Every word a player reads |
-| `MoreArrowsEmiPlugin` and `MoreArrowsJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
+| `NotEnoughArrowsEmiPlugin` and `NotEnoughArrowsJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
 
 The info list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
 

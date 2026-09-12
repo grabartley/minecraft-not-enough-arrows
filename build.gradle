@@ -34,10 +34,10 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
-	accessWidenerPath = file("src/main/resources/more-arrows.accesswidener")
+	accessWidenerPath = file("src/main/resources/not-enough-arrows.accesswidener")
 
 	mods {
-		"more-arrows" {
+		"not-enough-arrows" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -173,19 +173,17 @@ tasks.register("verifyMainSourceSideSafety") {
 	doLast {
 		def disallowedPatterns = [
 			"net.minecraft.client.",
-			"com.grahambartley.morearrows.client.",
-			"com.grahambartley.morearrows.compat.",
-			"com.grahambartley.morearrows.hud.",
-			"com.grahambartley.morearrows.render.",
-			"com.grahambartley.morearrows.sound.",
-			"com.grahambartley.morearrows.model.",
-			"com.grahambartley.morearrows.screen.",
-			"com.grahambartley.morearrows.mixin.client.",
-			"com.grahambartley.morearrows.MoreArrowsClient",
-			"com.grahambartley.morearrows.MoreArrowsDataGenerator",
-			"com.grahambartley.morearrows.MoreArrowsModMenu",
-			"com.grahambartley.morearrows.ModKeyBindings",
-			"com.grahambartley.morearrows.network.ModNetworkingClient"
+			"com.grahambartley.notenougharrows.client.",
+			"com.grahambartley.notenougharrows.compat.",
+			"com.grahambartley.notenougharrows.hud.",
+			"com.grahambartley.notenougharrows.render.",
+			"com.grahambartley.notenougharrows.sound.",
+			"com.grahambartley.notenougharrows.model.",
+			"com.grahambartley.notenougharrows.screen.",
+			"com.grahambartley.notenougharrows.mixin.client.",
+			"com.grahambartley.notenougharrows.NotEnoughArrowsClient",
+			"com.grahambartley.notenougharrows.NotEnoughArrowsModMenu",
+			"com.grahambartley.notenougharrows.network.ModNetworkingClient"
 		]
 		def violations = []
 
@@ -283,9 +281,9 @@ spotless {
 }
 
 modrinth {
-	projectId = 'more-arrows'
+	projectId = 'not-enough-arrows'
 	versionNumber = project.version.toString()
-	versionName = "More Arrows v${project.version}"
+	versionName = "Not Enough Arrows v${project.version}"
 	versionType = System.getenv('MOD_RELEASE_TYPE') ?: 'alpha'
 	uploadFile = remapJar
 	gameVersions = ['1.21.1']

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "not_enough_arrows_arrows",
+  "pattern": [
+    "AAA",
+    "AFA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "F": {
+      "item": "minecraft:fire_charge"
+    }
+  },
+  "result": {
+    "id": "not-enough-arrows:incendiary_arrow",
+    "count": 8
+  }
+}

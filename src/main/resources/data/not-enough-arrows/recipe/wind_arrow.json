@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "not_enough_arrows_arrows",
+  "pattern": [
+    "AAA",
+    "AWA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "W": {
+      "item": "minecraft:wind_charge"
+    }
+  },
+  "result": {
+    "id": "not-enough-arrows:wind_arrow",
+    "count": 8
+  }
+}

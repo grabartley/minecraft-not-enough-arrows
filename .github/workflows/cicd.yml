@@ -101,7 +101,7 @@ jobs:
         if: github.event_name == 'pull_request' || github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: more-arrows-${{ github.sha }}
+          name: not-enough-arrows-${{ github.sha }}
           path: build/libs/*.jar
 
       # ---------- Release-only (manual trigger) ----------

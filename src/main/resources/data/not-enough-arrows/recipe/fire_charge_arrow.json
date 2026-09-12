@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "not_enough_arrows_arrows",
+  "pattern": [
+    "TTT",
+    "TFT",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "not-enough-arrows:tnt_arrow"
+    },
+    "F": {
+      "item": "minecraft:fire_charge"
+    }
+  },
+  "result": {
+    "id": "not-enough-arrows:fire_charge_arrow",
+    "count": 8
+  }
+}

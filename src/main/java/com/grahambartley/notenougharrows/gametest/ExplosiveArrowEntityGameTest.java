@@ -1,0 +1,115 @@
+package com.grahambartley.notenougharrows.gametest;
+
+import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
+import com.grahambartley.notenougharrows.config.ExplosiveArrowConfig;
+import com.grahambartley.notenougharrows.entity.ExplosiveArrowEntity;
+import com.grahambartley.notenougharrows.explosive.ExplosiveTier;
+import com.grahambartley.notenougharrows.fuse.FuseService;
+import java.util.Collection;
+import java.util.List;
+import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.Blocks;
+import net.minecraft.test.CustomTestProvider;
+import net.minecraft.test.GameTest;
+import net.minecraft.test.TestContext;
+import net.minecraft.test.TestFunction;
+import net.minecraft.util.math.BlockPos;
+import org.jetbrains.annotations.Nullable;
+
+public final class ExplosiveArrowEntityGameTest implements FabricGameTest {
+  private static final String BATCH = "explosive-arrow";
+
+  @CustomTestProvider
+  public Collection<TestFunction> tierFuseTests() {
+    return List.of(
+        tierTest("gunpowder", ModArrows.GUNPOWDER_ARROW, ExplosiveTier.GUNPOWDER),
+        tierTest("tnt", ModArrows.TNT_ARROW, ExplosiveTier.TNT),
+        tierTest("firecharge", ModArrows.FIRE_CHARGE_ARROW, ExplosiveTier.FIRE_CHARGE));
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
+  public void theTopTierLeavesFireWhereItDetonates(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.FIRE_CHARGE_ARROW.item());
+
+    context.runAtTick(
+        ExplosiveArrowConfig.DEFAULT_FIRE_CHARGE.delayTicks()
+            + FiringRangeSupport.LANDING_TICK
+            + 20,
+        () -> {
+          context.assertTrue(
+              firePlaced(context), "The top tier should leave a fire patch where it detonated");
+          context.complete();
+        });
+  }
+
+  private static boolean firePlaced(final TestContext context) {
+    for (int x = 3; x <= 6; x++) {
+      for (int y = 2; y <= 4; y++) {
+        for (int z = 1; z <= 5; z++) {
+          if (context.getBlockState(new BlockPos(x, y, z)).isOf(Blocks.FIRE)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  private static TestFunction tierTest(
+      final String label, final RegisteredArrow<?> arrow, final ExplosiveTier tier) {
+    return new TestFunction(
+        BATCH,
+        "notenougharrows.explosivearrowlightsitsfuse." + label,
+        FiringRangeSupport.TEMPLATE,
+        80,
+        0L,
+        true,
+        context -> assertFuseLights(context, arrow, tier));
+  }
+
+  private static void assertFuseLights(
+      final TestContext context, final RegisteredArrow<?> arrow, final ExplosiveTier tier) {
+    FiringRangeSupport.raiseBackstop(context);
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        arrow.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          final ExplosiveArrowEntity landed = landedArrow(context, arrow);
+          context.assertTrue(
+              landed != null, "A fired " + arrow.id() + " should still exist where it landed");
+          final boolean burning = FuseService.fuseOn(context.getWorld(), landed.getUuid()) != null;
+          defuse(context, landed);
+          context.assertTrue(
+              burning, "A fired " + arrow.id() + " should be burning its own fuse where it landed");
+          context.complete();
+        });
+  }
+
+  private static void defuse(final TestContext context, final ExplosiveArrowEntity arrow) {
+    FuseService.extinguish(context.getWorld(), arrow.getUuid());
+    arrow.discard();
+  }
+
+  @Nullable
+  private static ExplosiveArrowEntity landedArrow(
+      final TestContext context, final RegisteredArrow<?> arrow) {
+    return context
+        .getWorld()
+        .getEntitiesByClass(
+            ExplosiveArrowEntity.class,
+            context.getTestBox(),
+            candidate -> candidate.getType() == arrow.entityType())
+        .stream()
+        .findFirst()
+        .orElse(null);
+  }
+}

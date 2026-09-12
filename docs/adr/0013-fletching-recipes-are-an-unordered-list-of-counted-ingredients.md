@@ -27,7 +27,7 @@ Recipes are datapack driven and datapack overridable. A pack author writes JSON 
 
 ```json
 {
-"type": "more-arrows:fletching",
+"type": "not-enough-arrows:fletching",
 "ingredients": [
 	{ "ingredient": { "item": "minecraft:arrow" }, "count": 4 },
 	{ "ingredient": { "item": "minecraft:tnt" } }

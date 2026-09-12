@@ -1,0 +1,52 @@
+{
+  "variants": {
+    "power=0": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=1": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=2": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=3": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=4": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=5": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=6": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=7": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=8": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=9": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=10": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=11": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=12": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=13": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=14": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    },
+    "power=15": {
+      "model": "not-enough-arrows:block/redstone_charge"
+    }
+  }
+}

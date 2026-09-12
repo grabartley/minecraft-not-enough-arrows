@@ -9,7 +9,7 @@ The fletching station is reached by attaching an interface to the vanilla fletch
 
 A client without this mod holds the vanilla registry. Fabric does not close that gap for it and does not pretend to: `RegistrySyncManager.configureClient` skips the sync outright when the client cannot receive it, with the comment "Don't send if the client cannot receive". The connection is allowed, and the mod's registry entries simply do not exist on the far side.
 
-So an index naming `more-arrows:fletching_station` on the server names nothing on that client. The decode fails and the connection drops. The failure is not a missing texture or an empty screen, it is the player being thrown off the server for right-clicking a block that has been in the game since 1.14.
+So an index naming `not-enough-arrows:fletching_station` on the server names nothing on that client. The decode fails and the connection drops. The failure is not a missing texture or an empty screen, it is the player being thrown off the server for right-clicking a block that has been in the game since 1.14.
 
 The vanilla client is an actor this mod recognises rather than an edge case, and the standing promise to them is that whatever the server does to the world stays coherent. Being disconnected is the least coherent outcome available.
 

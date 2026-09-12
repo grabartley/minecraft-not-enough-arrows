@@ -1,0 +1,59 @@
+package com.grahambartley.notenougharrows.gametest;
+
+import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.ModBlocks;
+import com.grahambartley.notenougharrows.redstone.RedstoneChargeService;
+import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.Blocks;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.property.Properties;
+import net.minecraft.test.BeforeBatch;
+import net.minecraft.test.GameTest;
+import net.minecraft.test.TestContext;
+import net.minecraft.util.math.BlockPos;
+
+public final class RedstoneArrowEntityGameTest implements FabricGameTest {
+  private static final String BATCH = "redstone-arrow";
+  private static final BlockPos LAMP = new BlockPos(5, 3, 4);
+
+  @BeforeBatch(batchId = BATCH)
+  public void forgetChargesBeforeBatch(ServerWorld world) {
+    RedstoneChargeService.forget();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void anArrowFiredFromABowChargesTheFaceItStrikes(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.REDSTONE_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.expectBlock(ModBlocks.REDSTONE_CHARGE, FiringRangeSupport.IMPACT_FACE);
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aChargedFaceLightsARedstoneLampBesideIt(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    context.setBlockState(LAMP, Blocks.REDSTONE_LAMP);
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.REDSTONE_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK + 5,
+        () -> {
+          context.checkBlockState(
+              LAMP,
+              state -> state.get(Properties.LIT),
+              () -> "A redstone arrow should light a lamp beside the face it strikes");
+          context.complete();
+        });
+  }
+}

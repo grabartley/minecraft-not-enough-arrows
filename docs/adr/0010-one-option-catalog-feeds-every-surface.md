@@ -5,17 +5,17 @@
 
 ## Context
 
-The server configuration record holds twenty-six settings across four arrow families. Three separate places need to walk that list: the command tree, which builds a node per setting; `/morearrows status`, which prints each setting and its current value; and now the Mod Menu screen, which draws a control per setting.
+The server configuration record holds twenty-six settings across four arrow families. Three separate places need to walk that list: the command tree, which builds a node per setting; `/notenougharrows status`, which prints each setting and its current value; and now the Mod Menu screen, which draws a control per setting.
 
 Each of those had, or would have had, its own hand-written table naming every setting, reading it off the record, and formatting it. Three tables that must agree, with nothing enforcing that they do. The failure is quiet and specific: a setting added to the command tree but forgotten in the screen is invisible to any player who does not use commands, and nothing fails to compile, no test goes red, and the omission surfaces as a bug report months later.
 
 ## Decision
 
-Settings are described once, as a catalog of `ConfigOption` values under `com.grahambartley.morearrows.config.option`. An option carries its identifier, its bounds, a reader that pulls its value off a subject, and a writer that returns a new subject with that value changed. `ServerConfigOptions` groups them into the four family sections in the order the status output uses.
+Settings are described once, as a catalog of `ConfigOption` values under `com.grahambartley.notenougharrows.config.option`. An option carries its identifier, its bounds, a reader that pulls its value off a subject, and a writer that returns a new subject with that value changed. `ServerConfigOptions` groups them into the four family sections in the order the status output uses.
 
 `ConfigStatusLines` builds its output from the catalog rather than from a table of its own. The settings screen builds its controls from the same catalog. A setting exists in both surfaces or in neither.
 
-The catalog is generic in its subject, so client state uses the same option types with `ClientState` in place of `MoreArrowsConfig`. The screen therefore draws both stores through one widget factory while the type it is holding still says which store a control belongs to.
+The catalog is generic in its subject, so client state uses the same option types with `ClientState` in place of `NotEnoughArrowsConfig`. The screen therefore draws both stores through one widget factory while the type it is holding still says which store a control belongs to.
 
 The command tree keeps its own builders. Brigadier nodes need argument types, suggestion providers, and per-setting feedback that an option descriptor would have to grow fields to express, and the identifiers those builders use come from the same `ConfigSettings` constants the catalog does, so the two cannot drift on naming.
 
