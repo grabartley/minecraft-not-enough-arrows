@@ -75,7 +75,7 @@ public class GrappleArrowEntity extends BaseArrowEntity implements Leashable {
         .ifPresent(
             player -> {
               final GrappleSession started =
-                  GrappleService.start(world, player, blockHitResult.getBlockPos());
+                  GrappleService.start(world, player, blockHitResult.getBlockPos(), getUuid());
               if (started != null) {
                 anchor = started.anchor();
                 attachLeash(player, true);

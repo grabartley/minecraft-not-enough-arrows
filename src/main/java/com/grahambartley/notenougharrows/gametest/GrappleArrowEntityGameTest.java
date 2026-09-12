@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.anchor.AnchorService;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
 import com.grahambartley.notenougharrows.entity.GrappleArrowEntity;
+import com.grahambartley.notenougharrows.grapple.GrappleEnding;
 import com.grahambartley.notenougharrows.grapple.GrappleService;
 import com.grahambartley.notenougharrows.grapple.GrappleSession;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -110,7 +111,8 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
-        LANDING_TICK, () -> GrappleService.release(context.getWorld(), shooter.getUuid()));
+        LANDING_TICK,
+        () -> GrappleService.end(context.getWorld(), shooter.getUuid(), GrappleEnding.CANCELLED));
     context.runAtTick(
         LANDING_TICK + 10,
         () -> {
@@ -130,6 +132,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final GrappleArrowEntity[] reloadedArrow = {null};
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
+    keepTheShooterClosing(context, shooter);
 
     context.runAtTick(
         LANDING_TICK,
@@ -228,6 +231,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
+    keepTheShooterClosing(context, shooter);
 
     context.runAtTick(
         LANDING_TICK,
@@ -257,6 +261,16 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
                   + landed.getVelocity());
           assertNoLeadWasDropped(context);
           context.complete();
+        });
+  }
+
+  private static void keepTheShooterClosing(
+      final TestContext context, final ServerPlayerEntity shooter) {
+    context.runAtEveryTick(
+        () -> {
+          if (context.getTick() < LANDING_TICK) {
+            MockPlayerSupport.creepToward(context, shooter, WALL_BASE);
+          }
         });
   }
 

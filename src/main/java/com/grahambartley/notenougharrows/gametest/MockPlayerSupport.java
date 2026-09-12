@@ -18,6 +18,8 @@ final class MockPlayerSupport {
   private static final int FULLY_DRAWN = 0;
   private static final int A_QUIVER = 8;
 
+  static final double CLOSING_STEP = 0.1;
+
   private MockPlayerSupport() {}
 
   static void moveTo(
@@ -25,6 +27,21 @@ final class MockPlayerSupport {
     final Vec3d target = context.getAbsolute(relativePos);
     player.refreshPositionAndAngles(target.getX(), target.getY(), target.getZ(), 0f, 0f);
     player.setVelocity(Vec3d.ZERO);
+  }
+
+  static void creepToward(
+      final TestContext context, final PlayerEntity player, final BlockPos relativeAnchor) {
+    final Vec3d target = Vec3d.ofCenter(context.getAbsolutePos(relativeAnchor));
+    final Vec3d closer =
+        player
+            .getPos()
+            .add(
+                target
+                    .subtract(player.getBoundingBox().getCenter())
+                    .normalize()
+                    .multiply(CLOSING_STEP));
+    player.refreshPositionAndAngles(
+        closer.getX(), closer.getY(), closer.getZ(), player.getYaw(), player.getPitch());
   }
 
   static void fireEastFromBow(

@@ -97,9 +97,46 @@ class GrapplePullTest {
 
   @Test
   void aPullerPulledDownwardIsPulledDownward() {
-    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, -10.0, 0.0), 0.8, 0.0);
+    final Vec3d velocity = GrapplePull.velocity(PULLER, PULLER.add(0.0, -10.0, 0.0), 0.5, 0.0);
 
-    assertEquals(-0.8, velocity.y, TOLERANCE);
+    assertEquals(-0.5, velocity.y, TOLERANCE);
+  }
+
+  @Test
+  void aPullOntoAnAnchorBelowNeverOutrunsTheDescentCap() {
+    final Vec3d velocity =
+        GrapplePull.velocity(
+            PULLER, PULLER.add(0.0, -20.0, 0.0), GrapplePull.DESCENT_SPEED_CAP * 4.0, 0.0);
+
+    assertEquals(-GrapplePull.DESCENT_SPEED_CAP, velocity.y, TOLERANCE);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"0.2, 0.2", "0.6, 0.6", "1.5, 0.6", "4.0, 0.6"})
+  void aDescentIsCappedWhileAClimbIsNot(final double topSpeed, final double expectedDescent) {
+    final Vec3d below = PULLER.add(4.0, -20.0, 0.0);
+    final Vec3d above = PULLER.add(4.0, 20.0, 0.0);
+
+    assertEquals(expectedDescent, GrapplePull.cappedToward(PULLER, below, topSpeed), TOLERANCE);
+    assertEquals(topSpeed, GrapplePull.cappedToward(PULLER, above, topSpeed), TOLERANCE);
+  }
+
+  @Test
+  void aPullAcrossTheLevelIsNotTreatedAsADescent() {
+    final Vec3d level = PULLER.add(20.0, 0.0, 0.0);
+
+    assertEquals(1.5, GrapplePull.cappedToward(PULLER, level, 1.5), TOLERANCE);
+  }
+
+  @Test
+  void aCappedDescentIsGivenTheTimeItsCappedSpeedNeeds() {
+    final Vec3d below = PULLER.add(0.0, -40.0, 0.0);
+    final Vec3d above = PULLER.add(0.0, 40.0, 0.0);
+
+    assertTrue(
+        GrapplePull.lifetimeTicks(PULLER, below, 1.5, 0.15)
+            > GrapplePull.lifetimeTicks(PULLER, above, 1.5, 0.15),
+        "A capped descent covers the same distance slower, so it needs longer to do it");
   }
 
   @Test

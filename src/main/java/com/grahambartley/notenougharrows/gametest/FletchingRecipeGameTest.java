@@ -21,6 +21,15 @@ import net.minecraft.util.Identifier;
 public final class FletchingRecipeGameTest implements FabricGameTest {
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
+  public void staysOutOfTheVanillaRecipeBook(TestContext context) {
+    context.assertTrue(
+        FletchingTestSupport.fourArrowsAndOneTntGiveEightArrows().isIgnoredInRecipeBook(),
+        "A station recipe is never craftable from the recipe book, so the book must skip it"
+            + " rather than warn about a category it cannot name");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
   public void matchesInputsThatSatisfyEveryDeclaredIngredient(TestContext context) {
     context.assertTrue(
         FletchingTestSupport.fourArrowsAndOneTntGiveEightArrows()

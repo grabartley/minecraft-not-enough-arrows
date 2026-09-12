@@ -19,6 +19,7 @@ class GrappleTrackerTest {
   private static final BlockPos ANCHOR = new BlockPos(4, 64, -2);
   private static final BlockPos OTHER_ANCHOR = new BlockPos(-8, 70, 12);
   private static final int LIFETIME_TICKS = 40;
+  private static final double STARTING_DISTANCE = 20.0;
 
   private GrappleTracker tracker;
 
@@ -43,7 +44,7 @@ class GrappleTrackerTest {
 
   @Test
   void aSessionThatHasAlreadyEndedIsNotTracked() {
-    tracker.add(new GrappleSession(FIRST_PLAYER, ANCHOR, 0, 0));
+    tracker.add(GrappleSession.beginning(FIRST_PLAYER, null, ANCHOR, 0, STARTING_DISTANCE));
 
     assertTrue(tracker.isEmpty());
   }
@@ -123,6 +124,6 @@ class GrappleTrackerTest {
   }
 
   private static GrappleSession session(final UUID playerId, final BlockPos anchor) {
-    return GrappleSession.beginning(playerId, anchor, LIFETIME_TICKS);
+    return GrappleSession.beginning(playerId, null, anchor, LIFETIME_TICKS, STARTING_DISTANCE);
   }
 }
