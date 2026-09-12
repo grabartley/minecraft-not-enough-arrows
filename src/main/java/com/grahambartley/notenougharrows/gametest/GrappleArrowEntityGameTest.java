@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.anchor.AnchorService;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
 import com.grahambartley.notenougharrows.entity.GrappleArrowEntity;
+import com.grahambartley.notenougharrows.grapple.GrappleEnding;
 import com.grahambartley.notenougharrows.grapple.GrappleService;
 import com.grahambartley.notenougharrows.grapple.GrappleSession;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -34,7 +35,6 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final double FAR_BEYOND_A_LEAD = 24.0;
   private static final int LETTING_GO_TICKS = 15;
   private static final int STRETCH_TICKS = 4;
-  private static final double CLOSING_STEP = 0.1;
 
   @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
@@ -111,7 +111,8 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAPPLE_ARROW.item());
 
     context.runAtTick(
-        LANDING_TICK, () -> GrappleService.release(context.getWorld(), shooter.getUuid()));
+        LANDING_TICK,
+        () -> GrappleService.end(context.getWorld(), shooter.getUuid(), GrappleEnding.CANCELLED));
     context.runAtTick(
         LANDING_TICK + 10,
         () -> {
@@ -268,7 +269,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
     context.runAtEveryTick(
         () -> {
           if (context.getTick() < LANDING_TICK) {
-            MockPlayerSupport.creepToward(context, shooter, WALL_BASE, CLOSING_STEP);
+            MockPlayerSupport.creepToward(context, shooter, WALL_BASE);
           }
         });
   }

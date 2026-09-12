@@ -45,7 +45,7 @@ public final class GrappleFallGuard {
     SPARED.clear();
   }
 
-  public static boolean isTheFallAGrappleOwns(@Nullable final DamageSource source) {
+  static boolean isTheFallAGrappleOwns(@Nullable final DamageSource source) {
     return source != null && source.isOf(DamageTypes.FALL);
   }
 

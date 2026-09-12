@@ -45,7 +45,7 @@ public final class GrappleService {
     final Vec3d origin = pullOrigin(player);
     final Vec3d target = Vec3d.ofCenter(anchorPos);
     if (!GrapplePull.isWithinRange(origin, target, config.maxRangeBlocks())
-        || !AnchorSite.isSuitable(world, anchorPos)) {
+        || !canAnchorAt(world, anchorPos)) {
       return null;
     }
 
@@ -71,12 +71,6 @@ public final class GrappleService {
       @Nullable final ServerWorld world, @Nullable final UUID playerId) {
     final GrappleTracker tracker = trackerIn(world);
     return tracker == null ? null : tracker.sessionOf(playerId);
-  }
-
-  @Nullable
-  public static GrappleSession release(
-      @Nullable final ServerWorld world, @Nullable final UUID playerId) {
-    return end(world, playerId, GrappleEnding.CANCELLED);
   }
 
   @Nullable
@@ -108,7 +102,11 @@ public final class GrappleService {
     if (ended == null) {
       return null;
     }
-    AnchorService.release(world, playerId);
+    if (world == null) {
+      AnchorService.releaseEverywhere(playerId);
+    } else {
+      AnchorService.release(world, playerId);
+    }
     GrappleArrival.settle(world, ended, ending);
     return ended;
   }
@@ -123,7 +121,7 @@ public final class GrappleService {
     for (final GrappleSession session : tracker.sessions()) {
       final GrappleEnding ending = pullOnce(world, tracker, session, config);
       if (ending != null) {
-        end(world, session.playerId(), ending);
+        endIn(world, tracker, session.playerId(), ending);
       }
     }
   }
@@ -170,6 +168,10 @@ public final class GrappleService {
         GrapplePull.velocity(pullOrigin(player), target, pullSpeed, player.getFinalGravity()));
     player.velocityModified = true;
     GrappleFlightCheck.clearFloatingCountFor(player);
+  }
+
+  private static boolean canAnchorAt(final ServerWorld world, final BlockPos anchorPos) {
+    return AnchorSite.isSuitable(world, anchorPos);
   }
 
   private static Vec3d pullOrigin(final PlayerEntity player) {

@@ -20,8 +20,7 @@ public final class GrapplePull {
     return Reach.isWithin(puller, target, maxRangeBlocks);
   }
 
-  public static double topSpeedToward(
-      final Vec3d puller, final Vec3d target, final double topSpeed) {
+  public static double cappedToward(final Vec3d puller, final Vec3d target, final double topSpeed) {
     return target.getY() < puller.getY() ? Math.min(topSpeed, DESCENT_SPEED_CAP) : topSpeed;
   }
 
@@ -41,13 +40,13 @@ public final class GrapplePull {
     return target
         .subtract(puller)
         .normalize()
-        .multiply(topSpeedToward(puller, target, speed))
+        .multiply(cappedToward(puller, target, speed))
         .add(0.0, Math.max(0.0, gravity), 0.0);
   }
 
   public static int lifetimeTicks(
       final Vec3d puller, final Vec3d target, final double topSpeed, final double acceleration) {
-    final double reachableTopSpeed = topSpeedToward(puller, target, topSpeed);
+    final double reachableTopSpeed = cappedToward(puller, target, topSpeed);
     if (reachableTopSpeed <= 0.0 || acceleration <= 0.0) {
       return OVERRUN_GRACE_TICKS;
     }

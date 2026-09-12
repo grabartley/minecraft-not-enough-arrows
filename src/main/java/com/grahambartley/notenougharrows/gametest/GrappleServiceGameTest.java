@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.anchor.AnchorService;
 import com.grahambartley.notenougharrows.config.GrappleArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
 import com.grahambartley.notenougharrows.config.ServerConfigHolder;
+import com.grahambartley.notenougharrows.grapple.GrappleEnding;
 import com.grahambartley.notenougharrows.grapple.GrappleProgress;
 import com.grahambartley.notenougharrows.grapple.GrapplePull;
 import com.grahambartley.notenougharrows.grapple.GrappleService;
@@ -39,7 +40,6 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   private static final int SAMPLED_PULL_TICKS = 4;
   private static final int OVERRUN_MARGIN_TICKS = 10;
   private static final int STOPPED_MARGIN_TICKS = 3;
-  private static final double CLOSING_STEP = 0.1;
   private static final double SPEED_TOLERANCE = 0.01;
 
   @BeforeBatch(batchId = MockPlayerSupport.BATCH)
@@ -248,8 +248,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
     context.assertTrue(session != null, "A grapple across the arena should start");
 
-    context.runAtEveryTick(
-        () -> MockPlayerSupport.creepToward(context, player, HIGH_ANCHOR, CLOSING_STEP));
+    context.runAtEveryTick(() -> MockPlayerSupport.creepToward(context, player, HIGH_ANCHOR));
     context.runAtTick(
         session.remainingTicks() - OVERRUN_MARGIN_TICKS,
         () ->
@@ -299,7 +298,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     GrappleService.start(context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
 
     context.assertTrue(
-        GrappleService.release(context.getWorld(), player.getUuid()) != null,
+        GrappleService.end(context.getWorld(), player.getUuid(), GrappleEnding.CANCELLED) != null,
         "Releasing a grapple should hand back the session it ended");
     context.assertTrue(
         AnchorService.anchorOf(context.getWorld(), player.getUuid()) == null,
@@ -334,7 +333,7 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         GrappleService.sessionOf(context.getWorld(), second.getUuid()).anchor(),
         "Block both players are being pulled toward");
 
-    GrappleService.release(context.getWorld(), first.getUuid());
+    GrappleService.end(context.getWorld(), first.getUuid(), GrappleEnding.CANCELLED);
 
     context.assertTrue(
         GrappleService.sessionOf(context.getWorld(), second.getUuid()) != null,

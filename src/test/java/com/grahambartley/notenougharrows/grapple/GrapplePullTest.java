@@ -117,15 +117,15 @@ class GrapplePullTest {
     final Vec3d below = PULLER.add(4.0, -20.0, 0.0);
     final Vec3d above = PULLER.add(4.0, 20.0, 0.0);
 
-    assertEquals(expectedDescent, GrapplePull.topSpeedToward(PULLER, below, topSpeed), TOLERANCE);
-    assertEquals(topSpeed, GrapplePull.topSpeedToward(PULLER, above, topSpeed), TOLERANCE);
+    assertEquals(expectedDescent, GrapplePull.cappedToward(PULLER, below, topSpeed), TOLERANCE);
+    assertEquals(topSpeed, GrapplePull.cappedToward(PULLER, above, topSpeed), TOLERANCE);
   }
 
   @Test
   void aPullAcrossTheLevelIsNotTreatedAsADescent() {
     final Vec3d level = PULLER.add(20.0, 0.0, 0.0);
 
-    assertEquals(1.5, GrapplePull.topSpeedToward(PULLER, level, 1.5), TOLERANCE);
+    assertEquals(1.5, GrapplePull.cappedToward(PULLER, level, 1.5), TOLERANCE);
   }
 
   @Test

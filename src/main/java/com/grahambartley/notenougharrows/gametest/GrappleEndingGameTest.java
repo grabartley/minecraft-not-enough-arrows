@@ -6,6 +6,7 @@ import com.grahambartley.notenougharrows.config.GrappleArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
 import com.grahambartley.notenougharrows.config.ServerConfigHolder;
 import com.grahambartley.notenougharrows.entity.GrappleArrowEntity;
+import com.grahambartley.notenougharrows.grapple.GrappleArrowReturn;
 import com.grahambartley.notenougharrows.grapple.GrappleFallGuard;
 import com.grahambartley.notenougharrows.grapple.GrapplePull;
 import com.grahambartley.notenougharrows.grapple.GrappleService;
@@ -219,6 +220,66 @@ public final class GrappleEndingGameTest implements FabricGameTest {
               "A descent should never outrun its cap, was " + pull);
           context.complete();
         });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  public void arrivingAtTheAnchorSparesTheLandingStillAhead(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
+    startGrappleUnderfoot(context, shooter, null);
+
+    context.runAtTick(
+        SETTLE_TICK,
+        () -> {
+          context.assertTrue(
+              GrappleFallGuard.spares(shooter.getUuid()),
+              "A grapple that carried a player owes them the landing still ahead of them");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  public void aSparedPlayerWhoLandsSafelyIsOwedNothingFurther(TestContext context) {
+    final ServerPlayerEntity grounded = MockPlayerSupport.playerAt(context, PLAYER_STAND);
+    grounded.setOnGround(true);
+    GrappleFallGuard.spare(grounded.getUuid());
+
+    context.runAtTick(
+        SETTLE_TICK,
+        () -> {
+          context.assertFalse(
+              GrappleFallGuard.spares(grounded.getUuid()),
+              "A player who put their feet down has taken the landing the grapple owed them");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anArrowFiredInCreativeIsNeverHandedBack(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
+    final GrappleArrowEntity arrow = plantedArrow(context);
+    arrow.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
+
+    context.assertFalse(
+        GrappleArrowReturn.toShooter(shooter, arrow),
+        "An arrow a player was never going to recover should not be handed back");
+    context.assertFalse(
+        arrow.isRemoved(), "An arrow nobody may pick up should stay planted where it is");
+    context.assertFalse(holdsAGrappleArrow(shooter), "A creative shooter should be given nothing");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anArrowAlreadyGoneIsNeverHandedBackTwice(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
+    final GrappleArrowEntity arrow = plantedArrow(context);
+    arrow.discard();
+
+    context.assertFalse(
+        GrappleArrowReturn.toShooter(shooter, arrow),
+        "An arrow that has already left the world cannot be handed back again");
+    context.assertFalse(
+        holdsAGrappleArrow(shooter), "An arrow handed back twice would be an arrow duplicated");
+    context.complete();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)

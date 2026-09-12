@@ -18,6 +18,8 @@ final class MockPlayerSupport {
   private static final int FULLY_DRAWN = 0;
   private static final int A_QUIVER = 8;
 
+  static final double CLOSING_STEP = 0.1;
+
   private MockPlayerSupport() {}
 
   static void moveTo(
@@ -28,15 +30,16 @@ final class MockPlayerSupport {
   }
 
   static void creepToward(
-      final TestContext context,
-      final PlayerEntity player,
-      final BlockPos relativeAnchor,
-      final double step) {
+      final TestContext context, final PlayerEntity player, final BlockPos relativeAnchor) {
     final Vec3d target = Vec3d.ofCenter(context.getAbsolutePos(relativeAnchor));
     final Vec3d closer =
         player
             .getPos()
-            .add(target.subtract(player.getBoundingBox().getCenter()).normalize().multiply(step));
+            .add(
+                target
+                    .subtract(player.getBoundingBox().getCenter())
+                    .normalize()
+                    .multiply(CLOSING_STEP));
     player.refreshPositionAndAngles(
         closer.getX(), closer.getY(), closer.getZ(), player.getYaw(), player.getPitch());
   }

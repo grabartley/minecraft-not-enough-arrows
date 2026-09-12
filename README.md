@@ -153,12 +153,12 @@ The grapple arrow hooks into the first block it hits and reels its shooter to it
 | One at a time | A player is pulled by at most one grapple. Firing again ends the first, hands its block back, and takes the new anchor, rather than stacking a second pull |
 | Pulling downward | A pull onto an anchor below the player is held to a descent cap well under the top speed a climb reaches, so a downward grapple lowers a player rather than firing them into the floor. The tick budget is worked out at the capped speed, so a descent is given the time it actually needs |
 
-Every way a pull can end runs through one cleanup path, so the session is dropped, the block is handed back, and the line comes off the arrow no matter which case fired, and [ADR 0031](docs/adr/0031-every-way-a-grapple-ends-runs-through-one-path.md) covers why that is one path rather than one per case. What differs between them is who owns the landing and where the arrow ends up:
+Every way a pull can end runs through one cleanup path, so the session is dropped and the block is handed back no matter which case fired, and the arrow lets go of its line on its next tick once the session is gone, and [ADR 0031](docs/adr/0031-every-way-a-grapple-ends-runs-through-one-path.md) covers why that is one path rather than one per case. What differs between them is who owns the landing and where the arrow ends up:
 
 | How it ends | Fall damage | The arrow |
 |---|---|---|
 | The player reaches the anchor | Cancelled, per `grapple.cancelFallDamageOnArrival` | Handed back to the shooter, per `grapple.returnArrowOnArrival` |
-| The pull stops closing on its anchor for a full second, because something is in the way | Cancelled, since the pull left the player where they are | Left planted, to be picked up |
+| The pull stops closing on its anchor for about a second, because something is in the way | Cancelled, since the pull left the player where they are | Left planted, to be picked up |
 | The pull runs out of its tick budget | Cancelled, for the same reason | Left planted |
 | The player fires another grapple | Cancelled, so a chained grapple does not land the fall of the one before it | Left planted |
 | The anchor block is broken or replaced | Left standing, so the player drops naturally | Left planted |
@@ -172,7 +172,7 @@ A line renders between the player and the arrow they are hanging from, so the pu
 
 Session state is server-owned and lives in memory only, so a restart mid-pull drops the pull rather than resuming it, and no pull survives into the next start.
 
-Obstruction is read as the pull failing to close on its anchor rather than as a collision, because the pull is a velocity the client applies and the server only ever sees where the client reports arriving. A second of no progress is the line between a player caught on a ledge for a moment and a player held against a wall, and it sits below the shortest tick budget any pull carries, so an obstructed pull always ends on the obstruction rather than quietly waiting out its clock.
+Obstruction is read as the pull failing to close on its anchor rather than as a collision, because the pull is a velocity the client applies and the server only ever sees where the client reports arriving. Twenty ticks of no progress is the line between a player caught on a ledge for a moment and a player held against a wall, the first of them spent establishing where the pull started from, and it sits below the shortest tick budget any pull carries, so an obstructed pull always ends on the obstruction rather than quietly waiting out its clock.
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one tripwire hook, yielding eight, and [ADR 0002](docs/adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
