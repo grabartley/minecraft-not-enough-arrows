@@ -97,7 +97,7 @@ The grapple arrow hooks into the first block it hits and reels its shooter to it
 | Rule | Behaviour |
 |---|---|
 | What starts a pull | An arrow shot by a player landing in a block the anchoring system will hold onto. A dispensed arrow has no player behind it, so it embeds and pulls nobody |
-| Reach | `grapple.maxRangeBlocks`, measured from the player to the centre of the block hit. An arrow that lands further away embeds without pulling |
+| Reach | `grapple.maxRangeBlocks`, the full hundred and twenty eight by default, measured from the player to the centre of the block hit. An arrow that lands further away embeds without pulling |
 | How the player moves | The server sets the player's velocity toward the anchor each tick and lets vanilla send the velocity update the client already knows how to apply. Nothing is ever repositioned, so the client's own movement prediction is never fought |
 | Speed | The pull accelerates rather than running at one flat speed: it builds by `grapple.pullAcceleration` blocks per tick until it reaches `grapple.pullSpeed`, then holds there. Both are read fresh every tick, so an operator changing either mid-pull changes how fast that pull moves. The pull's tick budget is worked out once when it starts, so a mid-pull change moves the player without extending the time it has |
 | Gravity | The pull carries the gravity the client is about to subtract, so the speed it builds to is the speed the player actually travels rather than an upper bound gravity quietly eats into |
@@ -136,7 +136,7 @@ The rope arrow anchors in the block it hits and drops a climbable rope beneath i
 | Where an arrow takes hold | Anything the anchoring system will hold onto, which is the same question the grapple asks. An arrow with no player behind it still hangs a rope, so a dispenser works |
 | Whether anything hangs | The rope block's own support rule, which needs an underside to hang from. The two rules are not the same: a top slab or the open half of an upside-down stair is worth anchoring into but has no underside, so the arrow embeds and no rope appears |
 | Where the rope goes | Straight down from the block hit, starting in the space directly beneath it |
-| How long it is | `grapple.ropeLengthBlocks`, or shorter if it runs out of room first |
+| How long it is | `grapple.ropeLengthBlocks`, the full hundred and twenty eight by default, or shorter if it runs out of room first |
 | Stopping early | The rope stops at the first position that is not open air, so it lands on the floor rather than through it and stops at a ledge rather than clipping into it. Water, crops, and grass stop a rope too, because a descent is not worth destroying what a player put there |
 | Climbing | The rope is a climbable block, so vanilla's own climbing rules apply to it exactly as they do to a ladder or a vine, in both directions |
 | Losing the anchor | Breaking the block a rope hangs from drops the whole rope, one segment at a time down the chain |
@@ -208,15 +208,15 @@ Three tiers that share one fuse, one blast system, and one config family, crafte
 
 | Tier | Crafted from | Fuse | Power | Leaves fire |
 |---|---|---|---|---|
-| Gunpowder arrow | Eight plain arrows around gunpowder | `explosive.gunpowder.delayTicks`, 60 by default | `explosive.gunpowder.power`, 4.0 by default, which is vanilla TNT | No |
-| TNT arrow | Eight gunpowder arrows around a block of TNT | `explosive.tnt.delayTicks`, 50 by default | `explosive.tnt.power`, 6.0 by default | No |
-| Fire charge arrow | Eight TNT arrows around a fire charge | `explosive.fireCharge.delayTicks`, 40 by default | `explosive.fireCharge.power`, 8.0 by default | Yes |
+| Gunpowder arrow | Eight plain arrows around gunpowder | `explosive.gunpowder.delayTicks`, 80 by default | `explosive.gunpowder.power`, 4.0 by default, which is vanilla TNT | No |
+| TNT arrow | Eight gunpowder arrows around a block of TNT | `explosive.tnt.delayTicks`, 70 by default | `explosive.tnt.power`, 6.0 by default | No |
+| Fire charge arrow | Eight TNT arrows around a fire charge | `explosive.fireCharge.delayTicks`, 60 by default | `explosive.fireCharge.power`, 8.0 by default | Yes |
 
 Each tier is shorter-fused and stronger than the one below it, so the ladder reads as escalation rather than as three similar arrows.
 
 | Rule | Behaviour |
 |---|---|
-| Terrain damage | `explosive.damageTerrain`, **off by default**. The gunpowder arrow is craftable from gunpowder alone, which makes it the cheapest way to reach a build from range, so a fresh install cannot be used to grief terrain until an operator turns it on |
+| Terrain damage | `explosive.damageTerrain`, **on by default**, for the reason [ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md) gives. The gunpowder arrow is craftable from gunpowder alone, which makes it the cheapest way to reach a build from range, so a shared server that cares about its builds turns this one off |
 | Entity damage | `explosive.damageEntities`, on by default, and independent of the terrain switch. Turning it off stops the blast hurting anything, but vanilla still throws entities clear of an explosion, so a blast with damage off is a shove rather than nothing |
 | A fuse already burning | Re-hitting a carrier that is already counting down does not restart or stack its fuse, whether that carrier is an embedded arrow or a mob |
 | Hitting an entity | The arrow hands its fuse to whatever it struck and is consumed. The countdown then belongs to that carrier, so the charge travels with it and goes off wherever it ends up rather than at the point of impact. A mob is the usual carrier, but anything an arrow can hit will do, so a charge can ride a boat or a minecart. A Piercing crossbow buys no extra reach on an explosive arrow, because it stops on the first target it touches |
@@ -246,14 +246,14 @@ It shares the fire charge arrow's ingredient and nothing else. Tier three is an 
 
 The gravity arrow drops the block it strikes. That block becomes a vanilla falling block and behaves exactly as sand does: it falls, and it re-places itself where it lands. It is the mod's terrain tool, a way to open a hole in a ceiling or take a support out from under something from wherever a bow reaches.
 
-It is also the most destructive thing in the mod on a shared server, so the rules below are deliberately narrow and [ADR 0019](adr/0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) covers why the defaults do not rely on an operator having configured anything.
+It is also the most destructive thing in the mod on a shared server, so the rules below are deliberately narrow and [ADR 0019](adr/0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) covers why the protection does not rely on an operator having configured anything. The default radius is a separate question, and [ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md) answers it with a crater.
 
 | Rule | Behaviour |
 |---|---|
 | What can be dropped | Anything a player standing there could have broken and walked away with. The position has to be inside the build limit, the block has to be solid rather than air, a fluid, or a replaceable plant, and its hardness has to be zero or greater, so bedrock, barriers and the rest of the unbreakable set never move |
 | What is left alone regardless | Anything holding a player's items, and anything else carrying a block entity. A falling block carries a block state and nothing else, so a chest would scatter its contents and a shulker box would lose them outright. A block holding water is spared for the same reason ropes and grapples will not anchor to one |
 | Where it will not go | Anywhere the shooter may not build, which is the same protection and world border check the fire patch and redstone systems make. A dispensed arrow has no player behind it, so it is checked against the world border alone |
-| How much falls | `physics.gravityImpactRadius`, **zero by default**, which drops only the block that was hit. Raising it drops every block within that many blocks of the one hit, measured as a sphere, nearest first |
+| How much falls | `physics.gravityImpactRadius`, **three by default**, which drops every block within three of the one hit, measured as a sphere, nearest first. Lowering it to zero drops only the block that was hit |
 | Protecting a block | `physics.gravityBlockExclusions`, a list an operator edits a block at a time. An excluded block is spared at any radius, including when the blocks around it go |
 | Landing | Vanilla's. A falling block re-places itself where it comes to rest, and drops as an item only in the cases where a vanilla falling block already does, such as landing on a torch |
 | The arrow afterwards | Spent, if it dropped the block it struck, because the block it would have embedded in is the one it just sent to the floor. An arrow that dropped nothing, because the block was unbreakable, excluded, or protected, embeds and is recovered like any other arrow |
@@ -289,7 +289,7 @@ The ender pearl arrow is a vanilla ender pearl with a bow behind it. It flies wh
 | Where they arrive | The point of impact. Hitting a living entity puts the shooter where that entity stands rather than doing nothing |
 | Damage | None, to anything. It hurts neither what it strikes nor the shooter on arrival, which is where it parts company with a thrown vanilla pearl: this is a traversal tool and it costs no health to use |
 | An impact where the shooter already stands | Teleports nobody, so an arrow that came back down on the shooter it was fired by does nothing at all |
-| How far it reaches | `ender.pearlMaxRangeBlocks`, sixty four by default, measured from the shooter to the impact point. An arrow landing further away embeds without teleporting, mirroring how `grapple.maxRangeBlocks` behaves |
+| How far it reaches | `ender.pearlMaxRangeBlocks`, the full hundred and twenty eight by default, measured from the shooter to the impact point. An arrow landing further away embeds without teleporting, mirroring how `grapple.maxRangeBlocks` behaves |
 | Where it will not go | Outside the world border. The teleport places no block, so the block protection check that the fire patch and gravity systems make does not apply, but the border does and a destination beyond it is refused rather than clamped. [ADR 0029](adr/0029-a-teleport-is-refused-rather-than-relocated.md) covers why |
 | The arrow afterwards | Spent, if it teleported someone, and spent on any entity it strikes. An arrow that struck a block and teleported nobody, because it was out of range, past the border, or fired by a dispenser, embeds and is recovered like any other arrow |
 
@@ -299,14 +299,14 @@ Both settings are read fresh on every impact, so an operator changing either tak
 
 The recall arrow is the ender pearl arrow read backwards. It strikes something and brings that thing to the shooter, which is why it is crafted from an ender pearl arrow and a fermented spider eye, the ingredient vanilla already uses to invert an effect. Like the arrow it is built from, it does no damage.
 
-It is also the only thing in the mod that moves a player who did not choose to be moved, from whatever range a bow reaches, so it takes the same answer [ADR 0019](adr/0019-a-gravity-arrow-only-drops-what-a-player-could-have-broken.md) gives for terrain: the conservative default needs no operator configuration to be safe, and the permissive behaviour is opt-in.
+It is also the only thing in the mod that moves a player who did not choose to be moved, from whatever range a bow reaches. That is on by default, for the reason [ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md) gives, and a server that would rather it were not turns one switch off.
 
 | Rule | Behaviour |
 |---|---|
 | What moves | Anything alive, and any vehicle, so a mob, a player, a boat and a minecart are all valid targets. A dropped item, an experience orb and an arrow in flight are not, and neither is a boss: the ender dragon and the wither are excluded outright and no setting changes that. Hitting a block does nothing and the arrow embeds and is recovered |
-| Moving a player | `ender.recallAffectsPlayers`, **off by default**. With it off a struck player stays where they are, and so does a vehicle carrying one, because recalling the boat would move its passenger just as surely as hitting them directly. With it on both move, and because the server owns the decision a modified client cannot recall a player on a server that has it off |
+| Moving a player | `ender.recallAffectsPlayers`, **on by default**. With it off a struck player stays where they are, and so does a vehicle carrying one, because recalling the boat would move its passenger just as surely as hitting them directly. With it on both move, and because the server owns the decision a modified client cannot recall a player on a server that has it off |
 | Who it moves them to | The shooting player. An arrow with no player behind it, from a dispenser, moves nothing |
-| How far it reaches | `ender.recallMaxRangeBlocks`, thirty two by default, measured between the shooter and the entity struck. Beyond it nothing moves |
+| How far it reaches | `ender.recallMaxRangeBlocks`, the full hundred and twenty eight by default, measured between the shooter and the entity struck. Beyond it nothing moves |
 | Where they arrive | The shooter's own position when it fits the arriving entity and has ground under it, otherwise the nearest neighbouring column that does, and the shooter's own position as a last resort, so a recall never leaves anything inside a block. That last resort is what covers an airborne shooter, who has no supported column anywhere near them: what arrives is placed at their position and falls the same way they are about to |
 | Damage | None. The arrow passes its effect on and disappears, hurting neither what it strikes nor anything else |
 | The arrow afterwards | Spent on anything it strikes, whether or not it moved it, and recovered when it struck a block and moved nothing |
@@ -427,6 +427,8 @@ Every option, with its default and its accepted range, is listed in [the README]
 ## Settings Screen
 
 Every option is also editable in game through [Mod Menu](https://modrinth.com/mod/modmenu), so a player never has to type a command or edit a file. The screen lists the same settings the command tree exposes, in the same order, with each control constrained to the same range the config record enforces.
+
+Settings are grouped under the family headings the command tree uses, with the client's own settings last under their own heading. Each heading carries a line saying what the family covers, and each setting is a row: its name on the left, its control on the right showing only the value, and a description underneath spanning the row. The one exception is the gravity arrow's exclusion list, whose text field takes the full row width with its name and description above it. Every one of those lines is a translation key hanging off the setting's own id, so a setting cannot reach the screen without English to describe it.
 
 Server settings are edited on a draft and sent to the server when the screen closes, so the server stays the authority on what is actually stored. Client settings are written straight to the client state file.
 

@@ -57,11 +57,13 @@ Everything is adjustable while the server is running, per world, and it sticks a
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`, and `fletching`.
 
-A few worth knowing about on a shared server:
+The defaults ship the fun version of the mod rather than the safe one, so on a shared server these are the ones to turn **down**:
 
-- **`explosive.damageTerrain` is off by default.** A fresh install cannot be used to grief your builds until you turn it on.
-- **`ender.recallAffectsPlayers` is off by default.** Nobody gets yanked across the map against their will unless you allow it.
-- **`physics.gravityImpactRadius` is 0 by default**, so a gravity arrow drops one block, not a crater.
+- **`explosive.damageTerrain` is on.** Explosive arrows break blocks out of the box. Turn it off and blasts still throw entities around, they just leave the scenery alone.
+- **`ender.recallAffectsPlayers` is on.** A recall arrow can drag another player, and their boat, back to the shooter. Turn it off and only mobs move.
+- **`physics.gravityImpactRadius` is 3**, so a gravity arrow drops a sphere rather than the single block it hit. Set it to 0 for one block.
+
+None of that gets past spawn protection or the world border. A gravity arrow asks the world for permission block by block, fire patches are time-boxed and server-owned, and a teleport that would land somewhere unsafe is refused rather than relocated. The defaults decide how loud the mod is, not what it is allowed to touch.
 
 <details>
 <summary><b>Every setting, with its default and range</b></summary>
@@ -70,13 +72,13 @@ Values from a hand-edited file are clamped to their range. Values from a command
 
 | Setting | Default | Range |
 |---|---|---|
-| `explosive.gunpowder.delayTicks` | 60 | 0 to 200 |
+| `explosive.gunpowder.delayTicks` | 80 | 0 to 200 |
 | `explosive.gunpowder.power` | 4.0 | 0.0 to 20.0 |
-| `explosive.tnt.delayTicks` | 50 | 0 to 200 |
+| `explosive.tnt.delayTicks` | 70 | 0 to 200 |
 | `explosive.tnt.power` | 6.0 | 0.0 to 20.0 |
-| `explosive.fireCharge.delayTicks` | 40 | 0 to 200 |
+| `explosive.fireCharge.delayTicks` | 60 | 0 to 200 |
 | `explosive.fireCharge.power` | 8.0 | 0.0 to 20.0 |
-| `explosive.damageTerrain` | off | on or off |
+| `explosive.damageTerrain` | on | on or off |
 | `explosive.damageEntities` | on | on or off |
 | `explosive.firePatchRadius` | 2 | 0 to 8 |
 | `explosive.firePatchDurationTicks` | 200 | 0 to 6000 |
@@ -84,25 +86,25 @@ Values from a hand-edited file are clamped to their range. Values from a command
 | `explosive.incendiary.burnRadius` | 3 | 0 to 8 |
 | `explosive.incendiary.igniteSeconds` | 5 | 0 to 60 |
 | `explosive.incendiary.ignitesBlocks` | on | on or off |
-| `grapple.maxRangeBlocks` | 32 | 4 to 128 |
+| `grapple.maxRangeBlocks` | 128 | 4 to 128 |
 | `grapple.pullSpeed` | 1.5 | 0.1 to 4.0 |
 | `grapple.pullAcceleration` | 0.15 | 0.01 to 4.0 |
 | `grapple.cancelFallDamageOnArrival` | on | on or off |
 | `grapple.returnArrowOnArrival` | on | on or off |
-| `grapple.ropeLengthBlocks` | 16 | 1 to 128 |
+| `grapple.ropeLengthBlocks` | 128 | 1 to 128 |
 | `grapple.ropesDecay` | off | on or off |
 | `utility.glowDurationTicks` | 200 | 0 to 6000 |
 | `utility.redstoneSignalDurationTicks` | 40 | 0 to 1200 |
 | `utility.redstoneSignalStrength` | 15 | 1 to 15 |
 | `utility.windBurstRadius` | 3.0 | 0.5 to 16.0 |
 | `utility.windPushStrength` | 1.0 | 0.0 to 8.0 |
-| `physics.gravityImpactRadius` | 0 | 0 to 8 |
+| `physics.gravityImpactRadius` | 3 | 0 to 8 |
 | `physics.gravityBlockExclusions` | empty | up to 256 block ids |
 | `physics.ricochetBounceCount` | 3 | 0 to 16 |
 | `physics.ricochetRetainsDamage` | on | on or off |
-| `ender.pearlMaxRangeBlocks` | 64 | 4 to 128 |
-| `ender.recallMaxRangeBlocks` | 32 | 4 to 128 |
-| `ender.recallAffectsPlayers` | off | on or off |
+| `ender.pearlMaxRangeBlocks` | 128 | 4 to 128 |
+| `ender.recallMaxRangeBlocks` | 128 | 4 to 128 |
+| `ender.recallAffectsPlayers` | on | on or off |
 | `fletching.stationEnabled` | on | on or off |
 
 The gravity arrow's exclusion list is edited rather than replaced:

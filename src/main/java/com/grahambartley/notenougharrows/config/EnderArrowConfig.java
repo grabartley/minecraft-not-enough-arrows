@@ -10,9 +10,9 @@ public record EnderArrowConfig(
   public static final int RECALL_MAX_RANGE_BLOCKS_MIN = 4;
   public static final int RECALL_MAX_RANGE_BLOCKS_MAX = 128;
 
-  public static final int DEFAULT_PEARL_MAX_RANGE_BLOCKS = 64;
-  public static final int DEFAULT_RECALL_MAX_RANGE_BLOCKS = 32;
-  public static final boolean DEFAULT_RECALL_AFFECTS_PLAYERS = false;
+  public static final int DEFAULT_PEARL_MAX_RANGE_BLOCKS = PEARL_MAX_RANGE_BLOCKS_MAX;
+  public static final int DEFAULT_RECALL_MAX_RANGE_BLOCKS = RECALL_MAX_RANGE_BLOCKS_MAX;
+  public static final boolean DEFAULT_RECALL_AFFECTS_PLAYERS = true;
 
   static final String KEY_PEARL_MAX_RANGE_BLOCKS = "pearlMaxRangeBlocks";
   static final String KEY_RECALL_MAX_RANGE_BLOCKS = "recallMaxRangeBlocks";

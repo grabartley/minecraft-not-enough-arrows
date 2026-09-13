@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,16 +27,16 @@ class EnderArrowConfigTest {
   }
 
   @Test
-  void leavesPlayersOutOfReachOfTheRecallArrowByDefault() {
-    assertFalse(EnderArrowConfig.defaults().recallAffectsPlayers());
+  void pullsPlayersWithTheRecallArrowByDefault() {
+    assertTrue(EnderArrowConfig.defaults().recallAffectsPlayers());
   }
 
   @Test
-  void reachesFurtherWithAPearlThanWithARecallByDefault() {
+  void reachesAsFarAsBothEnderRangesAllowByDefault() {
     final EnderArrowConfig defaults = EnderArrowConfig.defaults();
 
-    assertEquals(64, defaults.pearlMaxRangeBlocks());
-    assertEquals(32, defaults.recallMaxRangeBlocks());
+    assertEquals(EnderArrowConfig.PEARL_MAX_RANGE_BLOCKS_MAX, defaults.pearlMaxRangeBlocks());
+    assertEquals(EnderArrowConfig.RECALL_MAX_RANGE_BLOCKS_MAX, defaults.recallMaxRangeBlocks());
   }
 
   @Test

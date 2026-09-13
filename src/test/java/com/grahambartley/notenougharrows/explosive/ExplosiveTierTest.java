@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class ExplosiveTierTest {
 
   @ParameterizedTest
-  @CsvSource({"GUNPOWDER, 60, 4.0", "TNT, 50, 6.0", "FIRE_CHARGE, 40, 8.0"})
+  @CsvSource({"GUNPOWDER, 80, 4.0", "TNT, 70, 6.0", "FIRE_CHARGE, 60, 8.0"})
   void eachTierReadsItsOwnSectionOfTheConfig(
       final ExplosiveTier tier, final int delayTicks, final float power) {
     final ExplosiveTierConfig selected = tier.in(ExplosiveArrowConfig.defaults());

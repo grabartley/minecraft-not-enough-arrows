@@ -1,0 +1,142 @@
+package com.grahambartley.notenougharrows.screen;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.grahambartley.notenougharrows.config.option.ConfigOption;
+import com.grahambartley.notenougharrows.config.option.ConfigSection;
+import com.grahambartley.notenougharrows.config.option.ServerConfigOptions;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+class OptionLabelsTest {
+  private static final String LANG_PATH = "/assets/not-enough-arrows/lang/en_us.json";
+  private static final Set<String> ENGLISH_KEYS = englishKeys();
+
+  private static Stream<ConfigOption<?>> options() {
+    return Stream.concat(ServerConfigOptions.all().stream(), ClientStateOptions.options().stream());
+  }
+
+  private static Stream<ConfigSection<?>> sections() {
+    return Stream.concat(
+        ServerConfigOptions.sections().stream(), Stream.of(ClientStateOptions.section()));
+  }
+
+  @Test
+  void buildsAnOptionKeyFromItsId() {
+    final ConfigOption<?> option = ServerConfigOptions.all().get(0);
+
+    assertEquals(OptionLabels.OPTION_PREFIX + option.id(), OptionLabels.optionKey(option));
+  }
+
+  @Test
+  void buildsASectionKeyFromItsId() {
+    final ConfigSection<?> section = ServerConfigOptions.sections().get(0);
+
+    assertEquals(OptionLabels.SECTION_PREFIX + section.id(), OptionLabels.sectionKey(section));
+  }
+
+  @ParameterizedTest
+  @MethodSource("options")
+  void hangsAnOptionDescriptionOffItsOwnKey(final ConfigOption<?> option) {
+    assertEquals(
+        OptionLabels.optionKey(option) + OptionLabels.DESCRIPTION_SUFFIX,
+        OptionLabels.optionDescriptionKey(option));
+    assertEquals(OptionLabels.optionKey(option), key(OptionLabels.option(option)));
+    assertEquals(
+        OptionLabels.optionDescriptionKey(option), key(OptionLabels.optionDescription(option)));
+  }
+
+  @ParameterizedTest
+  @MethodSource("sections")
+  void hangsASectionDescriptionOffItsOwnKey(final ConfigSection<?> section) {
+    assertEquals(
+        OptionLabels.sectionKey(section) + OptionLabels.DESCRIPTION_SUFFIX,
+        OptionLabels.sectionDescriptionKey(section));
+    assertEquals(OptionLabels.sectionKey(section), key(OptionLabels.section(section)));
+    assertEquals(
+        OptionLabels.sectionDescriptionKey(section), key(OptionLabels.sectionDescription(section)));
+  }
+
+  @ParameterizedTest
+  @MethodSource("options")
+  void shipsEnglishForEveryOptionItLabels(final ConfigOption<?> option) {
+    assertTrue(
+        ENGLISH_KEYS.contains(OptionLabels.optionKey(option)),
+        "Missing English for " + OptionLabels.optionKey(option));
+    assertTrue(
+        ENGLISH_KEYS.contains(OptionLabels.optionDescriptionKey(option)),
+        "Missing English for " + OptionLabels.optionDescriptionKey(option));
+  }
+
+  @ParameterizedTest
+  @MethodSource("sections")
+  void shipsEnglishForEverySectionItLabels(final ConfigSection<?> section) {
+    assertTrue(
+        ENGLISH_KEYS.contains(OptionLabels.sectionKey(section)),
+        "Missing English for " + OptionLabels.sectionKey(section));
+    assertTrue(
+        ENGLISH_KEYS.contains(OptionLabels.sectionDescriptionKey(section)),
+        "Missing English for " + OptionLabels.sectionDescriptionKey(section));
+  }
+
+  @Test
+  void leavesNoOrphanedOptionOrSectionKeysBehind() {
+    final Set<String> expected =
+        Stream.concat(
+                options()
+                    .flatMap(
+                        option ->
+                            Stream.of(
+                                OptionLabels.optionKey(option),
+                                OptionLabels.optionDescriptionKey(option))),
+                sections()
+                    .flatMap(
+                        section ->
+                            Stream.of(
+                                OptionLabels.sectionKey(section),
+                                OptionLabels.sectionDescriptionKey(section))))
+            .collect(Collectors.toSet());
+    final Set<String> shipped =
+        ENGLISH_KEYS.stream()
+            .filter(
+                key ->
+                    key.startsWith(OptionLabels.OPTION_PREFIX)
+                        || key.startsWith(OptionLabels.SECTION_PREFIX))
+            .collect(Collectors.toSet());
+
+    assertEquals(expected, shipped);
+  }
+
+  private static String key(final Text text) {
+    assertInstanceOf(TranslatableTextContent.class, text.getContent());
+    return ((TranslatableTextContent) text.getContent()).getKey();
+  }
+
+  private static Set<String> englishKeys() {
+    try (InputStream stream = OptionLabelsTest.class.getResourceAsStream(LANG_PATH)) {
+      if (stream == null) {
+        throw new IllegalStateException("Could not find " + LANG_PATH + " on the test classpath");
+      }
+      final JsonObject json =
+          JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
+              .getAsJsonObject();
+      return Set.copyOf(json.keySet());
+    } catch (final IOException exception) {
+      throw new IllegalStateException("Could not read " + LANG_PATH, exception);
+    }
+  }
+}

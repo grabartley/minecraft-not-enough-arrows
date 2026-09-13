@@ -21,7 +21,7 @@ The pearl arrow puts the shooter at the impact point without looking for somewhe
 
 A refusal is total. Nothing moves, nothing is clamped to the nearest legal spot, and the arrow falls through to vanilla's own resolution, which embeds it and leaves it recoverable exactly like any other arrow. An arrow that succeeded is spent.
 
-Players are not recall targets unless `ender.recallAffectsPlayers` says so, and it is off by default. The switch covers a player being moved at all rather than only a player being struck, so a boat with someone aboard is refused too: recalling the vehicle would move its passenger just as surely as hitting them directly. The server decides, so a modified client changes nothing.
+Players are not recall targets unless `ender.recallAffectsPlayers` says so. It shipped off by default; [ADR 0032](0032-the-defaults-ship-the-fun-version.md) turned that default on, and the switch itself is unchanged. The switch covers a player being moved at all rather than only a player being struck, so a boat with someone aboard is refused too: recalling the vehicle would move its passenger just as surely as hitting them directly. The server decides, so a modified client changes nothing.
 
 What may be recalled at all is a separate question from what may be moved, and `RecallTargets` owns it: anything alive and any vehicle, which is to say mobs, players, boats and minecarts. A dropped item, an experience orb and an arrow in flight are excluded, because an arrow that hoovers up loose objects is a different tool wearing this one's art. Bosses are excluded in code rather than by a tag, because a server that could re-admit the ender dragon to a bow-range teleport has been handed a way to break its own fight, and no datapack should be able to.
 

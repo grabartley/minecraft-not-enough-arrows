@@ -39,6 +39,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0029](0029-a-teleport-is-refused-rather-than-relocated.md) | A teleport is refused rather than relocated |
 | [0030](0030-the-rename-is-a-clean-break.md) | The rename is a clean break |
 | [0031](0031-every-way-a-grapple-ends-runs-through-one-path.md) | Every way a grapple ends runs through one path |
+| [0032](0032-the-defaults-ship-the-fun-version.md) | The defaults ship the fun version |
 
 ## Writing A New Record
 

@@ -30,13 +30,17 @@ class BooleanOptionTest {
 
   @Test
   void readsTheValueOffTheSubject() {
-    assertFalse(damageTerrain().read(NotEnoughArrowsConfig.defaults()));
+    assertFalse(
+        damageTerrain().read(damageTerrain().write(NotEnoughArrowsConfig.defaults(), false)));
     assertTrue(damageTerrain().read(damageTerrain().write(NotEnoughArrowsConfig.defaults(), true)));
   }
 
   @Test
   void displaysTheValueAsText() {
-    assertEquals("false", damageTerrain().displayValue(NotEnoughArrowsConfig.defaults()));
+    assertEquals(
+        "false",
+        damageTerrain()
+            .displayValue(damageTerrain().write(NotEnoughArrowsConfig.defaults(), false)));
     assertEquals(
         "true",
         damageTerrain()

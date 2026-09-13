@@ -17,7 +17,7 @@ public final class OptionWidgets {
 
   private OptionWidgets() {}
 
-  public static boolean rendersOwnLabel(final ConfigOption<?> option) {
+  public static boolean fitsBesideItsLabel(final ConfigOption<?> option) {
     return !(option instanceof IdentifierListOption<?>);
   }
 
@@ -49,6 +49,7 @@ public final class OptionWidgets {
       final int width,
       final int height) {
     return CyclingButtonWidget.onOffBuilder(option.read(draft.current()))
+        .omitKeyText()
         .build(
             0,
             0,
@@ -63,7 +64,6 @@ public final class OptionWidgets {
     return new ConfigSliderWidget(
         width,
         height,
-        OptionLabels.option(option),
         OptionScale.of(option),
         option.read(draft.current()),
         value -> ConfigValueFormat.of((int) Math.round(value)),
@@ -75,7 +75,6 @@ public final class OptionWidgets {
     return new ConfigSliderWidget(
         width,
         height,
-        OptionLabels.option(option),
         OptionScale.of(option),
         option.read(draft.current()),
         value -> ConfigValueFormat.of((float) value),

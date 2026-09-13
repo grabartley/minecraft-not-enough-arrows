@@ -5,7 +5,7 @@
 
 ## Context
 
-The gravity arrow turns the block it strikes into a falling block. The issue behind it and the epic above it both say the same thing twice: this is the most destructive item in the mod on a shared server, because it removes part of a build from whatever range a bow reaches, and the defaults have to be conservative.
+The gravity arrow turns the block it strikes into a falling block. The issue behind it and the epic above it both say the same thing twice: this is the most destructive item in the mod on a shared server, because it removes part of a build from whatever range a bow reaches, and the defaults have to be conservative. The conservative-default half of that is revised by [ADR 0032](0032-the-defaults-ship-the-fun-version.md); the decision below is not.
 
 An operator-facing exclusion list is the protection the issue asks for, and it is the wrong thing to lean on alone. It is opt-in, it is empty on a fresh install, and it names blocks rather than places, so a server owner who has not thought about this arrow yet has no protection at all, and one who has still cannot protect a region.
 
