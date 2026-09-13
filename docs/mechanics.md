@@ -327,38 +327,38 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/not-enough-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, `entity/`, or `gui/container/` to match. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
+Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a texture sits in `item/`, `block/`, `entity/arrow/`, or `gui/container/` according to what draws it. The PNG is the source of truth and the thing that gets edited.
 
-| Texture | Source | Used for |
-|---|---|---|
-| `textures/item/grapple_arrow.png` | `art/sprites/item/grapple_arrow.sprite.txt` | The grapple arrow's item sprite |
-| `textures/item/rope_arrow.png` | `art/sprites/item/rope_arrow.sprite.txt` | The rope arrow's item sprite |
-| `textures/item/glow_ink_arrow.png` | `art/sprites/item/glow_ink_arrow.sprite.txt` | The glow ink arrow's item sprite |
-| `textures/item/wind_arrow.png` | `art/sprites/item/wind_arrow.sprite.txt` | The wind arrow's item sprite |
-| `textures/item/redstone_arrow.png` | `art/sprites/item/redstone_arrow.sprite.txt` | The redstone arrow's item sprite |
-| `textures/item/gravity_arrow.png` | `art/sprites/item/gravity_arrow.sprite.txt` | The gravity arrow's item sprite |
-| `textures/item/ricochet_arrow.png` | `art/sprites/item/ricochet_arrow.sprite.txt` | The ricochet arrow's item sprite |
-| `textures/item/gunpowder_arrow.png` | `art/sprites/item/gunpowder_arrow.sprite.txt` | The gunpowder arrow's item sprite |
-| `textures/item/tnt_arrow.png` | `art/sprites/item/tnt_arrow.sprite.txt` | The TNT arrow's item sprite |
-| `textures/item/fire_charge_arrow.png` | `art/sprites/item/fire_charge_arrow.sprite.txt` | The fire charge arrow's item sprite |
-| `textures/item/incendiary_arrow.png` | `art/sprites/item/incendiary_arrow.sprite.txt` | The incendiary arrow's item sprite |
-| `textures/item/ender_pearl_arrow.png` | `art/sprites/item/ender_pearl_arrow.sprite.txt` | The ender pearl arrow's item sprite |
-| `textures/item/recall_arrow.png` | `art/sprites/item/recall_arrow.sprite.txt` | The recall arrow's item sprite |
-| `textures/block/rope.png` | `art/sprites/block/rope.sprite.txt` | The climbable rope the rope arrow leaves behind |
-| `textures/entity/arrow/grapple_arrow.png` | `art/sprites/entity/grapple_arrow.sprite.txt` | The grapple arrow in flight and planted in a block |
-| `textures/entity/arrow/rope_arrow.png` | `art/sprites/entity/rope_arrow.sprite.txt` | The rope arrow in flight and planted in a block |
-| `textures/entity/arrow/glow_ink_arrow.png` | `art/sprites/entity/glow_ink_arrow.sprite.txt` | The glow ink arrow in flight and planted in a block |
-| `textures/entity/arrow/redstone_arrow.png` | `art/sprites/entity/redstone_arrow.sprite.txt` | The redstone arrow in flight and planted in a block |
-| `textures/entity/arrow/wind_arrow.png` | `art/sprites/entity/wind_arrow.sprite.txt` | The wind arrow in flight and planted in a block |
-| `textures/entity/arrow/gunpowder_arrow.png` | `art/sprites/entity/gunpowder_arrow.sprite.txt` | The gunpowder arrow in flight and planted in a block |
-| `textures/entity/arrow/tnt_arrow.png` | `art/sprites/entity/tnt_arrow.sprite.txt` | The TNT arrow in flight and planted in a block |
-| `textures/entity/arrow/fire_charge_arrow.png` | `art/sprites/entity/fire_charge_arrow.sprite.txt` | The fire charge arrow in flight and planted in a block |
-| `textures/entity/arrow/incendiary_arrow.png` | `art/sprites/entity/incendiary_arrow.sprite.txt` | The incendiary arrow in flight and planted in a block |
-| `textures/entity/arrow/gravity_arrow.png` | `art/sprites/entity/gravity_arrow.sprite.txt` | The gravity arrow in flight and planted in a block |
-| `textures/entity/arrow/ricochet_arrow.png` | `art/sprites/entity/ricochet_arrow.sprite.txt` | The ricochet arrow in flight and planted in a block |
-| `textures/entity/arrow/ender_pearl_arrow.png` | `art/sprites/entity/ender_pearl_arrow.sprite.txt` | The ender pearl arrow in flight and planted in a block |
-| `textures/entity/arrow/recall_arrow.png` | `art/sprites/entity/recall_arrow.sprite.txt` | The recall arrow in flight and planted in a block |
-| `textures/gui/container/fletching_station.png` | `art/sprites/gui/container/fletching_station.sprite.txt` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
+| Texture | Used for |
+|---|---|
+| `textures/item/grapple_arrow.png` | The grapple arrow's item sprite |
+| `textures/item/rope_arrow.png` | The rope arrow's item sprite |
+| `textures/item/glow_ink_arrow.png` | The glow ink arrow's item sprite |
+| `textures/item/wind_arrow.png` | The wind arrow's item sprite |
+| `textures/item/redstone_arrow.png` | The redstone arrow's item sprite |
+| `textures/item/gravity_arrow.png` | The gravity arrow's item sprite |
+| `textures/item/ricochet_arrow.png` | The ricochet arrow's item sprite |
+| `textures/item/gunpowder_arrow.png` | The gunpowder arrow's item sprite |
+| `textures/item/tnt_arrow.png` | The TNT arrow's item sprite |
+| `textures/item/fire_charge_arrow.png` | The fire charge arrow's item sprite |
+| `textures/item/incendiary_arrow.png` | The incendiary arrow's item sprite |
+| `textures/item/ender_pearl_arrow.png` | The ender pearl arrow's item sprite |
+| `textures/item/recall_arrow.png` | The recall arrow's item sprite |
+| `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
+| `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
+| `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
+| `textures/entity/arrow/glow_ink_arrow.png` | The glow ink arrow in flight and planted in a block |
+| `textures/entity/arrow/redstone_arrow.png` | The redstone arrow in flight and planted in a block |
+| `textures/entity/arrow/wind_arrow.png` | The wind arrow in flight and planted in a block |
+| `textures/entity/arrow/gunpowder_arrow.png` | The gunpowder arrow in flight and planted in a block |
+| `textures/entity/arrow/tnt_arrow.png` | The TNT arrow in flight and planted in a block |
+| `textures/entity/arrow/fire_charge_arrow.png` | The fire charge arrow in flight and planted in a block |
+| `textures/entity/arrow/incendiary_arrow.png` | The incendiary arrow in flight and planted in a block |
+| `textures/entity/arrow/gravity_arrow.png` | The gravity arrow in flight and planted in a block |
+| `textures/entity/arrow/ricochet_arrow.png` | The ricochet arrow in flight and planted in a block |
+| `textures/entity/arrow/ender_pearl_arrow.png` | The ender pearl arrow in flight and planted in a block |
+| `textures/entity/arrow/recall_arrow.png` | The recall arrow in flight and planted in a block |
+| `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
 
