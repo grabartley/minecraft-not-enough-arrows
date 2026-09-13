@@ -1,7 +1,3 @@
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/src/main/resources/assets/not-enough-arrows/icon.png" alt="Not Enough Arrows" width="180">
-</p>
-
 <h1 align="center">Not Enough Arrows</h1>
 
 <p align="center"><b>Thirteen new arrows for Minecraft 1.21.1 on Fabric.</b><br>
