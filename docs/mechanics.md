@@ -327,10 +327,11 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/not-enough-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, `entity/`, or `gui/container/` to match. The mod icon is the one exception: it is cover art rather than a texture the game samples, so it is authored externally, has no text source, and sits at the root of the assets directory as `assets/not-enough-arrows/icon.png`. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
+Texture assets live under `assets/not-enough-arrows/textures/`, and each ships alongside a palette-mapped text source under `art/sprites/`, which mirrors the texture tree so a source sits in `item/`, `block/`, `entity/`, or `gui/container/` to match. The mod icon is the one exception: it is not a texture the game samples, so it sits at the root of the assets directory and its source sits in `art/sprites/icon/`. The text source is the thing that gets edited and reviewed: one character per pixel with the palette declared at the top, so a change to the art reads as a real diff rather than as a swapped binary.
 
 | Texture | Source | Used for |
 |---|---|---|
+| `icon.png` | `art/sprites/icon/icon.sprite.txt` | The mod icon, in the mods list and on the project page |
 | `textures/item/grapple_arrow.png` | `art/sprites/item/grapple_arrow.sprite.txt` | The grapple arrow's item sprite |
 | `textures/item/rope_arrow.png` | `art/sprites/item/rope_arrow.sprite.txt` | The rope arrow's item sprite |
 | `textures/item/glow_ink_arrow.png` | `art/sprites/item/glow_ink_arrow.sprite.txt` | The glow ink arrow's item sprite |
