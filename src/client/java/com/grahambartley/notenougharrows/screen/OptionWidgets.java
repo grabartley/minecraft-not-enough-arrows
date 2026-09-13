@@ -64,6 +64,7 @@ public final class OptionWidgets {
     return new ConfigSliderWidget(
         width,
         height,
+        OptionLabels.option(option),
         OptionScale.of(option),
         option.read(draft.current()),
         value -> ConfigValueFormat.of((int) Math.round(value)),
@@ -75,6 +76,7 @@ public final class OptionWidgets {
     return new ConfigSliderWidget(
         width,
         height,
+        OptionLabels.option(option),
         OptionScale.of(option),
         option.read(draft.current()),
         value -> ConfigValueFormat.of((float) value),

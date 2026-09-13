@@ -10,16 +10,13 @@ import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
-public final class ConfigOptionRow extends ConfigOptionListWidget.OptionEntry {
-  public static final int LABEL_COLOUR = 0xFFFFFFFF;
-  public static final int DESCRIPTION_COLOUR = 0xFFA0A0A0;
-
+final class ConfigOptionRow extends ConfigOptionListWidget.OptionEntry {
   private final TextRenderer textRenderer;
   private final Text label;
   private final Text description;
   @Nullable private final ClickableWidget control;
 
-  public ConfigOptionRow(
+  ConfigOptionRow(
       final TextRenderer textRenderer,
       final ConfigOption<?> option,
       @Nullable final ClickableWidget control) {
@@ -48,14 +45,14 @@ public final class ConfigOptionRow extends ConfigOptionListWidget.OptionEntry {
         ConfigRowText.trimmed(textRenderer, label, layout.labelWidth()),
         layout.textX(),
         layout.labelY(),
-        LABEL_COLOUR,
+        ConfigRowText.LABEL_COLOUR,
         true);
     context.drawText(
         textRenderer,
         ConfigRowText.trimmed(textRenderer, description, layout.descriptionWidth()),
         layout.textX(),
         layout.descriptionY(),
-        DESCRIPTION_COLOUR,
+        ConfigRowText.DESCRIPTION_COLOUR,
         true);
     if (control != null) {
       control.setPosition(layout.controlX(), layout.controlY());

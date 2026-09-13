@@ -27,7 +27,7 @@ class IntOptionTest {
   }
 
   @Test
-  void readsTheValueOffTheSubject() {
+  void roundTripsTheValueThroughTheSubject() {
     assertEquals(16, ropeLength().read(ropeLength().write(NotEnoughArrowsConfig.defaults(), 16)));
   }
 

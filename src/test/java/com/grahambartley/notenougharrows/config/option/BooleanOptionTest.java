@@ -29,7 +29,7 @@ class BooleanOptionTest {
   }
 
   @Test
-  void readsTheValueOffTheSubject() {
+  void roundTripsTheValueThroughTheSubject() {
     assertFalse(
         damageTerrain().read(damageTerrain().write(NotEnoughArrowsConfig.defaults(), false)));
     assertTrue(damageTerrain().read(damageTerrain().write(NotEnoughArrowsConfig.defaults(), true)));

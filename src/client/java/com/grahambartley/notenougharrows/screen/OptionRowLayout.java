@@ -9,11 +9,20 @@ public record OptionRowLayout(
     int controlX,
     int controlY) {
 
+  public static final int ROW_HEIGHT = 34;
+  public static final int ROW_WIDTH = 340;
+  public static final int EDGE_MARGIN = 20;
+  public static final int CONTROL_WIDTH = 100;
+  public static final int CONTROL_HEIGHT = 20;
   public static final int LABEL_OFFSET = 3;
   public static final int DESCRIPTION_OFFSET = 20;
   public static final int CONTROL_OFFSET = 1;
   public static final int TEXT_GAP = 6;
   public static final int MIN_TEXT_WIDTH = 1;
+
+  public static int rowWidth(final int available) {
+    return Math.max(MIN_TEXT_WIDTH, Math.min(ROW_WIDTH, available - EDGE_MARGIN));
+  }
 
   public static OptionRowLayout of(
       final int x, final int y, final int entryWidth, final int controlWidth) {

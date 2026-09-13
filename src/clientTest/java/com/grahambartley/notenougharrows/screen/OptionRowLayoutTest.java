@@ -59,6 +59,12 @@ class OptionRowLayoutTest {
         expectedLabelWidth, OptionRowLayout.of(X, Y, entryWidth, CONTROL_WIDTH).labelWidth());
   }
 
+  @ParameterizedTest
+  @CsvSource({"0, 1", "21, 1", "360, 340", "400, 340", "200, 180"})
+  void fitsTheRowToTheScreenItIsDrawnOn(final int available, final int expected) {
+    assertEquals(expected, OptionRowLayout.rowWidth(available));
+  }
+
   @Test
   void stacksTheTwoTextLinesAtItsDeclaredOffsets() {
     final OptionRowLayout layout = withControl();

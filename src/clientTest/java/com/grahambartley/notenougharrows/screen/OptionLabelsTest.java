@@ -24,7 +24,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class OptionLabelsTest {
   private static final String LANG_PATH = "/assets/not-enough-arrows/lang/en_us.json";
-  private static final Set<String> ENGLISH_KEYS = englishKeys();
+  private static final int MAX_DESCRIPTION_CHARACTERS = 60;
+  private static final JsonObject ENGLISH = english();
+  private static final Set<String> ENGLISH_KEYS = Set.copyOf(ENGLISH.keySet());
 
   private static Stream<ConfigOption<?>> options() {
     return Stream.concat(ServerConfigOptions.all().stream(), ClientStateOptions.options().stream());
@@ -121,20 +123,43 @@ class OptionLabelsTest {
     assertEquals(expected, shipped);
   }
 
+  @ParameterizedTest
+  @MethodSource("options")
+  void keepsAnOptionDescriptionInsideTheRowItIsDrawnOn(final ConfigOption<?> option) {
+    assertWithinTheRow(OptionLabels.optionDescriptionKey(option));
+  }
+
+  @ParameterizedTest
+  @MethodSource("sections")
+  void keepsASectionDescriptionInsideTheRowItIsDrawnOn(final ConfigSection<?> section) {
+    assertWithinTheRow(OptionLabels.sectionDescriptionKey(section));
+  }
+
+  private static void assertWithinTheRow(final String descriptionKey) {
+    final String english = ENGLISH.get(descriptionKey).getAsString();
+
+    assertTrue(
+        english.length() <= MAX_DESCRIPTION_CHARACTERS,
+        descriptionKey
+            + " is "
+            + english.length()
+            + " characters, which overflows the "
+            + OptionRowLayout.ROW_WIDTH
+            + " pixel row and is silently trimmed on screen");
+  }
+
   private static String key(final Text text) {
     assertInstanceOf(TranslatableTextContent.class, text.getContent());
     return ((TranslatableTextContent) text.getContent()).getKey();
   }
 
-  private static Set<String> englishKeys() {
+  private static JsonObject english() {
     try (InputStream stream = OptionLabelsTest.class.getResourceAsStream(LANG_PATH)) {
       if (stream == null) {
         throw new IllegalStateException("Could not find " + LANG_PATH + " on the test classpath");
       }
-      final JsonObject json =
-          JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
-              .getAsJsonObject();
-      return Set.copyOf(json.keySet());
+      return JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
+          .getAsJsonObject();
     } catch (final IOException exception) {
       throw new IllegalStateException("Could not read " + LANG_PATH, exception);
     }

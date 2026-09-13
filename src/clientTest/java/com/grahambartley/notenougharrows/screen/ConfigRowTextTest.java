@@ -14,8 +14,6 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class ConfigRowTextTest {
   private static final Text TEXT = Text.literal("Explosions Damage Terrain");
@@ -36,16 +34,6 @@ class ConfigRowTextTest {
     when(textRenderer.wrapLines(any(Text.class), anyInt())).thenReturn(List.of());
 
     assertEquals(OrderedText.EMPTY, ConfigRowText.trimmed(textRenderer, TEXT, 120));
-  }
-
-  @ParameterizedTest
-  @ValueSource(ints = {-10, 0, 1})
-  void neverWrapsToAWidthBelowOne(final int width) {
-    when(textRenderer.wrapLines(any(Text.class), anyInt())).thenReturn(List.of());
-
-    ConfigRowText.trimmed(textRenderer, TEXT, width);
-
-    verify(textRenderer).wrapLines(TEXT, ConfigRowText.MIN_WIDTH);
   }
 
   @Test

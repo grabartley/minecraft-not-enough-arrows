@@ -8,12 +8,12 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.text.Text;
 
-public final class ConfigSectionRow extends ConfigOptionListWidget.OptionEntry {
+final class ConfigSectionRow extends ConfigOptionListWidget.OptionEntry {
   private final TextRenderer textRenderer;
   private final Text heading;
   private final Text description;
 
-  public ConfigSectionRow(final TextRenderer textRenderer, final ConfigSection<?> section) {
+  ConfigSectionRow(final TextRenderer textRenderer, final ConfigSection<?> section) {
     this.textRenderer = textRenderer;
     this.heading = OptionLabels.section(section);
     this.description = OptionLabels.sectionDescription(section);
@@ -38,13 +38,13 @@ public final class ConfigSectionRow extends ConfigOptionListWidget.OptionEntry {
         ConfigRowText.trimmed(textRenderer, heading, layout.labelWidth()),
         centreX,
         layout.labelY(),
-        ConfigOptionRow.LABEL_COLOUR);
+        ConfigRowText.LABEL_COLOUR);
     context.drawCenteredTextWithShadow(
         textRenderer,
         ConfigRowText.trimmed(textRenderer, description, layout.descriptionWidth()),
         centreX,
         layout.descriptionY(),
-        ConfigOptionRow.DESCRIPTION_COLOUR);
+        ConfigRowText.DESCRIPTION_COLOUR);
   }
 
   @Override

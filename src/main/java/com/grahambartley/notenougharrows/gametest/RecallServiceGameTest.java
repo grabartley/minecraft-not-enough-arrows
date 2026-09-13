@@ -52,27 +52,27 @@ public final class RecallServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aStruckPlayerIsLeftAloneByDefault(TestContext context) {
+  public void aStruckPlayerIsLeftAloneOnceAnOperatorSwitchesItOff(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final PlayerEntity struck = MockPlayerSupport.mortalPlayerAt(context, TARGET_STAND);
     final Vec3d stoodAt = struck.getPos();
 
     context.assertFalse(
-        recall(context, shooter, struck, EnderArrowConfig.defaults()),
-        "Players should be out of the recall arrow's reach until an operator says otherwise");
+        recall(context, shooter, struck, refusingPlayers()),
+        "Players should be out of the recall arrow's reach once an operator turns it off");
     context.assertTrue(
         struck.getPos().equals(stoodAt), "A player who may not be recalled should not move");
     context.complete();
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aStruckPlayerIsMovedOnceAnOperatorAllowsIt(TestContext context) {
+  public void aStruckPlayerIsMovedByDefault(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final ServerPlayerEntity struck = MockPlayerSupport.playerAt(context, TARGET_STAND);
 
     context.assertTrue(
-        recall(context, shooter, struck, allowingPlayers()),
-        "A player should be recalled once an operator turns it on");
+        recall(context, shooter, struck, EnderArrowConfig.defaults()),
+        "A player should be recalled out of the box");
     context.assertTrue(
         struck.getPos().distanceTo(shooter.getPos()) <= ARRIVED_WITHIN,
         "The recalled player should arrive at the shooter, but stood at " + struck.getPos());
@@ -140,7 +140,7 @@ public final class RecallServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aVehicleCarryingAPlayerObeysThePlayerSwitch(TestContext context) {
+  public void aVehicleCarryingAPlayerIsRefusedOnceThePlayerSwitchIsOff(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final Entity struck = context.spawnEntity(EntityType.BOAT, TARGET_STAND);
     final ServerPlayerEntity rider = MockPlayerSupport.playerAt(context, TARGET_STAND);
@@ -148,8 +148,22 @@ public final class RecallServiceGameTest implements FabricGameTest {
 
     context.assertTrue(struck.hasPlayerRider(), "The rider should be aboard for this test");
     context.assertFalse(
-        recall(context, shooter, struck, EnderArrowConfig.defaults()),
+        recall(context, shooter, struck, refusingPlayers()),
         "Recalling a boat must not move the player riding it while the switch is off");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aVehicleCarryingAPlayerMovesByDefault(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
+    final Entity struck = context.spawnEntity(EntityType.BOAT, TARGET_STAND);
+    final ServerPlayerEntity rider = MockPlayerSupport.playerAt(context, TARGET_STAND);
+    rider.startRiding(struck, true);
+
+    context.assertTrue(struck.hasPlayerRider(), "The rider should be aboard for this test");
+    context.assertTrue(
+        recall(context, shooter, struck, EnderArrowConfig.defaults()),
+        "A boat with someone aboard should be recalled out of the box");
     context.complete();
   }
 
@@ -182,13 +196,13 @@ public final class RecallServiceGameTest implements FabricGameTest {
     final NotEnoughArrowsConfig previous = ServerConfigHolder.get();
     final boolean recalled;
     try {
-      ServerConfigHolder.set(NotEnoughArrowsConfig.defaults().withEnder(allowingPlayers()));
+      ServerConfigHolder.set(NotEnoughArrowsConfig.defaults().withEnder(refusingPlayers()));
       recalled = RecallService.recall(context.getWorld(), shooter, struck);
     } finally {
       ServerConfigHolder.set(previous);
     }
 
-    context.assertTrue(recalled, "The live config should be what decides a player recall");
+    context.assertFalse(recalled, "The live config should be what decides a player recall");
     context.complete();
   }
 
@@ -206,5 +220,9 @@ public final class RecallServiceGameTest implements FabricGameTest {
 
   private static EnderArrowConfig allowingPlayers() {
     return EnderArrowConfig.defaults().withRecallAffectsPlayers(true);
+  }
+
+  private static EnderArrowConfig refusingPlayers() {
+    return EnderArrowConfig.defaults().withRecallAffectsPlayers(false);
   }
 }

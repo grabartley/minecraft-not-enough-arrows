@@ -12,20 +12,14 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 
 public final class ConfigOptionListWidget
     extends ElementListWidget<ConfigOptionListWidget.OptionEntry> {
-  public static final int ROW_HEIGHT = 34;
-  public static final int WIDGET_HEIGHT = 20;
-  public static final int CONTROL_WIDTH = 100;
-  public static final int ROW_WIDTH = 340;
-  public static final int EDGE_MARGIN = 20;
-
   public ConfigOptionListWidget(
       final MinecraftClient client, final int width, final int height, final int y) {
-    super(client, width, height, y, ROW_HEIGHT);
+    super(client, width, height, y, OptionRowLayout.ROW_HEIGHT);
   }
 
   @Override
   public int getRowWidth() {
-    return Math.min(ROW_WIDTH, getWidth() - EDGE_MARGIN);
+    return OptionRowLayout.rowWidth(getWidth());
   }
 
   public <S> void addSection(
@@ -43,8 +37,8 @@ public final class ConfigOptionListWidget
         OptionWidgets.create(
             option,
             draft,
-            inline ? CONTROL_WIDTH : getRowWidth(),
-            WIDGET_HEIGHT,
+            inline ? OptionRowLayout.CONTROL_WIDTH : getRowWidth(),
+            OptionRowLayout.CONTROL_HEIGHT,
             client.textRenderer,
             editable);
     addEntry(new ConfigOptionRow(client.textRenderer, option, inline ? widget : null));
