@@ -16,10 +16,6 @@ Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then t
 </a>
 </p>
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/hero.png" alt="Standing at the foot of a mountain with a bow drawn" width="900">
-</p>
-
 ## Your bow deserves better than one arrow
 
 Vanilla gives you an arrow that does one thing: it hurts. Every bow you have ever drawn has been a
@@ -42,27 +38,15 @@ Fire the **grapple arrow** at anything solid and it hooks in and reels you to it
 cancelled when you land, and the arrow comes back to you, so the same one carries you up a mountain
 in stages.
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/grapple-arrow.png" alt="Being reeled up a snowy mountainside by a grapple arrow" width="900">
-</p>
-
 The **rope arrow** is the slower, safer version: it hangs a climbable rope beneath whatever it hits,
 up to 128 blocks of it. Shoot the lip of a cliff and the way back up is already built. Shoot into a
 ravine and you have a way down that does not involve falling.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/rope-arrow.png" alt="A rope hanging down a sheer ice face after a rope arrow hit the top" width="900">
-</p>
 
 ## Blow something up, eventually
 
 Explosive arrows do not go off on impact. They stick, they beep, the beeping speeds up, and a ring
 in the world counts down the time you have left. Plenty of time to admire the angle you fired at,
 and just enough to regret it.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/explosive-arrow.png" alt="A crater blown out of a mountainside by an explosive arrow" width="900">
-</p>
 
 There are three tiers and each is built from the one below it, so the blast you get is the blast you
 worked up to. The **incendiary arrow** is the odd one out: it never explodes, it just sets
@@ -74,16 +58,8 @@ The **gravity arrow** cuts the ground out from under whatever you hit. A sphere 
 being attached to anything and falls, which is a fast way down through a ceiling and a fast way to
 ruin someone's floor.
 
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/gravity-arrow.png" alt="A sphere of blocks falling after a gravity arrow impact" width="900">
-</p>
-
 The **glow ink arrow** outlines what you hit through walls, for everyone on the server, so the
 creeper behind the ridge is now a problem everybody can see.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/glow-ink-arrow.png" alt="A glowing outline visible through terrain after a glow ink arrow hit" width="900">
-</p>
 
 ## The full set
 
@@ -112,10 +88,6 @@ same way.
 
 Right-click any vanilla fletching table and it opens a crafting station that sells this mod's arrows
 at a better rate than a crafting table does. Same ingredients, more arrows out.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/grabartley/minecraft-not-enough-arrows/main/docs/images/fletching-station.png" alt="The Fletching Station screen open at a vanilla fletching table" width="620">
-</p>
 
 Nothing is gated behind it: every arrow stays craftable at a crafting table forever, the station is
 just the reward for finding one. The block is untouched vanilla, so uninstalling the mod leaves your
