@@ -22,14 +22,17 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   private static final BlockPos WALKED_TO = new BlockPos(2, 3, 3);
   private static final BlockPos NEIGHBOUR = new BlockPos(5, 3, 4);
   private static final BlockPos SECOND_SHOOTER_STAND = new BlockPos(1, 2, 4);
+  private static final int FIRE_CHARGE_FUSE_TICKS =
+      ExplosiveArrowConfig.DEFAULT_FIRE_CHARGE.delayTicks();
   private static final int SECOND_ARMING_TICK = 25;
   private static final int BOTH_ARMED_TICK = SECOND_ARMING_TICK + 10;
-  private static final int CHAINED_CHECK_TICK = SECOND_ARMING_TICK + 25;
+  private static final int CHAINED_CHECK_TICK =
+      FiringRangeSupport.LANDING_TICK + FIRE_CHARGE_FUSE_TICKS + 10;
   private static final int NEARBY = 1;
   private static final int THE_COLUMN_ITSELF = 0;
   private static final int HANDOVER_TICK = FiringRangeSupport.LANDING_TICK + 10;
   private static final int BLAST_TICK =
-      FiringRangeSupport.LANDING_TICK + ExplosiveArrowConfig.DEFAULT_FIRE_CHARGE.delayTicks() + 20;
+      FiringRangeSupport.LANDING_TICK + FIRE_CHARGE_FUSE_TICKS + 20;
 
   @BeforeBatch(batchId = BATCH)
   public void forgetFusesBeforeBatch(ServerWorld world) {
@@ -144,7 +147,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 160)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 200)
   public void aCarrierKilledByAnotherChargeDoesNotStillGoOff(TestContext context) {
     final CowEntity first = fireIntoACow(context);
     final CowEntity second = FiringRangeSupport.liveTargetOnPedestalAt(context, NEIGHBOUR);

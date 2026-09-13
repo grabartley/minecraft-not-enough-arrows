@@ -40,6 +40,14 @@ class GrappleArrowConfigTest {
   }
 
   @Test
+  void defaultsToTheFurthestReachTheGrappleAndItsRopeAllow() {
+    final GrappleArrowConfig defaults = GrappleArrowConfig.defaults();
+
+    assertEquals(GrappleArrowConfig.MAX_RANGE_BLOCKS_MAX, defaults.maxRangeBlocks());
+    assertEquals(GrappleArrowConfig.ROPE_LENGTH_BLOCKS_MAX, defaults.ropeLengthBlocks());
+  }
+
+  @Test
   void defaultsToForgivingArrivalBehaviour() {
     final GrappleArrowConfig defaults = GrappleArrowConfig.defaults();
 

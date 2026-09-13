@@ -20,10 +20,10 @@ public record ExplosiveArrowConfig(
   public static final float BEEP_VOLUME_MIN = 0.0f;
   public static final float BEEP_VOLUME_MAX = 2.0f;
 
-  public static final ExplosiveTierConfig DEFAULT_GUNPOWDER = new ExplosiveTierConfig(60, 4.0f);
-  public static final ExplosiveTierConfig DEFAULT_TNT = new ExplosiveTierConfig(50, 6.0f);
-  public static final ExplosiveTierConfig DEFAULT_FIRE_CHARGE = new ExplosiveTierConfig(40, 8.0f);
-  public static final boolean DEFAULT_DAMAGE_TERRAIN = false;
+  public static final ExplosiveTierConfig DEFAULT_GUNPOWDER = new ExplosiveTierConfig(80, 4.0f);
+  public static final ExplosiveTierConfig DEFAULT_TNT = new ExplosiveTierConfig(70, 6.0f);
+  public static final ExplosiveTierConfig DEFAULT_FIRE_CHARGE = new ExplosiveTierConfig(60, 8.0f);
+  public static final boolean DEFAULT_DAMAGE_TERRAIN = true;
   public static final boolean DEFAULT_DAMAGE_ENTITIES = true;
   public static final int DEFAULT_FIRE_PATCH_RADIUS = 2;
   public static final int DEFAULT_FIRE_PATCH_DURATION_TICKS = 200;

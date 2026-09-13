@@ -12,7 +12,7 @@ class ConfigDraftTest {
 
   private static NotEnoughArrowsConfig changed() {
     return NotEnoughArrowsConfig.defaults()
-        .withExplosive(NotEnoughArrowsConfig.defaults().explosive().withDamageTerrain(true));
+        .withExplosive(NotEnoughArrowsConfig.defaults().explosive().withDamageTerrain(false));
   }
 
   @Test
@@ -42,7 +42,7 @@ class ConfigDraftTest {
     final ConfigDraft<NotEnoughArrowsConfig> draft =
         new ConfigDraft<>(NotEnoughArrowsConfig.defaults());
 
-    draft.apply(config -> config.withExplosive(config.explosive().withDamageTerrain(true)));
+    draft.apply(config -> config.withExplosive(config.explosive().withDamageTerrain(false)));
 
     assertEquals(changed(), draft.current());
   }

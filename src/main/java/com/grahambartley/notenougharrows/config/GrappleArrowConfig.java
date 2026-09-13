@@ -20,12 +20,12 @@ public record GrappleArrowConfig(
   public static final int ROPE_LENGTH_BLOCKS_MIN = 1;
   public static final int ROPE_LENGTH_BLOCKS_MAX = 128;
 
-  public static final int DEFAULT_MAX_RANGE_BLOCKS = 32;
+  public static final int DEFAULT_MAX_RANGE_BLOCKS = MAX_RANGE_BLOCKS_MAX;
   public static final float DEFAULT_PULL_SPEED = 1.5f;
   public static final float DEFAULT_PULL_ACCELERATION = 0.15f;
   public static final boolean DEFAULT_CANCEL_FALL_DAMAGE_ON_ARRIVAL = true;
   public static final boolean DEFAULT_RETURN_ARROW_ON_ARRIVAL = true;
-  public static final int DEFAULT_ROPE_LENGTH_BLOCKS = 16;
+  public static final int DEFAULT_ROPE_LENGTH_BLOCKS = ROPE_LENGTH_BLOCKS_MAX;
   public static final boolean DEFAULT_ROPES_DECAY = false;
 
   static final String KEY_MAX_RANGE_BLOCKS = "maxRangeBlocks";

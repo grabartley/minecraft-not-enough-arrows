@@ -16,11 +16,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 class PhysicsArrowConfigTest {
 
   @Test
-  void defaultsToCollapsingOnlyTheBlockThatWasHit() {
+  void defaultsToCollapsingACraterAroundTheBlockThatWasHit() {
     final PhysicsArrowConfig defaults = PhysicsArrowConfig.defaults();
 
-    assertEquals(0, defaults.gravityImpactRadius());
-    assertTrue(defaults.affectsOnlyTheHitBlock());
+    assertEquals(3, defaults.gravityImpactRadius());
+    assertFalse(defaults.affectsOnlyTheHitBlock());
   }
 
   @Test

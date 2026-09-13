@@ -22,14 +22,14 @@ Meanwhile the fletching table sits in villages doing nothing. It has no interfac
 
 Not Enough Arrows turns the bow into a toolkit. It adds craftable arrows that carry an effect on impact instead of, or alongside, damage: arrows that move the player, arrows that move the world, arrows that mark, trigger, burn, or explode. Each is crafted from ordinary materials in the shape players already know from tipped arrows, and each works everywhere a vanilla arrow works, including crossbows and dispensers. It also gives the fletching table the interface it never had, as a station that offers the same arrows at a better exchange rate.
 
-The mod is built for a dedicated server full of strangers first. Every effect that touches the world asks the world for permission before it acts, every destructive default is the conservative one, and every setting an operator could want is reachable from a command line over SSH without a client mod installed.
+The mod is built for a dedicated server full of strangers first. Every effect that touches the world asks the world for permission before it acts, and every setting an operator could want is reachable from a command line over SSH without a client mod installed. The defaults themselves ship the fun version rather than the cautious one, and an operator turns down what their server does not want ([ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md)).
 
 ### What Makes It Different
 
 | Claim | Why it holds |
 |---|---|
 | An arrow works everywhere a vanilla arrow works | The mod joins vanilla's own hooks rather than reimplementing firing. Bow, crossbow, Multishot, Infinity, dispenser, and pickup are consequences of one item tag and one superclass, not features that were built one at a time ([ADR 0009](adr/0009-arrows-reach-vanilla-weapons-through-vanilla-hooks.md)) |
-| Safe to drop into a public server unconfigured | Terrain damage from explosions is off by default, the gravity arrow's radius is zero, and no arrow can place fire, emit a signal, or drop a block anywhere the shooter could not have built by hand |
+| Safe to drop into a public server unconfigured | No arrow can place fire, emit a signal, drop a block, or teleport anything anywhere the shooter could not have built by hand, whatever the settings say. The loud defaults decide how much the mod does, never what it is allowed to touch ([ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md)) |
 | The station is a bonus, never a gate | Every arrow stays craftable at a crafting table permanently. The station changes the exchange rate and never the availability ([ADR 0002](adr/0002-crafting-table-always-works.md)) |
 | Configuration reaches the operator, not just the player | Every server setting is reachable from an OP-gated command tree. The settings screen is a convenience over the same catalog, never the only way in ([ADR 0010](adr/0010-one-option-catalog-feeds-every-surface.md)) |
 | An explosive arrow can be survived | Explosive arrows telegraph with an accelerating audible countdown rather than detonating on impact, so a player who is hit has somewhere to run ([ADR 0003](adr/0003-explosive-arrows-telegraph.md)) |
@@ -314,7 +314,7 @@ A player fires a recall arrow at something across a gap, and it arrives at their
 | RECALL-1 | The arrow teleports what it strikes to the shooting player's position, where that is anything alive or any vehicle |
 | RECALL-2 | Striking a block does nothing. The arrow embeds and is recovered |
 | RECALL-3 | An arrow with no shooter moves nothing |
-| RECALL-4 | Players are not moved unless a server setting turns it on, and that setting is off by default. With it off, neither a struck player nor a vehicle carrying one is moved |
+| RECALL-4 | Whether players are moved is a server setting, on by default. With it off, neither a struck player nor a vehicle carrying one is moved |
 | RECALL-5 | An entity struck beyond the configured maximum range, measured from the shooter, is not moved |
 | RECALL-6 | The arrival position must not suffocate the arriving entity or leave it inside a block. Where the shooter is airborne and no supported position is available, the entity arrives at the shooter and falls as the shooter is about to |
 | RECALL-7 | A moved player's position change reaches their client as a real teleport rather than a desync |
@@ -417,7 +417,7 @@ A player fires an explosive arrow. It embeds, or sticks in whatever it hit, and 
 | BLAST-8 | Re-hitting a carrier that is already counting down neither restarts nor stacks its fuse, whether that carrier is an embedded arrow or a mob |
 | BLAST-9 | A fuse whose carrier cannot be found holds rather than burning down, resumes when the carrier returns, and is abandoned if the carrier stays missing. Nothing detonates from a carrier that no longer exists |
 | BLAST-10 | A carrier that dies, and a player who disconnects, take their fuse with them immediately |
-| BLAST-11 | Terrain damage is a server setting that is **off by default**. The cheapest tier is craftable from gunpowder alone, so a fresh install cannot be used to grief terrain until an operator turns it on |
+| BLAST-11 | Terrain damage is a server setting that is **on by default**. The cheapest tier is craftable from gunpowder alone, so a server that cares about its builds turns this one off ([ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md)) |
 | BLAST-12 | Entity damage is a separate server setting, on by default. Turning it off stops the blast hurting anything, though vanilla still throws entities clear |
 | BLAST-13 | The top tier's fire is placed through the shared fire patch system, so it is time-boxed and permission-checked like every other fire this mod lights |
 | BLAST-14 | No fuse survives a server restart. A restart mid-countdown defuses rather than detonating or resuming |
@@ -463,7 +463,7 @@ A player fires a gravity arrow at a block. The block falls, as sand does, and re
 | GRAVITY-2 | Nothing carrying a block entity is ever dropped. A falling block carries a block state and nothing else, so a chest would scatter its contents and a shulker box would lose them |
 | GRAVITY-3 | Nothing is dropped anywhere the shooter may not build. An arrow with no shooter is checked against the world border alone |
 | GRAVITY-4 | The permission check is applied per position rather than per shot, so a radius straddling a protection boundary drops what is outside it and leaves what is inside standing. Refusing the whole collapse would hand players a way to probe where the boundary is |
-| GRAVITY-5 | The impact radius is a server setting that is **zero by default**, dropping only the struck block |
+| GRAVITY-5 | The impact radius is a server setting that is **three by default**, dropping a sphere around the struck block. Zero drops only the block that was struck |
 | GRAVITY-6 | An operator exclusion list spares named blocks at any radius, including when their neighbours go, and is consulted per position |
 | GRAVITY-7 | Landing is vanilla's. A falling block re-places itself where it comes to rest and drops as an item only where a vanilla falling block already would |
 | GRAVITY-8 | The arrow is spent only if it actually dropped the block it struck. An arrow that dropped nothing embeds and is recovered |
@@ -679,7 +679,7 @@ Conservation is the property that decides whether this mod is safe to put in a p
 | SAFE-3 | Closing a station screen with items in the input slots returns them to the player, or drops them if there is no room. Items are never silently destroyed |
 | SAFE-4 | No grapple exit path may duplicate the arrow or lose it silently, and no leash attachment may drop a lead |
 | SAFE-5 | No state may leak. A player cannot be left permanently pulled, a mechanism cannot be left permanently powered, a fuse cannot outlive its carrier, and an anchor cannot outlive its purpose |
-| SAFE-6 | Every destructive default is the conservative one: explosion terrain damage off, gravity impact radius zero, rope decay off, recall of players off |
+| SAFE-6 | Every destructive setting stays a setting, editable per world and operator-gated, so a server that wants the cautious build has one command per setting and one to reset them all. The shipped defaults are the loud ones ([ADR 0032](adr/0032-the-defaults-ship-the-fun-version.md)) |
 | SAFE-7 | No effect may change a block the shooter could not have changed by hand, and none may reach a position outside the world border |
 | SAFE-8 | An arrow that cannot be made safe under these rules is not shipped |
 
@@ -755,7 +755,7 @@ Properties that must hold, whatever the schedule. None of these is a checklist o
 | REL-1 | Every arrow the release ships can be crafted at a crafting table, fired from a bow, a crossbow, and a dispenser, and recovered under vanilla's rules |
 | REL-2 | Every arrow appears in the `minecraft:arrows` item tag, in the mod's creative tab, and in a recipe viewer with a description that resolves to real prose rather than a raw key |
 | REL-3 | Every server setting is reachable from the command tree and from the settings screen, and the two cannot disagree because they are built from one catalog |
-| REL-4 | A fresh install, with nothing configured, cannot be used to destroy terrain, delete a container, move a player, or light a fire anywhere the shooter could not have built |
+| REL-4 | A fresh install, with nothing configured, cannot be used to destroy terrain, delete a container, move a player, or light a fire anywhere the shooter could not have built by hand |
 | REL-5 | Every configuration default and bound in this document matches the configuration records, and every permission claim matches the code that gates it |
 | REL-6 | A dedicated server starts with no client class loaded, verified by the build rather than by inspection |
 | REL-7 | Every path that moves items conserves them, asserted by test rather than by the absence of an exception |

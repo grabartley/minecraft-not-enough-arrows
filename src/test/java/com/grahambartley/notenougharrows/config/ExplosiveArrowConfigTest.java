@@ -13,8 +13,25 @@ import org.junit.jupiter.params.provider.CsvSource;
 class ExplosiveArrowConfigTest {
 
   @Test
-  void defaultsToNoTerrainDamageSoSharedServersAreSafeOutOfTheBox() {
-    assertFalse(ExplosiveArrowConfig.defaults().damageTerrain());
+  void defaultsToTerrainDamageSoExplosivesLandAtFullStrength() {
+    assertTrue(ExplosiveArrowConfig.defaults().damageTerrain());
+  }
+
+  @Test
+  void defaultsToFusesLongEnoughToRunFrom() {
+    final ExplosiveArrowConfig defaults = ExplosiveArrowConfig.defaults();
+
+    assertEquals(80, defaults.gunpowder().delayTicks());
+    assertEquals(70, defaults.tnt().delayTicks());
+    assertEquals(60, defaults.fireCharge().delayTicks());
+  }
+
+  @Test
+  void defaultsToShorteningTheFuseAsThePowerRises() {
+    final ExplosiveArrowConfig defaults = ExplosiveArrowConfig.defaults();
+
+    assertTrue(defaults.gunpowder().delayTicks() > defaults.tnt().delayTicks());
+    assertTrue(defaults.tnt().delayTicks() > defaults.fireCharge().delayTicks());
   }
 
   @Test

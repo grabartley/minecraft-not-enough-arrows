@@ -16,7 +16,7 @@ public record PhysicsArrowConfig(
   public static final int RICOCHET_BOUNCE_COUNT_MIN = 0;
   public static final int RICOCHET_BOUNCE_COUNT_MAX = 16;
 
-  public static final int DEFAULT_GRAVITY_IMPACT_RADIUS = 0;
+  public static final int DEFAULT_GRAVITY_IMPACT_RADIUS = 3;
   public static final List<String> DEFAULT_GRAVITY_BLOCK_EXCLUSIONS = List.of();
   public static final int DEFAULT_RICOCHET_BOUNCE_COUNT = 3;
   public static final boolean DEFAULT_RICOCHET_RETAINS_DAMAGE = true;

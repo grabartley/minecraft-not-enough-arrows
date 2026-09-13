@@ -27,13 +27,14 @@ class IntOptionTest {
   }
 
   @Test
-  void readsTheValueOffTheSubject() {
-    assertEquals(16, ropeLength().read(NotEnoughArrowsConfig.defaults()));
+  void roundTripsTheValueThroughTheSubject() {
+    assertEquals(16, ropeLength().read(ropeLength().write(NotEnoughArrowsConfig.defaults(), 16)));
   }
 
   @Test
   void displaysTheValueAsText() {
-    assertEquals("16", ropeLength().displayValue(NotEnoughArrowsConfig.defaults()));
+    assertEquals(
+        "16", ropeLength().displayValue(ropeLength().write(NotEnoughArrowsConfig.defaults(), 16)));
   }
 
   @Test
