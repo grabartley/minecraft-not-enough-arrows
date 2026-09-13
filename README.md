@@ -10,7 +10,7 @@ Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then t
 <p align="center">
 <a href="https://modrinth.com/mod/not-enough-arrows"><img src="https://img.shields.io/modrinth/dt/not-enough-arrows?logo=modrinth&label=Modrinth%20downloads&color=00AF5C" alt="Modrinth downloads"></a>
 <a href="https://github.com/grabartley/minecraft-not-enough-arrows/stargazers"><img src="https://img.shields.io/github/stars/grabartley/minecraft-not-enough-arrows?logo=github&label=Stars&color=4078c0" alt="GitHub stars"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"></a>
+<a href="https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"></a>
 <a href="https://ko-fi.com/grahambartley"><img src="https://img.shields.io/badge/Ko--fi-Support_Not_Enough_Arrows-009078?logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>
 
@@ -105,11 +105,12 @@ creeper behind the ridge is now a problem everybody can see.
 | 🪨 | **Gravity** | Drops the block you hit, like sand | Slime ball |
 | ⚙️ | **Ricochet** | Bounces off blocks instead of sticking | Iron nugget |
 | 🟣 | **Ender pearl** | Teleports you to wherever it lands | Ender pearl |
-| 🌀 | **Recall** | Brings whatever you hit back to you | Fermented spider eye |
+| 🌀 | **Recall** | Brings whatever you hit back to you. Built from ender pearl arrows | Fermented spider eye |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
-of those around a fire charge gives you the top tier.
+of those around a fire charge gives you the top tier. Recall is built from ender pearl arrows the
+same way.
 
 ## Cheaper arrows at the fletching table
 
@@ -230,8 +231,8 @@ Minecraft `1.21.1` on Java `21`, singleplayer or dedicated server, fully multipl
 
 | Dependency | Version | Required | Reason |
 |---|---|---|---|
-| Fabric Loader | `>=0.16.5` | Yes | Mod loader |
-| Fabric API | `>=0.107.0+1.21.1` | Yes | Fabric hooks and APIs |
+| [Fabric Loader](https://fabricmc.net/use/installer/) | `>=0.16.5` | Yes | Mod loader |
+| [Fabric API](https://modrinth.com/mod/fabric-api) | `>=0.107.0+1.21.1` | Yes | Fabric hooks and APIs |
 | Mod Menu | any | No | Settings screen in the mods list |
 | JEI | any | No | Recipe and info pages |
 | EMI | any | No | Recipe and info pages |
@@ -254,10 +255,10 @@ default so their overlays stay out of screenshots.
 
 ## Documentation
 
-- [`docs/mechanics.md`](docs/mechanics.md) is the detailed behaviour of every arrow and every shared system
-- [`docs/prd.md`](docs/prd.md) is what the mod is: use cases, numbered requirements, and what it deliberately leaves out
-- [`docs/adr/`](docs/adr/) is why it is built the way it is
-- [`docs/standards.md`](docs/standards.md) is the engineering standards shared across these mods
+- [`docs/mechanics.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/mechanics.md) is the detailed behaviour of every arrow and every shared system
+- [`docs/prd.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/prd.md) is what the mod is: use cases, numbered requirements, and what it deliberately leaves out
+- [`docs/adr/`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/adr/) is why it is built the way it is
+- [`docs/standards.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/standards.md) is the engineering standards shared across these mods
 
 ## Open source
 
