@@ -15,4 +15,10 @@ final class ConfigRowText {
     final List<OrderedText> lines = textRenderer.wrapLines(text, width);
     return lines.isEmpty() ? OrderedText.EMPTY : lines.get(0);
   }
+
+  static List<OrderedText> wrapped(
+      final TextRenderer textRenderer, final Text text, final int width, final int maxLines) {
+    final List<OrderedText> lines = textRenderer.wrapLines(text, width);
+    return lines.size() <= maxLines ? lines : List.copyOf(lines.subList(0, maxLines));
+  }
 }

@@ -12,6 +12,7 @@ class OptionRowLayoutTest {
   private static final int Y = 100;
   private static final int ENTRY_WIDTH = 340;
   private static final int CONTROL_WIDTH = 100;
+  private static final int TEXT_HEIGHT = 9;
 
   private static OptionRowLayout withControl() {
     return OptionRowLayout.of(X, Y, ENTRY_WIDTH, CONTROL_WIDTH);
@@ -27,11 +28,33 @@ class OptionRowLayoutTest {
   }
 
   @Test
-  void givesTheDescriptionTheWholeRowBecauseItSitsBelowTheControl() {
+  void keepsTheDescriptionInTheSameColumnAsTheLabel() {
     final OptionRowLayout layout = withControl();
 
-    assertEquals(ENTRY_WIDTH, layout.descriptionWidth());
+    assertEquals(layout.labelWidth(), layout.descriptionWidth());
+    assertTrue(layout.textX() + layout.descriptionWidth() <= layout.controlX());
     assertTrue(layout.descriptionY() > layout.labelY());
+  }
+
+  @Test
+  void stacksEveryWrappedDescriptionLineBelowTheOneBeforeIt() {
+    final OptionRowLayout layout = withControl();
+
+    assertEquals(layout.descriptionY(), layout.descriptionLineY(0));
+    assertEquals(
+        layout.descriptionY() + OptionRowLayout.DESCRIPTION_LINE_HEIGHT,
+        layout.descriptionLineY(1));
+  }
+
+  @Test
+  void fitsEveryWrappedLineInsideTheRowItIsDrawnIn() {
+    final OptionRowLayout layout = withControl();
+    final int lastLineBottom =
+        layout.descriptionLineY(OptionRowLayout.MAX_DESCRIPTION_LINES - 1) + TEXT_HEIGHT;
+
+    assertTrue(lastLineBottom <= Y + OptionRowLayout.ROW_HEIGHT);
+    assertTrue(
+        layout.controlY() + OptionRowLayout.CONTROL_HEIGHT <= Y + OptionRowLayout.ROW_HEIGHT);
   }
 
   @Test

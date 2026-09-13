@@ -6,6 +6,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 final class ConfigSectionRow extends ConfigOptionListWidget.OptionEntry {
@@ -39,12 +40,20 @@ final class ConfigSectionRow extends ConfigOptionListWidget.OptionEntry {
         centreX,
         layout.labelY(),
         ConfigRowText.LABEL_COLOUR);
-    context.drawCenteredTextWithShadow(
-        textRenderer,
-        ConfigRowText.trimmed(textRenderer, description, layout.descriptionWidth()),
-        centreX,
-        layout.descriptionY(),
-        ConfigRowText.DESCRIPTION_COLOUR);
+    final List<OrderedText> lines =
+        ConfigRowText.wrapped(
+            textRenderer,
+            description,
+            layout.descriptionWidth(),
+            OptionRowLayout.MAX_DESCRIPTION_LINES);
+    for (int line = 0; line < lines.size(); line++) {
+      context.drawCenteredTextWithShadow(
+          textRenderer,
+          lines.get(line),
+          centreX,
+          layout.descriptionLineY(line),
+          ConfigRowText.DESCRIPTION_COLOUR);
+    }
   }
 
   @Override

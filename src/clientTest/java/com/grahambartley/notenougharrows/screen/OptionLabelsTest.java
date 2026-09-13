@@ -25,11 +25,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 class OptionLabelsTest {
   private static final String LANG_PATH = "/assets/not-enough-arrows/lang/en_us.json";
   private static final int WIDEST_GLYPH_PIXELS = 6;
-  private static final int MAX_DESCRIPTION_CHARACTERS =
-      OptionRowLayout.ROW_WIDTH / WIDEST_GLYPH_PIXELS;
   private static final int MAX_LABEL_CHARACTERS =
       (OptionRowLayout.ROW_WIDTH - OptionRowLayout.CONTROL_WIDTH - OptionRowLayout.TEXT_GAP)
           / WIDEST_GLYPH_PIXELS;
+  private static final int MAX_DESCRIPTION_CHARACTERS =
+      MAX_LABEL_CHARACTERS * OptionRowLayout.MAX_DESCRIPTION_LINES;
   private static final JsonObject ENGLISH = english();
   private static final Set<String> ENGLISH_KEYS = Set.copyOf(ENGLISH.keySet());
 

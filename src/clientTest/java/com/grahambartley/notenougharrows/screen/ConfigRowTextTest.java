@@ -37,6 +37,26 @@ class ConfigRowTextTest {
   }
 
   @Test
+  void keepsEveryLineWhenTheTextFitsInsideTheLinesItIsAllowed() {
+    final List<OrderedText> lines =
+        List.of(OrderedText.EMPTY, OrderedText.styledForwardsVisitedString("second", null));
+    when(textRenderer.wrapLines(any(Text.class), anyInt())).thenReturn(lines);
+
+    assertEquals(lines, ConfigRowText.wrapped(textRenderer, TEXT, 234, 2));
+  }
+
+  @Test
+  void dropsTheLinesThatWouldOverflowTheRow() {
+    final OrderedText first = OrderedText.styledForwardsVisitedString("first", null);
+    final OrderedText second = OrderedText.styledForwardsVisitedString("second", null);
+    final OrderedText third = OrderedText.styledForwardsVisitedString("third", null);
+    when(textRenderer.wrapLines(any(Text.class), anyInt()))
+        .thenReturn(List.of(first, second, third));
+
+    assertEquals(List.of(first, second), ConfigRowText.wrapped(textRenderer, TEXT, 234, 2));
+  }
+
+  @Test
   void wrapsToTheWidthItWasGivenWhenThatWidthIsUsable() {
     when(textRenderer.wrapLines(any(Text.class), anyInt())).thenReturn(List.of());
 
