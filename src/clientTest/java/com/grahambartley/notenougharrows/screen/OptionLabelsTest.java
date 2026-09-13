@@ -24,7 +24,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class OptionLabelsTest {
   private static final String LANG_PATH = "/assets/not-enough-arrows/lang/en_us.json";
-  private static final int MAX_DESCRIPTION_CHARACTERS = 60;
+  private static final int WIDEST_GLYPH_PIXELS = 6;
+  private static final int MAX_DESCRIPTION_CHARACTERS =
+      OptionRowLayout.ROW_WIDTH / WIDEST_GLYPH_PIXELS;
+  private static final int MAX_LABEL_CHARACTERS =
+      (OptionRowLayout.ROW_WIDTH - OptionRowLayout.CONTROL_WIDTH - OptionRowLayout.TEXT_GAP)
+          / WIDEST_GLYPH_PIXELS;
   private static final JsonObject ENGLISH = english();
   private static final Set<String> ENGLISH_KEYS = Set.copyOf(ENGLISH.keySet());
 
@@ -125,6 +130,22 @@ class OptionLabelsTest {
 
   @ParameterizedTest
   @MethodSource("options")
+  void keepsAnOptionLabelClearOfTheControlBesideIt(final ConfigOption<?> option) {
+    assertFits(
+        OptionLabels.optionKey(option),
+        OptionWidgets.fitsBesideItsLabel(option)
+            ? MAX_LABEL_CHARACTERS
+            : MAX_DESCRIPTION_CHARACTERS);
+  }
+
+  @ParameterizedTest
+  @MethodSource("sections")
+  void keepsASectionHeadingInsideTheRowItIsDrawnOn(final ConfigSection<?> section) {
+    assertWithinTheRow(OptionLabels.sectionKey(section));
+  }
+
+  @ParameterizedTest
+  @MethodSource("options")
   void keepsAnOptionDescriptionInsideTheRowItIsDrawnOn(final ConfigOption<?> option) {
     assertWithinTheRow(OptionLabels.optionDescriptionKey(option));
   }
@@ -135,17 +156,21 @@ class OptionLabelsTest {
     assertWithinTheRow(OptionLabels.sectionDescriptionKey(section));
   }
 
-  private static void assertWithinTheRow(final String descriptionKey) {
-    final String english = ENGLISH.get(descriptionKey).getAsString();
+  private static void assertWithinTheRow(final String key) {
+    assertFits(key, MAX_DESCRIPTION_CHARACTERS);
+  }
+
+  private static void assertFits(final String key, final int budget) {
+    final String english = ENGLISH.get(key).getAsString();
 
     assertTrue(
-        english.length() <= MAX_DESCRIPTION_CHARACTERS,
-        descriptionKey
+        english.length() <= budget,
+        key
             + " is "
             + english.length()
             + " characters, which overflows the "
-            + OptionRowLayout.ROW_WIDTH
-            + " pixel row and is silently trimmed on screen");
+            + budget
+            + " its row leaves it and is silently trimmed on screen");
   }
 
   private static String key(final Text text) {

@@ -43,7 +43,7 @@
   "config.not-enough-arrows.section.physics": "Physics Arrows",
   "config.not-enough-arrows.section.physics.description": "Arrows that move blocks around or bounce off them.",
   "config.not-enough-arrows.section.ender": "Ender Arrows",
-  "config.not-enough-arrows.section.ender.description": "The teleport arrows, the one you ride and the one you fire.",
+  "config.not-enough-arrows.section.ender.description": "The teleport arrows, the ridden and the fired.",
   "config.not-enough-arrows.section.fletching": "Fletching Station",
   "config.not-enough-arrows.section.fletching.description": "The fletching station block and the recipes it unlocks.",
   "config.not-enough-arrows.section.client": "Client Settings",

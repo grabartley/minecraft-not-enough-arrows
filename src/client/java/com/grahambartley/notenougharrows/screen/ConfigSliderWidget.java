@@ -8,6 +8,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 
 public final class ConfigSliderWidget extends SliderWidget {
+  public static final String NARRATION_KEY = "gui.narrate.slider";
+
   private final OptionScale scale;
   private final Text label;
   private final DoubleFunction<String> formatter;
@@ -40,7 +42,8 @@ public final class ConfigSliderWidget extends SliderWidget {
 
   @Override
   protected MutableText getNarrationMessage() {
-    return getNarrationMessage(ScreenTexts.composeGenericOptionText(label, getMessage()));
+    return Text.translatable(
+        NARRATION_KEY, ScreenTexts.composeGenericOptionText(label, getMessage()));
   }
 
   @Override

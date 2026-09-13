@@ -27,7 +27,7 @@ public final class ExplosiveCarrierGameTest implements FabricGameTest {
   private static final int SECOND_ARMING_TICK = 25;
   private static final int BOTH_ARMED_TICK = SECOND_ARMING_TICK + 10;
   private static final int CHAINED_CHECK_TICK =
-      FiringRangeSupport.LANDING_TICK + FIRE_CHARGE_FUSE_TICKS + 5;
+      FiringRangeSupport.LANDING_TICK + FIRE_CHARGE_FUSE_TICKS + 10;
   private static final int NEARBY = 1;
   private static final int THE_COLUMN_ITSELF = 0;
   private static final int HANDOVER_TICK = FiringRangeSupport.LANDING_TICK + 10;

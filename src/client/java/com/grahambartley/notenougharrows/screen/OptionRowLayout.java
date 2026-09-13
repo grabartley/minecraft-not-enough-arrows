@@ -19,9 +19,10 @@ public record OptionRowLayout(
   public static final int CONTROL_OFFSET = 1;
   public static final int TEXT_GAP = 6;
   public static final int MIN_TEXT_WIDTH = 1;
+  public static final int MIN_ROW_WIDTH = 1;
 
   public static int rowWidth(final int available) {
-    return Math.max(MIN_TEXT_WIDTH, Math.min(ROW_WIDTH, available - EDGE_MARGIN));
+    return Math.max(MIN_ROW_WIDTH, Math.min(ROW_WIDTH, available - EDGE_MARGIN));
   }
 
   public static OptionRowLayout of(
