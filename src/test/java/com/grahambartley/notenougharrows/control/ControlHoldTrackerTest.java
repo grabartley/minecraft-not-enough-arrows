@@ -17,7 +17,7 @@ class ControlHoldTrackerTest {
   private static final UUID SECOND = UUID.nameUUIDFromBytes("second".getBytes());
 
   private static ControlHold hold(final UUID mob, final long expiry) {
-    return ControlHold.until(mob, ANCHOR, ControlSteering.DRAWN, expiry);
+    return new ControlHold(mob, ANCHOR, ControlSteering.DRAWN, expiry);
   }
 
   @Test
@@ -37,7 +37,7 @@ class ControlHoldTrackerTest {
   void keepsOneHoldPerMobSoASecondShotReplacesTheFirst() {
     final ControlHoldTracker tracker = new ControlHoldTracker();
     tracker.hold(hold(FIRST, 50L));
-    tracker.hold(ControlHold.until(FIRST, ANCHOR, ControlSteering.FLEEING, 90L));
+    tracker.hold(new ControlHold(FIRST, ANCHOR, ControlSteering.FLEEING, 90L));
 
     assertEquals(1, tracker.size());
     assertEquals(ControlSteering.FLEEING, tracker.find(FIRST).orElseThrow().steering());

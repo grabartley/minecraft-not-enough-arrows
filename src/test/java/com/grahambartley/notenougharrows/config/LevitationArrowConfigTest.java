@@ -1,8 +1,6 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,16 +14,6 @@ class LevitationArrowConfigTest {
   @CsvSource({"-1, 0", "0, 0", "60, 60", "1200, 1200", "99999, 1200"})
   void clampsDuration(final int given, final int expected) {
     assertEquals(expected, new LevitationArrowConfig(given).durationTicks());
-  }
-
-  @Test
-  void liftsNothingAtZeroDuration() {
-    assertFalse(new LevitationArrowConfig(0).lifts());
-  }
-
-  @Test
-  void liftsWhenADurationIsConfigured() {
-    assertTrue(new LevitationArrowConfig(1).lifts());
   }
 
   @Test

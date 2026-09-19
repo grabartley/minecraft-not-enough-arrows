@@ -4,8 +4,6 @@ import com.grahambartley.notenougharrows.ModArrows;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -14,11 +12,6 @@ public final class SmokeArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "smoke-arrow";
   private static final BlockPos INSIDE_STAND = new BlockPos(5, 3, 4);
   private static final int SETTLING_TICK = FiringRangeSupport.LANDING_TICK + 5;
-
-  @BeforeBatch(batchId = BATCH)
-  public void forgetCloudsLeftByOtherTests(ServerWorld world) {
-    ControlTestSupport.forgetEveryHoldAndCloud();
-  }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowFiredFromABowOpensACloudThatBlindsWhatIsInsideIt(TestContext context) {

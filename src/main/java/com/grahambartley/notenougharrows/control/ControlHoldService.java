@@ -98,8 +98,8 @@ public final class ControlHoldService {
       return 0;
     }
     trackerFor(world)
-        .hold(ControlHold.until(mob.getUuid(), anchor, steering, world.getTime() + durationTicks));
-    steer(world, mob, anchor, steering);
+        .hold(new ControlHold(mob.getUuid(), anchor, steering, world.getTime() + durationTicks));
+    steer(mob, anchor, steering);
     return 1;
   }
 
@@ -119,7 +119,7 @@ public final class ControlHoldService {
       tracker.forget(hold.mobId());
       return;
     }
-    steer(world, mob, hold.anchor(), hold.steering());
+    steer(mob, hold.anchor(), hold.steering());
   }
 
   private static void handBack(final ServerWorld world, final ControlHold hold) {
@@ -130,21 +130,23 @@ public final class ControlHoldService {
   }
 
   private static void steer(
-      final ServerWorld world,
-      final MobEntity mob,
-      final Vec3d anchor,
-      final ControlSteering steering) {
+      final MobEntity mob, final Vec3d anchor, final ControlSteering steering) {
     if (steering.clearsTarget()) {
       mob.setTarget(null);
     }
+    if (!mob.getNavigation().isIdle()) {
+      return;
+    }
     steering
         .destination(mob.getBoundingBox().getCenter(), anchor)
-        .ifPresentOrElse(
+        .ifPresent(
             destination ->
                 mob.getNavigation()
                     .startMovingTo(
-                        destination.getX(), destination.getY(), destination.getZ(), STEERING_SPEED),
-            () -> mob.getNavigation().stop());
+                        destination.getX(),
+                        destination.getY(),
+                        destination.getZ(),
+                        STEERING_SPEED));
   }
 
   private static MobEntity mobIn(final ServerWorld world, final ControlHold hold) {

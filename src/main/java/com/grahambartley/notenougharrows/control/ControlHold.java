@@ -12,11 +12,6 @@ public record ControlHold(UUID mobId, Vec3d anchor, ControlSteering steering, lo
     Objects.requireNonNull(steering, "steering");
   }
 
-  public static ControlHold until(
-      final UUID mobId, final Vec3d anchor, final ControlSteering steering, final long expiryTick) {
-    return new ControlHold(mobId, anchor, steering, expiryTick);
-  }
-
   public boolean hasExpired(final long tick) {
     return tick >= expiryTick;
   }

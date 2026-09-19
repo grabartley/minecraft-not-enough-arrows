@@ -5,12 +5,14 @@ import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class RepelArrowEntity extends AreaControlArrowEntity {
+  private static final SoundEvent IMPACT_SOUND = SoundEvents.BLOCK_SOUL_SAND_BREAK;
   private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 0.6f;
 
@@ -32,8 +34,11 @@ public class RepelArrowEntity extends AreaControlArrowEntity {
 
   @Override
   protected boolean resolveAt(final ServerWorld world, final Vec3d center) {
-    playSound(SoundEvents.BLOCK_SOUL_SAND_BREAK, IMPACT_VOLUME, IMPACT_PITCH);
-    ControlHoldService.repel(world, center, ServerConfigService.get().control().targeting());
+    if (ControlHoldService.repel(world, center, ServerConfigService.get().control().targeting())
+        == 0) {
+      return false;
+    }
+    playSound(IMPACT_SOUND, IMPACT_VOLUME, IMPACT_PITCH);
     return true;
   }
 }

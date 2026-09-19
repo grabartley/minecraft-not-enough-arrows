@@ -1,8 +1,6 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -16,16 +14,6 @@ class FrostArrowConfigTest {
   @CsvSource({"-1, 0", "0, 0", "140, 140", "1200, 1200", "99999, 1200"})
   void clampsFreezeTicksPerHit(final int given, final int expected) {
     assertEquals(expected, new FrostArrowConfig(given).freezeTicksPerHit());
-  }
-
-  @Test
-  void buildsNothingAtZero() {
-    assertFalse(new FrostArrowConfig(0).builds());
-  }
-
-  @Test
-  void buildsWhenAnyTicksAreConfigured() {
-    assertTrue(new FrostArrowConfig(1).builds());
   }
 
   @Test

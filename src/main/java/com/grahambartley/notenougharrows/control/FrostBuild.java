@@ -17,8 +17,11 @@ public final class FrostBuild {
     if (target == null || perHit <= 0 || !target.canFreeze()) {
       return false;
     }
-    target.setFrozenTicks(
-        builtTicks(target.getFrozenTicks(), perHit, target.getMinFreezeDamageTicks()));
+    final int built = builtTicks(target.getFrozenTicks(), perHit, target.getMinFreezeDamageTicks());
+    if (built <= target.getFrozenTicks()) {
+      return false;
+    }
+    target.setFrozenTicks(built);
     return true;
   }
 }

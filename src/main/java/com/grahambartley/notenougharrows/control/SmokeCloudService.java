@@ -55,9 +55,10 @@ public final class SmokeCloudService {
   }
 
   private static void blindInside(final ServerWorld world, final SmokeCloud cloud) {
-    if (world.getTime() % PARTICLE_INTERVAL_TICKS == 0) {
-      showCloud(world, cloud);
+    if (world.getTime() % PARTICLE_INTERVAL_TICKS != 0) {
+      return;
     }
+    showCloud(world, cloud);
     for (final LivingEntity inside :
         world.getEntitiesByClass(
             LivingEntity.class,

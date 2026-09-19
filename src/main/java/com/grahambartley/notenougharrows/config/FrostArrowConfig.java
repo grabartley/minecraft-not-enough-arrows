@@ -21,10 +21,6 @@ public record FrostArrowConfig(int freezeTicksPerHit) {
     return new FrostArrowConfig(DEFAULT_FREEZE_TICKS_PER_HIT);
   }
 
-  public boolean builds() {
-    return freezeTicksPerHit > 0;
-  }
-
   public FrostArrowConfig withFreezeTicksPerHit(final int value) {
     return new FrostArrowConfig(value);
   }

@@ -16,7 +16,7 @@ class ControlHoldTest {
 
   @Test
   void holdsUntilItsExpiryTick() {
-    final ControlHold hold = ControlHold.until(MOB, ANCHOR, ControlSteering.DRAWN, 100L);
+    final ControlHold hold = new ControlHold(MOB, ANCHOR, ControlSteering.DRAWN, 100L);
 
     assertFalse(hold.hasExpired(99L));
     assertTrue(hold.hasExpired(100L));
@@ -27,16 +27,15 @@ class ControlHoldTest {
   void carriesTheSteeringItWasHeldWith() {
     assertEquals(
         ControlSteering.FLEEING,
-        ControlHold.until(MOB, ANCHOR, ControlSteering.FLEEING, 10L).steering());
+        new ControlHold(MOB, ANCHOR, ControlSteering.FLEEING, 10L).steering());
   }
 
   @Test
   void refusesAHoldWithoutAMobAnAnchorOrASteering() {
     assertThrows(
-        NullPointerException.class,
-        () -> ControlHold.until(null, ANCHOR, ControlSteering.DRAWN, 1L));
+        NullPointerException.class, () -> new ControlHold(null, ANCHOR, ControlSteering.DRAWN, 1L));
     assertThrows(
-        NullPointerException.class, () -> ControlHold.until(MOB, null, ControlSteering.DRAWN, 1L));
-    assertThrows(NullPointerException.class, () -> ControlHold.until(MOB, ANCHOR, null, 1L));
+        NullPointerException.class, () -> new ControlHold(MOB, null, ControlSteering.DRAWN, 1L));
+    assertThrows(NullPointerException.class, () -> new ControlHold(MOB, ANCHOR, null, 1L));
   }
 }

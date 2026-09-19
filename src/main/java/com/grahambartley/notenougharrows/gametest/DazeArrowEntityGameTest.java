@@ -6,8 +6,6 @@ import com.grahambartley.notenougharrows.control.ControlSteering;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.CowEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -16,11 +14,6 @@ public final class DazeArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "daze-arrow";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
   private static final BlockPos PREY_STAND = new BlockPos(3, 3, 5);
-
-  @BeforeBatch(batchId = BATCH)
-  public void forgetHoldsLeftByOtherTests(ServerWorld world) {
-    ControlTestSupport.forgetEveryHoldAndCloud();
-  }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void theMobItHitsIsSetWandering(TestContext context) {

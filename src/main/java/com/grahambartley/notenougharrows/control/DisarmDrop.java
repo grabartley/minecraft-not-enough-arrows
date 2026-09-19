@@ -26,11 +26,13 @@ public final class DisarmDrop {
       return false;
     }
 
-    target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
-
     final ItemEntity dropped =
         new ItemEntity(world, target.getX(), target.getY(), target.getZ(), held.copy());
     dropped.setToDefaultPickupDelay();
-    return world.spawnEntity(dropped);
+    if (!world.spawnEntity(dropped)) {
+      return false;
+    }
+    target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+    return true;
   }
 }

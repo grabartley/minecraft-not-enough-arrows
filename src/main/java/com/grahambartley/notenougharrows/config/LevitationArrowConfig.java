@@ -19,10 +19,6 @@ public record LevitationArrowConfig(int durationTicks) {
     return new LevitationArrowConfig(DEFAULT_DURATION_TICKS);
   }
 
-  public boolean lifts() {
-    return durationTicks > 0;
-  }
-
   public LevitationArrowConfig withDurationTicks(final int value) {
     return new LevitationArrowConfig(value);
   }
