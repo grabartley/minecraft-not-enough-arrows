@@ -475,7 +475,7 @@ A recipe is an unordered list of ingredients, each with the count it demands, an
 
 ### The Rates The Mod Ships
 
-Every arrow ships with a station recipe that asks for exactly what its crafting table recipe asks for, eight shafts around one ingredient, and returns twelve arrows where the table returns eight. That is one and a half times, which is the multiplier a stonecutter gives over a crafting table on stairs, and it is the same multiplier for every arrow so the bargain is one number a player learns once rather than thirteen they have to look up. [ADR 0027](adr/0027-the-station-pays-one-uniform-multiplier.md) covers why the rate is uniform and why it lands on the yield rather than on the inputs.
+Every arrow ships with a station recipe that asks for exactly what its crafting table recipe asks for, eight shafts around one ingredient, and returns twelve arrows where the table returns eight. That is one and a half times, which is the multiplier a stonecutter gives over a crafting table on stairs, and it is the same multiplier for every arrow so the bargain is one number a player learns once rather than one per arrow they have to look up. [ADR 0027](adr/0027-the-station-pays-one-uniform-multiplier.md) covers why the rate is uniform and why it lands on the yield rather than on the inputs.
 
 | Route | Shafts | Ingredient | Arrows out |
 |---|---|---|---|
