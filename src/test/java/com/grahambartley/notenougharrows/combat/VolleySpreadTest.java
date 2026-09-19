@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.combat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.grahambartley.notenougharrows.config.VolleyArrowConfig;
 import java.util.List;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
@@ -99,8 +100,14 @@ class VolleySpreadTest {
     assertEquals(0.0, VolleySpread.fragmentDamage(base, share), TOLERANCE);
   }
 
-  @Test
-  void aShareAboveOneStillNeverBeatsTheArrowItCameFrom() {
-    assertEquals(10.0, VolleySpread.fragmentDamage(10.0, 5.0f), TOLERANCE);
+  @ParameterizedTest
+  @ValueSource(
+      floats = {VolleyArrowConfig.DAMAGE_SHARE_MIN, 0.4f, VolleyArrowConfig.DAMAGE_SHARE_MAX})
+  void everyShareTheConfigurationCanProduceKeepsAFragmentAtOrUnderItsSource(final float share) {
+    final double base = 10.0;
+
+    assertTrue(
+        VolleySpread.fragmentDamage(base, share) <= base + TOLERANCE,
+        "A fragment at a share of " + share + " should never beat its source arrow's " + base);
   }
 }

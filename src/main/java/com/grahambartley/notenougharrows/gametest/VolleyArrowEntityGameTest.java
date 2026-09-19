@@ -97,7 +97,10 @@ public final class VolleyArrowEntityGameTest implements FabricGameTest {
     final float volleyBefore = struckByVolley.getHealth();
     MockPlayerSupport.fireEastStraight(
         context, MockPlayerSupport.playerAt(context, PLAIN_ARROW_STAND), Items.ARROW);
-    CombatTestSupport.fireDownTheLongRange(context, ModArrows.VOLLEY_ARROW.item());
+    MockPlayerSupport.fireEastStraight(
+        context,
+        MockPlayerSupport.playerAt(context, CombatTestSupport.LONG_RANGE_SHOOTER_STAND),
+        ModArrows.VOLLEY_ARROW.item());
 
     context.runAtTick(
         LANDED,

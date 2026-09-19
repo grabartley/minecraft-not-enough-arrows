@@ -42,7 +42,7 @@ public final class VolleySpread {
     if (baseDamage <= 0.0 || damageShare <= 0.0f) {
       return 0.0;
     }
-    return baseDamage * Math.min(1.0f, damageShare);
+    return baseDamage * damageShare;
   }
 
   private static Vec3d perpendicularTo(final Vec3d forward) {

@@ -317,7 +317,7 @@ Its range is deliberately shorter than the ender pearl arrow's. Moving yourself 
 
 Nine arrows that change a fight without making a single arrow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
 
-Two of them deliberately hit softer. The haste and guard arrows carry a fraction of an ordinary arrow's damage, because an arrow you fire at a friend should not cost them a heart to receive.
+Two of them deliberately hit softer. The haste and guard arrows carry a fraction of an ordinary arrow's damage, landing half a heart, or a whole one on a critical, against the three or more a plain arrow takes, because an arrow you fire at a friend should not cost them a real bite of health to receive.
 
 | Arrow | Centre ingredient | What it does |
 |---|---|---|
@@ -339,7 +339,7 @@ Four of these are worth reading the detail on, because each refuses something a 
 | The shock bolt and the jump | `combat.shock.damage` is what the jump deals, and it is dealt only to the entity jumped to. What the arrow itself struck takes an ordinary arrow hit and nothing more, so a shock arrow gives a bow a second target rather than a bigger number. Exactly one further living thing is reached, the nearest inside the arc reach, and never the shooter. A third is never reached, so a crowd cannot be cleared with one arrow |
 | Lifesteal and the damage actually dealt | The heal is measured from how much health and absorption the target actually lost, not from what the arrow was worth, so armour, resistance and a killing blow on an almost-dead target all reduce the heal honestly. A hit that dealt nothing heals nothing, and a dispensed arrow has no shooter to heal |
 | Lifesteal and the shooter's maximum | It never heals past the shooter's own maximum and never hands out absorption instead of the health it could not give |
-| Haste, guard and whose side anyone is on | Both apply to whatever they strike, friend or enemy. The mod adds no team system, so an arrow cannot know, and pretending otherwise would mean a setting that lies. Both are set gentle enough that receiving one costs the target nothing worth counting |
+| Haste, guard and whose side anyone is on | Both apply to whatever they strike, friend or enemy. The mod adds no team system, so an arrow cannot know, and pretending otherwise would mean a setting that lies. Both are set gentle enough that receiving one costs half a heart, or a whole one on a critical |
 | Milk and picking and choosing | Beneficial and harmful effects go alike. A selective cleanse is a different tool, and a player has to be able to predict what they fired |
 | Homing and players | It curves toward hostile mobs only, never toward a player. **This is not a setting.** An arrow that could be pointed at a player would be aim assist, so the refusal is in the code rather than in the config |
 | Homing and finding nothing | `combat.homing.turnRate`, `combat.homing.searchRadius` and `combat.homing.searchConeDegrees` govern the search, and with nothing eligible ahead of it the arrow flies straight |

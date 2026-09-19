@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.arrow.ArrowImpact;
 import com.grahambartley.notenougharrows.combat.LifestealHeal;
 import com.grahambartley.notenougharrows.config.LifestealArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -59,7 +60,7 @@ public class LifestealArrowEntity extends BaseArrowEntity {
     }
   }
 
-  private static double poolOf(final net.minecraft.entity.Entity struck) {
+  private static double poolOf(final Entity struck) {
     return struck instanceof LivingEntity living
         ? living.getHealth() + living.getAbsorptionAmount()
         : 0.0;
