@@ -19,8 +19,8 @@ public final class SmokeCloudService {
   private static final int BLINDNESS_AMPLIFIER = 0;
 
   private static final int PULSE_INTERVAL_TICKS = 4;
-  private static final int PARTICLES_PER_BURST = 12;
-  private static final double PARTICLE_DRIFT = 0.01;
+  private static final int PARTICLES_PER_BURST = 24;
+  private static final double PARTICLE_DRIFT = 0.0;
 
   private static final Map<RegistryKey<World>, SmokeCloudTracker> TRACKERS = new HashMap<>();
 
@@ -73,7 +73,7 @@ public final class SmokeCloudService {
 
   private static void showCloud(final ServerWorld world, final SmokeCloud cloud) {
     world.spawnParticles(
-        ParticleTypes.CAMPFIRE_COSY_SMOKE,
+        ParticleTypes.LARGE_SMOKE,
         cloud.center().getX(),
         cloud.center().getY(),
         cloud.center().getZ(),
