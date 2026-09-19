@@ -36,7 +36,7 @@ The mod is built for a dedicated server full of strangers first. Every effect th
 | Configuration reaches the operator, not just the player | Every server setting is reachable from an OP-gated command tree. The settings screen is a convenience over the same catalog, never the only way in ([ADR 0010](adr/0010-one-option-catalog-feeds-every-surface.md)) |
 | An explosive arrow can be survived | Explosive arrows telegraph with an accelerating audible countdown rather than detonating on impact, so a player who is hit has somewhere to run ([ADR 0003](adr/0003-explosive-arrows-telegraph.md)) |
 | The weapon shows what it will fire | A drawn bow and a charged crossbow both draw the actual arrow nocked, using the arrow's own sprite, so an arrow added later gets it for nothing ([ADR 0021](adr/0021-the-nocked-arrow-is-drawn-over-the-weapon.md)) |
-| No arrow duplicates one a player already has | Vanilla brews a tipped arrow for every potion effect. Every arrow here is checked against that set and against the mod's own, and an arrow whose effect a player can already buy is not shipped however good it sounded |
+| No arrow duplicates one a player already has | Vanilla brews a tipped arrow for every effect it sells as a potion. Every arrow here is checked against that set and against the mod's own, and an arrow whose effect a player can already buy is not shipped however good it sounded |
 | Sixty-three arrows a player can tell apart | Every arrow has its own sprite, its own in-flight texture, and a sound wherever its effect can land out of sight. Breadth a player cannot navigate is not breadth, so identity is a release requirement rather than a polish pass |
 | Sixty-three arrows share a handful of systems | Anchors, ticked sessions, fuses, timed structures, reveal pulses and payload components are built once each and reused. An arrow is a recipe, a sprite, and an impact rule, not a new subsystem |
 
@@ -206,7 +206,7 @@ A player gathers eight of a base arrow and one ingredient, puts them in a crafti
 | CRAFT-6 | Every arrow appears in the mod's own creative tab, in registration order, grouped by family, because a flat list this long is one a player scrolls past rather than one they choose from |
 | CRAFT-7 | A tinted arrow is one item and one entity type carrying its choice as a component, with one recipe per choice. It counts as one arrow, and the choice it carries is the one its recipe named. It contributes one creative tab entry per choice, as vanilla's tipped arrows do, so the tab holds more entries than the mod holds arrows |
 | CRAFT-8 | An arrow whose recipe centre is a filled bucket returns the empty bucket, at a crafting table and at the station alike, which is vanilla's own remainder behaviour rather than a rule this mod adds |
-| CRAFT-9 | An arrow that **places** a vanilla block names that block in its own recipe, so what it places was paid for at the bench. An arrow that **converts** a block already there, such as water into ice or dirt into farmland, names in its recipe what would have done that conversion by hand instead, because it created no block. An arrow may place one of the mod's own blocks without naming either, since those have no item form, cannot be kept, and cost a player nothing to lose |
+| CRAFT-9 | An arrow that **places** a vanilla block names that block in its own recipe, so what it places was paid for at the bench. An arrow that **converts** a block already there, such as water into ice or dirt into farmland, names in its recipe either the material the conversion produces or the tool that would have done it by hand, because it created no block: blue ice for the freeze arrow, a water bucket for the till arrow's hydration. An arrow may place one of the mod's own blocks without naming either, since those have no item form, cannot be kept, and cost a player nothing to lose |
 | CRAFT-10 | A courier arrow is loaded by a shapeless recipe of one empty courier arrow plus one stack, and unloaded by the reverse, both available at a crafting table and at the station. A loaded arrow is never a dead end: the payload comes back out the way it went in |
 
 The ladders:
@@ -415,7 +415,7 @@ A player fires a glow ink arrow at a mob that is about to run into a cave, or at
 | GLOW-3 | An entity that cannot take status effects, such as a boat or an item frame, is not marked |
 | GLOW-4 | The arrow's damage is set low enough that it is not a weapon. The mark is the point |
 | GLOW-5 | Striking a block does nothing, and the arrow embeds as any arrow does |
-| GLOW-6 | A configured duration of zero applies no mark, leaving an inert tracer arrow |
+| GLOW-6 | A configured duration of zero applies no mark, leaving an inert marker |
 
 **Not supported:** Marking a block or a position. Lighting terrain. Choosing who can see the mark.
 
@@ -527,7 +527,32 @@ A player near an armed explosive arrow, or a player carrying one stuck in them, 
 
 ---
 
-### UC14: Drop a block from range
+### UC14: Set an area alight
+
+**Actor:** The player, the shooter, the server operator
+
+A player fires an incendiary arrow into a group of mobs, or at the base of something they want burning. Everything nearby catches, the ground catches, and nothing explodes.
+
+| Requirement | Statement |
+|---|---|
+| INCEND-1 | The arrow sets alight every entity within a configured burn radius, measured as a sphere, and the radius is read fresh on every impact |
+| INCEND-2 | The shooter is never set alight by their own incendiary arrow, by any path through the effect, as they are never pushed by their own wind arrow (WIND-4) |
+| INCEND-3 | A fire immune entity is skipped, and a dropped item is left alone, so a burst never destroys the loot lying in it |
+| INCEND-4 | Entities burn for a configured duration. A duration of zero lays the ground fire and sets nothing alight, which is a supported configuration rather than a broken one |
+| INCEND-5 | Whether the arrow lays fire on the ground is a server setting, on by default, and the fire is placed through the shared fire patch system, so it is time-boxed and permission-checked like every other fire the mod lights (§8, Temporary Structures) |
+| INCEND-6 | The ground fire is sized by this arrow's own burn radius rather than by the explosive family's fire patch radius, so what burns underfoot matches what burned above it |
+| INCEND-7 | The arrow never explodes. There is no blast, no knockback, and no terrain damage beyond what the fire itself does, and no setting introduces any |
+| INCEND-8 | A burn radius of zero burns nothing and places nothing, leaving an arrow that is inert rather than one that misbehaves |
+| INCEND-9 | The arrow is spent on contact with a block rather than embedding, so it is not recoverable |
+| INCEND-10 | The arrow shares the fire charge arrow's ingredient and nothing else. One is a fire charge ringed by plain arrows and the other a fire charge ringed by TNT arrows, so the two recipes cannot collide (CRAFT-4) |
+
+**Not supported:** An explosion of any size. Burning the shooter. Burning dropped items or experience orbs. Fire anywhere the shooter may not build. A fire patch that outlives its configured duration, or that survives a restart.
+
+**Enforcement:** Server. The entity selection, the ignition, the fire placement, its permission check, and every setting are server-side.
+
+---
+
+### UC15: Drop a block from range
 
 **Actor:** The player, the shooter, the server operator
 
@@ -551,7 +576,7 @@ A player fires a gravity arrow at a block. The block falls, as sand does, and re
 
 ---
 
-### UC15: Bank a shot around a corner
+### UC16: Bank a shot around a corner
 
 **Actor:** The player, the server operator
 
@@ -575,7 +600,7 @@ A player fires a ricochet arrow at a wall to reach something a straight line doe
 
 ---
 
-### UC16: Travel a route you could not walk
+### UC17: Travel a route you could not walk
 
 **Actor:** The player, the shooter, the bystander, the server operator
 
@@ -617,7 +642,7 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 
 ---
 
-### UC17: Change the world at range
+### UC18: Change the world at range
 
 **Actor:** The player, the shooter, the server operator
 
@@ -654,7 +679,7 @@ A player wants a block gone, a lake frozen, a wall recoloured, or a doorway bloc
 
 ---
 
-### UC18: Tend the land from a distance
+### UC19: Tend the land from a distance
 
 **Actor:** The player, the shooter, the server operator
 
@@ -688,7 +713,7 @@ A player with a farm, a tree line, or a flock does the round without walking it.
 
 ---
 
-### UC19: Find out what is there
+### UC20: Find out what is there
 
 **Actor:** The player, the bystander, the shooter, the server operator
 
@@ -724,7 +749,7 @@ A player needs to know something about a place before they go into it: whether i
 
 ---
 
-### UC20: Take a creature out of the fight without killing it
+### UC21: Take a creature out of the fight without killing it
 
 **Actor:** The player, the shooter, the server operator
 
@@ -763,7 +788,7 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 
 ---
 
-### UC21: Change the odds of a fight you are already in
+### UC22: Change the odds of a fight you are already in
 
 **Actor:** The player, the shooter, the recipient, the server operator
 
@@ -806,7 +831,7 @@ A player in a fight wants something other than more damage: reach, sustain, a fr
 
 ---
 
-### UC22: Do something for the sake of it
+### UC23: Do something for the sake of it
 
 **Actor:** The player, the shooter, the bystander, the server operator
 
@@ -843,7 +868,7 @@ A player fires something that is not trying to solve a problem. Six arrows exist
 
 ---
 
-### UC23: Do something for, or to, another player
+### UC24: Do something for, or to, another player
 
 **Actor:** The player, the shooter, the recipient, the server operator
 
@@ -876,7 +901,7 @@ Three arrows whose effect is aimed at something other than what the shooter is h
 
 ---
 
-### UC24: Trade at the fletching station
+### UC25: Trade at the fletching station
 
 **Actor:** The player, the pack author, the server operator
 
@@ -919,7 +944,7 @@ A player right-clicks a fletching table. A station opens, listing what it can ma
 
 ---
 
-### UC25: Configure the mod
+### UC26: Configure the mod
 
 **Actor:** The server operator, the player
 
@@ -950,7 +975,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 
 ---
 
-### UC26: Look an arrow up in a recipe viewer
+### UC27: Look an arrow up in a recipe viewer
 
 **Actor:** The player, the pack author
 
@@ -1094,7 +1119,7 @@ Seven arrows leave timed blocks behind, and the fire patch came before them. The
 
 | Requirement | Statement |
 |---|---|
-| STRUCT-1 | Every block a mod arrow places belongs to a timed structure, which is a set of positions recorded per world against one shooter with an expiry tick, except the five that deliberately do not: a rope and a vine answer for their own support, a redstone charge carries its expiry as a scheduled block tick instead (REDSTONE-6), and a torch and a sapling are ordinary permanent blocks the shooter could have placed by hand |
+| STRUCT-1 | Every block a mod arrow places belongs to a timed structure, which is a set of positions recorded per world against one shooter with an expiry tick, except the six that deliberately do not: a rope and a vine answer for their own support, a redstone charge carries its expiry as a scheduled block tick instead (REDSTONE-6), and a torch, a sapling, and a crop the harvest arrow replants are ordinary permanent blocks the shooter could have placed by hand. Converting a block already there is not placing one, and is CRAFT-9's rule rather than this one |
 | STRUCT-2 | A timed structure is permission-checked per position as it is placed, and truncated at the first position it may not use rather than refused whole (PERM-10) |
 | STRUCT-3 | A timed structure occupies only positions that were air, or a replaceable block, so no structure destroys anything a player built |
 | STRUCT-4 | A timed structure is bounded by a structure budget per arrow, so the blocks one shot can place and the work removing them costs are both capped |
