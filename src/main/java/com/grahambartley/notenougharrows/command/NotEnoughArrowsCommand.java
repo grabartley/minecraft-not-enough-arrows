@@ -38,6 +38,7 @@ public final class NotEnoughArrowsCommand {
                         .then(UtilityCommandNodes.build())
                         .then(PhysicsCommandNodes.build())
                         .then(EnderCommandNodes.build())
+                        .then(CombatCommandNodes.build())
                         .then(FletchingCommandNodes.build())));
 
     dispatcher.register(

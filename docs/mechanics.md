@@ -313,6 +313,47 @@ It is also the only thing in the mod that moves a player who did not choose to b
 
 Its range is deliberately shorter than the ender pearl arrow's. Moving yourself somewhere you can see is a traversal tool, and moving something else to you is a weapon, so the weapon reaches half as far.
 
+## Combat Arrows
+
+Nine arrows that change a fight without making a single arrow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
+
+Two of them deliberately hit softer. The haste and guard arrows carry a fraction of an ordinary arrow's damage, landing half a heart, or a whole one on a critical, against the three or more a plain arrow takes, because an arrow you fire at a friend should not cost them a real bite of health to receive.
+
+| Arrow | Centre ingredient | What it does |
+|---|---|---|
+| Shock | A lightning rod | Calls a bolt down on what it hits, then jumps once to the nearest living thing within `combat.shock.arcRadius`. One hop, never a chain, and a reach of zero means no hop at all |
+| Lifesteal | A ghast tear | Returns `combat.lifesteal.share` of the damage it actually dealt to the shooter, capped at `combat.lifesteal.maxHealPerHit` |
+| Rust | An oxidised copper block | Mining fatigue for `combat.status.rustDurationTicks` |
+| Milk | A milk bucket | Strips every status effect from what it hits |
+| Haste | Sugar | Haste for `combat.status.hasteDurationTicks` |
+| Guard | A shield | Absorption for `combat.status.guardDurationTicks` |
+| Homing | A compass | Curves toward the nearest hostile mob inside its search cone |
+| Volley | A feather | Splits in flight into `combat.volley.fragmentCount` ordinary arrows |
+| Railgun | An iron ingot | Flies at `combat.railgun.speedMultiplier` times normal speed with its drop scaled by `combat.railgun.gravityFactor` |
+
+Four of these are worth reading the detail on, because each refuses something a player might reasonably expect it to do.
+
+| Rule | Behaviour |
+|---|---|
+| The shock bolt and fire | The bolt entity is cosmetic, so it provides the flash and the thunder and nothing else. The jump's damage is applied deliberately, as lightning damage credited to the shooter, which means the arrow starts no fire under any setting and in any weather, and it does not change the weather either |
+| The shock bolt and the jump | `combat.shock.damage` is what the jump deals, and it is dealt only to the entity jumped to. What the arrow itself struck takes an ordinary arrow hit and nothing more, so a shock arrow gives a bow a second target rather than a bigger number. Exactly one further living thing is reached, the nearest inside the arc reach, and never the shooter. A third is never reached, so a crowd cannot be cleared with one arrow |
+| Lifesteal and the damage actually dealt | The heal is measured from how much health and absorption the target actually lost, not from what the arrow was worth, so armour, resistance and a killing blow on an almost-dead target all reduce the heal honestly. A hit that dealt nothing heals nothing, and a dispensed arrow has no shooter to heal |
+| Lifesteal and the shooter's maximum | It never heals past the shooter's own maximum and never hands out absorption instead of the health it could not give |
+| Haste, guard and whose side anyone is on | Both apply to whatever they strike, friend or enemy. The mod adds no team system, so an arrow cannot know, and pretending otherwise would mean a setting that lies. Both are set gentle enough that receiving one costs half a heart, or a whole one on a critical |
+| Milk and picking and choosing | Beneficial and harmful effects go alike. A selective cleanse is a different tool, and a player has to be able to predict what they fired |
+| Homing and players | It curves toward hostile mobs only, never toward a player. **This is not a setting.** An arrow that could be pointed at a player would be aim assist, so the refusal is in the code rather than in the config |
+| Homing and finding nothing | `combat.homing.turnRate`, `combat.homing.searchRadius` and `combat.homing.searchConeDegrees` govern the search, and with nothing eligible ahead of it the arrow flies straight |
+| Volley and splitting again | It splits once. The fragments are ordinary vanilla arrows, so a fragment splitting again is not merely forbidden, it is impossible |
+| Volley and picking the fragments up | Fragments cannot be recovered, and `combat.volley.fragmentCount` is capped so one shot can never flood a server |
+| Volley and the damage it adds up to | Each fragment carries `combat.volley.damageShare` of the original and so lands softer than the arrow it came from. The fragments together can total more than one arrow at point blank, which is the trade the arrow offers: a spread that mostly misses at range, and a payoff up close. Fragments carry no bow enchantments and roll no critical of their own, so Power and a full draw are not paid out once per fragment |
+| Status arrows and their own hit | Every effect is applied after the arrow's damage resolves, so an arrow's own hit cannot eat the absorption it just granted and a cleanse cannot strip resistance a fraction of a tick before the hit that resistance was there for |
+| Railgun and piercing | It does not pierce. Piercing is an enchantment, and an arrow that gave it away for free would make the enchantment pointless |
+| Railgun and falling | Its drop can be made small but never none, so a railgun arrow always falls and no arrow in the mod flies forever. A gravity factor of zero is refused with a range message from the command and the settings screen, and clamped up to the minimum when a hand-edited config file asks for it. The factor rides on the arrow itself, so a client watching one drawn across the sky simulates the arc the server is using rather than the default |
+
+Every setting above is read fresh at the moment it is used, whether that is on firing, in flight, or on impact, so changing one mid-flight changes what the arrow already in the air does next.
+
+Like every arrow in the mod, each of the nine is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+
 ## Sounds
 
 The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
@@ -344,6 +385,15 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/incendiary_arrow.png` | The incendiary arrow's item sprite |
 | `textures/item/ender_pearl_arrow.png` | The ender pearl arrow's item sprite |
 | `textures/item/recall_arrow.png` | The recall arrow's item sprite |
+| `textures/item/shock_arrow.png` | The shock arrow's item sprite |
+| `textures/item/lifesteal_arrow.png` | The lifesteal arrow's item sprite |
+| `textures/item/rust_arrow.png` | The rust arrow's item sprite |
+| `textures/item/milk_arrow.png` | The milk arrow's item sprite |
+| `textures/item/haste_arrow.png` | The haste arrow's item sprite |
+| `textures/item/guard_arrow.png` | The guard arrow's item sprite |
+| `textures/item/homing_arrow.png` | The homing arrow's item sprite |
+| `textures/item/volley_arrow.png` | The volley arrow's item sprite |
+| `textures/item/railgun_arrow.png` | The railgun arrow's item sprite |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
@@ -358,6 +408,15 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/ricochet_arrow.png` | The ricochet arrow in flight and planted in a block |
 | `textures/entity/arrow/ender_pearl_arrow.png` | The ender pearl arrow in flight and planted in a block |
 | `textures/entity/arrow/recall_arrow.png` | The recall arrow in flight and planted in a block |
+| `textures/entity/arrow/shock_arrow.png` | The shock arrow in flight and planted in a block |
+| `textures/entity/arrow/lifesteal_arrow.png` | The lifesteal arrow in flight and planted in a block |
+| `textures/entity/arrow/rust_arrow.png` | The rust arrow in flight and planted in a block |
+| `textures/entity/arrow/milk_arrow.png` | The milk arrow in flight and planted in a block |
+| `textures/entity/arrow/haste_arrow.png` | The haste arrow in flight and planted in a block |
+| `textures/entity/arrow/guard_arrow.png` | The guard arrow in flight and planted in a block |
+| `textures/entity/arrow/homing_arrow.png` | The homing arrow in flight and planted in a block |
+| `textures/entity/arrow/volley_arrow.png` | The volley arrow in flight and planted in a block |
+| `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.

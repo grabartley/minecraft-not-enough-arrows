@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.arrow;
 
 public enum ArrowImpact {
   DEFAULT(true, false),
+  CONSUME(true, true),
   DISCARD(false, true),
   RETAIN(false, false);
 

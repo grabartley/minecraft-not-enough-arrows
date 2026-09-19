@@ -39,6 +39,13 @@ class ConfigCodecTest {
             new UtilityArrowConfig(5999, 1199, 1, 15.5f, 7.5f),
             new PhysicsArrowConfig(8, List.of("minecraft:bedrock"), 16, false),
             new EnderArrowConfig(96, 8, true),
+            new CombatArrowConfig(
+                new ShockArrowConfig(31.5f, 19.5f),
+                new LifestealArrowConfig(0.95f, 19.5f),
+                new StatusArrowConfig(11999, 1, 6000),
+                new HomingArrowConfig(0.95f, 63.5f, 179.0f),
+                new VolleyArrowConfig(12, 0.95f, 44.0f, 39),
+                new RailgunArrowConfig(7.5f, 1.95f)),
             new FletchingStationConfig(false));
 
     assertEquals(original, ConfigCodec.decode(ConfigCodec.encode(original)));

@@ -1,0 +1,20 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:milk_bucket"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:milk_arrow",
+    "count": 12
+  }
+}

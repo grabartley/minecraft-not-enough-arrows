@@ -1,6 +1,8 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.ArrowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -17,6 +19,9 @@ final class MockPlayerSupport {
   private static final float LEVEL_PITCH = 0.0f;
   private static final int FULLY_DRAWN = 0;
   private static final int A_QUIVER = 8;
+  private static final float NO_ROLL = 0.0f;
+  private static final float BOW_SPEED = 3.0f;
+  private static final float NO_DIVERGENCE = 0.0f;
 
   static final double CLOSING_STEP = 0.1;
 
@@ -42,6 +47,19 @@ final class MockPlayerSupport {
                     .multiply(CLOSING_STEP));
     player.refreshPositionAndAngles(
         closer.getX(), closer.getY(), closer.getZ(), player.getYaw(), player.getPitch());
+  }
+
+  static void fireEastStraight(
+      final TestContext context, final ServerPlayerEntity shooter, final Item arrow) {
+    shooter.setYaw(EASTWARD_YAW);
+    shooter.setPitch(LEVEL_PITCH);
+
+    final PersistentProjectileEntity projectile =
+        ((ArrowItem) arrow).createArrow(context.getWorld(), new ItemStack(arrow), shooter, null);
+    projectile.setVelocity(
+        shooter, shooter.getPitch(), shooter.getYaw(), NO_ROLL, BOW_SPEED, NO_DIVERGENCE);
+    projectile.setCritical(true);
+    context.getWorld().spawnEntity(projectile);
   }
 
   static void fireEastFromBow(
