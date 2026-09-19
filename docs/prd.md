@@ -37,6 +37,7 @@ The mod is built for a dedicated server full of strangers first. Every effect th
 | An explosive arrow can be survived | Explosive arrows telegraph with an accelerating audible countdown rather than detonating on impact, so a player who is hit has somewhere to run ([ADR 0003](adr/0003-explosive-arrows-telegraph.md)) |
 | The weapon shows what it will fire | A drawn bow and a charged crossbow both draw the actual arrow nocked, using the arrow's own sprite, so an arrow added later gets it for nothing ([ADR 0021](adr/0021-the-nocked-arrow-is-drawn-over-the-weapon.md)) |
 | No arrow duplicates one a player already has | Vanilla brews a tipped arrow for every potion effect. Every arrow here is checked against that set and against the mod's own, and an arrow whose effect a player can already buy is not shipped however good it sounded |
+| Sixty-three arrows a player can tell apart | Every arrow has its own sprite, its own in-flight texture, and a sound wherever its effect can land out of sight. Breadth a player cannot navigate is not breadth, so identity is a release requirement rather than a polish pass |
 | Sixty-three arrows share a handful of systems | Anchors, ticked sessions, fuses, timed structures, reveal pulses and payload components are built once each and reused. An arrow is a recipe, a sprite, and an impact rule, not a new subsystem |
 
 ### Non-Goals
@@ -59,7 +60,7 @@ This document specifies the **first release**, which is sixty-three arrows: thir
 
 | The release accepts | The release refuses |
 |---|---|
-| An arrow whose art is placeholder-plain, as long as it reads at hotbar size | An arrow that can be fired but not crafted, or crafted but not fired |
+| An arrow whose art is plain, as long as it is drawn for that arrow and tells itself apart from the other sixty-two at hotbar size | An arrow with no sprite of its own, or one a player cannot distinguish from another arrow in a hotbar |
 | A setting whose default needs retuning once players have it | A default that lets a fresh install grief a server |
 | An effect that is less spectacular than it could be | An effect that resolves on the client, or that a modified client can lie about |
 | A rough edge in the station's interface | Items destroyed, duplicated, or silently lost on any path through it |
@@ -91,13 +92,12 @@ Out of the first release, deliberately.
 | Changes to fletcher villager trades | The station adopts the block's interface. The profession is untouched |
 | Swinging, or momentum, on a zipline span | The span is ridden at a set speed along a straight line, for the same reason the grapple pulls straight: a predictable movement model first, a richer one only once the simple one feels right |
 | A zipline span between more than two anchors | A span has two ends. A network of spans is several spans, which players build themselves |
-| Restoring anything an arrow changed | True of the gravity arrow already, and now of the drill, freeze, paint, pillar and drain arrows. An arrow is an action, not a transaction with an undo |
+| Restoring anything an arrow changed | True of the gravity, drill, freeze, paint, pillar and drain arrows alike. An arrow is an action, not a transaction with an undo |
 | Selective cleansing from the milk arrow | It removes every effect, good and bad. A player must be able to predict what they fired, and a cleanse that chooses would need a notion of which effects are wanted |
 | A team, ally, or friendly-fire system | The haste and guard arrows apply their effect to whatever they strike. Teaching an arrow whose side a target is on means adding a team system, which is a different mod |
 | Homing onto players | Not a setting. A projectile that curves toward a player is aim assistance, and the arrow refuses it outright |
 | Delivering a courier arrow to an offline player | The payload goes where the arrow lands. Holding a stack for somebody who is not connected is a mail system |
-| A polymorph that survives a restart | The substitution is in-memory and reverts on every interruption, for the same reason a fuse defuses rather than resuming |
-| Persisting timed structures, reveal outlines, watchers, or polymorphs across a restart | All are measured in seconds to a few minutes, all fail benignly by simply being gone, and writing them into the world save costs more than it returns ([ADR 0012](adr/0012-fire-patches-are-server-owned-and-time-boxed.md)) |
+| Persisting timed structures, watchers, clouds, or polymorphs across a restart | All are measured in seconds to a few minutes, all fail benignly by simply being gone, and writing them into the world save costs more than it returns ([ADR 0012](adr/0012-fire-patches-are-server-owned-and-time-boxed.md)) |
 | Removing or downgrading any crafting table recipe | The load-bearing rule of the station. See [ADR 0002](adr/0002-crafting-table-always-works.md) |
 
 ---
@@ -131,7 +131,7 @@ Out of the first release, deliberately.
 | **Rope** | A climbable block the rope arrow places, which hangs only while something above holds it and answers for its own support |
 | **Redstone charge** | An invisible, collisionless block with no item form that emits a configured redstone power for a configured time and then expires |
 | **Fire patch** | A set of fire blocks the server placed, recorded per world with an expiry tick. It is the first instance of a timed structure and behaves as one |
-| **Timed structure** | A set of block positions the server placed on behalf of one shooter, recorded per world with an expiry tick, permission-checked per position on placement and removed together on expiry. Ropes are not timed structures: a rope answers for its own support instead |
+| **Timed structure** | A set of block positions the server placed on behalf of one shooter, recorded per world with an expiry tick, permission-checked per position on placement and removed together on expiry. Ropes and vines are not timed structures: each answers for its own support instead |
 | **Structure budget** | The configured maximum number of positions one timed structure may occupy, per arrow. It bounds both the blocks a shot can place and the work removing them costs |
 | **Span** | A timed structure occupying the straight line between two anchors, which a player may ride as a ticked session. The zipline arrow's product |
 | **Pending anchor** | A block anchor a player has set with a first zipline shot and not yet paired with a second. At most one per player, carrying its own expiry, holding no blocks |
@@ -172,6 +172,8 @@ Radius means different things for different effects, and the difference decides 
 | Blossom radius, till radius, harvest radius | A **horizontal disc**, because all three act on ground | The impact position, nearest column first |
 | Reveal radius | A **sphere**, bounded by a configured maximum, scanned once | The impact point |
 | Cloud radius, taunt radius, repel radius, magnet radius, shock arc radius | A **sphere** for choosing which entities are affected | The impact point |
+| Web patch size | A **sphere** of block positions, capped by the web arrow's structure budget | The impact position |
+| Homing search radius and search cone | A **cone** ahead of the arrow: a half-angle about its current heading, and a distance along it | The arrow in flight, re-evaluated as it flies |
 
 ### What Is Anchorable
 
@@ -197,14 +199,14 @@ A player gathers eight of a base arrow and one ingredient, puts them in a crafti
 | Requirement | Statement |
 |---|---|
 | CRAFT-1 | Every arrow the mod adds has a crafting table recipe, permanently, and no station, block, or configuration can remove or gate it |
-| CRAFT-2 | Every crafting table recipe that **creates** an arrow uses the same shape: a three by three ring of eight base arrows around one distinguishing ingredient in the centre, yielding eight of the result. The courier arrow's loading and unloading recipes are the only recipes in the mod that are not this shape, because they fill and empty an arrow rather than create one (CRAFT-10) |
+| CRAFT-2 | Every crafting table recipe that **creates** an arrow uses the same shape: a three by three ring of eight base arrows around one distinguishing ingredient in the centre, yielding eight of the result. The courier arrow's loading and unloading recipes are the only **crafting table** recipes in the mod that are not this shape, because they fill and empty an arrow rather than create one. A station recipe is an unordered list of counted ingredients and was never this shape (STATION-7, CRAFT-10) |
 | CRAFT-3 | The base arrow is a plain vanilla arrow, except where an arrow sits on a ladder, in which case it is the arrow one rung below it |
 | CRAFT-4 | No two arrows share a recipe. An ingredient already used as the centre of one recipe is not reused as the centre of another over the same base |
 | CRAFT-5 | Every recipe declares the same recipe group, so a recipe viewer and the recipe book present the arrows as one set |
 | CRAFT-6 | Every arrow appears in the mod's own creative tab, in registration order, grouped by family so a tab of sixty-three arrows is readable |
 | CRAFT-7 | A tinted arrow is one item and one entity type carrying its choice as a component, with one recipe per choice. It counts as one arrow, and the choice it carries is the one its recipe named |
-| CRAFT-8 | An arrow whose recipe centre is a filled bucket returns the empty bucket, which is vanilla's own remainder behaviour rather than a rule this mod adds |
-| CRAFT-9 | An arrow that leaves blocks behind names the material in its own recipe, so the blocks it places were paid for. An arrow cannot place a block its recipe never mentioned |
+| CRAFT-8 | An arrow whose recipe centre is a filled bucket returns the empty bucket, at a crafting table and at the station alike, which is vanilla's own remainder behaviour rather than a rule this mod adds |
+| CRAFT-9 | An arrow that leaves a **vanilla** block behind names that block in its own recipe, so what it places was paid for at the bench. An arrow may place one of the mod's own blocks without naming it, because those have no item form, cannot be kept, and cost a player nothing to lose |
 | CRAFT-10 | A courier arrow is loaded by a shapeless recipe of one empty courier arrow plus one stack, and unloaded by the reverse, both available at a crafting table and at the station. A loaded arrow is never a dead end: the payload comes back out the way it went in |
 
 The ladders:
@@ -269,7 +271,35 @@ A player draws a bow, or loads a crossbow, and can see which arrow is about to l
 
 ---
 
-### UC4: Pull yourself to a surface
+### UC4: Tell one arrow from another
+
+**Actor:** The player, the bystander
+
+A player with sixty-three arrows has a problem the mod created for them: a quiver full of things that are all, at a glance, arrows. They need to pick the right one out of a creative tab, a hotbar and a chest without reading every tooltip, know what a drawn bow across a courtyard is loaded with, and know what has just landed beside them without looking at it. An arrow nobody can pick out of a row of sixty-two others is an arrow nobody uses.
+
+| Requirement | Statement |
+|---|---|
+| IDENT-1 | Every arrow has its own sprite, drawn for that arrow. No arrow is a recolour of another, and no two arrows share a sprite |
+| IDENT-2 | A sprite is identified at hotbar size, in a hotbar of nine and in a creative tab of sixty-three, by silhouette and palette rather than by a detail a player has to lean in for. An arrow that only reads when magnified does not read |
+| IDENT-3 | A sprite says what the arrow does, through the material its own recipe names. A player who knows what they crafted recognises it without a tooltip, and a player who does not can guess |
+| IDENT-4 | A tinted arrow's variants may differ by colour alone, which is the one place in the mod where they may, because the thing the colour encodes is itself the choice the arrow carries and the item's own name states it (A11Y-1) |
+| IDENT-5 | Every arrow is drawn in flight and where it embeds with its own texture, so a bystander can tell what has landed near them from where they are standing |
+| IDENT-6 | Every arrow's impact produces a result a player can perceive without reading chat, and no arrow resolves invisibly and silently. An effect that changes nothing at the point of impact says so some other way |
+| IDENT-7 | Every arrow whose effect can resolve out of the shooter's sight, behind them, or beyond the range at which its result is visible carries its own impact sound. A player who cannot see what happened can hear what happened |
+| IDENT-8 | A sound the mod plays is either its own asset or a vanilla sound used for what that sound already means. No arrow borrows a vanilla sound that already means something else, because a familiar sound that lies is worse than a new one |
+| IDENT-9 | No two arrows share an impact sound unless they share the system that produces it. The three explosive tiers may sound alike because they are one ladder; two unrelated arrows may not |
+| IDENT-10 | Every sound the mod plays is emitted in a sound category a player and a server can turn down independently of the game's other sound, and no effect depends on being heard to be survivable (A11Y-3) |
+| IDENT-11 | Every arrow's item name and recipe viewer description say what it does in the player's own terms, name the thing it produces, and are distinct enough that two arrows' descriptions cannot be swapped without the swap being obvious |
+| IDENT-12 | The creative tab presents sixty-three arrows grouped by family, in a deliberate order, because a flat list of sixty-three is a list a player scrolls past rather than one they choose from (CRAFT-6) |
+| IDENT-13 | An arrow that has no sprite of its own, or that is indistinguishable from another arrow at hotbar size, is not shipped. Breadth that a player cannot navigate is not breadth |
+
+**Not supported:** A shared base sprite with a tint standing in for a drawn one, outside the tinted arrows IDENT-4 defines. A three-dimensional model for an arrow item: these are flat sprites. A sound on every arrow regardless of whether its effect needs one, since sixty-three arrows that each announce themselves is noise rather than feedback. A tooltip that has to be read for the arrow to be identified at all.
+
+**Enforcement:** Client, for what is drawn and played, from assets the server never sends. Server, for what it tells clients to draw and play, and for the sound category and volume settings an operator controls.
+
+---
+
+### UC5: Pull yourself to a surface
 
 **Actor:** The player, the shooter, the bystander, the server operator
 
@@ -301,7 +331,7 @@ A player fires a grapple arrow at a cliff, a ceiling, or the far side of a ravin
 
 ---
 
-### UC5: Hang a descent
+### UC6: Hang a descent
 
 **Actor:** The player, the shooter
 
@@ -327,7 +357,7 @@ A player standing at the lip of a ravine fires a rope arrow into the ceiling of 
 
 ---
 
-### UC6: Arrive where the arrow landed
+### UC7: Arrive where the arrow landed
 
 **Actor:** The player, the shooter, the server operator
 
@@ -349,7 +379,7 @@ A player fires an ender pearl arrow at a ledge they cannot reach and arrives on 
 
 ---
 
-### UC7: Bring a target to you
+### UC8: Bring a target to you
 
 **Actor:** The player, the shooter, the server operator
 
@@ -373,7 +403,7 @@ A player fires a recall arrow at something across a gap, and it arrives at their
 
 ---
 
-### UC8: Mark a target
+### UC9: Mark a target
 
 **Actor:** The player, the bystander, the server operator
 
@@ -394,7 +424,7 @@ A player fires a glow ink arrow at a mob that is about to run into a cave, or at
 
 ---
 
-### UC9: Trigger a mechanism at range
+### UC10: Trigger a mechanism at range
 
 **Actor:** The player, the shooter, the server operator
 
@@ -416,7 +446,7 @@ A player fires a redstone arrow at a block beside a door, a piston, or a dispens
 
 ---
 
-### UC10: Shove entities away
+### UC11: Shove entities away
 
 **Actor:** The player, the shooter, the server operator
 
@@ -432,6 +462,7 @@ A player fires a wind arrow into a crowd of mobs, or at a door across the room. 
 | WIND-6 | Another player's shove reaches them as a velocity change rather than a visible teleport |
 | WIND-7 | The arrow's damage is set low enough that it is not a weapon. The displacement is the point |
 | WIND-8 | The arrow is spent on impact and is not recoverable |
+| WIND-9 | The burst happens where the arrow lands, at the moment it lands. An Arrow of Wind Charged instead gives what it hits an effect that bursts later, when that creature is hurt, so the two answer different questions and neither replaces the other |
 
 **Not supported:** Breaking solid blocks. Pushing the shooter. Configuring which blocks the burst activates.
 
@@ -439,7 +470,7 @@ A player fires a wind arrow into a crowd of mobs, or at a door across the room. 
 
 ---
 
-### UC11: Detonate a charge at range
+### UC12: Detonate a charge at range
 
 **Actor:** The player, the shooter, the bystander, the server operator
 
@@ -474,7 +505,7 @@ A player fires an explosive arrow. It embeds, or sticks in whatever it hit, and 
 
 ---
 
-### UC12: Read a burning fuse
+### UC13: Read a burning fuse
 
 **Actor:** The player, the bystander
 
@@ -497,7 +528,7 @@ A player near an armed explosive arrow, or a player carrying one stuck in them, 
 
 ---
 
-### UC13: Drop a block from range
+### UC14: Drop a block from range
 
 **Actor:** The player, the shooter, the server operator
 
@@ -521,7 +552,7 @@ A player fires a gravity arrow at a block. The block falls, as sand does, and re
 
 ---
 
-### UC14: Bank a shot around a corner
+### UC15: Bank a shot around a corner
 
 **Actor:** The player, the server operator
 
@@ -545,7 +576,7 @@ A player fires a ricochet arrow at a wall to reach something a straight line doe
 
 ---
 
-### UC15: Travel a route you could not walk
+### UC16: Travel a route you could not walk
 
 **Actor:** The player, the shooter, the bystander, the server operator
 
@@ -563,7 +594,7 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 
 | Requirement | Statement |
 |---|---|
-| TRAVEL-1 | Every structure these arrows leave is a timed structure, so its expiry, its permission check, and its removal are the shared system's rather than each arrow's (§8, Temporary Structures) |
+| TRAVEL-1 | Every structure these arrows leave, other than the vine column, is a timed structure, so its expiry, its permission check, and its removal are the shared system's rather than each arrow's. A vine, like a rope, answers for its own support instead of carrying an expiry (§8, Temporary Structures) |
 | TRAVEL-2 | Every block a structure places comes from the arrow's own recipe. The recipe names the material, and no arrow conjures a block that was not paid for at the crafting table or the station |
 | TRAVEL-3 | A zipline's first shot holds a pending anchor per player, at most one, for a configured window. Firing a third zipline arrow replaces the pending anchor rather than queuing it |
 | TRAVEL-4 | A pending zipline anchor that expires, or whose player disconnects or dies, is discarded, and the arrow that set it is not returned. A pending anchor is not a structure and holds no blocks |
@@ -574,11 +605,11 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 | TRAVEL-9 | A tow ends when the target reaches the shooter, when the line of travel is obstructed, when its tick budget runs out, when either end dies or disconnects, or when the server stops. No path leaves an entity being pulled |
 | TRAVEL-10 | An updraft column applies upward velocity to entities inside it, never a position change, and it lifts everyone in it rather than only the shooter |
 | TRAVEL-11 | An updraft column is not flight: it has a configured lifetime, a configured height above which it stops lifting, and it grants nothing once the entity leaves it. A player leaving the top of a column falls under vanilla's rules and takes vanilla's fall damage |
-| TRAVEL-12 | A vine column follows the rope block's support rule rather than inventing a second one, so it hangs from what a rope hangs from and removes itself when that stops being true (ROPE-6) |
+| TRAVEL-12 | A vine segment is held by the block face it is attached to, in the way a vanilla vine is, so each segment answers for itself: the column survives one segment being broken, and a segment removes itself when the face behind it stops being solid. It does not use the rope's support-from-above rule, because a column that grows upward cannot satisfy one |
 | TRAVEL-13 | A vine column stops at the first position that is not open air and at the first position the shooter may not build in, so it never clips through a floor and never crosses a protection boundary |
 | TRAVEL-14 | A trampoline launches any entity that lands on it, the shooter included, at a configured strength, and the launch cancels the fall damage of the landing that triggered it |
 | TRAVEL-15 | A bridge is laid from the impact point toward the shooter's position at the moment of impact, one block wide, stopping at the configured length or at the first position it may not use, whichever comes first |
-| TRAVEL-16 | A scaffold column rises from the impact point, stopping at the configured height, at the build limit, or at the first position that is not air or that the shooter may not build in |
+| TRAVEL-16 | A scaffold column rises from the impact point, stopping at the configured height, at the build limit, or at the first position that is not air or that the shooter may not build in. It is climbable and stood on, where a pillar arrow's column is solid ground raised beneath an impact, so the two read as a ladder and a plinth rather than as one arrow twice (SHAPE-5) |
 | TRAVEL-17 | Every setting in this use case is read fresh on the impact that uses it, so an operator's change takes effect on the next shot without a restart |
 
 **Not supported:** Swinging or momentum on a zipline. A span between more than two anchors. A span or a structure a player can place by hand or recover as an item. An updraft that grants flight, hovering, or any effect outside its own column. A bridge that chooses its own direction. Towing an entity a recall arrow would refuse.
@@ -587,7 +618,7 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 
 ---
 
-### UC16: Change the world at range
+### UC17: Change the world at range
 
 **Actor:** The player, the shooter, the server operator
 
@@ -596,7 +627,7 @@ A player wants a block gone, a lake frozen, a wall recoloured, or a doorway bloc
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
 | Drill arrow | An iron pickaxe | Breaks the struck block at a configured tool tier and drops it as items | Yes, if it broke something |
-| Pillar arrow | A piston | Raises a timed column of the struck block's own material beneath the impact, to a configured height | Yes, if it raised anything |
+| Pillar arrow | Dirt | Raises a timed column of dirt beneath the impact, to a configured height | Yes, if it raised anything |
 | Drain arrow | A sponge | Absorbs fluid in a configured radius, as a sponge does | Yes |
 | Freeze arrow | Blue ice | Turns water to ice, lava to obsidian, and extinguishes fire in a configured radius. Living things are untouched | Yes |
 | Web arrow | A cobweb | Places a timed patch of cobweb at the impact point | Yes |
@@ -608,11 +639,11 @@ A player wants a block gone, a lake frozen, a wall recoloured, or a doorway bloc
 | SHAPE-2 | A drill arrow's tool tier is a server setting. A block the configured tier could not have harvested is not broken, so the arrow cannot outperform the pickaxe it was crafted from |
 | SHAPE-3 | A drill arrow drops what a player breaking that block with the configured tier would have dropped, and honours the block's own loot table rather than granting the block itself |
 | SHAPE-4 | A drill arrow breaks exactly one block, the one it struck. Area breaking is the gravity arrow's job and the two must not converge |
-| SHAPE-5 | A pillar arrow copies the struck block's state upward and pays for it out of the recipe rather than out of the world, so the struck block is never consumed and no material is created beyond what the arrow carried |
+| SHAPE-5 | A pillar arrow raises the material its own recipe named rather than the material it struck, so nothing is consumed from the world and nothing exists that the bench did not pay for (CRAFT-9) |
 | SHAPE-6 | A drain arrow removes fluid without creating a block, and the absorbed volume is capped by a configured maximum so one arrow cannot drain an ocean |
 | SHAPE-7 | A freeze arrow converts fluid positions only. It never replaces a solid block, never harms an entity, and its conversion of lava to obsidian is refused at any position the shooter may not build in |
 | SHAPE-8 | A freeze arrow extinguishes fire the mod placed as readily as fire it did not, and extinguishing a mod fire patch retires that patch rather than leaving a record of fire that is no longer there |
-| SHAPE-9 | A paint arrow is one arrow carrying a colour, in the way a tipped arrow is one arrow carrying a potion. Sixteen recipes, one per vanilla dye, each yielding that colour of the same arrow |
+| SHAPE-9 | A paint arrow is one arrow carrying a colour, in the way a tipped arrow is one arrow carrying a potion. Sixteen recipes, one per item in the vanilla `minecraft:dyes` tag, each yielding that colour of the same arrow. Bone meal is the blossom arrow's centre and is not one of the sixteen |
 | SHAPE-10 | A paint arrow recolours only a block whose recoloured form vanilla already has, and a sheep, which vanilla already recolours with a dye in hand. Anything else is left alone and the arrow is recovered |
 | SHAPE-11 | A paint arrow never changes a block's identity, only its colour. Wool becomes other wool; it never becomes concrete |
 | SHAPE-12 | Every effect in this use case is refused, silently and per position, anywhere the shooter may not build, and an effect with no shooter is checked against the world border alone (PERM-5, PERM-6, PERM-8) |
@@ -624,7 +655,7 @@ A player wants a block gone, a lake frozen, a wall recoloured, or a doorway bloc
 
 ---
 
-### UC17: Tend the land from a distance
+### UC18: Tend the land from a distance
 
 **Actor:** The player, the shooter, the server operator
 
@@ -634,7 +665,7 @@ A player with a farm, a tree line, or a flock does the round without walking it.
 |---|---|---|---|
 | Blossom arrow | Bone meal | Applies bone meal across a configured radius, with everything bone meal does to what it lands on | Yes |
 | Harvest arrow | An iron hoe | Harvests every mature crop in a configured radius and replants it, sending the drops to the shooter | Yes |
-| Till arrow | Dirt | Tills a configured disc into farmland and hydrates it | Yes |
+| Till arrow | A water bucket | Tills a configured disc into farmland and hydrates it | Yes |
 | Sapling arrow | Any vanilla sapling or propagule | Plants the sapling the arrow carries where it landed | Yes, if it planted |
 | Shear arrow | Shears | Shears what vanilla shears at the impact point, sending the drops to the shooter | Yes, if it sheared |
 | Bee arrow | A honeycomb | Releases a configured number of bees at the impact point, angered at what the arrow struck and never at the shooter | Yes |
@@ -658,7 +689,7 @@ A player with a farm, a tree line, or a flock does the round without walking it.
 
 ---
 
-### UC18: Find out what is there
+### UC19: Find out what is there
 
 **Actor:** The player, the bystander, the shooter, the server operator
 
@@ -694,7 +725,7 @@ A player needs to know something about a place before they go into it: whether i
 
 ---
 
-### UC19: Take a creature out of the fight without killing it
+### UC20: Take a creature out of the fight without killing it
 
 **Actor:** The player, the shooter, the server operator
 
@@ -717,6 +748,8 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 | CONTROL-3 | A frost arrow affects living entities only and never converts a block, so the freeze arrow keeps terrain and the frost arrow keeps creatures |
 | CONTROL-4 | A frost arrow's freeze respects the same immunities vanilla's powder snow respects, including leather armour and entities immune to freezing |
 | CONTROL-5 | A levitation arrow's lift has a configured duration with a configured maximum, and the fall that follows is vanilla's, including its damage. The mod did not choose where the entity came down, so it does not cancel the landing |
+| CONTROL-13 | A levitation arrow lifts one entity it hit, wherever that entity is, and travels with it. An updraft column lifts anything standing in one place and grants nothing outside it. The two must stay that far apart: one is aimed at a creature, the other is a place (TRAVEL-10) |
+| CONTROL-14 | The effects in this use case need no per-player switch of their own, unlike the disarm arrow's, because each is a status effect a player can wait out or drink off, while a disarm moves an item out of a player's hand and a recall moves their body. The switch guards what a player cannot undo |
 | CONTROL-6 | A taunt and a repel both alter targeting for a bounded time and then hand it back. Neither may leave a mob permanently unable to acquire a target, and both end cleanly if the impact position unloads |
 | CONTROL-7 | A taunt draws only mobs that were already hostile to something. It does not make a neutral mob hostile, and it never makes a mob hostile toward a player who did not provoke it |
 | CONTROL-8 | A repel makes a mob flee rather than making it harmless. It keeps its ability to retaliate if cornered |
@@ -731,9 +764,9 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 
 ---
 
-### UC20: Change the odds of a fight you are already in
+### UC21: Change the odds of a fight you are already in
 
-**Actor:** The player, the shooter, the server operator
+**Actor:** The player, the shooter, the recipient, the server operator
 
 A player in a fight wants something other than more damage: reach, sustain, a friend kept standing, a siege stopped, or a hit they could not otherwise land.
 
@@ -741,7 +774,7 @@ A player in a fight wants something other than more damage: reach, sustain, a fr
 |---|---|---|---|
 | Shock arrow | A lightning rod | Calls a lightning strike that lights no fire, and arcs to one further entity within a configured radius | Yes |
 | Lifesteal arrow | A ghast tear | Heals the shooter by a configured share of the damage it dealt | Yes |
-| Rust arrow | Oxidised copper | Applies mining fatigue to what it strikes | Yes |
+| Rust arrow | An oxidised copper block, at its fully oxidised stage | Applies mining fatigue to what it strikes | Yes |
 | Milk arrow | A milk bucket | Removes every status effect from what it strikes | Yes |
 | Haste arrow | Sugar | Applies haste to what it strikes | Yes |
 | Guard arrow | A shield | Applies absorption to what it strikes | Yes |
@@ -755,7 +788,7 @@ A player in a fight wants something other than more damage: reach, sustain, a fr
 | FIGHT-2 | A shock arrow lights no fire under any setting, and its strike is placed at the entity or block it struck rather than at a position it chose |
 | FIGHT-3 | A shock arrow's arc reaches exactly one further entity, the nearest within the configured radius, and never chains beyond it. A radius of zero means no arc |
 | FIGHT-4 | A shock arrow's strike does not depend on the weather, and it does not change the weather |
-| FIGHT-5 | A lifesteal arrow returns a configured share of the damage actually dealt, capped at a configured maximum per hit, and it heals nobody when there is no shooter or when the hit dealt no damage |
+| FIGHT-5 | A lifesteal arrow returns a configured share of the damage actually dealt to the **shooter**, capped at a configured maximum per hit, and it heals nobody when there is no shooter or when the hit dealt no damage. An Arrow of Healing heals what it strikes, which is the opposite direction and the reason both can exist |
 | FIGHT-6 | A lifesteal arrow never heals the shooter past their own maximum health, and it grants no absorption as a substitute |
 | FIGHT-7 | A haste arrow and a guard arrow apply their effect to whatever they strike, friend or enemy, because an arrow does not know whose side a target is on and the mod does not add a team system to teach it |
 | FIGHT-8 | A haste arrow and a guard arrow deal a damage low enough that neither is a weapon, so healing a friend does not cost them a heart to receive |
@@ -774,7 +807,7 @@ A player in a fight wants something other than more damage: reach, sustain, a fr
 
 ---
 
-### UC21: Do something for the sake of it
+### UC22: Do something for the sake of it
 
 **Actor:** The player, the shooter, the bystander, the server operator
 
@@ -782,7 +815,7 @@ A player fires something that is not trying to solve a problem. Six arrows exist
 
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
-| Party arrow | A firework rocket | Sets off a firework display and plays the music disc the arrow carries | Yes |
+| Party arrow | Any vanilla music disc | Bursts into firework particles and plays the disc the arrow carries | Yes |
 | Chicken arrow | An egg | Releases a live chicken that survives the flight | Yes |
 | Puffer arrow | A pufferfish | Inflates the struck entity for a configured time: it takes more knockback and no longer fits through a one-block gap | Yes |
 | Stink arrow | Rotten flesh | Leaves a timed cloud that nauseates players inside it and that mobs will not path into | Yes |
@@ -791,8 +824,8 @@ A player fires something that is not trying to solve a problem. Six arrows exist
 
 | Requirement | Statement |
 |---|---|
-| CHAOS-1 | A party arrow carries a disc in the way a paint arrow carries a colour, and the disc it plays is the one it was crafted from. It plays that disc at the impact point, audibly to everyone in range, once, and the sound ends on its own (SHAPE-9) |
-| CHAOS-2 | A party arrow places no jukebox, changes no block, and leaves nothing behind |
+| CHAOS-1 | A party arrow carries a disc in the way a paint arrow carries a colour, with one recipe per vanilla music disc, and it plays the disc it was crafted from at the impact point, audibly to everyone in range, once, ending on its own (SHAPE-9) |
+| CHAOS-2 | A party arrow places no jukebox, spawns no firework rocket, changes no block, and leaves nothing behind. The display is particles and sound |
 | CHAOS-3 | A chicken arrow's chicken is an ordinary chicken from the moment it exists. It persists, it can be killed, it can be bred, and the mod stops caring about it |
 | CHAOS-4 | A chicken arrow's chicken takes no fall damage from the flight it arrived on, because it did not choose to be fired |
 | CHAOS-5 | A chicken arrow's spawn is refused where the world would not allow a chicken to be spawned by a player at that position, and the arrow is recovered instead |
@@ -811,11 +844,11 @@ A player fires something that is not trying to solve a problem. Six arrows exist
 
 ---
 
-### UC22: Do something for, or to, another player
+### UC23: Do something for, or to, another player
 
-**Actor:** The player, the shooter, the server operator
+**Actor:** The player, the shooter, the recipient, the server operator
 
-Three arrows only make sense with somebody else on the server, which is the server this mod is built for first.
+Three arrows whose effect is aimed at something other than what the shooter is holding: a stack that ends up in someone else's hands, an ally that fights on its own, and a pile of drops nobody is standing next to. Each works with nobody else connected and reads best when somebody is.
 
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
@@ -833,7 +866,7 @@ Three arrows only make sense with somebody else on the server, which is the serv
 | TOGETHER-6 | A courier arrow is crafted empty and loaded separately, by the shapeless recipe CRAFT-10 defines. What it carries is decided before it is fired, is shown on the item, and can be taken back out without firing it |
 | TOGETHER-7 | A snow golem arrow's golem is an ordinary snow golem with a configured lifetime, removed when that lifetime ends. It is not owned, not tamed, and not protected from anything that would ordinarily kill it |
 | TOGETHER-8 | A snow golem arrow is refused where the world would not allow a player to build one at that position, and the arrow is recovered instead |
-| TOGETHER-9 | A magnet arrow moves loose items and experience orbs only, and never a living entity or a vehicle, which is the recall arrow's job. The gap it fills is the one the recall arrow explicitly leaves (UC7) |
+| TOGETHER-9 | A magnet arrow moves loose items and experience orbs only, and never a living entity or a vehicle, which is the recall arrow's job. The gap it fills is the one the recall arrow explicitly leaves (UC8) |
 | TOGETHER-10 | A magnet arrow moves what it pulls by velocity rather than by granting it, so an item pulled toward a shooter is picked up under vanilla's own rules and a full inventory simply leaves it on the ground |
 | TOGETHER-11 | A magnet arrow with no shooter pulls nothing |
 | TOGETHER-12 | Every radius, lifetime, and cap here is a server setting read fresh on impact, and a courier arrow's maximum payload size is one of them |
@@ -844,7 +877,7 @@ Three arrows only make sense with somebody else on the server, which is the serv
 
 ---
 
-### UC23: Trade at the fletching station
+### UC24: Trade at the fletching station
 
 **Actor:** The player, the pack author, the server operator
 
@@ -875,7 +908,7 @@ A player right-clicks a fletching table. A station opens, listing what it can ma
 | STATION-9 | Two ingredients accepting the same item need two separate stacks, exactly as shapeless crafting behaves |
 | STATION-10 | Recipes are datapack driven and datapack overridable, so a pack author changes rates or adds arrows without touching code |
 | STATION-11 | A malformed recipe is reported as a load error naming that one file, leaving the rest of the pack to load |
-| STATION-12 | Taking a result consumes exactly the declared inputs and grants exactly the declared count, transactionally. Two players cannot take the same result twice |
+| STATION-12 | Taking a result consumes exactly the declared inputs, returns any container item those inputs leave behind, and grants exactly the declared count, transactionally. Two players cannot take the same result twice |
 | STATION-13 | No path through the station destroys, duplicates, or silently loses an item |
 | STATION-14 | A server setting disables the station entirely. With it off, right-clicking a fletching table does nothing, the block behaves exactly as vanilla does, and every crafting table recipe still works |
 | STATION-15 | The station's recipes are discoverable in a recipe viewer, with inputs, outputs, and counts, and with the fletching table shown as the workstation. A discount nobody can find is not a feature |
@@ -887,7 +920,7 @@ A player right-clicks a fletching table. A station opens, listing what it can ma
 
 ---
 
-### UC24: Configure the mod
+### UC25: Configure the mod
 
 **Actor:** The server operator, the player
 
@@ -918,7 +951,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 
 ---
 
-### UC25: Look an arrow up in a recipe viewer
+### UC26: Look an arrow up in a recipe viewer
 
 **Actor:** The player, the pack author
 
@@ -962,7 +995,8 @@ Access control is stated in one place because it is the difference between a too
 | Drop a block | No | Only where they may build | Same | n/a | Only inside the world border |
 | Pull themselves with a grapple | Yes | Yes | Yes | Yes | No, a dispensed grapple pulls nobody |
 | Hang a rope, or a vine | No | Only where they may build | Same | n/a | Only inside the world border |
-| Place a timed structure: span, scaffold, bridge, pillar, trampoline, web, cloud, beam | No | Only where they may build, per position | Same | n/a | Only inside the world border, per position |
+| Place a timed structure: span, scaffold, bridge, pillar, trampoline, web, beam | No | Only where they may build, per position | Same | n/a | Only inside the world border, per position |
+| Leave a cloud, which occupies no block position | Yes | Yes | Yes | n/a | Yes |
 | Break a block with a drill arrow | No | Only where they may build, and only what the configured tool tier could harvest | Same | n/a | Only inside the world border |
 | Convert a fluid, or recolour a block | No | Only where they may build | Same | n/a | Only inside the world border |
 | Plant, till, bone-meal, harvest, or shear | No | Only where they may build | Same | n/a | Only inside the world border |
@@ -1053,7 +1087,7 @@ Conservation is the property that decides whether this mod is safe to put in a p
 | SAFE-10 | A boomerang arrow is returned exactly once, granted where there is room and dropped where there is not, including on a path where the shooter died or disconnected mid-flight |
 | SAFE-11 | A harvest, shear, or drill arrow's drops are granted where there is room and dropped at the block where there is not. A full inventory never destroys a drop |
 | SAFE-12 | A polymorph arrow restores the mob it changed, or restores the original outright if it cannot. No path duplicates a mob, loses one, or leaves one whose appearance does not match what it is |
-| SAFE-13 | No arrow places a block the recipe did not pay for, and no arrow consumes a block from the world to place another (SHAPE-5) |
+| SAFE-13 | No arrow places a vanilla block its recipe did not pay for, and no arrow consumes a block from the world in order to place another (SHAPE-5) |
 
 ### Temporary Structures
 
@@ -1066,7 +1100,8 @@ Six arrows leave blocks behind, and a seventh lit fire before them. They share o
 | STRUCT-3 | A timed structure occupies only positions that were air, or a replaceable block, so no structure destroys anything a player built |
 | STRUCT-4 | A timed structure is bounded by a structure budget per arrow, so the blocks one shot can place and the work removing them costs are both capped |
 | STRUCT-5 | On expiry a structure removes only the positions that still hold what it placed. A player who built over an expiring structure keeps their block (REDSTONE-7) |
-| STRUCT-6 | No block a structure places has an item form, a recipe, or a drop. None can be placed by hand, and breaking one yields nothing |
+| STRUCT-6 | A block the **mod registers** has no item form, no recipe, and no drop, and cannot be placed by hand. A structure built from vanilla blocks places ordinary vanilla blocks, which behave as they always do |
+| STRUCT-11 | Mining a vanilla block out of a live structure yields that block's ordinary drop and takes the position out of the structure's record, so the player keeps what they mined and the structure's expiry does not try to remove it again (STRUCT-5) |
 | STRUCT-7 | A structure whose chunk unloads mid-life expires as that chunk loads, and nothing force-loads a chunk to remove one early (PERF-4) |
 | STRUCT-8 | No structure survives a server restart. Every one is cleared before the world saves, and anything missed expires as its chunk loads |
 | STRUCT-9 | A structure's lifetime and budget are server settings, read on placement, and a lifetime of zero places nothing rather than placing something permanent |
@@ -1088,7 +1123,7 @@ Six arrows leave blocks behind, and a seventh lit fire before them. They share o
 | PERF-10 | A reveal pulse and a drain arrow both skip positions in unloaded chunks rather than loading them |
 | PERF-11 | A watcher reports at most once per configured interval, so a busy corridor costs a fixed rate rather than one message per entity per tick |
 | PERF-12 | A timed structure's removal cost is bounded by its structure budget, and removal happens once at expiry rather than being polled |
-| PERF-13 | Bees, chickens, and snow golems an arrow released are removed at the end of their configured lifetime, so no arrow can be used to accumulate entities |
+| PERF-13 | Bees and snow golems an arrow released are removed at the end of their configured lifetime, so neither arrow can be used to accumulate entities. The chicken arrow's chicken deliberately has no lifetime, and its cap is that every chicken costs a crafted arrow |
 | PERF-14 | A volley arrow's fragment count is capped, so a stack of them cannot flood a server with projectiles |
 | PERF-15 | An updraft column and a cloud tick only while live, and each ticks over the entities inside a bounded volume rather than over every entity in the world |
 
@@ -1117,7 +1152,11 @@ Four ways a world can interrupt something, and what each thing does about it.
 | Reveal outline | Unaffected, it is a vanilla status effect | Survives, vanilla persists effects | Lost with the entity's effects | Survives |
 | Watcher | Expires as the chunk reloads | Lost | Lost with its owner's session | Cleared |
 | Disguise | Reverted | Reverted, the mob is itself again | Reverted with the mob's death | Reverted |
-| Released bee, chicken, snow golem | Survives, they are entities | Survives | Unaffected | Survives, minus the lifetime record, so a bee or a golem may outlive its timer across a restart |
+| Released bee, snow golem | Survives, they are entities | Survives | Unaffected | Survives, minus the lifetime record, so either may outlive its timer across a restart |
+| Released chicken | Survives | Survives | Unaffected | Survives. It has no lifetime to lose |
+| Puffer inflation | Reverted | Reverted | Reverted with the entity's death | Reverted |
+| Taunt or repel targeting | Ends, the mob re-acquires normally | Ends | Ends | Ends |
+| Tracer path | Expires as the chunk reloads | Lost | Unaffected | Lost |
 
 | Requirement | Statement |
 |---|---|
@@ -1125,7 +1164,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | PERSIST-2 | No redstone signal may survive indefinitely through any of the four interruptions above. A signal whose chunk unloads mid-duration expires as that chunk loads again, so a mechanism is never observed still powered |
 | PERSIST-3 | Configuration is per world. Two worlds on one server have independent settings |
 | PERSIST-4 | A disguise reverts on every interruption rather than resuming, so no mob is ever left wearing an appearance the server no longer tracks |
-| PERSIST-5 | An entity an arrow released may outlive its configured lifetime across a restart, because the lifetime record is in memory and the entity is in the chunk. The failure is benign: what remains is an ordinary bee, chicken, or snow golem |
+| PERSIST-5 | A bee or a snow golem may outlive its configured lifetime across a restart, because the lifetime record is in memory and the entity is in the chunk. The failure is benign: what remains is an ordinary bee or snow golem |
 
 ### Accessibility
 
@@ -1139,7 +1178,6 @@ Four ways a world can interrupt something, and what each thing does about it.
 | A11Y-6 | Every player-facing string resolves through the language file, so the mod is translatable |
 | A11Y-7 | A beacon beam, a cloud, and a reveal outline are each distinguishable by more than colour. A beam's identity is carried by its shape as well as its hue, and an outline is a silhouette rather than a tint |
 | A11Y-8 | A watcher's report is text rather than a sound alone, so it is readable by a player who cannot hear it |
-| A11Y-9 | No effect that a player must react to depends on particles being drawn, because particles are culled at reduced particle settings (A11Y-2) |
 
 ### Compatibility
 
@@ -1182,6 +1220,9 @@ Properties that must hold, whatever the schedule. None of these is a checklist o
 | REL-15 | Every block the release registers has no item form, no recipe, and no drop, and either expires on a timer or answers for its own support. Asserted by test |
 | REL-16 | Every path that carries an item, including a courier payload and a boomerang return, conserves it exactly once, asserted by test on each path rather than on the happy one |
 | REL-17 | Every timed structure, cloud, column, watcher, session, and disguise is proven to end through every interruption in the persistence grid |
+| REL-18 | Every arrow has a sprite of its own and an in-flight texture of its own, asserted by a test over the registry rather than by inspection, and no two arrows share either |
+| REL-19 | Every arrow whose effect can resolve out of the shooter's sight has an impact sound, and no two unrelated arrows share one |
+| REL-20 | Every arrow's name and description resolve to real prose, are distinct from every other arrow's, and say what the arrow does rather than what it is made of |
 
 ---
 
