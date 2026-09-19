@@ -55,7 +55,7 @@ public final class DazeArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
-  public void anEntityThatIsNotAMobIsLeftAlone(TestContext context) {
+  public void aMobThatWasNeverHostileIsLeftAlone(TestContext context) {
     final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
     MockPlayerSupport.fireEastStraight(
         context,

@@ -370,7 +370,7 @@ Where vanilla has a status effect for it, vanilla's is applied, so duration, per
 | Smoke | A campfire | A cloud of `control.smoke.radius` that blinds what stands inside it for `control.smoke.durationTicks` |
 | Disarm | A fishing rod | Knocks the target's main-hand item onto the ground at its feet |
 
-The frost, levitation, daze and disarm arrows resolve against the thing they hit, so one that strikes only a block does nothing and is recovered like any arrow. The taunt, repel and smoke arrows resolve at the impact point instead, block or entity alike, and are spent doing it. An arrow of those three that reaches nobody, because its family is switched off or because nothing eligible was in range, is recovered rather than destroyed: you never pay for an arrow that did nothing.
+The frost, levitation, daze and disarm arrows resolve against the thing they hit, so one that strikes only a block does nothing and is recovered like any arrow. The taunt, repel and smoke arrows resolve at the impact point instead, block or entity alike, and are spent doing it. One of those three that strikes a block and reaches nobody, because its family is switched off or because nothing eligible was in range, embeds and is recovered rather than destroyed: you never pay for an arrow that did nothing to the scenery. One that strikes a creature is consumed by that hit like any arrow.
 
 | Rule | Behaviour |
 |---|---|

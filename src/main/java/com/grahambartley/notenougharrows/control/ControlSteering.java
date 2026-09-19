@@ -7,15 +7,12 @@ public enum ControlSteering {
   DRAWN(true) {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
-      return from == null || anchor == null ? Optional.empty() : Optional.of(anchor);
+      return Optional.of(anchor);
     }
   },
   FLEEING(false) {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
-      if (from == null || anchor == null) {
-        return Optional.empty();
-      }
       final Vec3d away = from.subtract(anchor);
       if (away.lengthSquared() <= 0.0) {
         return Optional.empty();

@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AreaControlArrowEntity extends BaseArrowEntity {
-  protected static final double FACE_CLEARANCE = 0.25;
+  private static final double FACE_CLEARANCE = 0.25;
 
   protected AreaControlArrowEntity(
       final EntityType<? extends AreaControlArrowEntity> entityType, final World world) {

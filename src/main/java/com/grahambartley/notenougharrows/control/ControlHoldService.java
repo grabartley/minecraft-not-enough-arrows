@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 
 public final class ControlHoldService {
   private static final double STEERING_SPEED = 1.1;
+  private static final int REPATH_INTERVAL_TICKS = 5;
 
   private static final Map<RegistryKey<World>, ControlHoldTracker> TRACKERS = new HashMap<>();
 
@@ -54,7 +55,7 @@ public final class ControlHoldService {
 
   public static boolean daze(
       final ServerWorld world, final MobEntity mob, final TargetingArrowConfig targeting) {
-    if (world == null || mob == null || !targeting.dazes() || !HostileScan.isHostile(mob)) {
+    if (!targeting.dazes() || !HostileScan.isHostile(mob)) {
       return false;
     }
     return hold(
@@ -94,9 +95,6 @@ public final class ControlHoldService {
       final Vec3d anchor,
       final ControlSteering steering,
       final int durationTicks) {
-    if (durationTicks <= 0) {
-      return 0;
-    }
     trackerFor(world)
         .hold(new ControlHold(mob.getUuid(), anchor, steering, world.getTime() + durationTicks));
     steer(mob, anchor, steering);
@@ -119,7 +117,12 @@ public final class ControlHoldService {
       tracker.forget(hold.mobId());
       return;
     }
-    steer(mob, hold.anchor(), hold.steering());
+    if (hold.steering().clearsTarget()) {
+      mob.setTarget(null);
+    }
+    if (world.getTime() % REPATH_INTERVAL_TICKS == 0) {
+      steer(mob, hold.anchor(), hold.steering());
+    }
   }
 
   private static void handBack(final ServerWorld world, final ControlHold hold) {
@@ -134,9 +137,6 @@ public final class ControlHoldService {
       final MobEntity mob, final Vec3d anchor, final ControlSteering steering) {
     if (steering.clearsTarget()) {
       mob.setTarget(null);
-    }
-    if (!mob.getNavigation().isIdle()) {
-      return;
     }
     steering
         .destination(mob.getBoundingBox().getCenter(), anchor)

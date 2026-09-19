@@ -18,7 +18,7 @@ public final class SmokeCloudService {
   private static final int BLINDNESS_REFRESH_TICKS = 40;
   private static final int BLINDNESS_AMPLIFIER = 0;
 
-  private static final int PARTICLE_INTERVAL_TICKS = 4;
+  private static final int PULSE_INTERVAL_TICKS = 4;
   private static final int PARTICLES_PER_BURST = 12;
   private static final double PARTICLE_DRIFT = 0.01;
 
@@ -55,7 +55,7 @@ public final class SmokeCloudService {
   }
 
   private static void blindInside(final ServerWorld world, final SmokeCloud cloud) {
-    if (world.getTime() % PARTICLE_INTERVAL_TICKS != 0) {
+    if (world.getTime() % PULSE_INTERVAL_TICKS != 0) {
       return;
     }
     showCloud(world, cloud);

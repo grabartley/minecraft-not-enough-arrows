@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 
 class ControlSteeringTest {
 
@@ -47,13 +45,6 @@ class ControlSteeringTest {
   void wanderingNamesNoDestination() {
     assertEquals(
         Optional.empty(), ControlSteering.WANDERING.destination(new Vec3d(5.0, 64.0, 0.0), ANCHOR));
-  }
-
-  @ParameterizedTest
-  @EnumSource(ControlSteering.class)
-  void everySteeringRefusesAMissingPosition(final ControlSteering steering) {
-    assertEquals(Optional.empty(), steering.destination(null, ANCHOR));
-    assertEquals(Optional.empty(), steering.destination(new Vec3d(1.0, 1.0, 1.0), null));
   }
 
   @Test

@@ -18,6 +18,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
   private static final int BRIEF_HOLD_TICKS = 5;
   private static final int AFTER_A_BRIEF_HOLD = 20;
   private static final int SETTLING_TICKS = 10;
+  private static final double AT_THE_ANCHOR = 2.0;
   private static final BlockPos ANCHOR_STAND = new BlockPos(2, 3, 3);
   private static final BlockPos WALKER_STAND = new BlockPos(5, 3, 3);
   private static final int KEEPING_IT_TICKS = 20;
@@ -77,7 +78,22 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
-  public void aDrawnHostileIsGivenAPathToTheImpact(TestContext context) {
+  public void aDrawnHostileIsPathedToTheImpactItself(TestContext context) {
+    final ZombieEntity hostile = ControlTestSupport.walkingZombieAt(context, WALKER_STAND);
+    hostile.setTarget(ControlTestSupport.stillCowAt(context, PREY_STAND));
+    final Vec3d anchor = Vec3d.ofCenter(context.getAbsolutePos(ANCHOR_STAND));
+
+    context.runAtTick(
+        SETTLING_TICKS,
+        () -> {
+          ControlHoldService.taunt(context.getWorld(), anchor, holdingFor(200));
+          assertPathedTo(context, hostile, anchor, "A drawn hostile");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aHostileAlreadyChasingSomethingIsStillPathedAway(TestContext context) {
     final ZombieEntity hostile = ControlTestSupport.walkingZombieAt(context, WALKER_STAND);
     hostile.setTarget(ControlTestSupport.stillCowAt(context, PREY_STAND));
     final Vec3d anchor = Vec3d.ofCenter(context.getAbsolutePos(ANCHOR_STAND));
@@ -86,12 +102,12 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
         SETTLING_TICKS,
         () -> {
           final double startedAway = hostile.getPos().squaredDistanceTo(anchor);
-          ControlHoldService.taunt(context.getWorld(), anchor, holdingFor(200));
+          ControlHoldService.repel(context.getWorld(), anchor, holdingFor(200));
           final double headingFor = pathTargetDistanceToAnchor(context, hostile, anchor);
 
           context.assertTrue(
-              headingFor < startedAway,
-              "A drawn hostile should be pathed nearer the impact than it started, but was sent "
+              headingFor > startedAway,
+              "A hostile mid-chase should still be sent running from the impact, but was pathed "
                   + headingFor
                   + " away against "
                   + startedAway);
@@ -114,12 +130,21 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
           context.assertTrue(
               headingFor > startedAway,
               "A repelled hostile should be pathed further from the impact than it started,"
-                  + " but was sent "
+                  + " but was pathed "
                   + headingFor
                   + " away against "
                   + startedAway);
           context.complete();
         });
+  }
+
+  private static void assertPathedTo(
+      final TestContext context, final ZombieEntity hostile, final Vec3d anchor, final String who) {
+    final double headingFor = pathTargetDistanceToAnchor(context, hostile, anchor);
+
+    context.assertTrue(
+        headingFor <= AT_THE_ANCHOR,
+        who + " should be pathed to the impact itself, but was pathed " + headingFor + " away");
   }
 
   private static double pathTargetDistanceToAnchor(
