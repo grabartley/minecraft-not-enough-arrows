@@ -19,6 +19,7 @@ class NotEnoughArrowsConfigTest {
     assertEquals(UtilityArrowConfig.defaults(), defaults.utility());
     assertEquals(PhysicsArrowConfig.defaults(), defaults.physics());
     assertEquals(EnderArrowConfig.defaults(), defaults.ender());
+    assertEquals(CombatArrowConfig.defaults(), defaults.combat());
     assertEquals(FletchingStationConfig.defaults(), defaults.fletching());
   }
 
@@ -26,7 +27,7 @@ class NotEnoughArrowsConfigTest {
   void substitutesDefaultsForNullFamilies() {
     assertEquals(
         NotEnoughArrowsConfig.defaults(),
-        new NotEnoughArrowsConfig(null, null, null, null, null, null));
+        new NotEnoughArrowsConfig(null, null, null, null, null, null, null));
   }
 
   @Test
@@ -95,6 +96,17 @@ class NotEnoughArrowsConfigTest {
   }
 
   @Test
+  void replacesOnlyTheCombatFamily() {
+    final CombatArrowConfig replacement =
+        CombatArrowConfig.defaults().withShock(new ShockArrowConfig(0.0f, 1.0f));
+    final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withCombat(replacement);
+
+    assertEquals(replacement, updated.combat());
+    assertEquals(EnderArrowConfig.defaults(), updated.ender());
+    assertEquals(FletchingStationConfig.defaults(), updated.fletching());
+  }
+
+  @Test
   void fallsBackToDefaultsForAnEmptyObject() {
     assertEquals(
         NotEnoughArrowsConfig.defaults(), NotEnoughArrowsConfig.fromJson(new JsonObject()));
@@ -120,6 +132,7 @@ class NotEnoughArrowsConfigTest {
     assertEquals(UtilityArrowConfig.defaults(), parsed.utility());
     assertEquals(PhysicsArrowConfig.defaults(), parsed.physics());
     assertEquals(EnderArrowConfig.defaults(), parsed.ender());
+    assertEquals(CombatArrowConfig.defaults(), parsed.combat());
     assertEquals(FletchingStationConfig.defaults(), parsed.fletching());
   }
 
@@ -132,6 +145,7 @@ class NotEnoughArrowsConfigTest {
     assertTrue(json.get("utility").isJsonObject());
     assertTrue(json.get("physics").isJsonObject());
     assertTrue(json.get("ender").isJsonObject());
+    assertTrue(json.get("combat").isJsonObject());
     assertTrue(json.get("fletching").isJsonObject());
   }
 
@@ -160,6 +174,13 @@ class NotEnoughArrowsConfigTest {
             new UtilityArrowConfig(5999, 1199, 1, 15.5f, 7.5f),
             new PhysicsArrowConfig(8, List.of("minecraft:bedrock"), 16, false),
             new EnderArrowConfig(96, 8, true),
+            new CombatArrowConfig(
+                new ShockArrowConfig(31.5f, 19.5f),
+                new LifestealArrowConfig(0.95f, 19.5f),
+                new StatusArrowConfig(11999, 1, 6000),
+                new HomingArrowConfig(0.95f, 63.5f, 179.0f),
+                new VolleyArrowConfig(12, 0.95f, 44.0f, 39),
+                new RailgunArrowConfig(7.5f, 1.95f)),
             new FletchingStationConfig(false));
 
     assertEquals(original, NotEnoughArrowsConfig.fromJson(original.toJson()));

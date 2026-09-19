@@ -1,6 +1,6 @@
 <h1 align="center">Not Enough Arrows</h1>
 
-<p align="center"><b>Thirteen new arrows for Minecraft 1.21.1 on Fabric.</b><br>
+<p align="center"><b>Twenty-two new arrows for Minecraft 1.21.1 on Fabric.</b><br>
 Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then teleport into it.</p>
 
 <p align="center">
@@ -21,7 +21,7 @@ Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then t
 Vanilla gives you an arrow that does one thing: it hurts. Every bow you have ever drawn has been a
 slightly slower sword.
 
-**Not Enough Arrows** gives that bow thirteen more things to do. The cliff you were going to walk
+**Not Enough Arrows** gives that bow twenty-two more things to do. The cliff you were going to walk
 around becomes a cliff you shoot a hook into and get pulled up. The ravine you were going to bridge
 becomes a ravine you drop a rope into. The mountain in your way stops being in your way.
 
@@ -61,6 +61,17 @@ ruin someone's floor.
 The **glow ink arrow** outlines what you hit through walls, for everyone on the server, so the
 creeper behind the ridge is now a problem everybody can see.
 
+## Win the fight differently
+
+Nine arrows change a fight without making your bow hit harder. The **shock arrow** calls lightning
+down on what it hits and jumps once to whatever is standing closest, lighting no fires on the way.
+The **lifesteal arrow** gives you back a share of the damage it dealt. The **homing arrow** curves
+toward hostile mobs, and never toward a player, which is not a setting you can change.
+
+The **volley arrow** splits in the air into a handful of ordinary arrows, and the **railgun arrow**
+goes very fast and drops very little. The rest are status in arrow form: rust, milk, haste and
+guard, fired at whatever needs them.
+
 ## The full set
 
 | | Arrow | What it does | Craft it from |
@@ -78,6 +89,15 @@ creeper behind the ridge is now a problem everybody can see.
 | ⚙️ | **Ricochet** | Bounces off blocks instead of sticking | Iron nugget |
 | 🟣 | **Ender pearl** | Teleports you to wherever it lands | Ender pearl |
 | 🌀 | **Recall** | Brings whatever you hit back to you. Built from ender pearl arrows | Fermented spider eye |
+| ⚡ | **Shock** | Lightning on what you hit, jumping once. Starts no fires | Lightning rod |
+| 🩸 | **Lifesteal** | Gives you back a share of the damage it dealt | Ghast tear |
+| 🟩 | **Rust** | Mining fatigue on what you hit | Oxidised copper block |
+| 🥛 | **Milk** | Strips every effect from what you hit, good and bad | Milk bucket |
+| ⭐ | **Haste** | Haste on what you hit, friend or enemy | Sugar |
+| 🛡️ | **Guard** | Absorption on what you hit, friend or enemy | Shield |
+| 🧭 | **Homing** | Curves toward hostile mobs. Never toward a player | Compass |
+| 🪶 | **Volley** | Splits in the air into a handful of ordinary arrows | Feather |
+| 🗜️ | **Railgun** | Very fast, and it barely drops | Iron ingot |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight

@@ -9,13 +9,22 @@ import com.grahambartley.notenougharrows.entity.FireChargeArrowEntity;
 import com.grahambartley.notenougharrows.entity.GlowInkArrowEntity;
 import com.grahambartley.notenougharrows.entity.GrappleArrowEntity;
 import com.grahambartley.notenougharrows.entity.GravityArrowEntity;
+import com.grahambartley.notenougharrows.entity.GuardArrowEntity;
 import com.grahambartley.notenougharrows.entity.GunpowderArrowEntity;
+import com.grahambartley.notenougharrows.entity.HasteArrowEntity;
+import com.grahambartley.notenougharrows.entity.HomingArrowEntity;
 import com.grahambartley.notenougharrows.entity.IncendiaryArrowEntity;
+import com.grahambartley.notenougharrows.entity.LifestealArrowEntity;
+import com.grahambartley.notenougharrows.entity.MilkArrowEntity;
+import com.grahambartley.notenougharrows.entity.RailgunArrowEntity;
 import com.grahambartley.notenougharrows.entity.RecallArrowEntity;
 import com.grahambartley.notenougharrows.entity.RedstoneArrowEntity;
 import com.grahambartley.notenougharrows.entity.RicochetArrowEntity;
 import com.grahambartley.notenougharrows.entity.RopeArrowEntity;
+import com.grahambartley.notenougharrows.entity.RustArrowEntity;
+import com.grahambartley.notenougharrows.entity.ShockArrowEntity;
 import com.grahambartley.notenougharrows.entity.TntArrowEntity;
+import com.grahambartley.notenougharrows.entity.VolleyArrowEntity;
 import com.grahambartley.notenougharrows.entity.WindArrowEntity;
 import java.util.List;
 import net.minecraft.item.ItemStack;
@@ -79,6 +88,43 @@ public final class ModArrows {
   public static final RegisteredArrow<RecallArrowEntity> RECALL_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of("recall_arrow", RecallArrowEntity::new, ModArrows::recallArrow));
+
+  public static final RegisteredArrow<ShockArrowEntity> SHOCK_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("shock_arrow", ShockArrowEntity::new, ModArrows::shockArrow));
+
+  public static final RegisteredArrow<LifestealArrowEntity> LIFESTEAL_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "lifesteal_arrow", LifestealArrowEntity::new, ModArrows::lifestealArrow));
+
+  public static final RegisteredArrow<RustArrowEntity> RUST_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("rust_arrow", RustArrowEntity::new, ModArrows::rustArrow));
+
+  public static final RegisteredArrow<MilkArrowEntity> MILK_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("milk_arrow", MilkArrowEntity::new, ModArrows::milkArrow));
+
+  public static final RegisteredArrow<HasteArrowEntity> HASTE_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("haste_arrow", HasteArrowEntity::new, ModArrows::hasteArrow));
+
+  public static final RegisteredArrow<GuardArrowEntity> GUARD_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("guard_arrow", GuardArrowEntity::new, ModArrows::guardArrow));
+
+  public static final RegisteredArrow<HomingArrowEntity> HOMING_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("homing_arrow", HomingArrowEntity::new, ModArrows::homingArrow));
+
+  public static final RegisteredArrow<VolleyArrowEntity> VOLLEY_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("volley_arrow", VolleyArrowEntity::new, ModArrows::volleyArrow));
+
+  public static final RegisteredArrow<RailgunArrowEntity> RAILGUN_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("railgun_arrow", RailgunArrowEntity::new, ModArrows::railgunArrow));
 
   private ModArrows() {}
 
@@ -222,5 +268,95 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new RecallArrowEntity(RECALL_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static ShockArrowEntity shockArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new ShockArrowEntity(SHOCK_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static LifestealArrowEntity lifestealArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new LifestealArrowEntity(LIFESTEAL_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static RustArrowEntity rustArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RustArrowEntity(RUST_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static MilkArrowEntity milkArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new MilkArrowEntity(MILK_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static HasteArrowEntity hasteArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new HasteArrowEntity(HASTE_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static GuardArrowEntity guardArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new GuardArrowEntity(GUARD_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static HomingArrowEntity homingArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new HomingArrowEntity(HOMING_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static VolleyArrowEntity volleyArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new VolleyArrowEntity(VOLLEY_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static RailgunArrowEntity railgunArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RailgunArrowEntity(RAILGUN_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

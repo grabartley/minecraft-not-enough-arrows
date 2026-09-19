@@ -6,6 +6,7 @@ public final class ConfigSettings {
   public static final String UTILITY = "utility";
   public static final String PHYSICS = "physics";
   public static final String ENDER = "ender";
+  public static final String COMBAT = "combat";
   public static final String FLETCHING = "fletching";
 
   public static final String EXPLOSIVE_GUNPOWDER = EXPLOSIVE + ".gunpowder";
@@ -61,6 +62,35 @@ public final class ConfigSettings {
   public static final String ENDER_PEARL_MAX_RANGE_BLOCKS = ENDER + ".pearlMaxRangeBlocks";
   public static final String ENDER_RECALL_MAX_RANGE_BLOCKS = ENDER + ".recallMaxRangeBlocks";
   public static final String ENDER_RECALL_AFFECTS_PLAYERS = ENDER + ".recallAffectsPlayers";
+
+  public static final String COMBAT_SHOCK = COMBAT + ".shock";
+  public static final String COMBAT_LIFESTEAL = COMBAT + ".lifesteal";
+  public static final String COMBAT_STATUS = COMBAT + ".status";
+  public static final String COMBAT_HOMING = COMBAT + ".homing";
+  public static final String COMBAT_VOLLEY = COMBAT + ".volley";
+  public static final String COMBAT_RAILGUN = COMBAT + ".railgun";
+
+  public static final String COMBAT_SHOCK_ARC_RADIUS = COMBAT_SHOCK + ".arcRadius";
+  public static final String COMBAT_SHOCK_DAMAGE = COMBAT_SHOCK + ".damage";
+  public static final String COMBAT_LIFESTEAL_SHARE = COMBAT_LIFESTEAL + ".share";
+  public static final String COMBAT_LIFESTEAL_MAX_HEAL_PER_HIT =
+      COMBAT_LIFESTEAL + ".maxHealPerHit";
+  public static final String COMBAT_STATUS_RUST_DURATION_TICKS =
+      COMBAT_STATUS + ".rustDurationTicks";
+  public static final String COMBAT_STATUS_HASTE_DURATION_TICKS =
+      COMBAT_STATUS + ".hasteDurationTicks";
+  public static final String COMBAT_STATUS_GUARD_DURATION_TICKS =
+      COMBAT_STATUS + ".guardDurationTicks";
+  public static final String COMBAT_HOMING_TURN_RATE = COMBAT_HOMING + ".turnRate";
+  public static final String COMBAT_HOMING_SEARCH_RADIUS = COMBAT_HOMING + ".searchRadius";
+  public static final String COMBAT_HOMING_SEARCH_CONE_DEGREES =
+      COMBAT_HOMING + ".searchConeDegrees";
+  public static final String COMBAT_VOLLEY_FRAGMENT_COUNT = COMBAT_VOLLEY + ".fragmentCount";
+  public static final String COMBAT_VOLLEY_DAMAGE_SHARE = COMBAT_VOLLEY + ".damageShare";
+  public static final String COMBAT_VOLLEY_SPREAD_DEGREES = COMBAT_VOLLEY + ".spreadDegrees";
+  public static final String COMBAT_VOLLEY_SPLIT_DELAY_TICKS = COMBAT_VOLLEY + ".splitDelayTicks";
+  public static final String COMBAT_RAILGUN_SPEED_MULTIPLIER = COMBAT_RAILGUN + ".speedMultiplier";
+  public static final String COMBAT_RAILGUN_GRAVITY_FACTOR = COMBAT_RAILGUN + ".gravityFactor";
 
   public static final String FLETCHING_STATION_ENABLED = FLETCHING + ".stationEnabled";
 

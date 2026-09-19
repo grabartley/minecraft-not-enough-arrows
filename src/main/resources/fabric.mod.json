@@ -5,7 +5,7 @@
   "name": "Not Enough Arrows",
   "description": "Expands the arrow types available in Minecraft with new craftable arrows that carry unique effects.",
   "authors": [
-    "Vit\u00f3ria Vedana",
+    "Vitória Vedana",
     "Graham Bartley"
   ],
   "contact": {
@@ -41,6 +41,7 @@
       "com.grahambartley.notenougharrows.gametest.BlockEditPermissionGameTest",
       "com.grahambartley.notenougharrows.gametest.BlockPlacementGameTest",
       "com.grahambartley.notenougharrows.gametest.ChargedCrossbowArrowGameTest",
+      "com.grahambartley.notenougharrows.gametest.CombatArrowDamageGameTest",
       "com.grahambartley.notenougharrows.gametest.CountdownBroadcasterGameTest",
       "com.grahambartley.notenougharrows.gametest.EnderLandingGameTest",
       "com.grahambartley.notenougharrows.gametest.EnderPearlArrowEntityGameTest",
@@ -67,8 +68,13 @@
       "com.grahambartley.notenougharrows.gametest.GrappleServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.GravityArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.GravityServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.GuardArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.HasteArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.HomingArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.IncendiaryArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.IncendiaryServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.LifestealArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.MilkArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.ModItemGroupsGameTest",
       "com.grahambartley.notenougharrows.gametest.ModRecipesGameTest",
       "com.grahambartley.notenougharrows.gametest.ModScreenHandlersGameTest",
@@ -77,6 +83,7 @@
       "com.grahambartley.notenougharrows.gametest.NockedBowArrowGameTest",
       "com.grahambartley.notenougharrows.gametest.NotEnoughArrowsCommandGameTest",
       "com.grahambartley.notenougharrows.gametest.PearlArrivalServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.RailgunArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.RecallArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.RecallServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.RedstoneArrowEntityGameTest",
@@ -88,11 +95,14 @@
       "com.grahambartley.notenougharrows.gametest.RopeClimbGameTest",
       "com.grahambartley.notenougharrows.gametest.RopePlacerGameTest",
       "com.grahambartley.notenougharrows.gametest.RopeServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.RustArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.ServerConfigPayloadsGameTest",
       "com.grahambartley.notenougharrows.gametest.ServerConfigServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.ServerConfigUpdateReceiverGameTest",
       "com.grahambartley.notenougharrows.gametest.ShippedRecipesGameTest",
+      "com.grahambartley.notenougharrows.gametest.ShockArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.StationRecipesGameTest",
+      "com.grahambartley.notenougharrows.gametest.VolleyArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.WindArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.WindBurstServiceGameTest"
     ]

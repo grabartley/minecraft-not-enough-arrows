@@ -13,6 +13,15 @@
     "not-enough-arrows:gravity_arrow",
     "not-enough-arrows:ricochet_arrow",
     "not-enough-arrows:ender_pearl_arrow",
-    "not-enough-arrows:recall_arrow"
+    "not-enough-arrows:recall_arrow",
+    "not-enough-arrows:shock_arrow",
+    "not-enough-arrows:lifesteal_arrow",
+    "not-enough-arrows:rust_arrow",
+    "not-enough-arrows:milk_arrow",
+    "not-enough-arrows:haste_arrow",
+    "not-enough-arrows:guard_arrow",
+    "not-enough-arrows:homing_arrow",
+    "not-enough-arrows:volley_arrow",
+    "not-enough-arrows:railgun_arrow"
   ]
 }

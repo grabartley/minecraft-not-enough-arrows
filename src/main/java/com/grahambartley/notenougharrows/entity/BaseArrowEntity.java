@@ -47,8 +47,14 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
       super.onEntityHit(entityHitResult);
       return;
     }
-    resolve(
-        onArrowHitEntity(serverWorld, entityHitResult), () -> super.onEntityHit(entityHitResult));
+    final ArrowImpact impact = onArrowHitEntity(serverWorld, entityHitResult);
+    if (impact.runsVanillaResolution()) {
+      super.onEntityHit(entityHitResult);
+    }
+    afterArrowHitEntity(serverWorld, entityHitResult);
+    if (impact.removesArrow() && !isRemoved()) {
+      discard();
+    }
   }
 
   @Override
@@ -77,6 +83,9 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {
     return ArrowImpact.DEFAULT;
   }
+
+  protected void afterArrowHitEntity(
+      final ServerWorld world, final EntityHitResult entityHitResult) {}
 
   protected void onArrowTick(final ServerWorld world) {}
 
