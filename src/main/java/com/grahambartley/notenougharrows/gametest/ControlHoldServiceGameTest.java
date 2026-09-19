@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.config.TargetingArrowConfig;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.control.ControlSteering;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -16,6 +17,9 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
   private static final BlockPos PREY_STAND = new BlockPos(3, 3, 5);
   private static final int BRIEF_HOLD_TICKS = 5;
   private static final int AFTER_A_BRIEF_HOLD = 20;
+  private static final int SETTLING_TICKS = 10;
+  private static final BlockPos ANCHOR_STAND = new BlockPos(2, 3, 3);
+  private static final BlockPos WALKER_STAND = new BlockPos(5, 3, 3);
   private static final int KEEPING_IT_TICKS = 20;
 
   private static TargetingArrowConfig holdingFor(final int ticks) {
@@ -70,6 +74,61 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
             .isPresent(),
         "The second hold on one mob should replace the first rather than queue behind it");
     context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aDrawnHostileIsGivenAPathToTheImpact(TestContext context) {
+    final ZombieEntity hostile = ControlTestSupport.walkingZombieAt(context, WALKER_STAND);
+    hostile.setTarget(ControlTestSupport.stillCowAt(context, PREY_STAND));
+    final Vec3d anchor = Vec3d.ofCenter(context.getAbsolutePos(ANCHOR_STAND));
+
+    context.runAtTick(
+        SETTLING_TICKS,
+        () -> {
+          final double startedAway = hostile.getPos().squaredDistanceTo(anchor);
+          ControlHoldService.taunt(context.getWorld(), anchor, holdingFor(200));
+          final double headingFor = pathTargetDistanceToAnchor(context, hostile, anchor);
+
+          context.assertTrue(
+              headingFor < startedAway,
+              "A drawn hostile should be pathed nearer the impact than it started, but was sent "
+                  + headingFor
+                  + " away against "
+                  + startedAway);
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aRepelledHostileIsGivenAPathAwayFromTheImpact(TestContext context) {
+    final ZombieEntity hostile = ControlTestSupport.walkingZombieAt(context, WALKER_STAND);
+    final Vec3d anchor = Vec3d.ofCenter(context.getAbsolutePos(ANCHOR_STAND));
+
+    context.runAtTick(
+        SETTLING_TICKS,
+        () -> {
+          final double startedAway = hostile.getPos().squaredDistanceTo(anchor);
+          ControlHoldService.repel(context.getWorld(), anchor, holdingFor(200));
+          final double headingFor = pathTargetDistanceToAnchor(context, hostile, anchor);
+
+          context.assertTrue(
+              headingFor > startedAway,
+              "A repelled hostile should be pathed further from the impact than it started,"
+                  + " but was sent "
+                  + headingFor
+                  + " away against "
+                  + startedAway);
+          context.complete();
+        });
+  }
+
+  private static double pathTargetDistanceToAnchor(
+      final TestContext context, final ZombieEntity hostile, final Vec3d anchor) {
+    final Path path = hostile.getNavigation().getCurrentPath();
+
+    context.assertTrue(
+        path != null, "A held hostile should be walking a path of the hold's choosing");
+    return Vec3d.ofCenter(path.getTarget()).squaredDistanceTo(anchor);
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)

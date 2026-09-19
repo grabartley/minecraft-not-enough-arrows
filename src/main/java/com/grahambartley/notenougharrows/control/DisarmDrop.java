@@ -12,7 +12,9 @@ public final class DisarmDrop {
   private DisarmDrop() {}
 
   public static boolean reaches(final LivingEntity target, final boolean affectsPlayers) {
-    return target != null && (affectsPlayers || !(target instanceof PlayerEntity));
+    return target != null
+        && target.isAlive()
+        && (affectsPlayers || !(target instanceof PlayerEntity));
   }
 
   public static boolean disarm(

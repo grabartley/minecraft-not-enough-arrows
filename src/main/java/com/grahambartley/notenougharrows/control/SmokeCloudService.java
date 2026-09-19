@@ -15,8 +15,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public final class SmokeCloudService {
-  public static final int BLINDNESS_REFRESH_TICKS = 40;
-  public static final int BLINDNESS_AMPLIFIER = 0;
+  private static final int BLINDNESS_REFRESH_TICKS = 40;
+  private static final int BLINDNESS_AMPLIFIER = 0;
 
   private static final int PARTICLE_INTERVAL_TICKS = 4;
   private static final int PARTICLES_PER_BURST = 12;
@@ -41,7 +41,7 @@ public final class SmokeCloudService {
     return true;
   }
 
-  public static void forget() {
+  private static void forget() {
     TRACKERS.clear();
   }
 
@@ -50,7 +50,7 @@ public final class SmokeCloudService {
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
-    tracker.takeExpired(world.getTime());
+    tracker.removeExpired(world.getTime());
     tracker.live().forEach(cloud -> blindInside(world, cloud));
   }
 

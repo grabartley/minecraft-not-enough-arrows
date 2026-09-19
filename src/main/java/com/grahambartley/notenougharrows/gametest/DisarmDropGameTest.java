@@ -67,6 +67,18 @@ public final class DisarmDropGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aDeadTargetIsLeftToVanillasOwnEquipmentDropRoll(TestContext context) {
+    final ZombieEntity target = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
+    target.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+    target.setHealth(0.0f);
+
+    context.assertFalse(
+        DisarmDrop.disarm(context.getWorld(), target, true),
+        "A kill has already run vanilla's drop roll, so a disarm must not hand out the equipment");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theSettingIsReadWhereTheEffectResolves(TestContext context) {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final ZombieEntity mob = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
@@ -76,6 +88,8 @@ public final class DisarmDropGameTest implements FabricGameTest {
     context.assertTrue(DisarmDrop.reaches(player, true), "The setting on should reach a player");
     context.assertTrue(DisarmDrop.reaches(mob, false), "The setting never guards a mob");
     context.assertFalse(DisarmDrop.reaches(null, true), "Nothing at all is never reached");
+    mob.setHealth(0.0f);
+    context.assertFalse(DisarmDrop.reaches(mob, true), "A dead target is never reached");
     context.complete();
   }
 }

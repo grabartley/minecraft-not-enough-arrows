@@ -26,14 +26,6 @@ class ControlHoldTrackerTest {
   }
 
   @Test
-  void ignoresAMissingHold() {
-    final ControlHoldTracker tracker = new ControlHoldTracker();
-    tracker.hold(null);
-
-    assertTrue(tracker.isEmpty());
-  }
-
-  @Test
   void keepsOneHoldPerMobSoASecondShotReplacesTheFirst() {
     final ControlHoldTracker tracker = new ControlHoldTracker();
     tracker.hold(hold(FIRST, 50L));

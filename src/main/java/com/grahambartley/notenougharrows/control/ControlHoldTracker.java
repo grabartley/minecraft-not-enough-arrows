@@ -12,9 +12,6 @@ public final class ControlHoldTracker {
   private final Map<UUID, ControlHold> holds = new LinkedHashMap<>();
 
   public void hold(final ControlHold hold) {
-    if (hold == null) {
-      return;
-    }
     holds.put(hold.mobId(), hold);
   }
 

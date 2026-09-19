@@ -40,6 +40,10 @@ public enum ControlSteering {
 
   public abstract Optional<Vec3d> destination(Vec3d from, Vec3d anchor);
 
+  public boolean navigates() {
+    return this != WANDERING;
+  }
+
   public boolean clearsTarget() {
     return clearsTarget;
   }

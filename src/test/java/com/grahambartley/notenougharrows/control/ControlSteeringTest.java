@@ -57,6 +57,13 @@ class ControlSteeringTest {
   }
 
   @Test
+  void onlyTheSteeringsThatNameADestinationDriveNavigation() {
+    assertTrue(ControlSteering.DRAWN.navigates());
+    assertTrue(ControlSteering.FLEEING.navigates());
+    assertFalse(ControlSteering.WANDERING.navigates());
+  }
+
+  @Test
   void onlyFleeingLeavesTheMobFreeToRetaliate() {
     assertTrue(ControlSteering.DRAWN.clearsTarget());
     assertTrue(ControlSteering.WANDERING.clearsTarget());

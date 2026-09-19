@@ -17,39 +17,26 @@ class SmokeCloudTrackerTest {
   }
 
   @Test
-  void ignoresAMissingCloud() {
+  void removesOnlyTheCloudsThatHaveExpired() {
     final SmokeCloudTracker tracker = new SmokeCloudTracker();
-    tracker.add(null);
-
-    assertTrue(tracker.isEmpty());
-  }
-
-  @Test
-  void ignoresACloudWithNoReach() {
-    final SmokeCloudTracker tracker = new SmokeCloudTracker();
-    tracker.add(new SmokeCloud(CENTRE, 0.0, 100L));
-
-    assertTrue(tracker.isEmpty());
-  }
-
-  @Test
-  void takesOnlyTheCloudsThatHaveExpired() {
-    final SmokeCloudTracker tracker = new SmokeCloudTracker();
-    final SmokeCloud early = new SmokeCloud(CENTRE, 3.0, 50L);
-    tracker.add(early);
-    tracker.add(new SmokeCloud(CENTRE, 3.0, 150L));
-
-    assertEquals(List.of(early), tracker.takeExpired(100L));
-    assertEquals(1, tracker.size());
-  }
-
-  @Test
-  void anExpiredCloudIsTakenOnlyOnce() {
-    final SmokeCloudTracker tracker = new SmokeCloudTracker();
+    final SmokeCloud lasting = new SmokeCloud(CENTRE, 3.0, 150L);
     tracker.add(new SmokeCloud(CENTRE, 3.0, 50L));
-    tracker.takeExpired(100L);
+    tracker.add(lasting);
 
-    assertEquals(List.of(), tracker.takeExpired(100L));
+    tracker.removeExpired(100L);
+
+    assertEquals(List.of(lasting), tracker.live());
+  }
+
+  @Test
+  void keepsACloudStandingRightUpToItsExpiryTick() {
+    final SmokeCloudTracker tracker = new SmokeCloudTracker();
+    tracker.add(new SmokeCloud(CENTRE, 3.0, 100L));
+
+    tracker.removeExpired(99L);
+    assertEquals(1, tracker.size());
+
+    tracker.removeExpired(100L);
     assertTrue(tracker.isEmpty());
   }
 

@@ -27,6 +27,13 @@ final class ControlTestSupport {
     return zombie;
   }
 
+  static ZombieEntity walkingZombieAt(final TestContext context, final BlockPos relativePos) {
+    context.setBlockState(relativePos.down(), Blocks.STONE);
+    final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, relativePos);
+    zombie.setVelocity(Vec3d.ZERO);
+    return zombie;
+  }
+
   static CowEntity stillCowAt(final TestContext context, final BlockPos relativePos) {
     return FiringRangeSupport.liveTargetOnPedestalAt(context, relativePos);
   }

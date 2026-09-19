@@ -15,7 +15,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public final class ControlHoldService {
-  public static final double STEERING_SPEED = 1.1;
+  private static final double STEERING_SPEED = 1.1;
 
   private static final Map<RegistryKey<World>, ControlHoldTracker> TRACKERS = new HashMap<>();
 
@@ -71,7 +71,7 @@ public final class ControlHoldService {
     return tracker == null ? Optional.empty() : tracker.find(mob.getUuid());
   }
 
-  public static void forget() {
+  private static void forget() {
     TRACKERS.clear();
   }
 
@@ -124,9 +124,10 @@ public final class ControlHoldService {
 
   private static void handBack(final ServerWorld world, final ControlHold hold) {
     final MobEntity mob = mobIn(world, hold);
-    if (mob != null) {
-      mob.getNavigation().stop();
+    if (mob == null || !hold.steering().navigates()) {
+      return;
     }
+    mob.getNavigation().stop();
   }
 
   private static void steer(
