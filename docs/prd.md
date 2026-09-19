@@ -203,10 +203,10 @@ A player gathers eight of a base arrow and one ingredient, puts them in a crafti
 | CRAFT-3 | The base arrow is a plain vanilla arrow, except where an arrow sits on a ladder, in which case it is the arrow one rung below it |
 | CRAFT-4 | No two arrows share a recipe. An ingredient already used as the centre of one recipe is not reused as the centre of another over the same base |
 | CRAFT-5 | Every recipe declares the same recipe group, so a recipe viewer and the recipe book present the arrows as one set |
-| CRAFT-6 | Every arrow appears in the mod's own creative tab, in registration order, grouped by family so a tab of sixty-three arrows is readable |
-| CRAFT-7 | A tinted arrow is one item and one entity type carrying its choice as a component, with one recipe per choice. It counts as one arrow, and the choice it carries is the one its recipe named |
+| CRAFT-6 | Every arrow appears in the mod's own creative tab, in registration order, grouped by family, because a flat list this long is one a player scrolls past rather than one they choose from |
+| CRAFT-7 | A tinted arrow is one item and one entity type carrying its choice as a component, with one recipe per choice. It counts as one arrow, and the choice it carries is the one its recipe named. It contributes one creative tab entry per choice, as vanilla's tipped arrows do, so the tab holds more entries than the mod holds arrows |
 | CRAFT-8 | An arrow whose recipe centre is a filled bucket returns the empty bucket, at a crafting table and at the station alike, which is vanilla's own remainder behaviour rather than a rule this mod adds |
-| CRAFT-9 | An arrow that leaves a **vanilla** block behind names that block in its own recipe, so what it places was paid for at the bench. An arrow may place one of the mod's own blocks without naming it, because those have no item form, cannot be kept, and cost a player nothing to lose |
+| CRAFT-9 | An arrow that **places** a vanilla block names that block in its own recipe, so what it places was paid for at the bench. An arrow that **converts** a block already there, such as water into ice or dirt into farmland, names in its recipe what would have done that conversion by hand instead, because it created no block. An arrow may place one of the mod's own blocks without naming either, since those have no item form, cannot be kept, and cost a player nothing to lose |
 | CRAFT-10 | A courier arrow is loaded by a shapeless recipe of one empty courier arrow plus one stack, and unloaded by the reverse, both available at a crafting table and at the station. A loaded arrow is never a dead end: the payload comes back out the way it went in |
 
 The ladders:
@@ -279,19 +279,18 @@ A player with sixty-three arrows has a problem the mod created for them: a quive
 
 | Requirement | Statement |
 |---|---|
-| IDENT-1 | Every arrow has its own sprite, drawn for that arrow. No arrow is a recolour of another, and no two arrows share a sprite |
-| IDENT-2 | A sprite is identified at hotbar size, in a hotbar of nine and in a creative tab of sixty-three, by silhouette and palette rather than by a detail a player has to lean in for. An arrow that only reads when magnified does not read |
+| IDENT-1 | Every arrow has its own sprite, drawn for that arrow. No arrow is a recolour of another arrow, and no two arrows share a sprite. The variants of one tinted arrow are the single exception, because they are one arrow (IDENT-4) |
+| IDENT-2 | A sprite is identified at hotbar size, in a hotbar of nine and in a full creative tab, by silhouette and palette rather than by a detail a player has to lean in for. An arrow that only reads when magnified does not read |
 | IDENT-3 | A sprite says what the arrow does, through the material its own recipe names. A player who knows what they crafted recognises it without a tooltip, and a player who does not can guess |
-| IDENT-4 | A tinted arrow's variants may differ by colour alone, which is the one place in the mod where they may, because the thing the colour encodes is itself the choice the arrow carries and the item's own name states it (A11Y-1) |
+| IDENT-4 | A tinted arrow's variants share one sprite and differ in its colour. That is not a distinction carried by colour alone, because the item's own name states the choice it carries, which is what A11Y-1 asks for |
 | IDENT-5 | Every arrow is drawn in flight and where it embeds with its own texture, so a bystander can tell what has landed near them from where they are standing |
 | IDENT-6 | Every arrow's impact produces a result a player can perceive without reading chat, and no arrow resolves invisibly and silently. An effect that changes nothing at the point of impact says so some other way |
 | IDENT-7 | Every arrow whose effect can resolve out of the shooter's sight, behind them, or beyond the range at which its result is visible carries its own impact sound. A player who cannot see what happened can hear what happened |
 | IDENT-8 | A sound the mod plays is either its own asset or a vanilla sound used for what that sound already means. No arrow borrows a vanilla sound that already means something else, because a familiar sound that lies is worse than a new one |
 | IDENT-9 | No two arrows share an impact sound unless they share the system that produces it. The three explosive tiers may sound alike because they are one ladder; two unrelated arrows may not |
 | IDENT-10 | Every sound the mod plays is emitted in a sound category a player and a server can turn down independently of the game's other sound, and no effect depends on being heard to be survivable (A11Y-3) |
-| IDENT-11 | Every arrow's item name and recipe viewer description say what it does in the player's own terms, name the thing it produces, and are distinct enough that two arrows' descriptions cannot be swapped without the swap being obvious |
-| IDENT-12 | The creative tab presents sixty-three arrows grouped by family, in a deliberate order, because a flat list of sixty-three is a list a player scrolls past rather than one they choose from (CRAFT-6) |
-| IDENT-13 | An arrow that has no sprite of its own, or that is indistinguishable from another arrow at hotbar size, is not shipped. Breadth that a player cannot navigate is not breadth |
+| IDENT-11 | Every arrow's recipe viewer description says what the arrow does in the player's own terms, names the thing it produces, and is distinct enough that two arrows' descriptions cannot be swapped without the swap being obvious. A name may be its material where the material is the effect, which is what the gunpowder, TNT, fire charge, ender pearl, glow ink and redstone arrows already are |
+| IDENT-12 | An arrow that has no sprite of its own, or that is indistinguishable from another arrow at hotbar size, is not shipped. Breadth that a player cannot navigate is not breadth |
 
 **Not supported:** A shared base sprite with a tint standing in for a drawn one, outside the tinted arrows IDENT-4 defines. A three-dimensional model for an arrow item: these are flat sprites. A sound on every arrow regardless of whether its effect needs one, since sixty-three arrows that each announce themselves is noise rather than feedback. A tooltip that has to be read for the arrow to be identified at all.
 
@@ -595,7 +594,7 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 | Requirement | Statement |
 |---|---|
 | TRAVEL-1 | Every structure these arrows leave, other than the vine column, is a timed structure, so its expiry, its permission check, and its removal are the shared system's rather than each arrow's. A vine, like a rope, answers for its own support instead of carrying an expiry (§8, Temporary Structures) |
-| TRAVEL-2 | Every block a structure places comes from the arrow's own recipe. The recipe names the material, and no arrow conjures a block that was not paid for at the crafting table or the station |
+| TRAVEL-2 | Every vanilla block a structure places comes from the arrow's own recipe, which names the material, so no arrow conjures a block that was not paid for at the crafting table or the station. A structure made of one of the mod's own blocks, which has no item form and cannot be kept, is the exception CRAFT-9 defines |
 | TRAVEL-3 | A zipline's first shot holds a pending anchor per player, at most one, for a configured window. Firing a third zipline arrow replaces the pending anchor rather than queuing it |
 | TRAVEL-4 | A pending zipline anchor that expires, or whose player disconnects or dies, is discarded, and the arrow that set it is not returned. A pending anchor is not a structure and holds no blocks |
 | TRAVEL-5 | A zipline span is refused rather than shortened when either end is not an anchor site, when the two ends exceed the configured maximum separation, or when any position along the span is one the shooter may not build in |
@@ -748,8 +747,6 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 | CONTROL-3 | A frost arrow affects living entities only and never converts a block, so the freeze arrow keeps terrain and the frost arrow keeps creatures |
 | CONTROL-4 | A frost arrow's freeze respects the same immunities vanilla's powder snow respects, including leather armour and entities immune to freezing |
 | CONTROL-5 | A levitation arrow's lift has a configured duration with a configured maximum, and the fall that follows is vanilla's, including its damage. The mod did not choose where the entity came down, so it does not cancel the landing |
-| CONTROL-13 | A levitation arrow lifts one entity it hit, wherever that entity is, and travels with it. An updraft column lifts anything standing in one place and grants nothing outside it. The two must stay that far apart: one is aimed at a creature, the other is a place (TRAVEL-10) |
-| CONTROL-14 | The effects in this use case need no per-player switch of their own, unlike the disarm arrow's, because each is a status effect a player can wait out or drink off, while a disarm moves an item out of a player's hand and a recall moves their body. The switch guards what a player cannot undo |
 | CONTROL-6 | A taunt and a repel both alter targeting for a bounded time and then hand it back. Neither may leave a mob permanently unable to acquire a target, and both end cleanly if the impact position unloads |
 | CONTROL-7 | A taunt draws only mobs that were already hostile to something. It does not make a neutral mob hostile, and it never makes a mob hostile toward a player who did not provoke it |
 | CONTROL-8 | A repel makes a mob flee rather than making it harmless. It keeps its ability to retaliate if cornered |
@@ -757,6 +754,8 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 | CONTROL-10 | A disarm arrow drops the item as an entity at the target's feet, where the target may pick it back up. It never destroys the item, never moves it into the shooter's inventory, and never takes an equipped armour piece |
 | CONTROL-11 | Whether a disarm arrow works on a player is a server setting, on by default, and it is enforced where the effect resolves rather than where the shot is fired |
 | CONTROL-12 | Every duration and radius here is a server setting read fresh on impact, and a duration of zero applies no effect at all, leaving an inert arrow |
+| CONTROL-13 | A levitation arrow lifts one entity it hit, wherever that entity is, and travels with it. An updraft column lifts anything standing in one place and grants nothing outside it. The two must stay that far apart: one is aimed at a creature, the other is a place (TRAVEL-10) |
+| CONTROL-14 | The other effects in this use case need no per-player switch of their own, unlike the disarm arrow's, because each is a status effect a player can wait out or drink off, while a disarm moves an item out of a player's hand and a recall moves their body. The switch guards what a player cannot undo |
 
 **Not supported:** Any effect vanilla already sells as a tipped arrow. Disarming armour, or an item in an off hand slot the setting excludes. A cloud that blocks movement or projectiles. A control effect that outlasts its configured duration, or that leaves a mob permanently passive. Stacking two applications of the same effect into a longer one, which vanilla's own effect rules decide rather than the mod.
 
@@ -1087,25 +1086,25 @@ Conservation is the property that decides whether this mod is safe to put in a p
 | SAFE-10 | A boomerang arrow is returned exactly once, granted where there is room and dropped where there is not, including on a path where the shooter died or disconnected mid-flight |
 | SAFE-11 | A harvest, shear, or drill arrow's drops are granted where there is room and dropped at the block where there is not. A full inventory never destroys a drop |
 | SAFE-12 | A polymorph arrow restores the mob it changed, or restores the original outright if it cannot. No path duplicates a mob, loses one, or leaves one whose appearance does not match what it is |
-| SAFE-13 | No arrow places a vanilla block its recipe did not pay for, and no arrow consumes a block from the world in order to place another (SHAPE-5) |
+| SAFE-13 | No arrow builds a structure out of material the world provided rather than the recipe, and no arrow places a vanilla block its recipe did not pay for. Converting a block in place is not placing one, and is covered by CRAFT-9 rather than here (SHAPE-5) |
 
 ### Temporary Structures
 
-Six arrows leave blocks behind, and a seventh lit fire before them. They share one system rather than each inventing its own, so there is one place where expiry, permission, conservation and removal are answered.
+Seven arrows leave timed blocks behind, and the fire patch came before them. They share one system rather than each inventing its own, so there is one place where expiry, permission, conservation and removal are answered.
 
 | Requirement | Statement |
 |---|---|
-| STRUCT-1 | Every block a mod arrow places, other than a rope or a vine, belongs to a timed structure: a set of positions recorded per world against one shooter, with an expiry tick |
+| STRUCT-1 | Every block a mod arrow places belongs to a timed structure, which is a set of positions recorded per world against one shooter with an expiry tick, except the five that deliberately do not: a rope and a vine answer for their own support, a redstone charge carries its expiry as a scheduled block tick instead (REDSTONE-6), and a torch and a sapling are ordinary permanent blocks the shooter could have placed by hand |
 | STRUCT-2 | A timed structure is permission-checked per position as it is placed, and truncated at the first position it may not use rather than refused whole (PERM-10) |
 | STRUCT-3 | A timed structure occupies only positions that were air, or a replaceable block, so no structure destroys anything a player built |
 | STRUCT-4 | A timed structure is bounded by a structure budget per arrow, so the blocks one shot can place and the work removing them costs are both capped |
 | STRUCT-5 | On expiry a structure removes only the positions that still hold what it placed. A player who built over an expiring structure keeps their block (REDSTONE-7) |
 | STRUCT-6 | A block the **mod registers** has no item form, no recipe, and no drop, and cannot be placed by hand. A structure built from vanilla blocks places ordinary vanilla blocks, which behave as they always do |
-| STRUCT-11 | Mining a vanilla block out of a live structure yields that block's ordinary drop and takes the position out of the structure's record, so the player keeps what they mined and the structure's expiry does not try to remove it again (STRUCT-5) |
 | STRUCT-7 | A structure whose chunk unloads mid-life expires as that chunk loads, and nothing force-loads a chunk to remove one early (PERF-4) |
 | STRUCT-8 | No structure survives a server restart. Every one is cleared before the world saves, and anything missed expires as its chunk loads |
 | STRUCT-9 | A structure's lifetime and budget are server settings, read on placement, and a lifetime of zero places nothing rather than placing something permanent |
 | STRUCT-10 | A player standing inside a structure when it expires is not harmed, suffocated, or relocated by its removal. The blocks simply stop being there |
+| STRUCT-11 | Mining a vanilla block out of a live structure yields that block's ordinary drop and takes the position out of the structure's record, so the player keeps what they mined and the structure's expiry does not try to remove it again (STRUCT-5) |
 
 ### Performance
 
@@ -1157,6 +1156,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | Puffer inflation | Reverted | Reverted | Reverted with the entity's death | Reverted |
 | Taunt or repel targeting | Ends, the mob re-acquires normally | Ends | Ends | Ends |
 | Tracer path | Expires as the chunk reloads | Lost | Unaffected | Lost |
+| Boomerang arrow mid-return | Survives, it is an arrow entity | Survives, arrows are saved with their chunk | Drops at the shooter's last position rather than following them | Survives |
 
 | Requirement | Statement |
 |---|---|
@@ -1190,7 +1190,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | COMPAT-5 | Each required dependency's environment, client, server, or both, is recorded deliberately, because a hard dependency is not environment-scoped and a client-only library declared as one still blocks a dedicated server from booting |
 | COMPAT-6 | Required and optional dependencies are documented for a player, not just declared in metadata |
 | COMPAT-7 | The mod replaces no vanilla model, so another mod that takes over the bow or crossbow model keeps working alongside it |
-| COMPAT-8 | Uninstalling the mod leaves a playable world. Fletching tables are ordinary vanilla blocks, and the blocks the mod places are the only thing a world loses |
+| COMPAT-8 | Uninstalling the mod leaves a playable world. Fletching tables are ordinary vanilla blocks, and the blocks the mod **registers** are the only thing a world loses. Vanilla blocks a structure placed stay where they are |
 | COMPAT-9 | A resource pack that redraws the vanilla bow's pull frames may misalign the nocked overlay. The failure is cosmetic and is accepted |
 | COMPAT-10 | No arrow reproduces an effect vanilla sells as a tipped arrow, so installing the mod takes nothing away from brewing and adds no second way to buy the same effect |
 | COMPAT-11 | A tinted arrow's component is the mod's own, and an unrecognised or missing value falls back to a defined default rather than failing to load the item |
@@ -1222,7 +1222,7 @@ Properties that must hold, whatever the schedule. None of these is a checklist o
 | REL-17 | Every timed structure, cloud, column, watcher, session, and disguise is proven to end through every interruption in the persistence grid |
 | REL-18 | Every arrow has a sprite of its own and an in-flight texture of its own, asserted by a test over the registry rather than by inspection, and no two arrows share either |
 | REL-19 | Every arrow whose effect can resolve out of the shooter's sight has an impact sound, and no two unrelated arrows share one |
-| REL-20 | Every arrow's name and description resolve to real prose, are distinct from every other arrow's, and say what the arrow does rather than what it is made of |
+| REL-20 | Every arrow's name and description resolve to real prose and are distinct from every other arrow's, and every description says what the arrow does rather than only what it is made of |
 
 ---
 
