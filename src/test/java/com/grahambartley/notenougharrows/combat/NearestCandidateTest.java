@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class ShockArcTest {
+class NearestCandidateTest {
   private static final Vec3d ORIGIN = Vec3d.ZERO;
   private static final Function<Vec3d, Vec3d> ITSELF = Function.identity();
 
@@ -21,21 +21,21 @@ class ShockArcTest {
     final List<Vec3d> candidates =
         List.of(new Vec3d(5.0, 0.0, 0.0), near, new Vec3d(4.0, 0.0, 0.0));
 
-    assertEquals(Optional.of(near), ShockArc.nearest(ORIGIN, candidates, ITSELF, 6.0));
+    assertEquals(Optional.of(near), NearestCandidate.nearest(ORIGIN, candidates, ITSELF, 6.0));
   }
 
   @Test
   void ignoresEverythingOutsideTheRadius() {
     final List<Vec3d> candidates = List.of(new Vec3d(7.0, 0.0, 0.0), new Vec3d(0.0, 9.0, 0.0));
 
-    assertTrue(ShockArc.nearest(ORIGIN, candidates, ITSELF, 6.0).isEmpty());
+    assertTrue(NearestCandidate.nearest(ORIGIN, candidates, ITSELF, 6.0).isEmpty());
   }
 
   @Test
   void aCandidateExactlyOnTheRadiusStillCounts() {
     final Vec3d edge = new Vec3d(6.0, 0.0, 0.0);
 
-    assertEquals(Optional.of(edge), ShockArc.nearest(ORIGIN, List.of(edge), ITSELF, 6.0));
+    assertEquals(Optional.of(edge), NearestCandidate.nearest(ORIGIN, List.of(edge), ITSELF, 6.0));
   }
 
   @ParameterizedTest
@@ -43,12 +43,12 @@ class ShockArcTest {
   void aRadiusOfNoneMeansTheBoltNeverJumps(final double radius) {
     final List<Vec3d> candidates = List.of(new Vec3d(0.1, 0.0, 0.0));
 
-    assertTrue(ShockArc.nearest(ORIGIN, candidates, ITSELF, radius).isEmpty());
+    assertTrue(NearestCandidate.nearest(ORIGIN, candidates, ITSELF, radius).isEmpty());
   }
 
   @Test
   void anEmptyFieldHasNothingToJumpTo() {
-    assertTrue(ShockArc.nearest(ORIGIN, List.of(), ITSELF, 6.0).isEmpty());
+    assertTrue(NearestCandidate.nearest(ORIGIN, List.of(), ITSELF, 6.0).isEmpty());
   }
 
   @Test
@@ -57,7 +57,8 @@ class ShockArcTest {
         List.of(new Vec3d(1.0, 0.0, 0.0), new Vec3d(1.5, 0.0, 0.0), new Vec3d(2.0, 0.0, 0.0));
 
     assertEquals(
-        Optional.of(new Vec3d(1.0, 0.0, 0.0)), ShockArc.nearest(ORIGIN, crowd, ITSELF, 6.0));
+        Optional.of(new Vec3d(1.0, 0.0, 0.0)),
+        NearestCandidate.nearest(ORIGIN, crowd, ITSELF, 6.0));
   }
 
   @Test
@@ -65,7 +66,8 @@ class ShockArcTest {
     final Vec3d first = new Vec3d(3.0, 0.0, 0.0);
     final Vec3d second = new Vec3d(-3.0, 0.0, 0.0);
 
-    assertEquals(Optional.of(first), ShockArc.nearest(ORIGIN, List.of(first, second), ITSELF, 6.0));
+    assertEquals(
+        Optional.of(first), NearestCandidate.nearest(ORIGIN, List.of(first, second), ITSELF, 6.0));
   }
 
   @Test
@@ -75,11 +77,13 @@ class ShockArcTest {
 
     assertEquals(
         Optional.of("real"),
-        ShockArc.nearest(ORIGIN, candidates, name -> "real".equals(name) ? real : null, 6.0));
+        NearestCandidate.nearest(
+            ORIGIN, candidates, name -> "real".equals(name) ? real : null, 6.0));
   }
 
   @Test
   void aMissingOriginJumpsNowhere() {
-    assertTrue(ShockArc.nearest(null, List.of(new Vec3d(1.0, 0.0, 0.0)), ITSELF, 6.0).isEmpty());
+    assertTrue(
+        NearestCandidate.nearest(null, List.of(new Vec3d(1.0, 0.0, 0.0)), ITSELF, 6.0).isEmpty());
   }
 }

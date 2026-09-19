@@ -1,6 +1,5 @@
 package com.grahambartley.notenougharrows.entity;
 
-import com.grahambartley.notenougharrows.arrow.ArrowImpact;
 import com.grahambartley.notenougharrows.combat.StatusArrowImpact;
 import com.grahambartley.notenougharrows.config.StatusArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
@@ -14,6 +13,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class StatusArrowEntity extends BaseArrowEntity {
+  protected static final double SUPPORT_DAMAGE = 0.5;
 
   protected StatusArrowEntity(
       final EntityType<? extends StatusArrowEntity> entityType, final World world) {
@@ -36,10 +36,9 @@ public abstract class StatusArrowEntity extends BaseArrowEntity {
   protected abstract int durationTicks(StatusArrowConfig status);
 
   @Override
-  protected ArrowImpact onArrowHitEntity(
+  protected void afterArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
     final StatusArrowConfig status = ServerConfigService.get().combat().status();
     StatusArrowImpact.apply(entityHitResult.getEntity(), effect(), durationTicks(status), this);
-    return ArrowImpact.DEFAULT;
   }
 }

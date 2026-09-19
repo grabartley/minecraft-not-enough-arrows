@@ -39,6 +39,17 @@ final class CombatTestSupport {
     return arrow;
   }
 
+  static boolean hasCosmeticLightningLeftFire(final TestContext context) {
+    final boolean[] found = {false};
+    context.forEachRelativePos(
+        pos -> {
+          if (context.getBlockState(pos).isOf(Blocks.FIRE)) {
+            found[0] = true;
+          }
+        });
+    return found[0];
+  }
+
   static void fireDownTheLongRange(final TestContext context, final net.minecraft.item.Item arrow) {
     MockPlayerSupport.fireEastFromBow(
         context, MockPlayerSupport.playerAt(context, LONG_RANGE_SHOOTER_STAND), arrow);

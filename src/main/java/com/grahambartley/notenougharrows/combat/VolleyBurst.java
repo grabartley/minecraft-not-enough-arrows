@@ -15,19 +15,20 @@ public final class VolleyBurst {
 
   private VolleyBurst() {}
 
-  public static int split(
+  public static void split(
       final ServerWorld world,
       final PersistentProjectileEntity source,
       final VolleyArrowConfig config) {
     final List<Vec3d> velocities =
         VolleySpread.fragmentVelocities(
             source.getVelocity(), config.fragmentCount(), config.spreadDegrees());
-    final double damage = VolleySpread.fragmentDamage(source.getDamage(), config.damageShare());
+    final double damage =
+        VolleySpread.fragmentDamage(
+            source.getDamage(), config.damageShare(), config.fragmentCount());
 
     for (final Vec3d velocity : velocities) {
       world.spawnEntity(fragment(world, source, velocity, damage, source.getOwner()));
     }
-    return velocities.size();
   }
 
   private static ArrowEntity fragment(
@@ -38,12 +39,7 @@ public final class VolleyBurst {
       @Nullable final Entity owner) {
     final ArrowEntity arrow =
         new ArrowEntity(
-            world,
-            source.getX(),
-            source.getY(),
-            source.getZ(),
-            new ItemStack(Items.ARROW),
-            source.getWeaponStack());
+            world, source.getX(), source.getY(), source.getZ(), new ItemStack(Items.ARROW), null);
     arrow.setOwner(owner);
     arrow.setVelocity(velocity);
     arrow.setDamage(damage);

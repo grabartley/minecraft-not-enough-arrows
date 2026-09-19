@@ -20,6 +20,10 @@ public final class HomingTargets {
         && candidate.isAlive();
   }
 
+  public static Vec3d aimPointOf(final Entity target) {
+    return target.getBoundingBox().getCenter();
+  }
+
   public static Optional<Entity> ahead(
       final ServerWorld world,
       final Entity arrow,
@@ -38,7 +42,10 @@ public final class HomingTargets {
             candidate ->
                 isEligible(candidate)
                     && HomingSteering.withinCone(
-                        velocity, candidate.getPos().subtract(origin), config.searchConeDegrees()));
-    return ShockArc.nearest(origin, eligible, Entity::getPos, config.searchRadius());
+                        velocity,
+                        aimPointOf(candidate).subtract(origin),
+                        config.searchConeDegrees()));
+    return NearestCandidate.nearest(
+        origin, eligible, HomingTargets::aimPointOf, config.searchRadius());
   }
 }

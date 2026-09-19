@@ -31,10 +31,6 @@ public class VolleyArrowEntity extends BaseArrowEntity {
     super(entityType, world, x, y, z, stack, weapon);
   }
 
-  public int flightTicks() {
-    return flightTicks;
-  }
-
   @Override
   protected void onArrowTick(final ServerWorld world) {
     if (inGround) {

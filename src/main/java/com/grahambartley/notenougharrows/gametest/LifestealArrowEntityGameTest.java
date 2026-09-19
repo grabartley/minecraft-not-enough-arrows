@@ -20,7 +20,7 @@ public final class LifestealArrowEntityGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
     shooter.setHealth(A_WOUNDED_SHOOTER);
-    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.LIFESTEAL_ARROW.item());
+    MockPlayerSupport.fireEastStraight(context, shooter, ModArrows.LIFESTEAL_ARROW.item());
 
     context.runAtTick(
         FiringRangeSupport.LANDING_TICK,

@@ -2,10 +2,17 @@ package com.grahambartley.notenougharrows.combat;
 
 import com.grahambartley.notenougharrows.config.ShockArrowConfig;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -20,23 +27,22 @@ public final class ShockStrike {
       final Vec3d at,
       @Nullable final Entity struck,
       final ShockArrowConfig config,
-      final Entity source) {
+      final ProjectileEntity source) {
     flash(world, at);
-    shock(world, struck, config, source);
     arcFrom(world, at, struck, config, source)
         .ifPresent(arced -> shock(world, arced, config, source));
   }
 
-  public static java.util.Optional<Entity> arcFrom(
+  private static Optional<Entity> arcFrom(
       final ServerWorld world,
       final Vec3d at,
       @Nullable final Entity struck,
       final ShockArrowConfig config,
-      final Entity source) {
+      final ProjectileEntity source) {
     if (!config.arcs()) {
-      return java.util.Optional.empty();
+      return Optional.empty();
     }
-    return ShockArc.nearest(
+    return NearestCandidate.nearest(
         at, candidates(world, at, struck, config, source), Entity::getPos, config.arcRadius());
   }
 
@@ -45,8 +51,9 @@ public final class ShockStrike {
       final Vec3d at,
       @Nullable final Entity struck,
       final ShockArrowConfig config,
-      final Entity source) {
+      final ProjectileEntity source) {
     final Box search = new Box(at, at).expand(config.arcRadius());
+    final Entity shooter = source.getOwner();
     return world.getOtherEntities(
         source,
         search,
@@ -54,7 +61,28 @@ public final class ShockStrike {
             candidate instanceof LivingEntity
                 && candidate.isAlive()
                 && candidate != struck
-                && candidate != source);
+                && candidate != shooter);
+  }
+
+  private static void shock(
+      final ServerWorld world,
+      @Nullable final Entity target,
+      final ShockArrowConfig config,
+      final ProjectileEntity source) {
+    if (!(target instanceof LivingEntity living) || config.damage() <= 0.0f) {
+      return;
+    }
+    living.damage(lightningFrom(world, source), config.damage());
+  }
+
+  private static DamageSource lightningFrom(
+      final ServerWorld world, final ProjectileEntity source) {
+    final RegistryEntry<DamageType> lightning =
+        world
+            .getRegistryManager()
+            .get(RegistryKeys.DAMAGE_TYPE)
+            .entryOf(DamageTypes.LIGHTNING_BOLT);
+    return new DamageSource(lightning, source, source.getOwner());
   }
 
   private static void flash(final ServerWorld world, final Vec3d at) {
@@ -65,17 +93,5 @@ public final class ShockStrike {
     bolt.refreshPositionAfterTeleport(at);
     bolt.setCosmetic(true);
     world.spawnEntity(bolt);
-  }
-
-  private static void shock(
-      final ServerWorld world,
-      @Nullable final Entity target,
-      final ShockArrowConfig config,
-      final Entity source) {
-    if (!(target instanceof LivingEntity living)
-        || config.damage() <= ShockArrowConfig.DAMAGE_MIN) {
-      return;
-    }
-    living.damage(world.getDamageSources().lightningBolt(), config.damage());
   }
 }

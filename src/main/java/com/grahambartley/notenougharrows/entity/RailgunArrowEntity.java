@@ -1,8 +1,12 @@
 package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.combat.RailgunFlight;
+import com.grahambartley.notenougharrows.config.RailgunArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
@@ -10,7 +14,10 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class RailgunArrowEntity extends BaseArrowEntity {
+  private static final TrackedData<Float> GRAVITY_FACTOR =
+      DataTracker.registerData(RailgunArrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
   private static final String LAUNCHED_KEY = "Launched";
+  private static final String GRAVITY_FACTOR_KEY = "GravityFactor";
 
   private boolean launched;
 
@@ -34,10 +41,19 @@ public class RailgunArrowEntity extends BaseArrowEntity {
     return launched;
   }
 
+  public float gravityFactor() {
+    return getDataTracker().get(GRAVITY_FACTOR);
+  }
+
+  @Override
+  protected void initDataTracker(final DataTracker.Builder builder) {
+    super.initDataTracker(builder);
+    builder.add(GRAVITY_FACTOR, RailgunArrowConfig.DEFAULT_GRAVITY_FACTOR);
+  }
+
   @Override
   protected double getGravity() {
-    return RailgunFlight.gravity(
-        super.getGravity(), ServerConfigService.get().combat().railgun().gravityFactor());
+    return RailgunFlight.gravity(super.getGravity(), gravityFactor());
   }
 
   @Override
@@ -46,9 +62,9 @@ public class RailgunArrowEntity extends BaseArrowEntity {
       return;
     }
 
-    setVelocity(
-        RailgunFlight.launchVelocity(
-            getVelocity(), ServerConfigService.get().combat().railgun().speedMultiplier()));
+    final RailgunArrowConfig railgun = ServerConfigService.get().combat().railgun();
+    getDataTracker().set(GRAVITY_FACTOR, railgun.gravityFactor());
+    setVelocity(RailgunFlight.launchVelocity(getVelocity(), railgun.speedMultiplier()));
     velocityModified = true;
     launched = true;
   }
@@ -57,11 +73,15 @@ public class RailgunArrowEntity extends BaseArrowEntity {
   public void writeCustomDataToNbt(final NbtCompound nbt) {
     super.writeCustomDataToNbt(nbt);
     nbt.putBoolean(LAUNCHED_KEY, launched);
+    nbt.putFloat(GRAVITY_FACTOR_KEY, gravityFactor());
   }
 
   @Override
   public void readCustomDataFromNbt(final NbtCompound nbt) {
     super.readCustomDataFromNbt(nbt);
     launched = nbt.getBoolean(LAUNCHED_KEY);
+    if (nbt.contains(GRAVITY_FACTOR_KEY)) {
+      getDataTracker().set(GRAVITY_FACTOR, nbt.getFloat(GRAVITY_FACTOR_KEY));
+    }
   }
 }

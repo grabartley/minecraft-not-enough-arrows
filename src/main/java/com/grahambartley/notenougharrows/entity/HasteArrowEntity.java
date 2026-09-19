@@ -10,7 +10,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class HasteArrowEntity extends StatusArrowEntity {
-  private static final double SUPPORT_DAMAGE = 0.5;
 
   public HasteArrowEntity(
       final EntityType<? extends HasteArrowEntity> entityType, final World world) {

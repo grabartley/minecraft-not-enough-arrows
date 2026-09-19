@@ -38,7 +38,10 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
       super.onBlockHit(blockHitResult);
       return;
     }
-    resolve(onArrowHitBlock(serverWorld, blockHitResult), () -> super.onBlockHit(blockHitResult));
+    resolve(
+        onArrowHitBlock(serverWorld, blockHitResult),
+        () -> super.onBlockHit(blockHitResult),
+        () -> afterArrowHitBlock(serverWorld, blockHitResult));
   }
 
   @Override
@@ -47,14 +50,10 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
       super.onEntityHit(entityHitResult);
       return;
     }
-    final ArrowImpact impact = onArrowHitEntity(serverWorld, entityHitResult);
-    if (impact.runsVanillaResolution()) {
-      super.onEntityHit(entityHitResult);
-    }
-    afterArrowHitEntity(serverWorld, entityHitResult);
-    if (impact.removesArrow() && !isRemoved()) {
-      discard();
-    }
+    resolve(
+        onArrowHitEntity(serverWorld, entityHitResult),
+        () -> super.onEntityHit(entityHitResult),
+        () -> afterArrowHitEntity(serverWorld, entityHitResult));
   }
 
   @Override
@@ -84,6 +83,8 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
     return ArrowImpact.DEFAULT;
   }
 
+  protected void afterArrowHitBlock(final ServerWorld world, final BlockHitResult blockHitResult) {}
+
   protected void afterArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {}
 
@@ -94,10 +95,12 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
     return new ItemStack(Registries.ITEM.get(Registries.ENTITY_TYPE.getId(getType())));
   }
 
-  private void resolve(final ArrowImpact impact, final Runnable vanillaResolution) {
+  private void resolve(
+      final ArrowImpact impact, final Runnable vanillaResolution, final Runnable afterResolution) {
     if (impact.runsVanillaResolution()) {
       vanillaResolution.run();
     }
+    afterResolution.run();
     if (impact.removesArrow() && !isRemoved()) {
       discard();
     }

@@ -40,7 +40,7 @@ public class HomingArrowEntity extends BaseArrowEntity {
     HomingTargets.ahead(world, this, velocity, homing)
         .ifPresent(
             target -> {
-              final Vec3d toTarget = target.getBoundingBox().getCenter().subtract(getPos());
+              final Vec3d toTarget = HomingTargets.aimPointOf(target).subtract(getPos());
               setVelocity(HomingSteering.steer(velocity, toTarget, homing.turnRate()));
               velocityModified = true;
             });

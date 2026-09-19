@@ -32,13 +32,23 @@ public class ShockArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
+    return ArrowImpact.CONSUME;
+  }
+
+  @Override
+  protected void afterArrowHitBlock(final ServerWorld world, final BlockHitResult blockHitResult) {
     ShockStrike.strike(
         world, blockHitResult.getPos(), null, ServerConfigService.get().combat().shock(), this);
-    return ArrowImpact.DISCARD;
   }
 
   @Override
   protected ArrowImpact onArrowHitEntity(
+      final ServerWorld world, final EntityHitResult entityHitResult) {
+    return ArrowImpact.CONSUME;
+  }
+
+  @Override
+  protected void afterArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
     ShockStrike.strike(
         world,
@@ -46,6 +56,5 @@ public class ShockArrowEntity extends BaseArrowEntity {
         entityHitResult.getEntity(),
         ServerConfigService.get().combat().shock(),
         this);
-    return ArrowImpact.DISCARD;
   }
 }

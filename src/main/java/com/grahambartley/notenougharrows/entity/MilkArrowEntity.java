@@ -1,6 +1,5 @@
 package com.grahambartley.notenougharrows.entity;
 
-import com.grahambartley.notenougharrows.arrow.ArrowImpact;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -28,11 +27,10 @@ public class MilkArrowEntity extends BaseArrowEntity {
   }
 
   @Override
-  protected ArrowImpact onArrowHitEntity(
+  protected void afterArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
     if (entityHitResult.getEntity() instanceof LivingEntity living) {
       living.clearStatusEffects();
     }
-    return ArrowImpact.DEFAULT;
   }
 }

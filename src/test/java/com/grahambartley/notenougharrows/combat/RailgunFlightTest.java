@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.combat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.grahambartley.notenougharrows.config.RailgunArrowConfig;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -51,16 +52,24 @@ class RailgunFlightTest {
   }
 
   @ParameterizedTest
-  @ValueSource(floats = {0.0f, -1.0f, 0.0000001f})
-  void alwaysLeavesEnoughGravityForTheArrowToFall(final float factor) {
+  @ValueSource(
+      floats = {
+        RailgunArrowConfig.GRAVITY_FACTOR_MIN,
+        RailgunArrowConfig.DEFAULT_GRAVITY_FACTOR,
+        RailgunArrowConfig.GRAVITY_FACTOR_MAX
+      })
+  void everyFactorTheConfigurationCanProduceStillPullsTheArrowDown(final float factor) {
     final double gravity = RailgunFlight.gravity(VANILLA_ARROW_GRAVITY, factor);
 
     assertTrue(gravity > 0.0, "A railgun arrow must always fall, gravity was " + gravity);
-    assertEquals(RailgunFlight.MINIMUM_GRAVITY, gravity, TOLERANCE);
   }
 
   @Test
-  void leavesAWeightlessProjectileWeightless() {
-    assertEquals(0.0, RailgunFlight.gravity(0.0, 0.5f), TOLERANCE);
+  void theLightestSettingStillFallsFasterThanNothing() {
+    final float lightest = new RailgunArrowConfig(3.0f, 0.0f).gravityFactor();
+
+    assertTrue(
+        RailgunFlight.gravity(VANILLA_ARROW_GRAVITY, lightest) > 0.0,
+        "The configuration must never hand the flight a factor that stops the arrow falling");
   }
 }

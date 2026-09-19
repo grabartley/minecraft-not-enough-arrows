@@ -6,9 +6,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import net.minecraft.util.math.Vec3d;
 
-public final class ShockArc {
+public final class NearestCandidate {
 
-  private ShockArc() {}
+  private NearestCandidate() {}
 
   public static <T> Optional<T> nearest(
       final Vec3d origin,

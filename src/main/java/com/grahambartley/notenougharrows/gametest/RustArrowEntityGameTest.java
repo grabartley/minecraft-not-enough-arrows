@@ -16,7 +16,7 @@ public final class RustArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowAppliesRustToTheEntityItHits(TestContext context) {
     final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
-    MockPlayerSupport.fireEastFromBow(
+    MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.RUST_ARROW.item());

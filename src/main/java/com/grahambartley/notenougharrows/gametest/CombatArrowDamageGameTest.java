@@ -34,6 +34,18 @@ public final class CombatArrowDamageGameTest implements FabricGameTest {
         damageOf(context, ModArrows.RAILGUN_ARROW),
         vanillaDamage(context),
         "the damage a railgun arrow carries");
+    context.assertEquals(
+        damageOf(context, ModArrows.SHOCK_ARROW),
+        vanillaDamage(context),
+        "the damage a shock arrow carries");
+    context.assertEquals(
+        damageOf(context, ModArrows.VOLLEY_ARROW),
+        vanillaDamage(context),
+        "the damage a volley arrow carries");
+    context.assertEquals(
+        damageOf(context, ModArrows.LIFESTEAL_ARROW),
+        vanillaDamage(context),
+        "the damage a lifesteal arrow carries");
     context.complete();
   }
 
@@ -75,7 +87,7 @@ public final class CombatArrowDamageGameTest implements FabricGameTest {
   public void aGuardArrowCostsItsTargetNothingToReceive(TestContext context) {
     final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
     final float poolBefore = target.getHealth() + target.getAbsorptionAmount();
-    MockPlayerSupport.fireEastFromBow(
+    MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.GUARD_ARROW.item());

@@ -315,7 +315,9 @@ Its range is deliberately shorter than the ender pearl arrow's. Moving yourself 
 
 ## Combat Arrows
 
-Nine arrows that change a fight without changing how a bow works. None of them touches vanilla's damage calculation, its critical hits, or any enchantment: what they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
+Nine arrows that change a fight without making a bow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does, and no whole volley beats the arrow it came from. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
+
+Two of them deliberately hit softer. The haste and guard arrows carry a fraction of an ordinary arrow's damage, because an arrow you fire at a friend should not cost them a heart to receive.
 
 | Arrow | Centre ingredient | What it does |
 |---|---|---|
@@ -333,8 +335,8 @@ Four of these are worth reading the detail on, because each refuses something a 
 
 | Rule | Behaviour |
 |---|---|
-| The shock bolt and fire | The bolt is cosmetic, so it provides the flash and the thunder and nothing else. Its damage is applied deliberately as lightning damage from `combat.shock.damage`, which means the arrow starts no fire under any setting and in any weather, and it does not change the weather either |
-| The shock bolt and the jump | Exactly one further living thing is struck, the nearest inside the arc reach. A third is never reached, so a crowd cannot be cleared with one arrow |
+| The shock bolt and fire | The bolt entity is cosmetic, so it provides the flash and the thunder and nothing else. The jump's damage is applied deliberately, as lightning damage credited to the shooter, which means the arrow starts no fire under any setting and in any weather, and it does not change the weather either |
+| The shock bolt and the jump | `combat.shock.damage` is what the jump deals, and it is dealt only to the entity jumped to. What the arrow itself struck takes an ordinary arrow hit and nothing more, so a shock arrow gives a bow a second target rather than a bigger number. Exactly one further living thing is reached, the nearest inside the arc reach, and never the shooter. A third is never reached, so a crowd cannot be cleared with one arrow |
 | Lifesteal and the damage actually dealt | The heal is measured from how much health and absorption the target actually lost, not from what the arrow was worth, so armour, resistance and a killing blow on an almost-dead target all reduce the heal honestly. A hit that dealt nothing heals nothing, and a dispensed arrow has no shooter to heal |
 | Lifesteal and the shooter's maximum | It never heals past the shooter's own maximum and never hands out absorption instead of the health it could not give |
 | Haste, guard and whose side anyone is on | Both apply to whatever they strike, friend or enemy. The mod adds no team system, so an arrow cannot know, and pretending otherwise would mean a setting that lies. Both are set gentle enough that receiving one costs the target nothing worth counting |
@@ -343,8 +345,10 @@ Four of these are worth reading the detail on, because each refuses something a 
 | Homing and finding nothing | `combat.homing.turnRate`, `combat.homing.searchRadius` and `combat.homing.searchConeDegrees` govern the search, and with nothing eligible ahead of it the arrow flies straight |
 | Volley and splitting again | It splits once. The fragments are ordinary vanilla arrows, so a fragment splitting again is not merely forbidden, it is impossible |
 | Volley and picking the fragments up | Fragments cannot be recovered, and `combat.volley.fragmentCount` is capped so one shot can never flood a server |
+| Volley and the damage it adds up to | Each fragment carries `combat.volley.damageShare` of the original, further capped so that the fragments together never exceed the one arrow they came from. Fragments carry no bow enchantments, so Power is not paid out once per fragment |
+| Status arrows and their own hit | Every effect is applied after the arrow's damage resolves, so an arrow's own hit cannot eat the absorption it just granted and a cleanse cannot strip resistance a fraction of a tick before the hit that resistance was there for |
 | Railgun and piercing | It does not pierce. Piercing is an enchantment, and an arrow that gave it away for free would make the enchantment pointless |
-| Railgun and falling | Its drop can be made small but never none, so a railgun arrow always falls and no arrow in the mod flies forever. A gravity factor of zero is refused with a range message rather than clamped quietly |
+| Railgun and falling | Its drop can be made small but never none, so a railgun arrow always falls and no arrow in the mod flies forever. A gravity factor of zero is refused with a range message from the command and the settings screen, and clamped up to the minimum when a hand-edited config file asks for it |
 
 Every setting above is read fresh at the moment it is used, whether that is on firing, in flight, or on impact, so changing one mid-flight changes what the arrow already in the air does next.
 

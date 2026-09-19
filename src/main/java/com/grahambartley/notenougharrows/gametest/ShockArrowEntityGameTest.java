@@ -32,10 +32,10 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
-  public void anArrowHurtsWhatItStrikesWithoutSettingItAlight(TestContext context) {
+  public void anArrowLandsAnOrdinaryHitWithoutSettingAnythingAlight(TestContext context) {
     final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
     final float before = target.getHealth();
-    MockPlayerSupport.fireEastFromBow(
+    MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.SHOCK_ARROW.item());
@@ -48,6 +48,9 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
               "A shock arrow should hurt what it strikes, health stayed at " + before);
           context.assertTrue(
               !target.isOnFire(), "A shock arrow's bolt must never set anything alight");
+          context.assertTrue(
+              !CombatTestSupport.hasCosmeticLightningLeftFire(context),
+              "A shock arrow must leave no fire behind it");
           context.complete();
         });
   }
@@ -57,7 +60,7 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
     CombatTestSupport.stillCowAt(context, TARGET_STAND);
     final CowEntity neighbour = CombatTestSupport.stillCowAt(context, NEIGHBOUR_STAND);
     final float neighbourBefore = neighbour.getHealth();
-    MockPlayerSupport.fireEastFromBow(
+    MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
         ModArrows.SHOCK_ARROW.item());

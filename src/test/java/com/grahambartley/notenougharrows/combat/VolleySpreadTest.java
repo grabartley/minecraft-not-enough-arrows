@@ -77,20 +77,32 @@ class VolleySpreadTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"10.0, 0.4, 4.0", "10.0, 1.0, 10.0", "6.0, 0.5, 3.0"})
+  @CsvSource({"10.0, 0.1, 5, 1.0", "10.0, 0.2, 4, 2.0", "6.0, 0.25, 4, 1.5"})
   void eachFragmentCarriesTheConfiguredShareOfTheOriginalDamage(
-      final double base, final float share, final double expected) {
-    assertEquals(expected, VolleySpread.fragmentDamage(base, share), TOLERANCE);
+      final double base, final float share, final int count, final double expected) {
+    assertEquals(expected, VolleySpread.fragmentDamage(base, share, count), TOLERANCE);
   }
 
   @ParameterizedTest
-  @CsvSource({"10.0, 0.0", "10.0, -1.0", "0.0, 0.5", "-5.0, 0.5"})
-  void fragmentsNeverCarryNegativeDamage(final double base, final float share) {
-    assertEquals(0.0, VolleySpread.fragmentDamage(base, share), TOLERANCE);
+  @CsvSource({"2, 0.4", "5, 0.4", "12, 1.0", "5, 1.0", "12, 0.05"})
+  void thewholeVolleyNeverHitsHarderThanTheArrowItCameFrom(final int count, final float share) {
+    final double base = 10.0;
+
+    final double whole = VolleySpread.fragmentDamage(base, share, count) * count;
+
+    assertTrue(
+        whole <= base + TOLERANCE,
+        count + " fragments at a share of " + share + " would deal " + whole + " against " + base);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"10.0, 0.0, 5", "10.0, -1.0, 5", "0.0, 0.5, 5", "-5.0, 0.5, 5", "10.0, 0.5, 0"})
+  void fragmentsNeverCarryNegativeDamage(final double base, final float share, final int count) {
+    assertEquals(0.0, VolleySpread.fragmentDamage(base, share, count), TOLERANCE);
   }
 
   @Test
   void aShareAboveOneStillNeverBeatsTheArrowItCameFrom() {
-    assertEquals(10.0, VolleySpread.fragmentDamage(10.0, 5.0f), TOLERANCE);
+    assertEquals(2.0, VolleySpread.fragmentDamage(10.0, 5.0f, 5), TOLERANCE);
   }
 }
