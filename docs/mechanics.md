@@ -354,6 +354,41 @@ Every setting above is read fresh at the moment it is used, whether that is on f
 
 Like every arrow in the mod, each of the nine is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
+## Control Arrows
+
+Seven arrows that change what a creature does rather than how much health it has. Vanilla already brews a tipped arrow for nearly every debuff worth having, so **every effect here uses something that cannot be brewed.** Nothing in this family applies slowness, poison or healing, and a test over the whole family holds that line.
+
+Where vanilla has a status effect for it, vanilla's is applied, so duration, persistence, removal by milk and syncing to clients are all vanilla's rather than the mod's.
+
+| Arrow | Centre ingredient | What it does |
+|---|---|---|
+| Frost | A powder snow bucket | Adds `control.frost.freezeTicksPerHit` of freeze to the living thing it hits, which then shivers and takes freeze damage |
+| Levitation | A shulker shell | Levitation for `control.levitation.durationTicks` |
+| Taunt | A note block | Draws hostiles already fighting something, within `control.targeting.tauntRadius`, to the impact for `control.targeting.tauntDurationTicks` |
+| Repel | Soul sand | Sends hostiles within `control.targeting.repelRadius` running from the impact for `control.targeting.repelDurationTicks` |
+| Daze | A fermented spider eye | The mob it hits forgets its target and wanders for `control.targeting.dazeDurationTicks` |
+| Smoke | A campfire | A cloud of `control.smoke.radius` that blinds what stands inside it for `control.smoke.durationTicks` |
+| Disarm | A fishing rod | Knocks the target's main-hand item onto the ground at its feet |
+
+The frost, levitation, daze and disarm arrows resolve against the thing they hit, so one that strikes only a block does nothing and is recovered like any arrow. The taunt, repel and smoke arrows resolve at the impact point instead, block or entity alike, and are spent doing it.
+
+| Rule | Behaviour |
+|---|---|
+| Frost and terrain | It only ever touches living things. Turning water to ice is the freeze arrow's job, and the two never overlap |
+| Frost and immunity | It respects every immunity vanilla's powder snow respects, leather armour included, so a target dressed for the cold is left unfrozen and the arrow is spent either way |
+| Frost and building up | Each hit adds its configured build, capped one hit past the point vanilla starts dealing freeze damage, so repeated hits keep a target frozen without stacking into something unbounded |
+| Levitation and the fall afterwards | The fall that follows is vanilla's, damage included, because the arrow did not choose where its target came down. It lifts the one thing it hit wherever that thing is, which is what separates it from a fixed rising column |
+| Taunt and mobs that were calm | It draws only hostiles already fighting something. It never makes a calm mob hostile, and it never aims a mob at a player who did not provoke it: it moves attention that already existed |
+| Repel and retaliation | A repelled mob is fleeing rather than harmless. It keeps the target it had, so one you corner can still fight back |
+| Holds and handing back | The taunt, repel and daze arrows all run through one hold with one bounded lifetime and one hand-back path. A hold expires on its own tick and the mob is handed straight back, so no mob is ever left permanently passive or unable to acquire a target. A mob that dies or unloads mid-hold is forgotten rather than chased, and every hold is dropped when the server stops |
+| Holds and a second shot | One hold per mob. A second arrow replaces the first rather than queueing behind it, so the newest shot is always the one in charge |
+| Smoke and what it blocks | The cloud is not a block and places none. It stops no arrow, blocks no movement, and clears away on expiry leaving nothing behind. The blindness it applies is refreshed only while an entity is standing inside it, so walking out lets it fade |
+| Disarm and the item | The item lands on the ground at the target's feet where it can be picked straight back up. It is never destroyed, never moved to the shooter, and a worn armour piece is never taken |
+| Disarm and players | `control.disarm.affectsPlayers` decides whether it works on another player, and it is on by default. It is read where the effect resolves rather than where the shot is fired, so a modified client cannot force it. It is the only arrow here with such a switch, because the other six apply effects a player can wait out or drink off, and this one moves an item out of a player's hand |
+| A duration of zero | Every duration and reach above is a server setting read fresh on impact. A duration of zero applies no effect at all, and a reach of zero reaches nobody |
+
+Like every arrow in the mod, each of the seven is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight.
+
 ## Sounds
 
 The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.

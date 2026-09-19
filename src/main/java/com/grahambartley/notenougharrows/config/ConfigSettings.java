@@ -7,6 +7,7 @@ public final class ConfigSettings {
   public static final String PHYSICS = "physics";
   public static final String ENDER = "ender";
   public static final String COMBAT = "combat";
+  public static final String CONTROL = "control";
   public static final String FLETCHING = "fletching";
 
   public static final String EXPLOSIVE_GUNPOWDER = EXPLOSIVE + ".gunpowder";
@@ -91,6 +92,28 @@ public final class ConfigSettings {
   public static final String COMBAT_VOLLEY_SPLIT_DELAY_TICKS = COMBAT_VOLLEY + ".splitDelayTicks";
   public static final String COMBAT_RAILGUN_SPEED_MULTIPLIER = COMBAT_RAILGUN + ".speedMultiplier";
   public static final String COMBAT_RAILGUN_GRAVITY_FACTOR = COMBAT_RAILGUN + ".gravityFactor";
+
+  public static final String CONTROL_FROST = CONTROL + ".frost";
+  public static final String CONTROL_LEVITATION = CONTROL + ".levitation";
+  public static final String CONTROL_TARGETING = CONTROL + ".targeting";
+  public static final String CONTROL_SMOKE = CONTROL + ".smoke";
+  public static final String CONTROL_DISARM = CONTROL + ".disarm";
+
+  public static final String CONTROL_FROST_FREEZE_TICKS_PER_HIT =
+      CONTROL_FROST + ".freezeTicksPerHit";
+  public static final String CONTROL_LEVITATION_DURATION_TICKS =
+      CONTROL_LEVITATION + ".durationTicks";
+  public static final String CONTROL_TARGETING_TAUNT_RADIUS = CONTROL_TARGETING + ".tauntRadius";
+  public static final String CONTROL_TARGETING_TAUNT_DURATION_TICKS =
+      CONTROL_TARGETING + ".tauntDurationTicks";
+  public static final String CONTROL_TARGETING_REPEL_RADIUS = CONTROL_TARGETING + ".repelRadius";
+  public static final String CONTROL_TARGETING_REPEL_DURATION_TICKS =
+      CONTROL_TARGETING + ".repelDurationTicks";
+  public static final String CONTROL_TARGETING_DAZE_DURATION_TICKS =
+      CONTROL_TARGETING + ".dazeDurationTicks";
+  public static final String CONTROL_SMOKE_RADIUS = CONTROL_SMOKE + ".radius";
+  public static final String CONTROL_SMOKE_DURATION_TICKS = CONTROL_SMOKE + ".durationTicks";
+  public static final String CONTROL_DISARM_AFFECTS_PLAYERS = CONTROL_DISARM + ".affectsPlayers";
 
   public static final String FLETCHING_STATION_ENABLED = FLETCHING + ".stationEnabled";
 

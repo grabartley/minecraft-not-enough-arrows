@@ -46,6 +46,12 @@ class ConfigCodecTest {
                 new HomingArrowConfig(0.95f, 63.5f, 179.0f),
                 new VolleyArrowConfig(12, 0.95f, 44.0f, 39),
                 new RailgunArrowConfig(7.5f, 1.95f)),
+            new ControlArrowConfig(
+                new FrostArrowConfig(1199),
+                new LevitationArrowConfig(1),
+                new TargetingArrowConfig(31.5f, 5999, 0.5f, 1, 5999),
+                new SmokeArrowConfig(15.5f, 1),
+                new DisarmArrowConfig(false)),
             new FletchingStationConfig(false));
 
     assertEquals(original, ConfigCodec.decode(ConfigCodec.encode(original)));
