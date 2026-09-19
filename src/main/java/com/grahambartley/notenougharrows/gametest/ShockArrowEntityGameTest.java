@@ -2,8 +2,10 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -16,7 +18,7 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void realLightningDoesSetACowAlightHere(TestContext context) {
-    final CowEntity control = CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity control = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
 
     context.spawnEntity(EntityType.LIGHTNING_BOLT, TARGET_STAND);
 
@@ -33,7 +35,7 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowLandsAnOrdinaryHitWithoutSettingAnythingAlight(TestContext context) {
-    final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     final float before = target.getHealth();
     MockPlayerSupport.fireEastStraight(
         context,
@@ -57,8 +59,8 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void theBoltJumpsToTheNearestNeighbour(TestContext context) {
-    CombatTestSupport.stillCowAt(context, TARGET_STAND);
-    final CowEntity neighbour = CombatTestSupport.stillCowAt(context, NEIGHBOUR_STAND);
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final CowEntity neighbour = FiringRangeSupport.liveTargetOnPedestalAt(context, NEIGHBOUR_STAND);
     final float neighbourBefore = neighbour.getHealth();
     MockPlayerSupport.fireEastStraight(
         context,
@@ -78,6 +80,48 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void anArrowThatHitsOnlyABlockStillJumpsToTheNearestLivingThing(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    final CowEntity bystander = FiringRangeSupport.liveTargetOnPedestalAt(context, NEIGHBOUR_STAND);
+    final float before = bystander.getHealth();
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.SHOCK_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK + SETTLED,
+        () -> {
+          context.assertTrue(
+              bystander.getHealth() < before,
+              "The bolt lands where the arrow lands, so a wall hit still jumps to the nearest"
+                  + " living thing in reach");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void theBoltNeverJumpsBackAtTheShooter(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final float before = shooter.getHealth();
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.SHOCK_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK + SETTLED,
+        () -> {
+          context.assertTrue(
+              shooter.getHealth() == before,
+              "The bolt must never jump back at the shooter, they went from "
+                  + before
+                  + " to "
+                  + shooter.getHealth());
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void anArrowThatHitsOnlyABlockLeavesTheBlockAlone(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
     MockPlayerSupport.fireEastFromBow(
@@ -88,7 +132,7 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         FiringRangeSupport.LANDING_TICK + SETTLED,
         () -> {
-          context.expectBlock(net.minecraft.block.Blocks.STONE, FiringRangeSupport.BACKSTOP);
+          context.expectBlock(Blocks.STONE, FiringRangeSupport.BACKSTOP);
           context.dontExpectEntity(ModArrows.SHOCK_ARROW.entityType());
           context.complete();
         });

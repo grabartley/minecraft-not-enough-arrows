@@ -10,7 +10,7 @@ public final class RailgunFlight {
     if (velocity == null) {
       return Vec3d.ZERO;
     }
-    return velocity.multiply(Math.max(1.0f, speedMultiplier));
+    return velocity.multiply(speedMultiplier);
   }
 
   public static double gravity(final double baseGravity, final float gravityFactor) {

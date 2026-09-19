@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -14,6 +15,8 @@ import net.minecraft.util.math.Vec3d;
 public final class CombatArrowDamageGameTest implements FabricGameTest {
   private static final String BATCH = "combat-arrow-damage";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
+  private static final BlockPos SECOND_TARGET_STAND = new BlockPos(5, 3, 5);
+  private static final BlockPos SECOND_SHOOTER_STAND = new BlockPos(1, 2, 5);
   private static final Vec3d SPAWN_SPOT = new Vec3d(0.0, 0.0, 0.0);
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
@@ -84,24 +87,37 @@ public final class CombatArrowDamageGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
-  public void aGuardArrowCostsItsTargetNothingToReceive(TestContext context) {
-    final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
-    final float poolBefore = target.getHealth() + target.getAbsorptionAmount();
+  public void aGuardArrowCostsItsTargetLessHealthThanAPlainArrow(TestContext context) {
+    final CowEntity struckByPlainArrow =
+        FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final CowEntity struckByGuard =
+        FiringRangeSupport.liveTargetOnPedestalAt(context, SECOND_TARGET_STAND);
+    final float plainBefore = struckByPlainArrow.getHealth();
+    final float guardBefore = struckByGuard.getHealth();
     MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        Items.ARROW);
+    MockPlayerSupport.fireEastStraight(
+        context,
+        MockPlayerSupport.playerAt(context, SECOND_SHOOTER_STAND),
         ModArrows.GUARD_ARROW.item());
 
     context.runAtTick(
         FiringRangeSupport.LANDING_TICK,
         () -> {
-          final float poolAfter = target.getHealth() + target.getAbsorptionAmount();
+          final float plainDealt = plainBefore - struckByPlainArrow.getHealth();
+          final float guardDealt = guardBefore - struckByGuard.getHealth();
+          context.assertTrue(plainDealt > 0.0f, "The plain arrow should have landed");
           context.assertTrue(
-              poolAfter >= poolBefore,
-              "Receiving a guard arrow should not cost a heart, the pool went from "
-                  + poolBefore
-                  + " to "
-                  + poolAfter);
+              guardDealt < plainDealt,
+              "A guard arrow should cost its target less than a plain arrow's "
+                  + plainDealt
+                  + ", it cost "
+                  + guardDealt);
+          context.assertTrue(
+              struckByGuard.getAbsorptionAmount() > 0.0f,
+              "A guard arrow should leave its target with absorption to show for it");
           context.complete();
         });
   }

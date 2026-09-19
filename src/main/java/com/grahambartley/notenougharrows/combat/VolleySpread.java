@@ -38,13 +38,11 @@ public final class VolleySpread {
     return List.copyOf(fragments);
   }
 
-  public static double fragmentDamage(
-      final double baseDamage, final float damageShare, final int fragmentCount) {
-    if (baseDamage <= 0.0 || damageShare <= 0.0f || fragmentCount <= 0) {
+  public static double fragmentDamage(final double baseDamage, final float damageShare) {
+    if (baseDamage <= 0.0 || damageShare <= 0.0f) {
       return 0.0;
     }
-    final double wholeVolleyCap = 1.0 / fragmentCount;
-    return baseDamage * Math.min(damageShare, wholeVolleyCap);
+    return baseDamage * Math.min(1.0f, damageShare);
   }
 
   private static Vec3d perpendicularTo(final Vec3d forward) {

@@ -315,7 +315,7 @@ Its range is deliberately shorter than the ender pearl arrow's. Moving yourself 
 
 ## Combat Arrows
 
-Nine arrows that change a fight without making a bow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does, and no whole volley beats the arrow it came from. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
+Nine arrows that change a fight without making a single arrow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
 
 Two of them deliberately hit softer. The haste and guard arrows carry a fraction of an ordinary arrow's damage, because an arrow you fire at a friend should not cost them a heart to receive.
 
@@ -345,10 +345,10 @@ Four of these are worth reading the detail on, because each refuses something a 
 | Homing and finding nothing | `combat.homing.turnRate`, `combat.homing.searchRadius` and `combat.homing.searchConeDegrees` govern the search, and with nothing eligible ahead of it the arrow flies straight |
 | Volley and splitting again | It splits once. The fragments are ordinary vanilla arrows, so a fragment splitting again is not merely forbidden, it is impossible |
 | Volley and picking the fragments up | Fragments cannot be recovered, and `combat.volley.fragmentCount` is capped so one shot can never flood a server |
-| Volley and the damage it adds up to | Each fragment carries `combat.volley.damageShare` of the original, further capped so that the fragments together never exceed the one arrow they came from. Fragments carry no bow enchantments, so Power is not paid out once per fragment |
+| Volley and the damage it adds up to | Each fragment carries `combat.volley.damageShare` of the original and so lands softer than the arrow it came from. The fragments together can total more than one arrow at point blank, which is the trade the arrow offers: a spread that mostly misses at range, and a payoff up close. Fragments carry no bow enchantments and roll no critical of their own, so Power and a full draw are not paid out once per fragment |
 | Status arrows and their own hit | Every effect is applied after the arrow's damage resolves, so an arrow's own hit cannot eat the absorption it just granted and a cleanse cannot strip resistance a fraction of a tick before the hit that resistance was there for |
 | Railgun and piercing | It does not pierce. Piercing is an enchantment, and an arrow that gave it away for free would make the enchantment pointless |
-| Railgun and falling | Its drop can be made small but never none, so a railgun arrow always falls and no arrow in the mod flies forever. A gravity factor of zero is refused with a range message from the command and the settings screen, and clamped up to the minimum when a hand-edited config file asks for it |
+| Railgun and falling | Its drop can be made small but never none, so a railgun arrow always falls and no arrow in the mod flies forever. A gravity factor of zero is refused with a range message from the command and the settings screen, and clamped up to the minimum when a hand-edited config file asks for it. The factor rides on the arrow itself, so a client watching one drawn across the sky simulates the arc the server is using rather than the default |
 
 Every setting above is read fresh at the moment it is used, whether that is on firing, in flight, or on impact, so changing one mid-flight changes what the arrow already in the air does next.
 

@@ -6,10 +6,12 @@ import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class HomingArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "homing-arrow";
+  private static final BlockPos BESIDE_THE_SHOOTER = new BlockPos(1, 3, 5);
   private static final double A_REAL_TURN = 0.05;
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
@@ -50,7 +52,7 @@ public final class HomingArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
   public void anArrowNeverCurvesTowardAHarmlessAnimal(TestContext context) {
-    CombatTestSupport.stillCowAt(context, CombatTestSupport.LONG_RANGE_FAR_STAND);
+    FiringRangeSupport.liveTargetOnPedestalAt(context, CombatTestSupport.LONG_RANGE_FAR_STAND);
     CombatTestSupport.fireDownTheLongRange(context, ModArrows.HOMING_ARROW.item());
 
     context.runAtTick(
@@ -82,7 +84,7 @@ public final class HomingArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
   public void anArrowIgnoresAHostileMobBehindIt(TestContext context) {
-    CombatTestSupport.stillZombieAt(context, new net.minecraft.util.math.BlockPos(1, 3, 5));
+    CombatTestSupport.stillZombieAt(context, BESIDE_THE_SHOOTER);
     CombatTestSupport.fireDownTheLongRange(context, ModArrows.HOMING_ARROW.item());
 
     context.runAtTick(

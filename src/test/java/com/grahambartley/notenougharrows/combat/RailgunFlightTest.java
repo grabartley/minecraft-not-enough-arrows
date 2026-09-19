@@ -32,12 +32,19 @@ class RailgunFlightTest {
   }
 
   @ParameterizedTest
-  @ValueSource(floats = {0.0f, 0.5f, -2.0f})
-  void neverSlowsAnArrowBelowTheSpeedItWasFiredAt(final float multiplier) {
+  @ValueSource(
+      floats = {
+        RailgunArrowConfig.SPEED_MULTIPLIER_MIN,
+        RailgunArrowConfig.DEFAULT_SPEED_MULTIPLIER,
+        RailgunArrowConfig.SPEED_MULTIPLIER_MAX
+      })
+  void everyMultiplierTheConfigurationCanProduceLaunchesAtLeastAsFastAsAnOrdinaryArrow(
+      final float multiplier) {
     final Vec3d fired = new Vec3d(2.0, 0.0, 0.0);
 
-    assertEquals(
-        fired.length(), RailgunFlight.launchVelocity(fired, multiplier).length(), TOLERANCE);
+    assertTrue(
+        RailgunFlight.launchVelocity(fired, multiplier).length() >= fired.length() - TOLERANCE,
+        "A railgun arrow should never leave the bow slower than an ordinary arrow");
   }
 
   @Test

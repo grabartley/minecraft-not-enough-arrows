@@ -4,17 +4,22 @@ import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.config.VolleyArrowConfig;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.BlockPos;
 
 public final class VolleyArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "volley-arrow";
   private static final int JUST_AFTER_THE_SPLIT = VolleyArrowConfig.DEFAULT_SPLIT_DELAY_TICKS + 1;
-  private static final int A_SECOND_WINDOW = JUST_AFTER_THE_SPLIT * 3;
+  private static final int A_SECOND_WINDOW = JUST_AFTER_THE_SPLIT * 2;
+  private static final int LANDED = 20;
+  private static final BlockPos PLAIN_ARROW_STAND = new BlockPos(1, 2, 1);
+  private static final BlockPos PLAIN_ARROW_TARGET = new BlockPos(6, 3, 1);
+  private static final BlockPos VOLLEY_TARGET = new BlockPos(20, 3, 3);
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
   public void anArrowBecomesTheConfiguredNumberOfOrdinaryArrows(TestContext context) {
@@ -83,24 +88,30 @@ public final class VolleyArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
-  public void everyFragmentHitsSofterThanAnOrdinaryArrow(TestContext context) {
+  public void aFragmentTakesLessFromACowThanAPlainArrowDoes(TestContext context) {
+    final CowEntity struckByPlainArrow =
+        FiringRangeSupport.liveTargetOnPedestalAt(context, PLAIN_ARROW_TARGET);
+    final CowEntity struckByVolley =
+        FiringRangeSupport.liveTargetOnPedestalAt(context, VOLLEY_TARGET);
+    final float plainBefore = struckByPlainArrow.getHealth();
+    final float volleyBefore = struckByVolley.getHealth();
+    MockPlayerSupport.fireEastStraight(
+        context, MockPlayerSupport.playerAt(context, PLAIN_ARROW_STAND), Items.ARROW);
     CombatTestSupport.fireDownTheLongRange(context, ModArrows.VOLLEY_ARROW.item());
 
     context.runAtTick(
-        JUST_AFTER_THE_SPLIT,
+        LANDED,
         () -> {
-          final List<ArrowEntity> fragments = fragments(context);
-          context.assertTrue(!fragments.isEmpty(), "The volley arrow should have split");
-          final double ordinaryDamage =
-              context.spawnEntity(EntityType.ARROW, new Vec3d(0.0, 0.0, 0.0)).getDamage();
-          for (final ArrowEntity fragment : fragments) {
-            context.assertTrue(
-                fragment.getDamage() < ordinaryDamage,
-                "A volley fragment should hit softer than an ordinary arrow's "
-                    + ordinaryDamage
-                    + ", it was "
-                    + fragment.getDamage());
-          }
+          final float plainDealt = plainBefore - struckByPlainArrow.getHealth();
+          final float volleyDealt = volleyBefore - struckByVolley.getHealth();
+          context.assertTrue(plainDealt > 0.0f, "The plain arrow should have landed");
+          context.assertTrue(volleyDealt > 0.0f, "At least one fragment should have landed");
+          context.assertTrue(
+              volleyDealt < plainDealt,
+              "A fragment should take less from a cow than a plain arrow's "
+                  + plainDealt
+                  + ", it took "
+                  + volleyDealt);
           context.complete();
         });
   }

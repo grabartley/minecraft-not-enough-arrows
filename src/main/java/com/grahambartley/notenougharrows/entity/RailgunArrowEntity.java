@@ -17,7 +17,6 @@ public class RailgunArrowEntity extends BaseArrowEntity {
   private static final TrackedData<Float> GRAVITY_FACTOR =
       DataTracker.registerData(RailgunArrowEntity.class, TrackedDataHandlerRegistry.FLOAT);
   private static final String LAUNCHED_KEY = "Launched";
-  private static final String GRAVITY_FACTOR_KEY = "GravityFactor";
 
   private boolean launched;
 
@@ -58,12 +57,14 @@ public class RailgunArrowEntity extends BaseArrowEntity {
 
   @Override
   protected void onArrowTick(final ServerWorld world) {
+    final RailgunArrowConfig railgun = ServerConfigService.get().combat().railgun();
+    if (gravityFactor() != railgun.gravityFactor()) {
+      getDataTracker().set(GRAVITY_FACTOR, railgun.gravityFactor());
+    }
+
     if (launched || inGround) {
       return;
     }
-
-    final RailgunArrowConfig railgun = ServerConfigService.get().combat().railgun();
-    getDataTracker().set(GRAVITY_FACTOR, railgun.gravityFactor());
     setVelocity(RailgunFlight.launchVelocity(getVelocity(), railgun.speedMultiplier()));
     velocityModified = true;
     launched = true;
@@ -73,15 +74,11 @@ public class RailgunArrowEntity extends BaseArrowEntity {
   public void writeCustomDataToNbt(final NbtCompound nbt) {
     super.writeCustomDataToNbt(nbt);
     nbt.putBoolean(LAUNCHED_KEY, launched);
-    nbt.putFloat(GRAVITY_FACTOR_KEY, gravityFactor());
   }
 
   @Override
   public void readCustomDataFromNbt(final NbtCompound nbt) {
     super.readCustomDataFromNbt(nbt);
     launched = nbt.getBoolean(LAUNCHED_KEY);
-    if (nbt.contains(GRAVITY_FACTOR_KEY)) {
-      getDataTracker().set(GRAVITY_FACTOR, nbt.getFloat(GRAVITY_FACTOR_KEY));
-    }
   }
 }

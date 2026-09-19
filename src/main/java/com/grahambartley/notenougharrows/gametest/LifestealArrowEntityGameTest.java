@@ -13,10 +13,11 @@ public final class LifestealArrowEntityGameTest implements FabricGameTest {
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
   private static final BlockPos DISPENSER_STAND = new BlockPos(1, 3, 3);
   private static final float A_WOUNDED_SHOOTER = 4.0f;
+  private static final float A_SINGLE_HEART = 2.0f;
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aHitHealsTheWoundedShooter(TestContext context) {
-    CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
     shooter.setHealth(A_WOUNDED_SHOOTER);
@@ -34,27 +35,52 @@ public final class LifestealArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aShooterAtFullHealthGainsNothing(TestContext context) {
-    CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.LIFESTEAL_ARROW.item());
+    final float before = shooter.getHealth();
+    MockPlayerSupport.fireEastStraight(context, shooter, ModArrows.LIFESTEAL_ARROW.item());
 
     context.runAtTick(
         FiringRangeSupport.LANDING_TICK,
         () -> {
           context.assertTrue(
-              shooter.getHealth() <= shooter.getMaxHealth(),
-              "Lifesteal should never heal a shooter past their own maximum");
+              shooter.getHealth() == before,
+              "A shooter already at full health should gain nothing, they went from "
+                  + before
+                  + " to "
+                  + shooter.getHealth());
           context.assertTrue(
               shooter.getAbsorptionAmount() == 0.0f,
-              "Lifesteal should never hand out absorption as a substitute");
+              "Lifesteal should never hand out absorption as a substitute for health");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aHealStopsExactlyAtTheShootersMaximum(TestContext context) {
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    shooter.setHealth(shooter.getMaxHealth() - A_SINGLE_HEART);
+    MockPlayerSupport.fireEastStraight(context, shooter, ModArrows.LIFESTEAL_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.assertTrue(
+              shooter.getHealth() == shooter.getMaxHealth(),
+              "A shooter one heart down should be topped up to exactly their maximum, they are at "
+                  + shooter.getHealth()
+                  + " of "
+                  + shooter.getMaxHealth());
           context.complete();
         });
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aDispensedArrowHasNoShooterToHealAndDoesNotError(TestContext context) {
-    final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     final float before = target.getHealth();
     FiringRangeSupport.dispenseEast(context, DISPENSER_STAND, ModArrows.LIFESTEAL_ARROW.item());
 

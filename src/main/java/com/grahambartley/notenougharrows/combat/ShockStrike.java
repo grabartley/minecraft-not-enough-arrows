@@ -33,7 +33,7 @@ public final class ShockStrike {
         .ifPresent(arced -> shock(world, arced, config, source));
   }
 
-  private static Optional<Entity> arcFrom(
+  private static Optional<LivingEntity> arcFrom(
       final ServerWorld world,
       final Vec3d at,
       @Nullable final Entity struck,
@@ -43,10 +43,13 @@ public final class ShockStrike {
       return Optional.empty();
     }
     return NearestCandidate.nearest(
-        at, candidates(world, at, struck, config, source), Entity::getPos, config.arcRadius());
+        at,
+        candidates(world, at, struck, config, source),
+        LivingEntity::getPos,
+        config.arcRadius());
   }
 
-  private static List<Entity> candidates(
+  private static List<LivingEntity> candidates(
       final ServerWorld world,
       final Vec3d at,
       @Nullable final Entity struck,
@@ -54,25 +57,21 @@ public final class ShockStrike {
       final ProjectileEntity source) {
     final Box search = new Box(at, at).expand(config.arcRadius());
     final Entity shooter = source.getOwner();
-    return world.getOtherEntities(
-        source,
+    return world.getEntitiesByClass(
+        LivingEntity.class,
         search,
-        candidate ->
-            candidate instanceof LivingEntity
-                && candidate.isAlive()
-                && candidate != struck
-                && candidate != shooter);
+        candidate -> candidate.isAlive() && candidate != struck && candidate != shooter);
   }
 
   private static void shock(
       final ServerWorld world,
-      @Nullable final Entity target,
+      final LivingEntity target,
       final ShockArrowConfig config,
       final ProjectileEntity source) {
-    if (!(target instanceof LivingEntity living) || config.damage() <= 0.0f) {
+    if (config.damage() <= 0.0f) {
       return;
     }
-    living.damage(lightningFrom(world, source), config.damage());
+    target.damage(lightningFrom(world, source), config.damage());
   }
 
   private static DamageSource lightningFrom(

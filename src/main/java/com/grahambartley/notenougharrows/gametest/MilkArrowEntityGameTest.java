@@ -17,7 +17,7 @@ public final class MilkArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowStripsAHarmfulEffectFromWhatItHits(TestContext context) {
-    final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     target.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, A_LONG_TIME));
     MockPlayerSupport.fireEastStraight(
         context,
@@ -36,7 +36,7 @@ public final class MilkArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowStripsAHelpfulEffectJustTheSame(TestContext context) {
-    final CowEntity target = CombatTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
     target.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, A_LONG_TIME));
     MockPlayerSupport.fireEastStraight(
         context,
@@ -56,7 +56,7 @@ public final class MilkArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowThatHitsOnlyABlockStripsNothing(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
-    final CowEntity bystander = CombatTestSupport.stillCowAt(context, BYSTANDER_STAND);
+    final CowEntity bystander = FiringRangeSupport.liveTargetOnPedestalAt(context, BYSTANDER_STAND);
     bystander.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, A_LONG_TIME));
     MockPlayerSupport.fireEastFromBow(
         context,

@@ -22,9 +22,7 @@ public final class VolleyBurst {
     final List<Vec3d> velocities =
         VolleySpread.fragmentVelocities(
             source.getVelocity(), config.fragmentCount(), config.spreadDegrees());
-    final double damage =
-        VolleySpread.fragmentDamage(
-            source.getDamage(), config.damageShare(), config.fragmentCount());
+    final double damage = VolleySpread.fragmentDamage(source.getDamage(), config.damageShare());
 
     for (final Vec3d velocity : velocities) {
       world.spawnEntity(fragment(world, source, velocity, damage, source.getOwner()));
@@ -43,7 +41,6 @@ public final class VolleyBurst {
     arrow.setOwner(owner);
     arrow.setVelocity(velocity);
     arrow.setDamage(damage);
-    arrow.setCritical(source.isCritical());
     arrow.pickupType = PersistentProjectileEntity.PickupPermission.DISALLOWED;
     return arrow;
   }

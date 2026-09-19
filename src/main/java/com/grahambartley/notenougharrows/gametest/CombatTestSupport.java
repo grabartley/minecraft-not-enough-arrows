@@ -4,7 +4,6 @@ import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -16,10 +15,6 @@ final class CombatTestSupport {
   static final int MID_FLIGHT_TICK = 4;
 
   private CombatTestSupport() {}
-
-  static CowEntity stillCowAt(final TestContext context, final BlockPos relativePos) {
-    return FiringRangeSupport.liveTargetOnPedestalAt(context, relativePos);
-  }
 
   static ZombieEntity stillZombieAt(final TestContext context, final BlockPos relativePos) {
     context.setBlockState(relativePos.down(), Blocks.STONE);
