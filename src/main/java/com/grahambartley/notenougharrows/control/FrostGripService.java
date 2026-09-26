@@ -34,6 +34,7 @@ public final class FrostGripService {
     }
     gripsIn(world).put(target.getUuid(), world.getTime() + frost.durationTicks());
     pin(target);
+    FrostEffects.frozeOver(world, target);
     return true;
   }
 
@@ -56,9 +57,13 @@ public final class FrostGripService {
       }
       if (world.getTime() >= entry.getValue()) {
         remaining.remove();
+        FrostEffects.thawed(world, living);
         continue;
       }
       pin(living);
+      if (FrostGrip.shimmersOn(world.getTime())) {
+        FrostEffects.stillFrozen(world, living);
+      }
     }
   }
 

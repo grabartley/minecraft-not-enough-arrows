@@ -39,4 +39,10 @@ class FrostGripTest {
     assertFalse(FrostGrip.holds(-1));
     assertTrue(FrostGrip.holds(1));
   }
+
+  @ParameterizedTest
+  @CsvSource({"0, true", "1, false", "4, false", "5, true", "10, true"})
+  void shimmersOnceEveryInterval(final long tick, final boolean expected) {
+    assertEquals(expected, FrostGrip.shimmersOn(tick));
+  }
 }

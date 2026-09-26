@@ -18,7 +18,7 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowBuildsFreezeOnTheEntityItHits(TestContext context) {
-    final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = ControlTestSupport.sturdyStillCowAt(context, TARGET_STAND);
     MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
@@ -38,7 +38,7 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aDispensedArrowBuildsFreezeJustTheSame(TestContext context) {
-    final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = ControlTestSupport.sturdyStillCowAt(context, TARGET_STAND);
     FiringRangeSupport.dispenseEast(context, new BlockPos(1, 3, 3), ModArrows.FROST_ARROW.item());
 
     context.runAtTick(
@@ -52,7 +52,7 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 200)
   public void theFreezeIsHeldRatherThanThawingStraightAway(TestContext context) {
-    final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = ControlTestSupport.sturdyStillCowAt(context, TARGET_STAND);
     MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
@@ -72,7 +72,7 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aTargetWearingLeatherIsLeftUnfrozen(TestContext context) {
-    final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
+    final CowEntity target = ControlTestSupport.sturdyStillCowAt(context, TARGET_STAND);
     target.equipStack(EquipmentSlot.FEET, new ItemStack(Items.LEATHER_BOOTS));
     MockPlayerSupport.fireEastStraight(
         context,

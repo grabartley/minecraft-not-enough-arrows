@@ -7,15 +7,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class FrostArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
-  private static final float IMPACT_PITCH = 1.0f;
-
   public FrostArrowEntity(
       final EntityType<? extends FrostArrowEntity> entityType, final World world) {
     super(entityType, world);
@@ -39,8 +35,6 @@ public class FrostArrowEntity extends BaseArrowEntity {
       return;
     }
     final FrostArrowConfig frost = ServerConfigService.get().control().frost();
-    if (FrostGripService.grip(world, living, frost)) {
-      playSound(SoundEvents.BLOCK_POWDER_SNOW_PLACE, IMPACT_VOLUME, IMPACT_PITCH);
-    }
+    FrostGripService.grip(world, living, frost);
   }
 }
