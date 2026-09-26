@@ -2,16 +2,18 @@ package com.grahambartley.notenougharrows.control;
 
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Vec3d;
+import org.jetbrains.annotations.Nullable;
 
 public final class DisarmDrop {
   public static final double SPEED_PER_BLOCK = 0.09;
   public static final double ARC_LIFT = 0.25;
+
+  public static final int PICKUP_DELAY_TICKS = 60;
 
   private static final double THROW_DROP = 0.2;
 
@@ -23,18 +25,23 @@ public final class DisarmDrop {
         && (affectsPlayers || !(target instanceof PlayerEntity));
   }
 
-  public static Vec3d throwVelocity(final float facingYaw, final double throwDistance) {
-    if (throwDistance <= 0.0) {
+  public static Vec3d throwVelocity(final Vec3d awayFromShooter, final double throwDistance) {
+    if (throwDistance <= 0.0
+        || awayFromShooter == null
+        || awayFromShooter.horizontalLengthSquared() <= 0.0) {
       return Vec3d.ZERO;
     }
-    final double radians = Math.toRadians(facingYaw);
-    final double speed = throwDistance * SPEED_PER_BLOCK;
-    return new Vec3d(-Math.sin(radians) * speed, ARC_LIFT, Math.cos(radians) * speed);
+    final Vec3d flat =
+        new Vec3d(awayFromShooter.getX(), 0.0, awayFromShooter.getZ())
+            .normalize()
+            .multiply(throwDistance * SPEED_PER_BLOCK);
+    return new Vec3d(flat.getX(), ARC_LIFT, flat.getZ());
   }
 
   public static boolean disarm(
       final ServerWorld world,
       final LivingEntity target,
+      @Nullable final Vec3d shooterPos,
       final boolean affectsPlayers,
       final double throwDistance) {
     if (world == null || !reaches(target, affectsPlayers)) {
@@ -49,19 +56,20 @@ public final class DisarmDrop {
     final ItemEntity dropped =
         new ItemEntity(
             world, target.getX(), target.getEyeY() - THROW_DROP, target.getZ(), held.copy());
-    dropped.setVelocity(throwVelocity(target.getYaw(), throwDistance));
-    dropped.setToDefaultPickupDelay();
+    dropped.setVelocity(throwVelocity(awayFrom(target, shooterPos), throwDistance));
+    dropped.setPickupDelay(PICKUP_DELAY_TICKS);
     if (!world.spawnEntity(dropped)) {
       return false;
     }
     target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
-    letTheTargetFetchItBack(target);
+    DisarmFetchService.letThemFetchItBack(world, target);
     return true;
   }
 
-  private static void letTheTargetFetchItBack(final LivingEntity target) {
-    if (target instanceof MobEntity mob) {
-      mob.setCanPickUpLoot(true);
+  private static Vec3d awayFrom(final LivingEntity target, @Nullable final Vec3d shooterPos) {
+    if (shooterPos == null) {
+      return target.getRotationVec(1.0f);
     }
+    return target.getPos().subtract(shooterPos);
   }
 }

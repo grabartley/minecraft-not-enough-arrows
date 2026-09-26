@@ -11,31 +11,47 @@ public final class DefenderTargets {
 
   private DefenderTargets() {}
 
-  public static boolean threatens(final MobEntity candidate, final LivingEntity protectedEntity) {
-    return candidate != null
-        && candidate.isAlive()
-        && candidate.getTarget() == protectedEntity
-        && candidate != protectedEntity;
+  public static boolean threatens(final LivingEntity candidate, final LivingEntity defended) {
+    if (candidate == null || defended == null || candidate == defended || !candidate.isAlive()) {
+      return false;
+    }
+    return candidate instanceof MobEntity mob && mob.getTarget() == defended;
   }
 
-  public static Optional<MobEntity> threatTo(
+  public static boolean inReach(
+      final LivingEntity candidate, final LivingEntity defended, final double radius) {
+    return candidate != null
+        && defended != null
+        && candidate.squaredDistanceTo(defended) <= radius * radius;
+  }
+
+  public static Optional<LivingEntity> threatTo(
       final ServerWorld world,
-      final LivingEntity protectedEntity,
+      final LivingEntity defended,
       final MobEntity defender,
       final double radius) {
-    if (protectedEntity == null || radius <= 0.0) {
+    if (defended == null || radius <= 0.0) {
       return Optional.empty();
     }
-    final Box search = protectedEntity.getBoundingBox().expand(radius);
+
+    final LivingEntity struckBy = defended.getAttacker();
+    if (struckBy != null
+        && struckBy != defender
+        && struckBy.isAlive()
+        && inReach(struckBy, defended, radius)) {
+      return Optional.of(struckBy);
+    }
+
+    final Box search = defended.getBoundingBox().expand(radius);
     final List<MobEntity> threats =
         world.getEntitiesByClass(
             MobEntity.class,
             search,
-            candidate -> candidate != defender && threatens(candidate, protectedEntity));
+            candidate -> candidate != defender && threatens(candidate, defended));
     return threats.stream()
         .min(
             (left, right) ->
-                Double.compare(
-                    defender.squaredDistanceTo(left), defender.squaredDistanceTo(right)));
+                Double.compare(defender.squaredDistanceTo(left), defender.squaredDistanceTo(right)))
+        .map(LivingEntity.class::cast);
   }
 }

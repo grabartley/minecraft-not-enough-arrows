@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.anchor.AnchorService;
 import com.grahambartley.notenougharrows.blast.BlastService;
 import com.grahambartley.notenougharrows.command.NotEnoughArrowsCommand;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
+import com.grahambartley.notenougharrows.control.DisarmFetchService;
 import com.grahambartley.notenougharrows.control.FrostGripService;
 import com.grahambartley.notenougharrows.control.SmokeCloudService;
 import com.grahambartley.notenougharrows.countdown.CountdownBroadcaster;
@@ -45,6 +46,7 @@ public class NotEnoughArrows implements ModInitializer {
     RedstoneChargeService.register();
     ControlHoldService.register();
     FrostGripService.register();
+    DisarmFetchService.register();
     SmokeCloudService.register();
     NockedArrowBroadcaster.register();
     FletchingStationInteraction.register();

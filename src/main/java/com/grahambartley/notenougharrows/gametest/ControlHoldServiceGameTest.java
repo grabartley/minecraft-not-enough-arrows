@@ -182,13 +182,48 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
         hostile.getTarget() == null,
         "A taunt that struck a block should let go of whoever the crowd was fighting");
 
+    context.runAtTick(KEEPING_IT_TICKS, () -> hostile.setTarget(shooter));
+
     context.runAtTick(
-        KEEPING_IT_TICKS,
+        KEEPING_IT_TICKS + KEEPING_IT_TICKS,
         () -> {
-          hostile.setTarget(shooter);
           context.assertTrue(
               hostile.getTarget() == shooter,
               "A taunt should not keep clearing a target every tick, which would read as a stun");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aTauntOnAPlayerAimsTheCrowdAtThatPlayer(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PREY_STAND);
+    final ServerPlayerEntity struck = MockPlayerSupport.playerAt(context, WALKER_STAND);
+    final ZombieEntity hostile = ControlTestSupport.stillZombieAt(context, HOSTILE_STAND);
+    hostile.setTarget(shooter);
+
+    ControlHoldService.taunt(
+        context.getWorld(), struck.getBoundingBox().getCenter(), struck, holdingFor(200));
+
+    context.assertTrue(
+        hostile.getTarget() == struck,
+        "A taunt fired at another player should move the crowd's aggro onto that player");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void anAllegianceWhoseDefendedEntityIsGoneEndsRatherThanHoldingOn(TestContext context) {
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PREY_STAND);
+    final ZombieEntity defender = ControlTestSupport.stillZombieAt(context, HOSTILE_STAND);
+    ControlHoldService.enlist(context.getWorld(), defender, shooter, enlistingFor(2000));
+
+    context.runAtTick(SETTLING_TICKS, () -> shooter.discard());
+
+    context.runAtTick(
+        SETTLING_TICKS + KEEPING_IT_TICKS,
+        () -> {
+          context.assertTrue(
+              ControlHoldService.heldIn(context.getWorld(), defender).isEmpty(),
+              "An allegiance whose defended entity is gone should end, not run to its duration");
           context.complete();
         });
   }

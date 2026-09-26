@@ -2,7 +2,6 @@ package com.grahambartley.notenougharrows.control;
 
 import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.config.TargetingArrowConfig;
-import com.grahambartley.notenougharrows.server.ServerConfigService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -97,11 +96,11 @@ public final class ControlHoldService {
       return false;
     }
     final ControlHold hold =
-        ControlHold.on(
+        ControlHold.defending(
             mob.getUuid(),
             mob.getBoundingBox().getCenter(),
             protectedEntity.getUuid(),
-            ControlSteering.DEFENDING,
+            allegiance.defendRadius(),
             world.getTime() + allegiance.durationTicks());
     trackerFor(world).hold(hold);
     applyTargeting(world, mob, hold);
@@ -133,21 +132,26 @@ public final class ControlHoldService {
       tracker.forget(hold.mobId());
       return;
     }
-    if (hold.steering().targetPolicy().retargetsEveryTick()) {
-      applyTargeting(world, mob, hold);
+    if (hold.steering().targetPolicy().retargetsEveryTick() && !applyTargeting(world, mob, hold)) {
+      tracker.forget(hold.mobId());
+      handBack(world, hold);
+      return;
     }
     if (hold.steering().navigates() && world.getTime() % REPATH_INTERVAL_TICKS == 0) {
       steer(mob, hold.anchor(), hold.steering());
     }
   }
 
-  private static void applyTargeting(
+  private static boolean applyTargeting(
       final ServerWorld world, final MobEntity mob, final ControlHold hold) {
-    switch (hold.steering().targetPolicy()) {
-      case AIM_AT_SUBJECT -> aimAtSubject(world, mob, hold);
+    return switch (hold.steering().targetPolicy()) {
+      case AIM_AT_SUBJECT -> {
+        aimAtSubject(world, mob, hold);
+        yield true;
+      }
       case DEFEND_SUBJECT -> defendSubject(world, mob, hold);
-      case LEAVE_ALONE -> {}
-    }
+      case LEAVE_ALONE -> true;
+    };
   }
 
   private static void aimAtSubject(
@@ -156,21 +160,14 @@ public final class ControlHoldService {
     mob.setTarget(subject == mob ? null : subject);
   }
 
-  private static void defendSubject(
+  private static boolean defendSubject(
       final ServerWorld world, final MobEntity mob, final ControlHold hold) {
     final LivingEntity defended = livingSubject(world, hold);
     if (defended == null) {
-      mob.setTarget(null);
-      return;
+      return false;
     }
-    final double radius = ServerConfigService.get().control().allegiance().defendRadius();
-    final LivingEntity threat = DefenderTargets.threatTo(world, defended, mob, radius).orElse(null);
-    if (mob.getTarget() == defended) {
-      mob.setTarget(null);
-    }
-    if (threat != null) {
-      mob.setTarget(threat);
-    }
+    mob.setTarget(DefenderTargets.threatTo(world, defended, mob, hold.defendRadius()).orElse(null));
+    return true;
   }
 
   @Nullable

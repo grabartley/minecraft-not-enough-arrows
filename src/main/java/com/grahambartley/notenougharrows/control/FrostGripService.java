@@ -26,17 +26,15 @@ public final class FrostGripService {
 
   public static boolean grip(
       final ServerWorld world, final LivingEntity target, final FrostArrowConfig frost) {
-    if (target == null || !FrostGrip.holds(frost.durationTicks()) || !target.canFreeze()) {
+    if (target == null
+        || !target.isAlive()
+        || !FrostGrip.holds(frost.durationTicks())
+        || !target.canFreeze()) {
       return false;
     }
     gripsIn(world).put(target.getUuid(), world.getTime() + frost.durationTicks());
     pin(target);
     return true;
-  }
-
-  public static boolean isGripped(final ServerWorld world, final LivingEntity target) {
-    final Map<UUID, Long> gripped = GRIPS.get(world.getRegistryKey());
-    return gripped != null && gripped.containsKey(target.getUuid());
   }
 
   private static void forget() {

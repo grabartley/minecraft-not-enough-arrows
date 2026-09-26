@@ -19,10 +19,6 @@ public record FrostArrowConfig(int durationTicks) {
     return new FrostArrowConfig(DEFAULT_DURATION_TICKS);
   }
 
-  public boolean freezes() {
-    return durationTicks > 0;
-  }
-
   public FrostArrowConfig withDurationTicks(final int value) {
     return new FrostArrowConfig(value);
   }

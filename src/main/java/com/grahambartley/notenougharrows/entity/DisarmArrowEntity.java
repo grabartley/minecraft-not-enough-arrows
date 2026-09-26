@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.entity;
 import com.grahambartley.notenougharrows.config.DisarmArrowConfig;
 import com.grahambartley.notenougharrows.control.DisarmDrop;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -39,7 +40,12 @@ public class DisarmArrowEntity extends BaseArrowEntity {
       return;
     }
     final DisarmArrowConfig disarm = ServerConfigService.get().control().disarm();
-    if (DisarmDrop.disarm(world, living, disarm.affectsPlayers(), disarm.throwDistance())) {
+    if (DisarmDrop.disarm(
+        world,
+        living,
+        shooter().map(Entity::getPos).orElse(null),
+        disarm.affectsPlayers(),
+        disarm.throwDistance())) {
       playSound(SoundEvents.BLOCK_TRIPWIRE_DETACH, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }

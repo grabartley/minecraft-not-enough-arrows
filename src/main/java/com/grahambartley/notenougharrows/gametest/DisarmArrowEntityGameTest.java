@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 public final class DisarmArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "disarm-arrow";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
+  private static final double THROWN_REACH = 8.0;
 
   private static ZombieEntity armedZombieAt(final TestContext context, final BlockPos stand) {
     final ZombieEntity zombie = ControlTestSupport.stillZombieAt(context, stand);
@@ -42,7 +43,7 @@ public final class DisarmArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
-  public void theItemLandsOnTheGroundWhereItCanBePickedBackUp(TestContext context) {
+  public void theItemLandsOnTheGroundWhereItCanBeFetchedBack(TestContext context) {
     armedZombieAt(context, TARGET_STAND);
     MockPlayerSupport.fireEastStraight(
         context,
@@ -52,7 +53,7 @@ public final class DisarmArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         FiringRangeSupport.LANDING_TICK,
         () -> {
-          context.expectEntityAround(EntityType.ITEM, TARGET_STAND, 3.0);
+          context.expectEntityAround(EntityType.ITEM, TARGET_STAND, THROWN_REACH);
           context.complete();
         });
   }
