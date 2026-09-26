@@ -74,6 +74,7 @@
       "com.grahambartley.notenougharrows.gametest.GrappleFlightCheckGameTest",
       "com.grahambartley.notenougharrows.gametest.GrappleServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.GravityArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.HarmlessArrowGameTest",
       "com.grahambartley.notenougharrows.gametest.GravityServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.GuardArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.HasteArrowEntityGameTest",

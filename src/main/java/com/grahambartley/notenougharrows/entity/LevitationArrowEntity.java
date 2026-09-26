@@ -36,4 +36,9 @@ public class LevitationArrowEntity extends BaseArrowEntity {
     StatusArrowImpact.apply(
         entityHitResult.getEntity(), StatusEffects.LEVITATION, levitation.durationTicks(), this);
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

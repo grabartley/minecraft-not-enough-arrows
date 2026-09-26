@@ -44,4 +44,9 @@ public class AllegianceArrowEntity extends BaseArrowEntity {
       playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

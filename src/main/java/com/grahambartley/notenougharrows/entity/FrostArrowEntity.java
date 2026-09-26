@@ -37,4 +37,9 @@ public class FrostArrowEntity extends BaseArrowEntity {
     final FrostArrowConfig frost = ServerConfigService.get().control().frost();
     FrostGripService.grip(world, living, frost);
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

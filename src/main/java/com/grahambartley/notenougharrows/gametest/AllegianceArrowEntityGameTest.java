@@ -126,4 +126,29 @@ public final class AllegianceArrowEntityGameTest implements FabricGameTest {
           context.complete();
         });
   }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aTurnedHostileKeepsFightingAnAttackerThatTurnsOnIt(TestContext context) {
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final ZombieEntity defender = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
+    final ZombieEntity threat = ControlTestSupport.stillZombieAt(context, THREAT_STAND);
+    threat.setTarget(shooter);
+    ControlHoldService.enlist(
+        context.getWorld(), defender, shooter, AllegianceArrowConfig.defaults());
+
+    context.runAtTick(
+        SETTLING_TICKS,
+        () -> {
+          threat.setTarget(defender);
+        });
+    context.runAtTick(
+        SETTLING_TICKS * 3,
+        () -> {
+          context.assertTrue(
+              defender.getTarget() == threat,
+              "A turned hostile should keep fighting an attacker that turns on it, as a wolf does");
+          context.complete();
+        });
+  }
 }

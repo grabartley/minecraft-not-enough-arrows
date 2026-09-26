@@ -14,7 +14,6 @@ public class HasteArrowEntity extends StatusArrowEntity {
   public HasteArrowEntity(
       final EntityType<? extends HasteArrowEntity> entityType, final World world) {
     super(entityType, world);
-    setDamage(SUPPORT_DAMAGE);
   }
 
   public HasteArrowEntity(
@@ -26,7 +25,6 @@ public class HasteArrowEntity extends StatusArrowEntity {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     super(entityType, world, x, y, z, stack, weapon);
-    setDamage(SUPPORT_DAMAGE);
   }
 
   @Override
@@ -37,5 +35,10 @@ public class HasteArrowEntity extends StatusArrowEntity {
   @Override
   protected int durationTicks(final StatusArrowConfig status) {
     return status.hasteDurationTicks();
+  }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
   }
 }

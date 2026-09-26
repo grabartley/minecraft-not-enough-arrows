@@ -45,4 +45,10 @@ class FrostGripTest {
   void shimmersOnceEveryInterval(final long tick, final boolean expected) {
     assertEquals(expected, FrostGrip.shimmersOn(tick));
   }
+
+  @ParameterizedTest
+  @CsvSource({"0, true", "1, false", "39, false", "40, true", "80, true"})
+  void bitesOnVanillasFreezeDamageCadence(final int age, final boolean expected) {
+    assertEquals(expected, FrostGrip.bitesOn(age));
+  }
 }

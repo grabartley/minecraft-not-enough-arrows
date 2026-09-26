@@ -49,4 +49,9 @@ public class DisarmArrowEntity extends BaseArrowEntity {
       playSound(SoundEvents.BLOCK_TRIPWIRE_DETACH, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

@@ -29,7 +29,7 @@ public final class FrostGripService {
     if (target == null
         || !target.isAlive()
         || !FrostGrip.holds(frost.durationTicks())
-        || !target.canFreeze()) {
+        || FrostImmunity.shrugsOff(target)) {
       return false;
     }
     gripsIn(world).put(target.getUuid(), world.getTime() + frost.durationTicks());
@@ -61,6 +61,9 @@ public final class FrostGripService {
         continue;
       }
       pin(living);
+      if (FrostImmunity.needsHelpToFeelIt(living) && FrostGrip.bitesOn(living.age)) {
+        living.damage(world.getDamageSources().freeze(), FrostImmunity.freezeDamage(living));
+      }
       if (FrostGrip.shimmersOn(world.getTime())) {
         FrostEffects.stillFrozen(world, living);
       }

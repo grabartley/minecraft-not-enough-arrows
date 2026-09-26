@@ -52,7 +52,6 @@ public final class ControlArrowEffectsGameTest implements FabricGameTest {
   private static void assertAppliesNoForbiddenEffect(
       final TestContext context, final RegisteredArrow<?> arrow) {
     final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
-    final float healthBefore = target.getHealth();
     MockPlayerSupport.fireEastStraight(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
@@ -62,7 +61,7 @@ public final class ControlArrowEffectsGameTest implements FabricGameTest {
         FiringRangeSupport.LANDING_TICK,
         () -> {
           context.assertTrue(
-              target.getHealth() < healthBefore,
+              FiringRangeSupport.arrowWasSpent(context),
               "The " + arrow.id() + " should have struck the target, or this test proves nothing");
           assertNoneOfTheForbiddenEffects(context, target, arrow);
           context.complete();

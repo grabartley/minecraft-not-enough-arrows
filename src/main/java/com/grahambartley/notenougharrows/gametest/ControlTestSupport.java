@@ -2,9 +2,13 @@ package com.grahambartley.notenougharrows.gametest;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -45,5 +49,15 @@ final class ControlTestSupport {
     cow.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(STURDY_MAX_HEALTH);
     cow.setHealth(cow.getMaxHealth());
     return cow;
+  }
+
+  static SkeletonEntity shadedStillSkeletonAt(
+      final TestContext context, final BlockPos relativePos) {
+    context.setBlockState(relativePos.down(), Blocks.STONE);
+    final SkeletonEntity skeleton = context.spawnMob(EntityType.SKELETON, relativePos);
+    skeleton.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+    skeleton.setAiDisabled(true);
+    skeleton.setVelocity(Vec3d.ZERO);
+    return skeleton;
   }
 }

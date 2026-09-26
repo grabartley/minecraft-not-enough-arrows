@@ -54,4 +54,9 @@ public abstract class AreaControlArrowEntity extends BaseArrowEntity {
     resolveAt(world, entityHitResult.getPos(), struckLiving(entityHitResult));
     return ArrowImpact.DEFAULT;
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

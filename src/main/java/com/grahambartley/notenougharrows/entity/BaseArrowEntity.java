@@ -50,8 +50,9 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
       super.onEntityHit(entityHitResult);
       return;
     }
+    final ArrowImpact impact = onArrowHitEntity(serverWorld, entityHitResult);
     resolve(
-        onArrowHitEntity(serverWorld, entityHitResult),
+        hurtsWhatItHits() ? impact : impact.sparingWhatItHits(),
         () -> super.onEntityHit(entityHitResult),
         () -> afterArrowHitEntity(serverWorld, entityHitResult));
   }
@@ -71,6 +72,10 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
 
   public Optional<PlayerEntity> shootingPlayer() {
     return getOwner() instanceof PlayerEntity player ? Optional.of(player) : Optional.empty();
+  }
+
+  protected boolean hurtsWhatItHits() {
+    return true;
   }
 
   protected ArrowImpact onArrowHitBlock(

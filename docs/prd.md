@@ -413,7 +413,7 @@ A player fires a glow ink arrow at a mob that is about to run into a cave, or at
 | GLOW-1 | Striking a living entity applies vanilla's glowing status effect for a configured duration |
 | GLOW-2 | The outline is visible to every player on the server, not only the shooter |
 | GLOW-3 | An entity that cannot take status effects, such as a boat or an item frame, is not marked |
-| GLOW-4 | The arrow's damage is set low enough that it is not a weapon. The mark is the point |
+| GLOW-4 | The arrow deals no damage to what it strikes. The mark is the point |
 | GLOW-5 | Striking a block does nothing, and the arrow embeds as any arrow does |
 | GLOW-6 | A configured duration of zero applies no mark, leaving an inert marker |
 
@@ -459,7 +459,7 @@ A player fires a wind arrow into a crowd of mobs, or at a door across the room. 
 | WIND-4 | The shooter is never pushed, by any path through the effect, and neither is the arrow |
 | WIND-5 | An entity standing exactly on the impact point is pushed straight up rather than in an arbitrary direction |
 | WIND-6 | Another player's shove reaches them as a velocity change rather than a visible teleport |
-| WIND-7 | The arrow's damage is set low enough that it is not a weapon. The displacement is the point |
+| WIND-7 | The arrow deals no damage to what it strikes. The displacement is the point |
 | WIND-8 | The arrow is spent on impact and is not recoverable |
 | WIND-9 | The burst happens where the arrow lands, at the moment it lands. An Arrow of Wind Charged instead gives what it hits an effect that bursts later, when that creature is hurt, so the two answer different questions and neither replaces the other |
 
@@ -771,14 +771,15 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 | CONTROL-2 | No effect here uses slowness, poison, or healing. Vanilla brews a tipped arrow for each of those, and an arrow that duplicates a tipped arrow is not shipped (§2) |
 | CONTROL-3 | A frost arrow affects living entities only and never converts a block, so the freeze arrow keeps terrain and the frost arrow keeps creatures |
 | CONTROL-3a | A frost arrow holds its target frozen for its configured duration rather than adding a one-shot amount. Vanilla thaws freeze faster than a single application survives, so an arrow that only adds to the counter would resolve to nothing a player can see |
-| CONTROL-4 | A frost arrow's freeze respects the same immunities vanilla's powder snow respects, including leather armour and entities immune to freezing |
+| CONTROL-4 | A frost arrow's freeze respects the same immunities vanilla's powder snow respects, including leather armour and entities immune to freezing. A skeleton is not one of them: vanilla refuses to freeze skeletons only because powder snow turns them into strays instead, so the arrow freezes a skeleton and deals it the freeze damage vanilla would have |
+| CONTROL-4a | Every control arrow deals no damage to what it strikes. Its effect is the point, and an allegiance arrow in particular must not hurt the mob it is recruiting |
 | CONTROL-5 | A levitation arrow's lift has a configured duration with a configured maximum, and the fall that follows is vanilla's, including its damage. The mod did not choose where the entity came down, so it does not cancel the landing |
 | CONTROL-6 | A taunt and a repel both alter targeting for a bounded time and then hand it back. Neither may leave a mob permanently unable to acquire a target, and both end cleanly if the impact position unloads |
 | CONTROL-7 | A taunt draws only mobs that were already hostile to something. It does not make a neutral mob hostile. It may aim those mobs at a player, because aiming a fight you are already in at someone else is the arrow's purpose, and it costs the shooter a crafted arrow and a landed shot to do it |
 | CONTROL-7a | A taunt that struck a creature, player or mob alike, moves the drawn mobs' aggression onto that creature. A taunt that struck a block sends them to the spot instead, letting go of whoever they were fighting |
 | CONTROL-7b | A taunt releases a drawn mob's target once, at the moment it lands, rather than every tick for its duration. A hold that re-clears a target every tick reads as a stun rather than as redirection, which is not what this arrow is for |
 | CONTROL-8 | A repel makes a mob flee rather than making it harmless. It keeps its ability to retaliate if cornered |
-| CONTROL-8a | An allegiance arrow turns one struck hostile into the shooter's defender for a configured time: it attacks whoever last attacked the shooter, or any mob currently targeting them, within a configured reach, and is handed back unchanged when the time runs out. It never turns a player, and a shot with no shooter behind it turns nobody |
+| CONTROL-8a | An allegiance arrow turns one struck hostile into the shooter's defender for a configured time: it attacks whoever last attacked the shooter, or any mob currently targeting them, within a configured reach, and is handed back unchanged when the time runs out. Like a wolf, it also fights back against anything that turns on it, and keeps fighting a foe until that foe stops threatening either of them. It never turns a player, and a shot with no shooter behind it turns nobody |
 | CONTROL-8b | An allegiance hold whose defended entity is gone, through death, disconnection or an unloaded chunk, is ended and the mob handed back at once rather than held to the end of its duration |
 | CONTROL-9 | A smoke cloud blinds what is inside it and blocks nothing. It is not a solid, it stops no projectile, and it is removed on expiry with nothing left behind |
 | CONTROL-10 | A disarm arrow throws the item as an entity a configured distance from the target, away from the shooter so it never lands at the shooter's feet, where the target may go and pick it back up. It never destroys the item, never moves it into the shooter's inventory, and never takes an equipped armour piece |
@@ -823,7 +824,7 @@ A player in a fight wants something other than more damage: reach, sustain, a fr
 | FIGHT-5 | A lifesteal arrow returns a configured share of the damage actually dealt to the **shooter**, capped at a configured maximum per hit, and it heals nobody when there is no shooter or when the hit dealt no damage. An Arrow of Healing heals what it strikes, which is the opposite direction and the reason both can exist |
 | FIGHT-6 | A lifesteal arrow never heals the shooter past their own maximum health, and it grants no absorption as a substitute |
 | FIGHT-7 | A haste arrow and a guard arrow apply their effect to whatever they strike, friend or enemy, because an arrow does not know whose side a target is on and the mod does not add a team system to teach it |
-| FIGHT-8 | A haste arrow and a guard arrow deal a damage low enough that neither is a weapon, so healing a friend does not cost them a heart to receive |
+| FIGHT-8 | A haste arrow and a guard arrow deal no damage to what they strike, so helping a friend costs them nothing to receive |
 | FIGHT-9 | A milk arrow removes beneficial and harmful effects alike, without exception, because a selective cleanse is a different tool and a player must be able to predict which one they fired |
 | FIGHT-10 | A homing arrow curves toward hostile mobs only and never toward a player, so it cannot become a PvP aim assist. This is not a setting |
 | FIGHT-11 | A homing arrow's turn rate, search radius, and search cone are server settings, and it flies straight when nothing eligible is found |
