@@ -4,8 +4,11 @@ import com.grahambartley.notenougharrows.arrow.ArrowCatalog;
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
 import com.grahambartley.notenougharrows.arrow.ArrowRegistrar;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
+import com.grahambartley.notenougharrows.entity.AllegianceArrowEntity;
+import com.grahambartley.notenougharrows.entity.DisarmArrowEntity;
 import com.grahambartley.notenougharrows.entity.EnderPearlArrowEntity;
 import com.grahambartley.notenougharrows.entity.FireChargeArrowEntity;
+import com.grahambartley.notenougharrows.entity.FrostArrowEntity;
 import com.grahambartley.notenougharrows.entity.GlowInkArrowEntity;
 import com.grahambartley.notenougharrows.entity.GrappleArrowEntity;
 import com.grahambartley.notenougharrows.entity.GravityArrowEntity;
@@ -14,15 +17,19 @@ import com.grahambartley.notenougharrows.entity.GunpowderArrowEntity;
 import com.grahambartley.notenougharrows.entity.HasteArrowEntity;
 import com.grahambartley.notenougharrows.entity.HomingArrowEntity;
 import com.grahambartley.notenougharrows.entity.IncendiaryArrowEntity;
+import com.grahambartley.notenougharrows.entity.LevitationArrowEntity;
 import com.grahambartley.notenougharrows.entity.LifestealArrowEntity;
 import com.grahambartley.notenougharrows.entity.MilkArrowEntity;
 import com.grahambartley.notenougharrows.entity.RailgunArrowEntity;
 import com.grahambartley.notenougharrows.entity.RecallArrowEntity;
 import com.grahambartley.notenougharrows.entity.RedstoneArrowEntity;
+import com.grahambartley.notenougharrows.entity.RepelArrowEntity;
 import com.grahambartley.notenougharrows.entity.RicochetArrowEntity;
 import com.grahambartley.notenougharrows.entity.RopeArrowEntity;
 import com.grahambartley.notenougharrows.entity.RustArrowEntity;
 import com.grahambartley.notenougharrows.entity.ShockArrowEntity;
+import com.grahambartley.notenougharrows.entity.SmokeArrowEntity;
+import com.grahambartley.notenougharrows.entity.TauntArrowEntity;
 import com.grahambartley.notenougharrows.entity.TntArrowEntity;
 import com.grahambartley.notenougharrows.entity.VolleyArrowEntity;
 import com.grahambartley.notenougharrows.entity.WindArrowEntity;
@@ -125,6 +132,36 @@ public final class ModArrows {
   public static final RegisteredArrow<RailgunArrowEntity> RAILGUN_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of("railgun_arrow", RailgunArrowEntity::new, ModArrows::railgunArrow));
+
+  public static final RegisteredArrow<FrostArrowEntity> FROST_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("frost_arrow", FrostArrowEntity::new, ModArrows::frostArrow));
+
+  public static final RegisteredArrow<LevitationArrowEntity> LEVITATION_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "levitation_arrow", LevitationArrowEntity::new, ModArrows::levitationArrow));
+
+  public static final RegisteredArrow<TauntArrowEntity> TAUNT_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("taunt_arrow", TauntArrowEntity::new, ModArrows::tauntArrow));
+
+  public static final RegisteredArrow<RepelArrowEntity> REPEL_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("repel_arrow", RepelArrowEntity::new, ModArrows::repelArrow));
+
+  public static final RegisteredArrow<AllegianceArrowEntity> ALLEGIANCE_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "allegiance_arrow", AllegianceArrowEntity::new, ModArrows::allegianceArrow));
+
+  public static final RegisteredArrow<SmokeArrowEntity> SMOKE_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("smoke_arrow", SmokeArrowEntity::new, ModArrows::smokeArrow));
+
+  public static final RegisteredArrow<DisarmArrowEntity> DISARM_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of("disarm_arrow", DisarmArrowEntity::new, ModArrows::disarmArrow));
 
   private ModArrows() {}
 
@@ -358,5 +395,75 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new RailgunArrowEntity(RAILGUN_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static FrostArrowEntity frostArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new FrostArrowEntity(FROST_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static LevitationArrowEntity levitationArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new LevitationArrowEntity(LEVITATION_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static TauntArrowEntity tauntArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new TauntArrowEntity(TAUNT_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static RepelArrowEntity repelArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new RepelArrowEntity(REPEL_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static SmokeArrowEntity smokeArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new SmokeArrowEntity(SMOKE_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static DisarmArrowEntity disarmArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new DisarmArrowEntity(DISARM_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static AllegianceArrowEntity allegianceArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new AllegianceArrowEntity(ALLEGIANCE_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

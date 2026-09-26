@@ -22,7 +22,15 @@ class ServerConfigOptionsTest {
   @Test
   void ordersSectionsByFeatureFamilyWithTheArrowFamiliesFirst() {
     assertEquals(
-        List.of("explosive", "grapple", "utility", "physics", "ender", "combat", "fletching"),
+        List.of(
+            "explosive",
+            "grapple",
+            "utility",
+            "physics",
+            "ender",
+            "combat",
+            "control",
+            "fletching"),
         ServerConfigOptions.sections().stream().map(ConfigSection::id).toList());
   }
 

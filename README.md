@@ -1,6 +1,6 @@
 <h1 align="center">Not Enough Arrows</h1>
 
-<p align="center"><b>Twenty-two new arrows for Minecraft 1.21.1 on Fabric.</b><br>
+<p align="center"><b>Twenty-nine new arrows for Minecraft 1.21.1 on Fabric.</b><br>
 Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then teleport into it.</p>
 
 <p align="center">
@@ -21,7 +21,7 @@ Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then t
 Vanilla gives you an arrow that does one thing: it hurts. Every bow you have ever drawn has been a
 slightly slower sword.
 
-**Not Enough Arrows** gives that bow twenty-two more things to do. The cliff you were going to walk
+**Not Enough Arrows** gives that bow twenty-nine more things to do. The cliff you were going to walk
 around becomes a cliff you shoot a hook into and get pulled up. The ravine you were going to bridge
 becomes a ravine you drop a rope into. The mountain in your way stops being in your way.
 
@@ -72,6 +72,21 @@ The **volley arrow** splits in the air into a handful of ordinary arrows, and th
 goes very fast and drops very little. The rest are status in arrow form: rust, milk, haste and
 guard, fired at whatever needs them.
 
+## Take something out of the fight without killing it
+
+Seven arrows change what a creature is doing rather than how much health it has. The **taunt arrow**
+pulls every mob already fighting something over to where it landed, and the **repel arrow** sends
+them the other way.
+
+The **allegiance arrow** turns the mob it hits into your bodyguard: it stops fighting you and goes
+after whoever is attacking you instead, until it wears off and remembers whose side it was on.
+
+The **smoke arrow** opens a cloud that blinds anything standing in it and blocks nothing at all, so
+your own arrows still go through. The **disarm arrow** knocks the sword out of a hand and throws it
+across the ground, which is a problem for whoever has to go and fetch it.
+
+Vanilla already brews a tipped arrow for nearly every debuff, so none of these repeats one.
+
 ## The full set
 
 | | Arrow | What it does | Craft it from |
@@ -98,6 +113,13 @@ guard, fired at whatever needs them.
 | 🧭 | **Homing** | Curves toward hostile mobs. Never toward a player | Compass |
 | 🪶 | **Volley** | Splits in the air into a handful of ordinary arrows | Feather |
 | 🗜️ | **Railgun** | Very fast, and it barely drops | Iron ingot |
+| 🧊 | **Frost** | Holds what you hit frozen, the way powder snow does | Powder snow bucket |
+| 🎈 | **Levitation** | Floats what you hit upward, then lets go | Shulker shell |
+| 🔔 | **Taunt** | Pulls nearby hostiles onto whatever it lands on | Note block |
+| 🏃 | **Repel** | Sends nearby hostiles running from where it lands | Soul sand |
+| 🤝 | **Allegiance** | The mob you hit fights for you for a while | Golden apple |
+| 🌫️ | **Smoke** | A cloud that blinds. It blocks nothing | Campfire |
+| 🪃 | **Disarm** | Throws the held item across the ground | Fishing rod |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
@@ -133,8 +155,8 @@ Change it in the Mod Menu screen or from the command tree:
 ```
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
-needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`, and
-`fletching`.
+needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
+`combat`, `control`, and `fletching`.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -145,6 +167,8 @@ blasts still throw entities around, they just leave the scenery alone.
 back to the shooter. Turn it off and only mobs move.
 - **`physics.gravityImpactRadius` is 3**, so a gravity arrow drops a sphere rather than the single
 block it hit. Set it to 0 for one block.
+- **`control.disarm.affectsPlayers` is on.** A disarm arrow can knock an item out of another
+player's hand. Turn it off and only mobs are disarmed.
 
 None of that gets past spawn protection or the world border. A gravity arrow asks the world for
 permission block by block, fire patches are time-boxed and server-owned, and a teleport that would
@@ -192,6 +216,34 @@ screen are rejected outright, with the accepted range in the error.
 | `ender.pearlMaxRangeBlocks` | 128 | 4 to 128 |
 | `ender.recallMaxRangeBlocks` | 128 | 4 to 128 |
 | `ender.recallAffectsPlayers` | on | on or off |
+| `combat.shock.arcRadius` | 6.0 | 0.0 to 32.0 |
+| `combat.shock.damage` | 5.0 | 0.0 to 20.0 |
+| `combat.lifesteal.share` | 0.5 | 0.0 to 1.0 |
+| `combat.lifesteal.maxHealPerHit` | 4.0 | 0.0 to 20.0 |
+| `combat.status.rustDurationTicks` | 200 | 0 to 12000 |
+| `combat.status.hasteDurationTicks` | 600 | 0 to 12000 |
+| `combat.status.guardDurationTicks` | 600 | 0 to 12000 |
+| `combat.homing.turnRate` | 0.2 | 0.0 to 1.0 |
+| `combat.homing.searchRadius` | 16.0 | 0.0 to 64.0 |
+| `combat.homing.searchConeDegrees` | 60.0 | 0.0 to 180.0 |
+| `combat.volley.fragmentCount` | 5 | 2 to 12 |
+| `combat.volley.damageShare` | 0.4 | 0.0 to 1.0 |
+| `combat.volley.spreadDegrees` | 10.0 | 0.0 to 45.0 |
+| `combat.volley.splitDelayTicks` | 4 | 1 to 40 |
+| `combat.railgun.speedMultiplier` | 3.0 | 1.0 to 8.0 |
+| `combat.railgun.gravityFactor` | 0.25 | 0.05 to 2.0 |
+| `control.frost.durationTicks` | 200 | 0 to 1200 |
+| `control.levitation.durationTicks` | 60 | 0 to 1200 |
+| `control.targeting.tauntRadius` | 8.0 | 0.0 to 32.0 |
+| `control.targeting.tauntDurationTicks` | 100 | 0 to 6000 |
+| `control.targeting.repelRadius` | 8.0 | 0.0 to 32.0 |
+| `control.targeting.repelDurationTicks` | 200 | 0 to 6000 |
+| `control.allegiance.durationTicks` | 400 | 0 to 6000 |
+| `control.allegiance.defendRadius` | 16.0 | 0.0 to 32.0 |
+| `control.smoke.radius` | 3.0 | 0.0 to 16.0 |
+| `control.smoke.durationTicks` | 200 | 0 to 6000 |
+| `control.disarm.affectsPlayers` | on | on or off |
+| `control.disarm.throwDistance` | 5.0 | 0.0 to 16.0 |
 | `fletching.stationEnabled` | on | on or off |
 
 The gravity arrow's exclusion list is edited rather than replaced:

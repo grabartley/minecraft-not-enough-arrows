@@ -158,7 +158,7 @@ The glow ink arrow marks what it hits rather than hurting it, applying vanilla's
 | What it marks | Any living entity it strikes. The glowing effect is a status effect, so anything without status effects, such as a boat or an item frame, is not marked |
 | How long the mark lasts | `utility.glowDurationTicks` |
 | Who sees the outline | Every player on the server, because vanilla syncs the glow flag to all trackers rather than only to the shooter |
-| Damage | Set low enough that the arrow is not a weapon. Like any arrow it scales with how far the bow was drawn, so a full draw lands about a heart. The mark is the point |
+| Damage | None. The mark is the point |
 | Hitting a block | Nothing happens and the arrow embeds as any arrow does |
 | A duration of zero | No mark is applied at all, so the arrow becomes an inert tracer |
 
@@ -195,7 +195,7 @@ The wind arrow bursts on impact the way a wind charge does, shoving nearby entit
 | How hard | `utility.windPushStrength` at the centre, falling off linearly to nothing at the edge of the radius |
 | Which way | Directly away from the impact point. An entity standing exactly on it is pushed straight up rather than in an arbitrary direction |
 | Other players | Pushed by a velocity change that is sent to their client, so the shove is smooth rather than a visible teleport |
-| Damage | Set low enough that the arrow is not a weapon. Like any arrow it scales with how far the bow was drawn, so a full draw lands about a heart. The displacement is the point |
+| Damage | None. The displacement is the point |
 | The arrow afterwards | Spent. A wind arrow bursts rather than embedding, so unlike the mod's other arrows it is not recoverable from where it lands |
 
 Block interaction is deliberately vanilla's radius rather than the configured burst radius. The requirement is that wind-activated blocks behave as they do for a wind charge, and the surest way to hold that is to run vanilla's explosion with vanilla's numbers. `utility.windBurstRadius` governs the entity shove, which is the part vanilla gives no control over.
@@ -317,7 +317,7 @@ Its range is deliberately shorter than the ender pearl arrow's. Moving yourself 
 
 Nine arrows that change a fight without making a single arrow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
 
-Two of them deliberately hit softer. The haste and guard arrows carry a fraction of an ordinary arrow's damage, landing half a heart, or a whole one on a critical, against the three or more a plain arrow takes, because an arrow you fire at a friend should not cost them a real bite of health to receive.
+Four of them deliberately do no damage at all. The rust, milk, haste and guard arrows exist for the status they apply, not the hit: haste and guard are fired at friends as often as at enemies, and an arrow you fire at a friend should cost them nothing to receive.
 
 | Arrow | Centre ingredient | What it does |
 |---|---|---|
@@ -339,7 +339,7 @@ Four of these are worth reading the detail on, because each refuses something a 
 | The shock bolt and the jump | `combat.shock.damage` is what the jump deals, and it is dealt only to the entity jumped to. What the arrow itself struck takes an ordinary arrow hit and nothing more, so a shock arrow gives a bow a second target rather than a bigger number. Exactly one further living thing is reached, the nearest inside the arc reach, and never the shooter. A third is never reached, so a crowd cannot be cleared with one arrow |
 | Lifesteal and the damage actually dealt | The heal is measured from how much health and absorption the target actually lost, not from what the arrow was worth, so armour, resistance and a killing blow on an almost-dead target all reduce the heal honestly. A hit that dealt nothing heals nothing, and a dispensed arrow has no shooter to heal |
 | Lifesteal and the shooter's maximum | It never heals past the shooter's own maximum and never hands out absorption instead of the health it could not give |
-| Haste, guard and whose side anyone is on | Both apply to whatever they strike, friend or enemy. The mod adds no team system, so an arrow cannot know, and pretending otherwise would mean a setting that lies. Both are set gentle enough that receiving one costs half a heart, or a whole one on a critical |
+| Haste, guard and whose side anyone is on | Both apply to whatever they strike, friend or enemy. The mod adds no team system, so an arrow cannot know, and pretending otherwise would mean a setting that lies. Neither deals any damage, so receiving one costs nothing |
 | Milk and picking and choosing | Beneficial and harmful effects go alike. A selective cleanse is a different tool, and a player has to be able to predict what they fired |
 | Homing and players | It curves toward hostile mobs only, never toward a player. **This is not a setting.** An arrow that could be pointed at a player would be aim assist, so the refusal is in the code rather than in the config |
 | Homing and finding nothing | `combat.homing.turnRate`, `combat.homing.searchRadius` and `combat.homing.searchConeDegrees` govern the search, and with nothing eligible ahead of it the arrow flies straight |
@@ -353,6 +353,47 @@ Four of these are worth reading the detail on, because each refuses something a 
 Every setting above is read fresh at the moment it is used, whether that is on firing, in flight, or on impact, so changing one mid-flight changes what the arrow already in the air does next.
 
 Like every arrow in the mod, each of the nine is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+
+## Control Arrows
+
+Seven arrows that change what a creature does rather than how much health it has. Vanilla already brews a tipped arrow for nearly every debuff worth having, so **every effect here uses something that cannot be brewed.** Nothing in this family applies slowness, poison or healing, and a test over the whole family holds that line.
+
+Where vanilla has a status effect for it, vanilla's is applied, so duration, persistence, removal by milk and syncing to clients are all vanilla's rather than the mod's. None of the seven deals any damage to what it strikes: the effect is the whole payload, and the arrow is spent on the hit.
+
+| Arrow | Centre ingredient | What it does |
+|---|---|---|
+| Frost | A powder snow bucket | Holds the living thing it hits frozen for `control.frost.durationTicks`, so it shivers and takes freeze damage |
+| Levitation | A shulker shell | Levitation for `control.levitation.durationTicks` |
+| Taunt | A note block | Draws hostiles already fighting something, within `control.targeting.tauntRadius`, onto whatever it struck for `control.targeting.tauntDurationTicks` |
+| Repel | Soul sand | Sends hostiles within `control.targeting.repelRadius` running from the impact for `control.targeting.repelDurationTicks` |
+| Allegiance | A golden apple | The hostile it hits fights for the shooter for `control.allegiance.durationTicks`, then is handed back |
+| Smoke | A campfire | A cloud of `control.smoke.radius` that blinds what stands inside it for `control.smoke.durationTicks` |
+| Disarm | A fishing rod | Knocks the target's main-hand item out and throws it `control.disarm.throwDistance` blocks |
+
+The frost, levitation, allegiance and disarm arrows resolve against the thing they hit, so one that strikes only a block does nothing and is recovered like any arrow. The taunt, repel and smoke arrows resolve at the impact point instead, block or entity alike, and are spent doing it. One of those three that strikes a block and reaches nobody, because its family is switched off or because nothing eligible was in range, embeds and is recovered rather than destroyed: you never pay for an arrow that did nothing to the scenery. One that strikes a creature is consumed by that hit like any arrow.
+
+| Rule | Behaviour |
+|---|---|
+| Frost and terrain | It only ever touches living things. It is the creature that freezes, never the ground it stands on |
+| Frost and immunity | It respects every immunity vanilla's powder snow respects, leather armour included, so a target dressed for the cold is left unfrozen and the arrow is spent either way. Skeletons are the exception that is not an immunity: vanilla never freezes one because powder snow turns it into a stray, so the arrow freezes a skeleton anyway and deals the freeze damage vanilla would have. Strays themselves stay immune |
+| Frost and what it looks like | Snowflakes burst from the target with a glassy crack when it freezes, keep drifting off it while it is held, and it drips with a snow crunch when it thaws |
+| Frost and holding the freeze | Vanilla thaws two ticks of freeze for every tick an entity spends out of powder snow, so a single application is gone in moments and never reaches the point vanilla deals damage at. The arrow therefore holds its target above that point for its whole configured duration and then lets go, rather than adding a number that immediately drains away |
+| Levitation and the fall afterwards | The fall that follows is vanilla's, damage included, because the arrow did not choose where its target came down. It lifts the one thing it hit wherever that thing is, rather than holding open a space anything can walk into |
+| Taunt and mobs that were calm | It draws only hostiles already fighting something. It never makes a calm mob hostile, and it never aims a mob at a player who did not provoke it: it moves attention that already existed |
+| Taunt and what a drawn mob does | A taunt moves a mob's attention once, at the moment it lands, and then leaves its targeting alone. Strike a creature and the drawn mobs come after that creature; strike a block and they let go of whoever they were fighting and walk to the spot. Either way they can pick a fight again during the hold, because a hold that re-cleared a target every tick would be a stun rather than a redirection |
+| Allegiance and whose side it is on | The turned mob goes after whoever last attacked the shooter, player or mob, or else the nearest mob currently targeting them, inside `control.allegiance.defendRadius`, rechecked each tick so it follows the fight. Like a wolf, it also fights back against anything that attacks it or turns on it, and sticks with a foe until that foe is threatening neither of them. If the shooter dies, disconnects or unloads, the hold ends there and then rather than running to its end. When the duration runs out its target is released and it is an ordinary hostile again. It turns only a hostile mob, never a player, and a dispensed arrow has nobody to defend |
+| Repel and retaliation | A repelled mob is fleeing rather than harmless. It keeps the target it had, so one you corner can still fight back |
+| Holds and handing back | The taunt, repel and allegiance arrows all run through one hold with one bounded lifetime and one hand-back path. A hold expires on its own tick and the mob is handed straight back, so no mob is ever left permanently passive or unable to acquire a target. A mob that dies or unloads mid-hold is forgotten rather than chased, and every hold is dropped when the server stops |
+| Holds and a second shot | One hold per mob. A second arrow replaces the first rather than queueing behind it, so the newest shot is always the one in charge |
+| Smoke and what it blocks | The cloud is not a block and places none. It stops no arrow, blocks no movement, and clears away on expiry leaving nothing behind. The blindness it applies is refreshed only while an entity is standing inside it, so walking out lets it fade |
+| Disarm and the item | The item is thrown `control.disarm.throwDistance` blocks directly away from the shooter, so it never lands at the shooter's own feet, so the target has to go and fetch it rather than picking it straight back up. It is never destroyed, never moved to the shooter, and a worn armour piece is never taken. A distance of zero drops it at their feet. It also lands with a longer pickup delay than a normal drop, because vanilla's half-second one lets the target snatch it straight back and turns the whole arrow into a flinch |
+| Disarm and getting it back | Vanilla lets most mobs pick nothing up, so a disarmed skeleton would never recover its bow and the arrow would read as a permanent theft. A mob this arrow disarms is allowed to pick items up for half a minute afterwards, which is what makes the effect a setback rather than a removal. The permission expires with that window, so the arrow does not quietly change how that mob treats loot for the rest of the save |
+| Disarm and farming gear | Vanilla turns anything a mob picks up into a guaranteed drop, which would make this arrow a gear farm: disarm, wait for the pickup, kill. The mod remembers the drop odds the mob had before it was disarmed and holds them for the whole window, so killing it at any point pays out exactly what killing an untouched one would |
+| Disarm and a killing shot | A shot that kills its target disarms nothing. Vanilla has already decided what that death drops, and an arrow that emptied the corpse's hand afterwards would turn every armed mob into a guaranteed gear drop |
+| Disarm and players | `control.disarm.affectsPlayers` decides whether it works on another player, and it is on by default. It is read where the effect resolves rather than where the shot is fired, so a modified client cannot force it. It is the only arrow here with such a switch, because the other six apply effects a player can wait out or drink off, and this one moves an item out of a player's hand |
+| A duration of zero | Every duration and reach above is a server setting read fresh on impact. A duration of zero applies no effect at all, and a reach of zero reaches nobody. An arrow switched off this way is recovered rather than spent |
+
+Like every arrow in the mod, each of the seven is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight.
 
 ## Sounds
 

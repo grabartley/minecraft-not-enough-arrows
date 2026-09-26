@@ -13,8 +13,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class StatusArrowEntity extends BaseArrowEntity {
-  protected static final double SUPPORT_DAMAGE = 0.3;
-
   protected StatusArrowEntity(
       final EntityType<? extends StatusArrowEntity> entityType, final World world) {
     super(entityType, world);
@@ -40,5 +38,10 @@ public abstract class StatusArrowEntity extends BaseArrowEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {
     final StatusArrowConfig status = ServerConfigService.get().combat().status();
     StatusArrowImpact.apply(entityHitResult.getEntity(), effect(), durationTicks(status), this);
+  }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
   }
 }

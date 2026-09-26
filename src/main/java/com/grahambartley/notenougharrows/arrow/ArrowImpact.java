@@ -21,4 +21,8 @@ public enum ArrowImpact {
   public boolean removesArrow() {
     return removal;
   }
+
+  public ArrowImpact sparingWhatItHits() {
+    return vanillaResolution ? DISCARD : this;
+  }
 }

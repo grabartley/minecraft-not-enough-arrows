@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.test.TestContext;
@@ -28,6 +29,10 @@ final class FiringRangeSupport {
     return context.getWorld().getEntitiesByClass(type, context.getTestBox(), arrow -> true).stream()
         .findFirst()
         .orElse(null);
+  }
+
+  static boolean arrowWasSpent(final TestContext context) {
+    return firedArrow(context, PersistentProjectileEntity.class) == null;
   }
 
   static void dispenseEast(

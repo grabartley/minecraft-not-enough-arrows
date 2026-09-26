@@ -1,0 +1,63 @@
+package com.grahambartley.notenougharrows.gametest;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.SkeletonEntity;
+import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.test.TestContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
+final class ControlTestSupport {
+  private static final double STURDY_MAX_HEALTH = 100.0;
+
+  private ControlTestSupport() {}
+
+  static ZombieEntity stillZombieAt(final TestContext context, final BlockPos relativePos) {
+    context.setBlockState(relativePos.down(), Blocks.STONE);
+    final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, relativePos);
+    zombie.setAiDisabled(true);
+    zombie.setVelocity(Vec3d.ZERO);
+    return zombie;
+  }
+
+  static ZombieEntity engagedZombieAt(
+      final TestContext context, final BlockPos relativePos, final BlockPos preyPos) {
+    final ZombieEntity zombie = stillZombieAt(context, relativePos);
+    zombie.setTarget(FiringRangeSupport.liveTargetOnPedestalAt(context, preyPos));
+    return zombie;
+  }
+
+  static ZombieEntity walkingZombieAt(final TestContext context, final BlockPos relativePos) {
+    context.setBlockState(relativePos.down(), Blocks.STONE);
+    final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, relativePos);
+    zombie.setVelocity(Vec3d.ZERO);
+    return zombie;
+  }
+
+  static CowEntity stillCowAt(final TestContext context, final BlockPos relativePos) {
+    return FiringRangeSupport.liveTargetOnPedestalAt(context, relativePos);
+  }
+
+  static CowEntity sturdyStillCowAt(final TestContext context, final BlockPos relativePos) {
+    final CowEntity cow = stillCowAt(context, relativePos);
+    cow.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(STURDY_MAX_HEALTH);
+    cow.setHealth(cow.getMaxHealth());
+    return cow;
+  }
+
+  static SkeletonEntity shadedStillSkeletonAt(
+      final TestContext context, final BlockPos relativePos) {
+    context.setBlockState(relativePos.down(), Blocks.STONE);
+    final SkeletonEntity skeleton = context.spawnMob(EntityType.SKELETON, relativePos);
+    skeleton.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+    skeleton.setAiDisabled(true);
+    skeleton.setVelocity(Vec3d.ZERO);
+    return skeleton;
+  }
+}
