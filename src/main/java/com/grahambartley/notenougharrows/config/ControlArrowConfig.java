@@ -6,12 +6,14 @@ public record ControlArrowConfig(
     FrostArrowConfig frost,
     LevitationArrowConfig levitation,
     TargetingArrowConfig targeting,
+    AllegianceArrowConfig allegiance,
     SmokeArrowConfig smoke,
     DisarmArrowConfig disarm) {
 
   static final String KEY_FROST = "frost";
   static final String KEY_LEVITATION = "levitation";
   static final String KEY_TARGETING = "targeting";
+  static final String KEY_ALLEGIANCE = "allegiance";
   static final String KEY_SMOKE = "smoke";
   static final String KEY_DISARM = "disarm";
 
@@ -19,6 +21,7 @@ public record ControlArrowConfig(
     frost = frost == null ? FrostArrowConfig.defaults() : frost;
     levitation = levitation == null ? LevitationArrowConfig.defaults() : levitation;
     targeting = targeting == null ? TargetingArrowConfig.defaults() : targeting;
+    allegiance = allegiance == null ? AllegianceArrowConfig.defaults() : allegiance;
     smoke = smoke == null ? SmokeArrowConfig.defaults() : smoke;
     disarm = disarm == null ? DisarmArrowConfig.defaults() : disarm;
   }
@@ -28,28 +31,33 @@ public record ControlArrowConfig(
         FrostArrowConfig.defaults(),
         LevitationArrowConfig.defaults(),
         TargetingArrowConfig.defaults(),
+        AllegianceArrowConfig.defaults(),
         SmokeArrowConfig.defaults(),
         DisarmArrowConfig.defaults());
   }
 
   public ControlArrowConfig withFrost(final FrostArrowConfig value) {
-    return new ControlArrowConfig(value, levitation, targeting, smoke, disarm);
+    return new ControlArrowConfig(value, levitation, targeting, allegiance, smoke, disarm);
   }
 
   public ControlArrowConfig withLevitation(final LevitationArrowConfig value) {
-    return new ControlArrowConfig(frost, value, targeting, smoke, disarm);
+    return new ControlArrowConfig(frost, value, targeting, allegiance, smoke, disarm);
   }
 
   public ControlArrowConfig withTargeting(final TargetingArrowConfig value) {
-    return new ControlArrowConfig(frost, levitation, value, smoke, disarm);
+    return new ControlArrowConfig(frost, levitation, value, allegiance, smoke, disarm);
+  }
+
+  public ControlArrowConfig withAllegiance(final AllegianceArrowConfig value) {
+    return new ControlArrowConfig(frost, levitation, targeting, value, smoke, disarm);
   }
 
   public ControlArrowConfig withSmoke(final SmokeArrowConfig value) {
-    return new ControlArrowConfig(frost, levitation, targeting, value, disarm);
+    return new ControlArrowConfig(frost, levitation, targeting, allegiance, value, disarm);
   }
 
   public ControlArrowConfig withDisarm(final DisarmArrowConfig value) {
-    return new ControlArrowConfig(frost, levitation, targeting, smoke, value);
+    return new ControlArrowConfig(frost, levitation, targeting, allegiance, smoke, value);
   }
 
   public static ControlArrowConfig fromJson(final JsonObject root) {
@@ -57,6 +65,7 @@ public record ControlArrowConfig(
         FrostArrowConfig.fromJson(ConfigValues.readObject(root, KEY_FROST)),
         LevitationArrowConfig.fromJson(ConfigValues.readObject(root, KEY_LEVITATION)),
         TargetingArrowConfig.fromJson(ConfigValues.readObject(root, KEY_TARGETING)),
+        AllegianceArrowConfig.fromJson(ConfigValues.readObject(root, KEY_ALLEGIANCE)),
         SmokeArrowConfig.fromJson(ConfigValues.readObject(root, KEY_SMOKE)),
         DisarmArrowConfig.fromJson(ConfigValues.readObject(root, KEY_DISARM)));
   }
@@ -66,6 +75,7 @@ public record ControlArrowConfig(
     root.add(KEY_FROST, frost.toJson());
     root.add(KEY_LEVITATION, levitation.toJson());
     root.add(KEY_TARGETING, targeting.toJson());
+    root.add(KEY_ALLEGIANCE, allegiance.toJson());
     root.add(KEY_SMOKE, smoke.toJson());
     root.add(KEY_DISARM, disarm.toJson());
     return root;

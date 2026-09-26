@@ -9,12 +9,12 @@
     },
     {
       "ingredient": {
-        "item": "minecraft:fermented_spider_eye"
+        "item": "minecraft:golden_apple"
       }
     }
   ],
   "result": {
-    "id": "not-enough-arrows:daze_arrow",
+    "id": "not-enough-arrows:allegiance_arrow",
     "count": 12
   }
 }

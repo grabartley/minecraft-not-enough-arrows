@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
@@ -29,7 +30,8 @@ public abstract class AreaControlArrowEntity extends BaseArrowEntity {
     super(entityType, world, x, y, z, stack, weapon);
   }
 
-  protected abstract boolean resolveAt(ServerWorld world, Vec3d center);
+  protected abstract boolean resolveAt(
+      ServerWorld world, Vec3d center, @Nullable LivingEntity struck);
 
   @Override
   protected final ArrowImpact onArrowHitBlock(
@@ -38,13 +40,18 @@ public abstract class AreaControlArrowEntity extends BaseArrowEntity {
         blockHitResult
             .getPos()
             .add(Vec3d.of(blockHitResult.getSide().getVector()).multiply(FACE_CLEARANCE));
-    return resolveAt(world, center) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
+    return resolveAt(world, center, null) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
+  }
+
+  @Nullable
+  private static LivingEntity struckLiving(final EntityHitResult entityHitResult) {
+    return entityHitResult.getEntity() instanceof LivingEntity living ? living : null;
   }
 
   @Override
   protected final ArrowImpact onArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
-    resolveAt(world, entityHitResult.getPos());
+    resolveAt(world, entityHitResult.getPos(), struckLiving(entityHitResult));
     return ArrowImpact.DEFAULT;
   }
 }

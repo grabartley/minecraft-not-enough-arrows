@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.config.FrostArrowConfig;
-import com.grahambartley.notenougharrows.control.FrostBuild;
+import com.grahambartley.notenougharrows.control.FrostGripService;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -39,7 +39,7 @@ public class FrostArrowEntity extends BaseArrowEntity {
       return;
     }
     final FrostArrowConfig frost = ServerConfigService.get().control().frost();
-    if (FrostBuild.build(living, frost.freezeTicksPerHit())) {
+    if (FrostGripService.grip(world, living, frost)) {
       playSound(SoundEvents.BLOCK_POWDER_SNOW_PLACE, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }

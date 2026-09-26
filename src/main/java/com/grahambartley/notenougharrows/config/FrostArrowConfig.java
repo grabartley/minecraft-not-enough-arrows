@@ -2,26 +2,28 @@ package com.grahambartley.notenougharrows.config;
 
 import com.google.gson.JsonObject;
 
-public record FrostArrowConfig(int freezeTicksPerHit) {
+public record FrostArrowConfig(int durationTicks) {
 
-  public static final int FREEZE_TICKS_PER_HIT_MIN = 0;
-  public static final int FREEZE_TICKS_PER_HIT_MAX = 1200;
+  public static final int DURATION_TICKS_MIN = 0;
+  public static final int DURATION_TICKS_MAX = 1200;
 
-  public static final int DEFAULT_FREEZE_TICKS_PER_HIT = 140;
+  public static final int DEFAULT_DURATION_TICKS = 200;
 
-  static final String KEY_FREEZE_TICKS_PER_HIT = "freezeTicksPerHit";
+  static final String KEY_DURATION_TICKS = "durationTicks";
 
   public FrostArrowConfig {
-    freezeTicksPerHit =
-        ConfigValues.clampInt(
-            freezeTicksPerHit, FREEZE_TICKS_PER_HIT_MIN, FREEZE_TICKS_PER_HIT_MAX);
+    durationTicks = ConfigValues.clampInt(durationTicks, DURATION_TICKS_MIN, DURATION_TICKS_MAX);
   }
 
   public static FrostArrowConfig defaults() {
-    return new FrostArrowConfig(DEFAULT_FREEZE_TICKS_PER_HIT);
+    return new FrostArrowConfig(DEFAULT_DURATION_TICKS);
   }
 
-  public FrostArrowConfig withFreezeTicksPerHit(final int value) {
+  public boolean freezes() {
+    return durationTicks > 0;
+  }
+
+  public FrostArrowConfig withDurationTicks(final int value) {
     return new FrostArrowConfig(value);
   }
 
@@ -30,15 +32,15 @@ public record FrostArrowConfig(int freezeTicksPerHit) {
     return new FrostArrowConfig(
         ConfigValues.readInt(
             root,
-            KEY_FREEZE_TICKS_PER_HIT,
-            defaults.freezeTicksPerHit(),
-            FREEZE_TICKS_PER_HIT_MIN,
-            FREEZE_TICKS_PER_HIT_MAX));
+            KEY_DURATION_TICKS,
+            defaults.durationTicks(),
+            DURATION_TICKS_MIN,
+            DURATION_TICKS_MAX));
   }
 
   public JsonObject toJson() {
     final JsonObject root = new JsonObject();
-    root.addProperty(KEY_FREEZE_TICKS_PER_HIT, freezeTicksPerHit);
+    root.addProperty(KEY_DURATION_TICKS, durationTicks);
     return root;
   }
 }

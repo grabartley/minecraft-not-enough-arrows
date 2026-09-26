@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class DisarmDropGameTest implements FabricGameTest {
   private static final String BATCH = "disarm-drop";
+  private static final double NO_THROW = 0.0;
   private static final BlockPos TARGET_STAND = new BlockPos(3, 3, 3);
   private static final BlockPos PLAYER_STAND = new BlockPos(3, 3, 5);
 
@@ -23,7 +24,7 @@ public final class DisarmDropGameTest implements FabricGameTest {
     player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 
     context.assertFalse(
-        DisarmDrop.disarm(context.getWorld(), player, false),
+        DisarmDrop.disarm(context.getWorld(), player, false, NO_THROW),
         "With the setting off the server should refuse to disarm a player");
     context.assertTrue(
         player.getStackInHand(Hand.MAIN_HAND).isOf(Items.IRON_SWORD),
@@ -37,7 +38,7 @@ public final class DisarmDropGameTest implements FabricGameTest {
     target.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
 
     context.assertTrue(
-        DisarmDrop.disarm(context.getWorld(), target, false),
+        DisarmDrop.disarm(context.getWorld(), target, false, NO_THROW),
         "The setting guards players only, so a mob is disarmed either way");
     context.complete();
   }
@@ -48,7 +49,7 @@ public final class DisarmDropGameTest implements FabricGameTest {
     player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.IRON_SWORD));
 
     context.assertTrue(
-        DisarmDrop.disarm(context.getWorld(), player, true),
+        DisarmDrop.disarm(context.getWorld(), player, true, NO_THROW),
         "With the setting on a player should be disarmed like anything else");
     context.assertTrue(
         player.getStackInHand(Hand.MAIN_HAND).isEmpty(),
@@ -61,7 +62,7 @@ public final class DisarmDropGameTest implements FabricGameTest {
     final ZombieEntity target = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
 
     context.assertFalse(
-        DisarmDrop.disarm(context.getWorld(), target, true),
+        DisarmDrop.disarm(context.getWorld(), target, true, NO_THROW),
         "A target holding nothing should have nothing taken from it");
     context.complete();
   }
@@ -73,7 +74,7 @@ public final class DisarmDropGameTest implements FabricGameTest {
     target.setHealth(0.0f);
 
     context.assertFalse(
-        DisarmDrop.disarm(context.getWorld(), target, true),
+        DisarmDrop.disarm(context.getWorld(), target, true, NO_THROW),
         "A kill has already run vanilla's drop roll, so a disarm must not hand out the equipment");
     context.complete();
   }

@@ -15,7 +15,7 @@ class ControlArrowConfigTest {
   @Test
   void replacesEveryNullSubRecordWithItsDefaults() {
     assertEquals(
-        ControlArrowConfig.defaults(), new ControlArrowConfig(null, null, null, null, null));
+        ControlArrowConfig.defaults(), new ControlArrowConfig(null, null, null, null, null, null));
   }
 
   @Test
@@ -24,9 +24,10 @@ class ControlArrowConfigTest {
         new ControlArrowConfig(
             new FrostArrowConfig(11),
             new LevitationArrowConfig(22),
-            new TargetingArrowConfig(1.0f, 33, 2.0f, 44, 55),
+            new TargetingArrowConfig(1.0f, 33, 2.0f, 44),
+            new AllegianceArrowConfig(55, 6.0f),
             new SmokeArrowConfig(3.0f, 66),
-            new DisarmArrowConfig(false));
+            new DisarmArrowConfig(false, 4.0f));
 
     assertEquals(original, ControlArrowConfig.fromJson(original.toJson()));
   }

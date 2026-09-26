@@ -6,19 +6,22 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class DazeArrowEntity extends BaseArrowEntity {
+public class AllegianceArrowEntity extends BaseArrowEntity {
+  private static final float IMPACT_VOLUME = 1.0f;
+  private static final float IMPACT_PITCH = 1.4f;
 
-  public DazeArrowEntity(
-      final EntityType<? extends DazeArrowEntity> entityType, final World world) {
+  public AllegianceArrowEntity(
+      final EntityType<? extends AllegianceArrowEntity> entityType, final World world) {
     super(entityType, world);
   }
 
-  public DazeArrowEntity(
-      final EntityType<? extends DazeArrowEntity> entityType,
+  public AllegianceArrowEntity(
+      final EntityType<? extends AllegianceArrowEntity> entityType,
       final World world,
       final double x,
       final double y,
@@ -31,8 +34,14 @@ public class DazeArrowEntity extends BaseArrowEntity {
   @Override
   protected void afterArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
-    if (entityHitResult.getEntity() instanceof MobEntity mob) {
-      ControlHoldService.daze(world, mob, ServerConfigService.get().control().targeting());
+    if (!(entityHitResult.getEntity() instanceof MobEntity mob)) {
+      return;
+    }
+    final boolean enlisted =
+        ControlHoldService.enlist(
+            world, mob, shooter().orElse(null), ServerConfigService.get().control().allegiance());
+    if (enlisted) {
+      playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }
 }

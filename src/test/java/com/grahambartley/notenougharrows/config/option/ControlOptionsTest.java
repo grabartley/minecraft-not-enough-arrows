@@ -20,16 +20,18 @@ class ControlOptionsTest {
   void listsEverySettingInTheOrderTheStatusOutputUses() {
     assertEquals(
         List.of(
-            "control.frost.freezeTicksPerHit",
+            "control.frost.durationTicks",
             "control.levitation.durationTicks",
             "control.targeting.tauntRadius",
             "control.targeting.tauntDurationTicks",
             "control.targeting.repelRadius",
             "control.targeting.repelDurationTicks",
-            "control.targeting.dazeDurationTicks",
+            "control.allegiance.durationTicks",
+            "control.allegiance.defendRadius",
             "control.smoke.radius",
             "control.smoke.durationTicks",
-            "control.disarm.affectsPlayers"),
+            "control.disarm.affectsPlayers",
+            "control.disarm.throwDistance"),
         ControlOptions.options().stream().map(ConfigOption::id).toList());
   }
 

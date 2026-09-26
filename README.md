@@ -76,11 +76,14 @@ guard, fired at whatever needs them.
 
 Seven arrows change what a creature is doing rather than how much health it has. The **taunt arrow**
 pulls every mob already fighting something over to where it landed, and the **repel arrow** sends
-them the other way. The **daze arrow** makes the one thing it hits forget what it was angry about.
+them the other way.
+
+The **allegiance arrow** turns the mob it hits into your bodyguard: it stops fighting you and goes
+after whoever is attacking you instead, until it wears off and remembers whose side it was on.
 
 The **smoke arrow** opens a cloud that blinds anything standing in it and blocks nothing at all, so
-your own arrows still go through. The **disarm arrow** knocks the sword out of a hand and leaves it
-on the floor, which is a problem for whoever has to go and pick it up.
+your own arrows still go through. The **disarm arrow** knocks the sword out of a hand and throws it
+across the ground, which is a problem for whoever has to go and fetch it.
 
 Vanilla already brews a tipped arrow for nearly every debuff, so none of these repeats one.
 
@@ -110,13 +113,13 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 🧭 | **Homing** | Curves toward hostile mobs. Never toward a player | Compass |
 | 🪶 | **Volley** | Splits in the air into a handful of ordinary arrows | Feather |
 | 🗜️ | **Railgun** | Very fast, and it barely drops | Iron ingot |
-| 🧊 | **Frost** | Freezes what you hit, the way powder snow does | Powder snow bucket |
+| 🧊 | **Frost** | Holds what you hit frozen, the way powder snow does | Powder snow bucket |
 | 🎈 | **Levitation** | Floats what you hit upward, then lets go | Shulker shell |
-| 🔔 | **Taunt** | Pulls nearby hostiles to where it lands | Note block |
+| 🔔 | **Taunt** | Pulls nearby hostiles onto whatever it lands on | Note block |
 | 🏃 | **Repel** | Sends nearby hostiles running from where it lands | Soul sand |
-| 💫 | **Daze** | The mob you hit forgets its target and wanders | Fermented spider eye |
+| 🤝 | **Allegiance** | The mob you hit fights for you for a while | Golden apple |
 | 🌫️ | **Smoke** | A cloud that blinds. It blocks nothing | Campfire |
-| 🪃 | **Disarm** | Knocks the held item onto the ground | Fishing rod |
+| 🪃 | **Disarm** | Throws the held item across the ground | Fishing rod |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
@@ -229,16 +232,18 @@ screen are rejected outright, with the accepted range in the error.
 | `combat.volley.splitDelayTicks` | 4 | 1 to 40 |
 | `combat.railgun.speedMultiplier` | 3.0 | 1.0 to 8.0 |
 | `combat.railgun.gravityFactor` | 0.25 | 0.05 to 2.0 |
-| `control.frost.freezeTicksPerHit` | 140 | 0 to 1200 |
+| `control.frost.durationTicks` | 200 | 0 to 1200 |
 | `control.levitation.durationTicks` | 60 | 0 to 1200 |
 | `control.targeting.tauntRadius` | 8.0 | 0.0 to 32.0 |
-| `control.targeting.tauntDurationTicks` | 200 | 0 to 6000 |
+| `control.targeting.tauntDurationTicks` | 100 | 0 to 6000 |
 | `control.targeting.repelRadius` | 8.0 | 0.0 to 32.0 |
 | `control.targeting.repelDurationTicks` | 200 | 0 to 6000 |
-| `control.targeting.dazeDurationTicks` | 200 | 0 to 6000 |
+| `control.allegiance.durationTicks` | 400 | 0 to 6000 |
+| `control.allegiance.defendRadius` | 16.0 | 0.0 to 32.0 |
 | `control.smoke.radius` | 3.0 | 0.0 to 16.0 |
 | `control.smoke.durationTicks` | 200 | 0 to 6000 |
 | `control.disarm.affectsPlayers` | on | on or off |
+| `control.disarm.throwDistance` | 5.0 | 0.0 to 16.0 |
 | `fletching.stationEnabled` | on | on or off |
 
 The gravity arrow's exclusion list is edited rather than replaced:

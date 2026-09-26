@@ -13,10 +13,11 @@ class ControlHoldTest {
 
   private static final UUID MOB = UUID.nameUUIDFromBytes("mob".getBytes());
   private static final Vec3d ANCHOR = new Vec3d(1.0, 2.0, 3.0);
+  private static final UUID SUBJECT = UUID.nameUUIDFromBytes("subject".getBytes());
 
   @Test
   void holdsUntilItsExpiryTick() {
-    final ControlHold hold = new ControlHold(MOB, ANCHOR, ControlSteering.DRAWN, 100L);
+    final ControlHold hold = ControlHold.at(MOB, ANCHOR, ControlSteering.DRAWN, 100L);
 
     assertFalse(hold.hasExpired(99L));
     assertTrue(hold.hasExpired(100L));
@@ -27,15 +28,15 @@ class ControlHoldTest {
   void carriesTheSteeringItWasHeldWith() {
     assertEquals(
         ControlSteering.FLEEING,
-        new ControlHold(MOB, ANCHOR, ControlSteering.FLEEING, 10L).steering());
+        ControlHold.at(MOB, ANCHOR, ControlSteering.FLEEING, 10L).steering());
   }
 
   @Test
   void refusesAHoldWithoutAMobAnAnchorOrASteering() {
     assertThrows(
-        NullPointerException.class, () -> new ControlHold(null, ANCHOR, ControlSteering.DRAWN, 1L));
+        NullPointerException.class, () -> ControlHold.at(null, ANCHOR, ControlSteering.DRAWN, 1L));
     assertThrows(
-        NullPointerException.class, () -> new ControlHold(MOB, null, ControlSteering.DRAWN, 1L));
-    assertThrows(NullPointerException.class, () -> new ControlHold(MOB, ANCHOR, null, 1L));
+        NullPointerException.class, () -> ControlHold.at(MOB, null, ControlSteering.DRAWN, 1L));
+    assertThrows(NullPointerException.class, () -> ControlHold.at(MOB, ANCHOR, null, 1L));
   }
 }

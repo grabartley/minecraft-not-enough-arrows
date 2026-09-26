@@ -39,7 +39,7 @@ public class DisarmArrowEntity extends BaseArrowEntity {
       return;
     }
     final DisarmArrowConfig disarm = ServerConfigService.get().control().disarm();
-    if (DisarmDrop.disarm(world, living, disarm.affectsPlayers())) {
+    if (DisarmDrop.disarm(world, living, disarm.affectsPlayers(), disarm.throwDistance())) {
       playSound(SoundEvents.BLOCK_TRIPWIRE_DETACH, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }

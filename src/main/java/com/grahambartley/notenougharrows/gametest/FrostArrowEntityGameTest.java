@@ -14,6 +14,7 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "frost-arrow";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
   private static final BlockPos BYSTANDER_STAND = new BlockPos(3, 3, 5);
+  private static final int LONG_AFTER_LANDING = 150;
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anArrowFiredFromABowBuildsFreezeOnTheEntityItHits(TestContext context) {
@@ -27,8 +28,9 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
         FiringRangeSupport.LANDING_TICK,
         () -> {
           context.assertTrue(
-              target.getFrozenTicks() > 0,
-              "A frost arrow should leave freeze built up on what it hit, but frozen ticks were "
+              target.isFrozen(),
+              "A frost arrow should leave what it hit frozen hard enough to take freeze damage,"
+                  + " but frozen ticks were "
                   + target.getFrozenTicks());
           context.complete();
         });
@@ -43,8 +45,27 @@ public final class FrostArrowEntityGameTest implements FabricGameTest {
         FiringRangeSupport.LANDING_TICK,
         () -> {
           context.assertTrue(
-              target.getFrozenTicks() > 0,
-              "A dispensed frost arrow should build freeze on what it hit");
+              target.isFrozen(), "A dispensed frost arrow should freeze what it hit just the same");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 200)
+  public void theFreezeIsHeldRatherThanThawingStraightAway(TestContext context) {
+    final CowEntity target = ControlTestSupport.stillCowAt(context, TARGET_STAND);
+    MockPlayerSupport.fireEastStraight(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.FROST_ARROW.item());
+
+    context.runAtTick(
+        LONG_AFTER_LANDING,
+        () -> {
+          context.assertTrue(
+              target.isFrozen(),
+              "Vanilla thaws two ticks of freeze every tick, so the arrow has to hold its target"
+                  + " frozen for its whole duration, but frozen ticks were "
+                  + target.getFrozenTicks());
           context.complete();
         });
   }

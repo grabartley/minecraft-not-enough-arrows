@@ -96,11 +96,11 @@ public final class ConfigSettings {
   public static final String CONTROL_FROST = CONTROL + ".frost";
   public static final String CONTROL_LEVITATION = CONTROL + ".levitation";
   public static final String CONTROL_TARGETING = CONTROL + ".targeting";
+  public static final String CONTROL_ALLEGIANCE = CONTROL + ".allegiance";
   public static final String CONTROL_SMOKE = CONTROL + ".smoke";
   public static final String CONTROL_DISARM = CONTROL + ".disarm";
 
-  public static final String CONTROL_FROST_FREEZE_TICKS_PER_HIT =
-      CONTROL_FROST + ".freezeTicksPerHit";
+  public static final String CONTROL_FROST_DURATION_TICKS = CONTROL_FROST + ".durationTicks";
   public static final String CONTROL_LEVITATION_DURATION_TICKS =
       CONTROL_LEVITATION + ".durationTicks";
   public static final String CONTROL_TARGETING_TAUNT_RADIUS = CONTROL_TARGETING + ".tauntRadius";
@@ -109,11 +109,14 @@ public final class ConfigSettings {
   public static final String CONTROL_TARGETING_REPEL_RADIUS = CONTROL_TARGETING + ".repelRadius";
   public static final String CONTROL_TARGETING_REPEL_DURATION_TICKS =
       CONTROL_TARGETING + ".repelDurationTicks";
-  public static final String CONTROL_TARGETING_DAZE_DURATION_TICKS =
-      CONTROL_TARGETING + ".dazeDurationTicks";
+  public static final String CONTROL_ALLEGIANCE_DURATION_TICKS =
+      CONTROL_ALLEGIANCE + ".durationTicks";
+  public static final String CONTROL_ALLEGIANCE_DEFEND_RADIUS =
+      CONTROL_ALLEGIANCE + ".defendRadius";
   public static final String CONTROL_SMOKE_RADIUS = CONTROL_SMOKE + ".radius";
   public static final String CONTROL_SMOKE_DURATION_TICKS = CONTROL_SMOKE + ".durationTicks";
   public static final String CONTROL_DISARM_AFFECTS_PLAYERS = CONTROL_DISARM + ".affectsPlayers";
+  public static final String CONTROL_DISARM_THROW_DISTANCE = CONTROL_DISARM + ".throwDistance";
 
   public static final String FLETCHING_STATION_ENABLED = FLETCHING + ".stationEnabled";
 

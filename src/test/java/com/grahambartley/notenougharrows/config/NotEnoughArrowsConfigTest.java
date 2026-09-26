@@ -153,7 +153,7 @@ class NotEnoughArrowsConfigTest {
   @Test
   void replacesOnlyTheControlFamily() {
     final ControlArrowConfig replacement =
-        ControlArrowConfig.defaults().withDisarm(new DisarmArrowConfig(false));
+        ControlArrowConfig.defaults().withDisarm(new DisarmArrowConfig(false, 15.5f));
     final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withControl(replacement);
 
     assertEquals(replacement, updated.control());
@@ -196,9 +196,10 @@ class NotEnoughArrowsConfigTest {
             new ControlArrowConfig(
                 new FrostArrowConfig(1199),
                 new LevitationArrowConfig(1),
-                new TargetingArrowConfig(31.5f, 5999, 0.5f, 1, 5999),
+                new TargetingArrowConfig(31.5f, 5999, 0.5f, 1),
+                new AllegianceArrowConfig(5999, 31.5f),
                 new SmokeArrowConfig(15.5f, 1),
-                new DisarmArrowConfig(false)),
+                new DisarmArrowConfig(false, 15.5f)),
             new FletchingStationConfig(false));
 
     assertEquals(original, NotEnoughArrowsConfig.fromJson(original.toJson()));

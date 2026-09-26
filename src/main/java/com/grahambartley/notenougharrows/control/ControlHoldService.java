@@ -1,18 +1,22 @@
 package com.grahambartley.notenougharrows.control;
 
+import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.config.TargetingArrowConfig;
+import com.grahambartley.notenougharrows.server.ServerConfigService;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public final class ControlHoldService {
   private static final double STEERING_SPEED = 1.1;
@@ -28,16 +32,39 @@ public final class ControlHoldService {
   }
 
   public static int taunt(
-      final ServerWorld world, final Vec3d center, final TargetingArrowConfig targeting) {
+      final ServerWorld world,
+      final Vec3d center,
+      @Nullable final LivingEntity struck,
+      final TargetingArrowConfig targeting) {
     if (!targeting.taunts()) {
       return 0;
     }
-    return holdAll(
-        world,
-        HostileScan.engagedHostilesAround(world, center, targeting.tauntRadius()),
-        center,
-        ControlSteering.DRAWN,
-        targeting.tauntDurationTicks());
+
+    int held = 0;
+    for (final MobEntity mob :
+        HostileScan.engagedHostilesAround(world, center, targeting.tauntRadius())) {
+      if (mob == struck) {
+        continue;
+      }
+      final ControlHold hold =
+          struck == null
+              ? ControlHold.at(
+                  mob.getUuid(),
+                  center,
+                  ControlSteering.DRAWN,
+                  world.getTime() + targeting.tauntDurationTicks())
+              : ControlHold.on(
+                  mob.getUuid(),
+                  center,
+                  struck.getUuid(),
+                  ControlSteering.DRAWN,
+                  world.getTime() + targeting.tauntDurationTicks());
+      trackerFor(world).hold(hold);
+      applyTargeting(world, mob, hold);
+      steer(mob, hold.anchor(), hold.steering());
+      held++;
+    }
+    return held;
   }
 
   public static int repel(
@@ -45,26 +72,40 @@ public final class ControlHoldService {
     if (!targeting.repels()) {
       return 0;
     }
-    return holdAll(
-        world,
-        HostileScan.hostilesAround(world, center, targeting.repelRadius()),
-        center,
-        ControlSteering.FLEEING,
-        targeting.repelDurationTicks());
+
+    int held = 0;
+    for (final MobEntity mob : HostileScan.hostilesAround(world, center, targeting.repelRadius())) {
+      final ControlHold hold =
+          ControlHold.at(
+              mob.getUuid(),
+              center,
+              ControlSteering.FLEEING,
+              world.getTime() + targeting.repelDurationTicks());
+      trackerFor(world).hold(hold);
+      steer(mob, hold.anchor(), hold.steering());
+      held++;
+    }
+    return held;
   }
 
-  public static boolean daze(
-      final ServerWorld world, final MobEntity mob, final TargetingArrowConfig targeting) {
-    if (!targeting.dazes() || !HostileScan.isHostile(mob)) {
+  public static boolean enlist(
+      final ServerWorld world,
+      final MobEntity mob,
+      @Nullable final LivingEntity protectedEntity,
+      final AllegianceArrowConfig allegiance) {
+    if (protectedEntity == null || !allegiance.turns() || !HostileScan.isHostile(mob)) {
       return false;
     }
-    return hold(
-            world,
-            mob,
+    final ControlHold hold =
+        ControlHold.on(
+            mob.getUuid(),
             mob.getBoundingBox().getCenter(),
-            ControlSteering.WANDERING,
-            targeting.dazeDurationTicks())
-        > 0;
+            protectedEntity.getUuid(),
+            ControlSteering.DEFENDING,
+            world.getTime() + allegiance.durationTicks());
+    trackerFor(world).hold(hold);
+    applyTargeting(world, mob, hold);
+    return true;
   }
 
   public static Optional<ControlHold> heldIn(final ServerWorld world, final MobEntity mob) {
@@ -74,31 +115,6 @@ public final class ControlHoldService {
 
   private static void forget() {
     TRACKERS.clear();
-  }
-
-  private static int holdAll(
-      final ServerWorld world,
-      final List<MobEntity> mobs,
-      final Vec3d anchor,
-      final ControlSteering steering,
-      final int durationTicks) {
-    int held = 0;
-    for (final MobEntity mob : mobs) {
-      held += hold(world, mob, anchor, steering, durationTicks);
-    }
-    return held;
-  }
-
-  private static int hold(
-      final ServerWorld world,
-      final MobEntity mob,
-      final Vec3d anchor,
-      final ControlSteering steering,
-      final int durationTicks) {
-    trackerFor(world)
-        .hold(new ControlHold(mob.getUuid(), anchor, steering, world.getTime() + durationTicks));
-    steer(mob, anchor, steering);
-    return 1;
   }
 
   private static void tick(final ServerWorld world) {
@@ -117,27 +133,71 @@ public final class ControlHoldService {
       tracker.forget(hold.mobId());
       return;
     }
-    if (hold.steering().clearsTarget()) {
-      mob.setTarget(null);
+    if (hold.steering().targetPolicy().retargetsEveryTick()) {
+      applyTargeting(world, mob, hold);
     }
-    if (world.getTime() % REPATH_INTERVAL_TICKS == 0) {
+    if (hold.steering().navigates() && world.getTime() % REPATH_INTERVAL_TICKS == 0) {
       steer(mob, hold.anchor(), hold.steering());
     }
   }
 
-  private static void handBack(final ServerWorld world, final ControlHold hold) {
-    final MobEntity mob = mobIn(world, hold);
-    if (mob == null || !hold.steering().navigates()) {
+  private static void applyTargeting(
+      final ServerWorld world, final MobEntity mob, final ControlHold hold) {
+    switch (hold.steering().targetPolicy()) {
+      case AIM_AT_SUBJECT -> aimAtSubject(world, mob, hold);
+      case DEFEND_SUBJECT -> defendSubject(world, mob, hold);
+      case LEAVE_ALONE -> {}
+    }
+  }
+
+  private static void aimAtSubject(
+      final ServerWorld world, final MobEntity mob, final ControlHold hold) {
+    final LivingEntity subject = livingSubject(world, hold);
+    mob.setTarget(subject == mob ? null : subject);
+  }
+
+  private static void defendSubject(
+      final ServerWorld world, final MobEntity mob, final ControlHold hold) {
+    final LivingEntity defended = livingSubject(world, hold);
+    if (defended == null) {
+      mob.setTarget(null);
       return;
     }
-    mob.getNavigation().stop();
+    final double radius = ServerConfigService.get().control().allegiance().defendRadius();
+    final LivingEntity threat = DefenderTargets.threatTo(world, defended, mob, radius).orElse(null);
+    if (mob.getTarget() == defended) {
+      mob.setTarget(null);
+    }
+    if (threat != null) {
+      mob.setTarget(threat);
+    }
+  }
+
+  @Nullable
+  private static LivingEntity livingSubject(final ServerWorld world, final ControlHold hold) {
+    final UUID subjectId = hold.subjectId().orElse(null);
+    if (subjectId == null) {
+      return null;
+    }
+    final Entity subject = world.getEntity(subjectId);
+    return subject instanceof LivingEntity living && living.isAlive() ? living : null;
+  }
+
+  private static void handBack(final ServerWorld world, final ControlHold hold) {
+    final MobEntity mob = mobIn(world, hold);
+    if (mob == null) {
+      return;
+    }
+    if (hold.steering() == ControlSteering.DEFENDING) {
+      mob.setTarget(null);
+    }
+    if (hold.steering().navigates()) {
+      mob.getNavigation().stop();
+    }
   }
 
   private static void steer(
       final MobEntity mob, final Vec3d anchor, final ControlSteering steering) {
-    if (steering.clearsTarget()) {
-      mob.setTarget(null);
-    }
     steering
         .destination(mob.getBoundingBox().getCenter(), anchor)
         .ifPresent(

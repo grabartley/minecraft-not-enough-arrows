@@ -1,7 +1,9 @@
 package com.grahambartley.notenougharrows.command;
 
+import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.config.ConfigSettings;
 import com.grahambartley.notenougharrows.config.ControlArrowConfig;
+import com.grahambartley.notenougharrows.config.DisarmArrowConfig;
 import com.grahambartley.notenougharrows.config.FrostArrowConfig;
 import com.grahambartley.notenougharrows.config.LevitationArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
@@ -19,6 +21,7 @@ public final class ControlCommandNodes {
         .then(frost())
         .then(levitation())
         .then(targeting())
+        .then(allegiance())
         .then(smoke())
         .then(disarm());
   }
@@ -27,14 +30,13 @@ public final class ControlCommandNodes {
     return ConfigOptionNodes.group(ConfigSettings.CONTROL_FROST)
         .then(
             ConfigOptionNodes.intOption(
-                ConfigSettings.CONTROL_FROST_FREEZE_TICKS_PER_HIT,
-                FrostArrowConfig.FREEZE_TICKS_PER_HIT_MIN,
-                FrostArrowConfig.FREEZE_TICKS_PER_HIT_MAX,
+                ConfigSettings.CONTROL_FROST_DURATION_TICKS,
+                FrostArrowConfig.DURATION_TICKS_MIN,
+                FrostArrowConfig.DURATION_TICKS_MAX,
                 (current, value) ->
                     change(
                         current,
-                        control ->
-                            control.withFrost(control.frost().withFreezeTicksPerHit(value)))));
+                        control -> control.withFrost(control.frost().withDurationTicks(value)))));
   }
 
   private static LiteralArgumentBuilder<ServerCommandSource> levitation() {
@@ -95,18 +97,31 @@ public final class ControlCommandNodes {
                         current,
                         control ->
                             control.withTargeting(
-                                control.targeting().withRepelDurationTicks(value)))))
+                                control.targeting().withRepelDurationTicks(value)))));
+  }
+
+  private static LiteralArgumentBuilder<ServerCommandSource> allegiance() {
+    return ConfigOptionNodes.group(ConfigSettings.CONTROL_ALLEGIANCE)
         .then(
             ConfigOptionNodes.intOption(
-                ConfigSettings.CONTROL_TARGETING_DAZE_DURATION_TICKS,
-                TargetingArrowConfig.DURATION_TICKS_MIN,
-                TargetingArrowConfig.DURATION_TICKS_MAX,
+                ConfigSettings.CONTROL_ALLEGIANCE_DURATION_TICKS,
+                AllegianceArrowConfig.DURATION_TICKS_MIN,
+                AllegianceArrowConfig.DURATION_TICKS_MAX,
                 (current, value) ->
                     change(
                         current,
                         control ->
-                            control.withTargeting(
-                                control.targeting().withDazeDurationTicks(value)))));
+                            control.withAllegiance(control.allegiance().withDurationTicks(value)))))
+        .then(
+            ConfigOptionNodes.floatOption(
+                ConfigSettings.CONTROL_ALLEGIANCE_DEFEND_RADIUS,
+                AllegianceArrowConfig.DEFEND_RADIUS_MIN,
+                AllegianceArrowConfig.DEFEND_RADIUS_MAX,
+                (current, value) ->
+                    change(
+                        current,
+                        control ->
+                            control.withAllegiance(control.allegiance().withDefendRadius(value)))));
   }
 
   private static LiteralArgumentBuilder<ServerCommandSource> smoke() {
@@ -138,8 +153,16 @@ public final class ControlCommandNodes {
                 (current, value) ->
                     change(
                         current,
-                        control ->
-                            control.withDisarm(control.disarm().withAffectsPlayers(value)))));
+                        control -> control.withDisarm(control.disarm().withAffectsPlayers(value)))))
+        .then(
+            ConfigOptionNodes.floatOption(
+                ConfigSettings.CONTROL_DISARM_THROW_DISTANCE,
+                DisarmArrowConfig.THROW_DISTANCE_MIN,
+                DisarmArrowConfig.THROW_DISTANCE_MAX,
+                (current, value) ->
+                    change(
+                        current,
+                        control -> control.withDisarm(control.disarm().withThrowDistance(value)))));
   }
 
   private static NotEnoughArrowsConfig change(

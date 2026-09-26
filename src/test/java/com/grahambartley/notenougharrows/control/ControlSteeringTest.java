@@ -42,22 +42,27 @@ class ControlSteeringTest {
   }
 
   @Test
-  void wanderingNamesNoDestination() {
+  void defendingNamesNoDestinationBecauseItFollowsItsOwnTarget() {
     assertEquals(
-        Optional.empty(), ControlSteering.WANDERING.destination(new Vec3d(5.0, 64.0, 0.0), ANCHOR));
+        Optional.empty(), ControlSteering.DEFENDING.destination(new Vec3d(5.0, 64.0, 0.0), ANCHOR));
   }
 
   @Test
   void onlyTheSteeringsThatNameADestinationDriveNavigation() {
     assertTrue(ControlSteering.DRAWN.navigates());
     assertTrue(ControlSteering.FLEEING.navigates());
-    assertFalse(ControlSteering.WANDERING.navigates());
+    assertFalse(ControlSteering.DEFENDING.navigates());
   }
 
   @Test
-  void onlyFleeingLeavesTheMobFreeToRetaliate() {
-    assertTrue(ControlSteering.DRAWN.clearsTarget());
-    assertTrue(ControlSteering.WANDERING.clearsTarget());
-    assertFalse(ControlSteering.FLEEING.clearsTarget());
+  void eachSteeringCarriesTheTargetingItsArrowPromises() {
+    assertEquals(TargetPolicy.AIM_AT_SUBJECT, ControlSteering.DRAWN.targetPolicy());
+    assertEquals(TargetPolicy.LEAVE_ALONE, ControlSteering.FLEEING.targetPolicy());
+    assertEquals(TargetPolicy.DEFEND_SUBJECT, ControlSteering.DEFENDING.targetPolicy());
+  }
+
+  @Test
+  void aRepelledMobKeepsItsTargetSoItCanStillRetaliate() {
+    assertEquals(TargetPolicy.LEAVE_ALONE, ControlSteering.FLEEING.targetPolicy());
   }
 }

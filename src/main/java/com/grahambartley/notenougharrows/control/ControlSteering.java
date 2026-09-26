@@ -4,13 +4,13 @@ import java.util.Optional;
 import net.minecraft.util.math.Vec3d;
 
 public enum ControlSteering {
-  DRAWN(true) {
+  DRAWN(TargetPolicy.AIM_AT_SUBJECT) {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
       return Optional.of(anchor);
     }
   },
-  FLEEING(false) {
+  FLEEING(TargetPolicy.LEAVE_ALONE) {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
       final Vec3d away = from.subtract(anchor);
@@ -20,7 +20,7 @@ public enum ControlSteering {
       return Optional.of(from.add(away.normalize().multiply(FLEE_DISTANCE)));
     }
   },
-  WANDERING(true) {
+  DEFENDING(TargetPolicy.DEFEND_SUBJECT) {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
       return Optional.empty();
@@ -29,19 +29,19 @@ public enum ControlSteering {
 
   public static final double FLEE_DISTANCE = 12.0;
 
-  private final boolean clearsTarget;
+  private final TargetPolicy targetPolicy;
 
-  ControlSteering(final boolean clearsTarget) {
-    this.clearsTarget = clearsTarget;
+  ControlSteering(final TargetPolicy targetPolicy) {
+    this.targetPolicy = targetPolicy;
   }
 
   public abstract Optional<Vec3d> destination(Vec3d from, Vec3d anchor);
 
-  public boolean navigates() {
-    return this != WANDERING;
+  public TargetPolicy targetPolicy() {
+    return targetPolicy;
   }
 
-  public boolean clearsTarget() {
-    return clearsTarget;
+  public boolean navigates() {
+    return this != DEFENDING;
   }
 }

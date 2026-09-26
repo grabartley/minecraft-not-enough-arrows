@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.config.option;
 
+import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.config.ConfigSettings;
 import com.grahambartley.notenougharrows.config.ControlArrowConfig;
 import com.grahambartley.notenougharrows.config.DisarmArrowConfig;
@@ -31,11 +32,11 @@ public final class ControlOptions {
   private static List<ConfigOption<NotEnoughArrowsConfig>> buildOptions() {
     return List.of(
         new IntOption<>(
-            ConfigSettings.CONTROL_FROST_FREEZE_TICKS_PER_HIT,
-            FrostArrowConfig.FREEZE_TICKS_PER_HIT_MIN,
-            FrostArrowConfig.FREEZE_TICKS_PER_HIT_MAX,
-            config -> config.control().frost().freezeTicksPerHit(),
-            (config, value) -> frost(config, it -> it.withFreezeTicksPerHit(value))),
+            ConfigSettings.CONTROL_FROST_DURATION_TICKS,
+            FrostArrowConfig.DURATION_TICKS_MIN,
+            FrostArrowConfig.DURATION_TICKS_MAX,
+            config -> config.control().frost().durationTicks(),
+            (config, value) -> frost(config, it -> it.withDurationTicks(value))),
         new IntOption<>(
             ConfigSettings.CONTROL_LEVITATION_DURATION_TICKS,
             LevitationArrowConfig.DURATION_TICKS_MIN,
@@ -69,11 +70,18 @@ public final class ControlOptions {
             config -> config.control().targeting().repelDurationTicks(),
             (config, value) -> targeting(config, it -> it.withRepelDurationTicks(value))),
         new IntOption<>(
-            ConfigSettings.CONTROL_TARGETING_DAZE_DURATION_TICKS,
-            TargetingArrowConfig.DURATION_TICKS_MIN,
-            TargetingArrowConfig.DURATION_TICKS_MAX,
-            config -> config.control().targeting().dazeDurationTicks(),
-            (config, value) -> targeting(config, it -> it.withDazeDurationTicks(value))),
+            ConfigSettings.CONTROL_ALLEGIANCE_DURATION_TICKS,
+            AllegianceArrowConfig.DURATION_TICKS_MIN,
+            AllegianceArrowConfig.DURATION_TICKS_MAX,
+            config -> config.control().allegiance().durationTicks(),
+            (config, value) -> allegiance(config, it -> it.withDurationTicks(value))),
+        new FloatOption<>(
+            ConfigSettings.CONTROL_ALLEGIANCE_DEFEND_RADIUS,
+            AllegianceArrowConfig.DEFEND_RADIUS_MIN,
+            AllegianceArrowConfig.DEFEND_RADIUS_MAX,
+            DISTANCE_STEP,
+            config -> config.control().allegiance().defendRadius(),
+            (config, value) -> allegiance(config, it -> it.withDefendRadius(value))),
         new FloatOption<>(
             ConfigSettings.CONTROL_SMOKE_RADIUS,
             SmokeArrowConfig.RADIUS_MIN,
@@ -90,7 +98,14 @@ public final class ControlOptions {
         new BooleanOption<>(
             ConfigSettings.CONTROL_DISARM_AFFECTS_PLAYERS,
             config -> config.control().disarm().affectsPlayers(),
-            (config, value) -> disarm(config, it -> it.withAffectsPlayers(value))));
+            (config, value) -> disarm(config, it -> it.withAffectsPlayers(value))),
+        new FloatOption<>(
+            ConfigSettings.CONTROL_DISARM_THROW_DISTANCE,
+            DisarmArrowConfig.THROW_DISTANCE_MIN,
+            DisarmArrowConfig.THROW_DISTANCE_MAX,
+            DISTANCE_STEP,
+            config -> config.control().disarm().throwDistance(),
+            (config, value) -> disarm(config, it -> it.withThrowDistance(value))));
   }
 
   private static NotEnoughArrowsConfig frost(
@@ -109,6 +124,12 @@ public final class ControlOptions {
       final NotEnoughArrowsConfig config,
       final Function<TargetingArrowConfig, TargetingArrowConfig> change) {
     return control(config, it -> it.withTargeting(change.apply(it.targeting())));
+  }
+
+  private static NotEnoughArrowsConfig allegiance(
+      final NotEnoughArrowsConfig config,
+      final Function<AllegianceArrowConfig, AllegianceArrowConfig> change) {
+    return control(config, it -> it.withAllegiance(change.apply(it.allegiance())));
   }
 
   private static NotEnoughArrowsConfig smoke(

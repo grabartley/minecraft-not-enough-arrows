@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.entity;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -33,7 +34,8 @@ public class RepelArrowEntity extends AreaControlArrowEntity {
   }
 
   @Override
-  protected boolean resolveAt(final ServerWorld world, final Vec3d center) {
+  protected boolean resolveAt(
+      final ServerWorld world, final Vec3d center, @Nullable final LivingEntity struck) {
     if (ControlHoldService.repel(world, center, ServerConfigService.get().control().targeting())
         == 0) {
       return false;

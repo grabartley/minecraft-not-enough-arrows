@@ -1,6 +1,8 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,9 +13,19 @@ import org.junit.jupiter.params.provider.CsvSource;
 class FrostArrowConfigTest {
 
   @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "140, 140", "1200, 1200", "99999, 1200"})
-  void clampsFreezeTicksPerHit(final int given, final int expected) {
-    assertEquals(expected, new FrostArrowConfig(given).freezeTicksPerHit());
+  @CsvSource({"-1, 0", "0, 0", "200, 200", "1200, 1200", "99999, 1200"})
+  void clampsDuration(final int given, final int expected) {
+    assertEquals(expected, new FrostArrowConfig(given).durationTicks());
+  }
+
+  @Test
+  void freezesNothingAtZeroDuration() {
+    assertFalse(new FrostArrowConfig(0).freezes());
+  }
+
+  @Test
+  void freezesWhenADurationIsConfigured() {
+    assertTrue(new FrostArrowConfig(1).freezes());
   }
 
   @Test
@@ -24,10 +36,10 @@ class FrostArrowConfigTest {
   @Test
   void clampsAnOutOfRangeValueReadFromAHandEditedFile() {
     assertEquals(
-        FrostArrowConfig.FREEZE_TICKS_PER_HIT_MAX,
+        FrostArrowConfig.DURATION_TICKS_MAX,
         FrostArrowConfig.fromJson(
-                JsonParser.parseString("{\"freezeTicksPerHit\":50000}").getAsJsonObject())
-            .freezeTicksPerHit());
+                JsonParser.parseString("{\"durationTicks\":50000}").getAsJsonObject())
+            .durationTicks());
   }
 
   @Test
@@ -39,6 +51,6 @@ class FrostArrowConfigTest {
 
   @Test
   void changingTheValueReturnsANewRecord() {
-    assertEquals(11, FrostArrowConfig.defaults().withFreezeTicksPerHit(11).freezeTicksPerHit());
+    assertEquals(11, FrostArrowConfig.defaults().withDurationTicks(11).durationTicks());
   }
 }

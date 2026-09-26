@@ -26,7 +26,7 @@ public final class ControlArrowEffectsGameTest implements FabricGameTest {
           ModArrows.LEVITATION_ARROW,
           ModArrows.TAUNT_ARROW,
           ModArrows.REPEL_ARROW,
-          ModArrows.DAZE_ARROW,
+          ModArrows.ALLEGIANCE_ARROW,
           ModArrows.SMOKE_ARROW,
           ModArrows.DISARM_ARROW);
 

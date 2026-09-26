@@ -218,7 +218,7 @@ The ladders:
 | Grapple | Plain arrow plus a tripwire hook, then that arrow plus a fermented spider eye, which inverts the pull into a tow |
 | Glow ink | Plain arrow plus a glow ink sac, then that arrow plus gunpowder, which turns a mark on a target into a mark on a flight path |
 
-A fermented spider eye is the centre of three recipes, over three different bases: the plain arrow for the daze arrow, the ender pearl arrow for the recall arrow, and the grapple arrow for the tow arrow. That is deliberate rather than a collision. It is vanilla's own inversion ingredient, all three arrows invert something, and CRAFT-4 forbids reuse only over the same base.
+A fermented spider eye is the centre of two recipes, over two different bases: the ender pearl arrow for the recall arrow, and the grapple arrow for the tow arrow. That is deliberate rather than a collision. It is vanilla's own inversion ingredient, both arrows invert something, and CRAFT-4 forbids reuse only over the same base.
 
 **Not supported:** Uncrafting an arrow back into its ingredients. Recipes that consume a different count than eight. Recipes that vary by dimension, biome, or progression. A crafting table recipe with more than one distinguishing ingredient: a richer recipe is the station's to offer, not the crafting table's.
 
@@ -757,26 +757,32 @@ A player would rather not fight: they want the skeleton to lose them, the horde 
 
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
-| Frost arrow | A powder snow bucket | Builds freeze on the struck living entity, which shivers and takes freeze damage | Yes |
+| Frost arrow | A powder snow bucket | Holds the struck living entity frozen for a configured time, so it shivers and takes freeze damage | Yes |
 | Levitation arrow | A shulker shell | Floats the struck entity upward for a configured time, then releases it | Yes |
-| Taunt arrow | A note block | Draws nearby hostiles' attention to the impact point for a configured time | Yes |
+| Taunt arrow | A note block | Draws nearby hostiles onto whatever the arrow struck, or to the impact point, for a configured time | Yes |
 | Repel arrow | Soul sand | Makes hostiles within a configured radius flee the impact point for a configured time | Yes |
-| Daze arrow | A fermented spider eye | Makes the struck mob forget its target and wander for a configured time | Yes |
+| Allegiance arrow | A golden apple | Turns the struck hostile into the shooter's defender for a configured time, then hands it back | Yes |
 | Smoke arrow | A campfire | Fills a configured radius with a timed cloud that blinds what is inside it | Yes |
-| Disarm arrow | A fishing rod | Knocks the struck entity's held item out of its hand onto the ground | Yes |
+| Disarm arrow | A fishing rod | Knocks the struck entity's held item out of its hand and throws it a configured distance | Yes |
 
 | Requirement | Statement |
 |---|---|
 | CONTROL-1 | Every effect here applies a vanilla status effect where vanilla has one for it, so its duration, its persistence, its removal by milk, and its syncing are vanilla's rather than this mod's |
 | CONTROL-2 | No effect here uses slowness, poison, or healing. Vanilla brews a tipped arrow for each of those, and an arrow that duplicates a tipped arrow is not shipped (§2) |
 | CONTROL-3 | A frost arrow affects living entities only and never converts a block, so the freeze arrow keeps terrain and the frost arrow keeps creatures |
+| CONTROL-3a | A frost arrow holds its target frozen for its configured duration rather than adding a one-shot amount. Vanilla thaws freeze faster than a single application survives, so an arrow that only adds to the counter would resolve to nothing a player can see |
 | CONTROL-4 | A frost arrow's freeze respects the same immunities vanilla's powder snow respects, including leather armour and entities immune to freezing |
 | CONTROL-5 | A levitation arrow's lift has a configured duration with a configured maximum, and the fall that follows is vanilla's, including its damage. The mod did not choose where the entity came down, so it does not cancel the landing |
 | CONTROL-6 | A taunt and a repel both alter targeting for a bounded time and then hand it back. Neither may leave a mob permanently unable to acquire a target, and both end cleanly if the impact position unloads |
 | CONTROL-7 | A taunt draws only mobs that were already hostile to something. It does not make a neutral mob hostile, and it never makes a mob hostile toward a player who did not provoke it |
+| CONTROL-7a | A taunt that struck a creature moves the drawn mobs' aggression onto that creature. A taunt that struck a block sends them to the spot instead, letting go of whoever they were fighting |
+| CONTROL-7b | A taunt releases a drawn mob's target once, at the moment it lands, rather than every tick for its duration. A hold that re-clears a target every tick reads as a stun rather than as redirection, which is not what this arrow is for |
 | CONTROL-8 | A repel makes a mob flee rather than making it harmless. It keeps its ability to retaliate if cornered |
+| CONTROL-8a | An allegiance arrow turns one struck hostile into the shooter's defender for a configured time: it stops fighting the shooter, attacks whoever is attacking the shooter within a configured reach, and is handed back unchanged when the time runs out. It never turns a player, and a shot with no shooter behind it turns nobody |
 | CONTROL-9 | A smoke cloud blinds what is inside it and blocks nothing. It is not a solid, it stops no projectile, and it is removed on expiry with nothing left behind |
-| CONTROL-10 | A disarm arrow drops the item as an entity at the target's feet, where the target may pick it back up. It never destroys the item, never moves it into the shooter's inventory, and never takes an equipped armour piece |
+| CONTROL-10 | A disarm arrow throws the item as an entity a configured distance from the target, where the target may go and pick it back up. It never destroys the item, never moves it into the shooter's inventory, and never takes an equipped armour piece |
+| CONTROL-10a | A mob a disarm arrow disarms is allowed to pick the thrown item back up, which vanilla otherwise refuses most mobs. An arrow that permanently removed a skeleton's bow would be a kill rather than a disarm |
+| CONTROL-10b | A disarm arrow that kills its target disarms nothing. Vanilla has already decided what that death drops, and emptying the corpse's hand afterwards would turn every armed mob into a guaranteed equipment drop |
 | CONTROL-11 | Whether a disarm arrow works on a player is a server setting, on by default, and it is enforced where the effect resolves rather than where the shot is fired |
 | CONTROL-12 | Every duration and radius here is a server setting read fresh on impact, and a duration of zero applies no effect at all, leaving an inert arrow |
 | CONTROL-13 | A levitation arrow lifts one entity it hit, wherever that entity is, and travels with it. An updraft column lifts anything standing in one place and grants nothing outside it. The two must stay that far apart: one is aimed at a creature, the other is a place (TRAVEL-10) |

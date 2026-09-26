@@ -27,8 +27,8 @@
     "not-enough-arrows:levitation_arrow",
     "not-enough-arrows:taunt_arrow",
     "not-enough-arrows:repel_arrow",
-    "not-enough-arrows:daze_arrow",
     "not-enough-arrows:smoke_arrow",
-    "not-enough-arrows:disarm_arrow"
+    "not-enough-arrows:disarm_arrow",
+    "not-enough-arrows:allegiance_arrow"
   ]
 }
