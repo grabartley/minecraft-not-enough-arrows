@@ -131,6 +131,31 @@ public final class DisarmDropGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aFetchedItemDoesNotBecomeAGuaranteedDropForGood(TestContext context) {
+    final ZombieEntity target = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
+    target.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+    final float natural = target.getDropChance(EquipmentSlot.MAINHAND);
+
+    DisarmDrop.disarm(context.getWorld(), target, null, true, A_REAL_THROW);
+    target.updateDropChances(EquipmentSlot.MAINHAND);
+
+    context.assertTrue(
+        target.getDropChance(EquipmentSlot.MAINHAND) > natural,
+        "Picking the item back up raises the drop chance, which is the state to be undone");
+
+    DisarmFetchService.closeWindowNow(context.getWorld(), target);
+
+    context.assertEquals(
+        target.getDropChance(EquipmentSlot.MAINHAND),
+        natural,
+        "Once the fetch window closes the mob's gear must not be a guaranteed drop");
+    context.assertFalse(
+        target.canPickUpLoot(),
+        "Once the fetch window closes the mob must not keep hoovering up loot");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theSettingIsReadWhereTheEffectResolves(TestContext context) {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final ZombieEntity mob = ControlTestSupport.stillZombieAt(context, TARGET_STAND);

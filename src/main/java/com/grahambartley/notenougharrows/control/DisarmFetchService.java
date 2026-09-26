@@ -8,6 +8,7 @@ import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.RegistryKey;
@@ -17,7 +18,7 @@ import net.minecraft.world.World;
 public final class DisarmFetchService {
   public static final int FETCH_WINDOW_TICKS = 600;
 
-  private static final Map<RegistryKey<World>, Map<UUID, Long>> WINDOWS = new HashMap<>();
+  private static final Map<RegistryKey<World>, Map<UUID, DisarmFetch>> WINDOWS = new HashMap<>();
 
   private DisarmFetchService() {}
 
@@ -30,13 +31,31 @@ public final class DisarmFetchService {
     if (!(target instanceof MobEntity mob) || mob.canPickUpLoot()) {
       return;
     }
+    windowsIn(world)
+        .computeIfAbsent(
+            mob.getUuid(),
+            id ->
+                new DisarmFetch(
+                    id,
+                    mob.getDropChance(EquipmentSlot.MAINHAND),
+                    world.getTime() + FETCH_WINDOW_TICKS));
     mob.setCanPickUpLoot(true);
-    windowsIn(world).put(mob.getUuid(), world.getTime() + FETCH_WINDOW_TICKS);
   }
 
   public static boolean isFetching(final ServerWorld world, final LivingEntity target) {
-    final Map<UUID, Long> open = WINDOWS.get(world.getRegistryKey());
+    final Map<UUID, DisarmFetch> open = WINDOWS.get(world.getRegistryKey());
     return open != null && open.containsKey(target.getUuid());
+  }
+
+  public static void closeWindowNow(final ServerWorld world, final LivingEntity target) {
+    final Map<UUID, DisarmFetch> open = WINDOWS.get(world.getRegistryKey());
+    if (open == null) {
+      return;
+    }
+    final DisarmFetch fetch = open.remove(target.getUuid());
+    if (fetch != null) {
+      close(target, fetch);
+    }
   }
 
   private static void closeEveryWindow() {
@@ -44,28 +63,39 @@ public final class DisarmFetchService {
   }
 
   private static void tick(final ServerWorld world) {
-    final Map<UUID, Long> open = WINDOWS.get(world.getRegistryKey());
+    final Map<UUID, DisarmFetch> open = WINDOWS.get(world.getRegistryKey());
     if (open == null || open.isEmpty()) {
       return;
     }
-    final Iterator<Map.Entry<UUID, Long>> remaining = open.entrySet().iterator();
+    final Iterator<Map.Entry<UUID, DisarmFetch>> remaining = open.entrySet().iterator();
     while (remaining.hasNext()) {
-      final Map.Entry<UUID, Long> entry = remaining.next();
-      if (world.getTime() < entry.getValue()) {
+      final DisarmFetch fetch = remaining.next().getValue();
+      final Entity held = world.getEntity(fetch.mobId());
+      if (!fetch.hasExpired(world.getTime())) {
+        keepTheirGearAsDroppableAsItWas(held, fetch);
         continue;
       }
-      close(world.getEntity(entry.getKey()));
+      close(held, fetch);
       remaining.remove();
     }
   }
 
-  private static void close(final Entity held) {
-    if (held instanceof MobEntity mob) {
-      mob.setCanPickUpLoot(false);
+  private static void keepTheirGearAsDroppableAsItWas(final Entity held, final DisarmFetch fetch) {
+    if (held instanceof MobEntity mob
+        && mob.getDropChance(EquipmentSlot.MAINHAND) != fetch.mainHandDropChance()) {
+      mob.setEquipmentDropChance(EquipmentSlot.MAINHAND, fetch.mainHandDropChance());
     }
   }
 
-  private static Map<UUID, Long> windowsIn(final ServerWorld world) {
+  private static void close(final Entity held, final DisarmFetch fetch) {
+    if (!(held instanceof MobEntity mob)) {
+      return;
+    }
+    mob.setCanPickUpLoot(false);
+    mob.setEquipmentDropChance(EquipmentSlot.MAINHAND, fetch.mainHandDropChance());
+  }
+
+  private static Map<UUID, DisarmFetch> windowsIn(final ServerWorld world) {
     return WINDOWS.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashMap<>());
   }
 }
