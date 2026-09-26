@@ -33,4 +33,9 @@ public class MilkArrowEntity extends BaseArrowEntity {
       living.clearStatusEffects();
     }
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

@@ -39,4 +39,9 @@ public abstract class StatusArrowEntity extends BaseArrowEntity {
     final StatusArrowConfig status = ServerConfigService.get().combat().status();
     StatusArrowImpact.apply(entityHitResult.getEntity(), effect(), durationTicks(status), this);
   }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
+  }
 }

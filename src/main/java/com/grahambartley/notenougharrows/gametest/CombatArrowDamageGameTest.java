@@ -22,8 +22,6 @@ public final class CombatArrowDamageGameTest implements FabricGameTest {
 
     for (final RegisteredArrow<?> arrow :
         java.util.List.of(
-            ModArrows.RUST_ARROW,
-            ModArrows.MILK_ARROW,
             ModArrows.HOMING_ARROW,
             ModArrows.RAILGUN_ARROW,
             ModArrows.SHOCK_ARROW,
@@ -40,7 +38,7 @@ public final class CombatArrowDamageGameTest implements FabricGameTest {
     MockPlayerSupport.fireEastFromBow(
         context,
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
-        ModArrows.RUST_ARROW.item());
+        ModArrows.HOMING_ARROW.item());
 
     context.runAtTick(
         1,

@@ -317,7 +317,7 @@ Its range is deliberately shorter than the ender pearl arrow's. Moving yourself 
 
 Nine arrows that change a fight without making a single arrow hit harder. None of them raises vanilla's damage, its critical hits, or any enchantment above what an ordinary arrow already does. What they change is reach, sustain, flight, and status. An arrow that simply hit harder would be a better arrow rather than a different one.
 
-Two of them deliberately do no damage at all. The haste and guard arrows are fired at friends as often as at enemies, and an arrow you fire at a friend should cost them nothing to receive.
+Four of them deliberately do no damage at all. The rust, milk, haste and guard arrows exist for the status they apply, not the hit: haste and guard are fired at friends as often as at enemies, and an arrow you fire at a friend should cost them nothing to receive.
 
 | Arrow | Centre ingredient | What it does |
 |---|---|---|

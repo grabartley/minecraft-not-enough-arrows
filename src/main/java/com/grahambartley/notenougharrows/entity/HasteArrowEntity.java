@@ -36,9 +36,4 @@ public class HasteArrowEntity extends StatusArrowEntity {
   protected int durationTicks(final StatusArrowConfig status) {
     return status.hasteDurationTicks();
   }
-
-  @Override
-  protected boolean hurtsWhatItHits() {
-    return false;
-  }
 }

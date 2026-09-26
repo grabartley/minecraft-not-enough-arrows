@@ -824,7 +824,7 @@ A player in a fight wants something other than more damage: reach, sustain, a fr
 | FIGHT-5 | A lifesteal arrow returns a configured share of the damage actually dealt to the **shooter**, capped at a configured maximum per hit, and it heals nobody when there is no shooter or when the hit dealt no damage. An Arrow of Healing heals what it strikes, which is the opposite direction and the reason both can exist |
 | FIGHT-6 | A lifesteal arrow never heals the shooter past their own maximum health, and it grants no absorption as a substitute |
 | FIGHT-7 | A haste arrow and a guard arrow apply their effect to whatever they strike, friend or enemy, because an arrow does not know whose side a target is on and the mod does not add a team system to teach it |
-| FIGHT-8 | A haste arrow and a guard arrow deal no damage to what they strike, so helping a friend costs them nothing to receive |
+| FIGHT-8 | The rust, milk, haste and guard arrows deal no damage to what they strike. Their status is the point, and helping a friend with haste or guard costs them nothing to receive |
 | FIGHT-9 | A milk arrow removes beneficial and harmful effects alike, without exception, because a selective cleanse is a different tool and a player must be able to predict which one they fired |
 | FIGHT-10 | A homing arrow curves toward hostile mobs only and never toward a player, so it cannot become a PvP aim assist. This is not a setting |
 | FIGHT-11 | A homing arrow's turn rate, search radius, and search cone are server settings, and it flies straight when nothing eligible is found |

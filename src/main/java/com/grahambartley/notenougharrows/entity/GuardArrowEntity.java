@@ -36,9 +36,4 @@ public class GuardArrowEntity extends StatusArrowEntity {
   protected int durationTicks(final StatusArrowConfig status) {
     return status.guardDurationTicks();
   }
-
-  @Override
-  protected boolean hurtsWhatItHits() {
-    return false;
-  }
 }
