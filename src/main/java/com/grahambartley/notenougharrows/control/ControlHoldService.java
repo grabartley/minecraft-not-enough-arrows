@@ -71,6 +71,7 @@ public final class ControlHoldService {
                   ControlSteering.DRAWN,
                   world.getTime() + targeting.tauntDurationTicks());
       trackerFor(world).hold(hold);
+      mob.setAttached(ControlPersistence.HOLD, hold);
       if (hold.subjectId().isEmpty()) {
         MobAggression.aim(mob, null);
         steer(mob, hold.anchor(), hold.steering());
@@ -97,6 +98,7 @@ public final class ControlHoldService {
               targeting.repelDistance(),
               world.getTime() + targeting.repelDurationTicks());
       trackerFor(world).hold(hold);
+      mob.setAttached(ControlPersistence.HOLD, hold);
       steer(mob, hold.anchor(), hold.steering());
       held++;
     }
@@ -122,8 +124,13 @@ public final class ControlHoldService {
             allegiance.defendRadius(),
             world.getTime() + allegiance.durationTicks());
     trackerFor(world).hold(hold);
+    mob.setAttached(ControlPersistence.HOLD, hold);
     applyTargeting(world, mob, hold);
     return true;
+  }
+
+  static void resume(final ServerWorld world, final ControlHold hold) {
+    trackerFor(world).hold(hold);
   }
 
   public static List<ControlHold> holdsIn(final ServerWorld world) {
@@ -230,8 +237,11 @@ public final class ControlHoldService {
 
   private static boolean defendSubject(
       final ServerWorld world, final MobEntity mob, final ControlHold hold) {
-    final LivingEntity defended = livingSubject(world, hold);
-    if (defended == null) {
+    final Entity subject = hold.subjectId().map(world::getEntity).orElse(null);
+    if (subject == null) {
+      return true;
+    }
+    if (!(subject instanceof LivingEntity defended) || !defended.isAlive()) {
       return false;
     }
     final LivingEntity threat =
@@ -278,6 +288,7 @@ public final class ControlHoldService {
     if (mob == null) {
       return;
     }
+    mob.removeAttached(ControlPersistence.HOLD);
     if (hold.steering() != ControlSteering.FLEEING) {
       MobAggression.aim(mob, null);
     }

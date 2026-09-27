@@ -32,7 +32,9 @@ public final class FrostGripService {
         || FrostImmunity.shrugsOff(target)) {
       return false;
     }
-    gripsIn(world).put(target.getUuid(), world.getTime() + frost.durationTicks());
+    final long until = world.getTime() + frost.durationTicks();
+    gripsIn(world).put(target.getUuid(), until);
+    target.setAttached(ControlPersistence.FROST_UNTIL, until);
     pin(target);
     FrostEffects.frozeOver(world, target);
     return true;
@@ -57,6 +59,7 @@ public final class FrostGripService {
       }
       if (world.getTime() >= entry.getValue()) {
         remaining.remove();
+        living.removeAttached(ControlPersistence.FROST_UNTIL);
         FrostEffects.thawed(world, living);
         continue;
       }
@@ -68,6 +71,10 @@ public final class FrostGripService {
         FrostEffects.stillFrozen(world, living);
       }
     }
+  }
+
+  static void resume(final ServerWorld world, final LivingEntity target, final long until) {
+    gripsIn(world).put(target.getUuid(), until);
   }
 
   private static void pin(final LivingEntity target) {

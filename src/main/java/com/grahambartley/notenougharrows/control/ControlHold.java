@@ -1,8 +1,11 @@
 package com.grahambartley.notenougharrows.control;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.util.Uuids;
 import net.minecraft.util.math.Vec3d;
 
 public record ControlHold(
@@ -12,6 +15,22 @@ public record ControlHold(
     double reach,
     ControlSteering steering,
     long expiryTick) {
+
+  public static final Codec<ControlHold> CODEC =
+      RecordCodecBuilder.create(
+          instance ->
+              instance
+                  .group(
+                      Uuids.CODEC.fieldOf("mob").forGetter(ControlHold::mobId),
+                      Vec3d.CODEC.fieldOf("anchor").forGetter(ControlHold::anchor),
+                      Uuids.CODEC.optionalFieldOf("subject").forGetter(ControlHold::subjectId),
+                      Codec.DOUBLE.fieldOf("reach").forGetter(ControlHold::reach),
+                      Codec.STRING
+                          .xmap(ControlSteering::valueOf, ControlSteering::name)
+                          .fieldOf("steering")
+                          .forGetter(ControlHold::steering),
+                      Codec.LONG.fieldOf("expires").forGetter(ControlHold::expiryTick))
+                  .apply(instance, ControlHold::new));
 
   public ControlHold {
     Objects.requireNonNull(mobId, "mobId");

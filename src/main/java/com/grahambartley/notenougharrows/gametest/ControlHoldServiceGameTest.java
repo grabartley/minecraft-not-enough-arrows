@@ -212,7 +212,25 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
-  public void anAllegianceWhoseDefendedEntityIsGoneEndsRatherThanHoldingOn(TestContext context) {
+  public void anAllegianceWhoseDefendedEntityDiesEndsRatherThanHoldingOn(TestContext context) {
+    final CowEntity defended = ControlTestSupport.stillCowAt(context, PREY_STAND);
+    final ZombieEntity defender = ControlTestSupport.stillZombieAt(context, HOSTILE_STAND);
+    ControlHoldService.enlist(context.getWorld(), defender, defended, enlistingFor(2000));
+
+    context.runAtTick(SETTLING_TICKS, () -> defended.kill());
+
+    context.runAtTick(
+        SETTLING_TICKS + 2,
+        () -> {
+          context.assertTrue(
+              ControlHoldService.heldIn(context.getWorld(), defender).isEmpty(),
+              "An allegiance whose defended entity died should end, not run to its duration");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void anAllegianceWaitsWhileItsDefendedEntityIsAway(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PREY_STAND);
     final ZombieEntity defender = ControlTestSupport.stillZombieAt(context, HOSTILE_STAND);
     ControlHoldService.enlist(context.getWorld(), defender, shooter, enlistingFor(2000));
@@ -223,8 +241,9 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
         SETTLING_TICKS + KEEPING_IT_TICKS,
         () -> {
           context.assertTrue(
-              ControlHoldService.heldIn(context.getWorld(), defender).isEmpty(),
-              "An allegiance whose defended entity is gone should end, not run to its duration");
+              ControlHoldService.heldIn(context.getWorld(), defender).isPresent(),
+              "A shooter who logged out or is loading back in should still have their ally when"
+                  + " they return");
           context.complete();
         });
   }

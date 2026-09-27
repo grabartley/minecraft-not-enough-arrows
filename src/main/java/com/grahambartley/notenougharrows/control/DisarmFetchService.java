@@ -35,14 +35,18 @@ public final class DisarmFetchService {
     if (!(target instanceof MobEntity mob)) {
       return;
     }
-    errandsIn(world)
-        .put(
+    final DisarmFetch fetch =
+        new DisarmFetch(
             mob.getUuid(),
-            new DisarmFetch(
-                mob.getUuid(),
-                thrown.getUuid(),
-                mob.getDropChance(EquipmentSlot.MAINHAND),
-                world.getTime() + FETCH_WINDOW_TICKS));
+            thrown.getUuid(),
+            mob.getDropChance(EquipmentSlot.MAINHAND),
+            world.getTime() + FETCH_WINDOW_TICKS);
+    errandsIn(world).put(mob.getUuid(), fetch);
+    mob.setAttached(ControlPersistence.FETCH, fetch);
+  }
+
+  static void resume(final ServerWorld world, final DisarmFetch fetch) {
+    errandsIn(world).put(fetch.mobId(), fetch);
   }
 
   public static boolean isFetching(final ServerWorld world, final LivingEntity target) {
@@ -54,6 +58,7 @@ public final class DisarmFetchService {
     final Map<UUID, DisarmFetch> open = ERRANDS.get(world.getRegistryKey());
     final DisarmFetch fetch = open == null ? null : open.remove(target.getUuid());
     if (fetch != null) {
+      target.removeAttached(ControlPersistence.FETCH);
       keepTheirGearAsDroppableAsItWas(target, fetch);
     }
   }
@@ -73,6 +78,7 @@ public final class DisarmFetchService {
       keepTheirGearAsDroppableAsItWas(mob, fetch);
       if (fetch.hasExpired(world.getTime()) || runErrand(world, mob, fetch)) {
         remaining.remove();
+        mob.removeAttached(ControlPersistence.FETCH);
       }
     }
   }
