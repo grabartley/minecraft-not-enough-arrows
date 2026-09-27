@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class TraversalOptions {
-  public static final float STEP = 0.1f;
+  public static final float VELOCITY_STEP = 0.1f;
 
   private TraversalOptions() {}
 
@@ -48,7 +48,7 @@ public final class TraversalOptions {
             ConfigSettings.TRAVERSAL_ZIPLINE_RIDE_SPEED,
             ZiplineArrowConfig.RIDE_SPEED_MIN,
             ZiplineArrowConfig.RIDE_SPEED_MAX,
-            STEP,
+            VELOCITY_STEP,
             config -> config.traversal().zipline().rideSpeed(),
             (config, value) -> zipline(config, it -> it.withRideSpeed(value))),
         new IntOption<>(
@@ -85,7 +85,7 @@ public final class TraversalOptions {
             ConfigSettings.TRAVERSAL_UPDRAFT_STRENGTH,
             UpdraftArrowConfig.STRENGTH_MIN,
             UpdraftArrowConfig.STRENGTH_MAX,
-            STEP,
+            VELOCITY_STEP,
             config -> config.traversal().updraft().strength(),
             (config, value) -> updraft(config, it -> it.withStrength(value))),
         new IntOption<>(
@@ -98,7 +98,7 @@ public final class TraversalOptions {
             ConfigSettings.TRAVERSAL_TRAMPOLINE_STRENGTH,
             TrampolineArrowConfig.STRENGTH_MIN,
             TrampolineArrowConfig.STRENGTH_MAX,
-            STEP,
+            VELOCITY_STEP,
             config -> config.traversal().trampoline().strength(),
             (config, value) -> trampoline(config, it -> it.withStrength(value))),
         new IntOption<>(

@@ -20,11 +20,11 @@ class AgricultureOptionsTest {
   void listsEverySettingInTheOrderTheStatusOutputUses() {
     assertEquals(
         List.of(
-            "agriculture.blossomRadius",
-            "agriculture.tillRadius",
-            "agriculture.harvestRadius",
-            "agriculture.beeCount",
-            "agriculture.beeLifetimeTicks"),
+            "agriculture.blossom.radius",
+            "agriculture.till.radius",
+            "agriculture.harvest.radius",
+            "agriculture.bee.count",
+            "agriculture.bee.lifetimeTicks"),
         AgricultureOptions.options().stream().map(ConfigOption::id).toList());
   }
 

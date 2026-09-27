@@ -22,7 +22,12 @@ public final class OptionCommandNodes {
 
   private static LiteralArgumentBuilder<ServerCommandSource> nested(
       final String sectionId, final ConfigOption<NotEnoughArrowsConfig> option) {
-    final String[] segments = option.id().substring(sectionId.length() + 1).split("\\.");
+    final String prefix = sectionId + ".";
+    if (!option.id().startsWith(prefix)) {
+      throw new IllegalArgumentException(
+          "Option " + option.id() + " does not belong to section " + sectionId);
+    }
+    final String[] segments = option.id().substring(prefix.length()).split("\\.");
     LiteralArgumentBuilder<ServerCommandSource> node = option(option);
     for (int i = segments.length - 2; i >= 0; i--) {
       node = ConfigOptionNodes.group(segments[i]).then(node);
@@ -30,7 +35,7 @@ public final class OptionCommandNodes {
     return node;
   }
 
-  public static LiteralArgumentBuilder<ServerCommandSource> option(
+  private static LiteralArgumentBuilder<ServerCommandSource> option(
       final ConfigOption<NotEnoughArrowsConfig> option) {
     return switch (option) {
       case IntOption<NotEnoughArrowsConfig> intOption ->

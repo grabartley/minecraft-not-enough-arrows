@@ -13,8 +13,6 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
 
 public final class OptionWidgets {
-  public static final int MAX_IDENTIFIER_TEXT_LENGTH = 2048;
-
   private OptionWidgets() {}
 
   public static boolean fitsBesideItsLabel(final ConfigOption<?> option) {
@@ -91,7 +89,7 @@ public final class OptionWidgets {
       final TextRenderer textRenderer) {
     final TextFieldWidget field =
         new TextFieldWidget(textRenderer, 0, 0, width, height, OptionLabels.option(option));
-    field.setMaxLength(MAX_IDENTIFIER_TEXT_LENGTH);
+    field.setMaxLength(IdentifierListText.maxLength(option.maxEntries()));
     field.setPlaceholder(Text.translatable(OptionLabels.IDENTIFIER_LIST_HINT_KEY));
     field.setText(IdentifierListText.join(option.read(draft.current())));
     field.setChangedListener(

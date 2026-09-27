@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.command;
 
+import com.grahambartley.notenougharrows.config.ConfigValues;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -62,6 +63,9 @@ public final class IdentifierListEdits {
       return null;
     }
     final Identifier identifier = Identifier.tryParse(id.trim().toLowerCase(Locale.ROOT));
-    return identifier == null ? null : identifier.toString();
+    if (identifier == null || identifier.toString().length() > ConfigValues.MAX_IDENTIFIER_LENGTH) {
+      return null;
+    }
+    return identifier.toString();
   }
 }

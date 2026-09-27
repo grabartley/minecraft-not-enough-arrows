@@ -27,26 +27,26 @@ class AgricultureCommandNodesTest {
 
   @ParameterizedTest(name = "\"{0}\" accepted={1}")
   @CsvSource({
-    "notenougharrows config agriculture blossomradius 0,       true",
-    "notenougharrows config agriculture blossomradius 8,       true",
-    "notenougharrows config agriculture blossomradius -1,      false",
-    "notenougharrows config agriculture blossomradius 9,       false",
-    "notenougharrows config agriculture tillradius 0,          true",
-    "notenougharrows config agriculture tillradius 8,          true",
-    "notenougharrows config agriculture tillradius -1,         false",
-    "notenougharrows config agriculture tillradius 9,          false",
-    "notenougharrows config agriculture harvestradius 0,       true",
-    "notenougharrows config agriculture harvestradius 8,       true",
-    "notenougharrows config agriculture harvestradius -1,      false",
-    "notenougharrows config agriculture harvestradius 9,       false",
-    "notenougharrows config agriculture beecount 1,            true",
-    "notenougharrows config agriculture beecount 8,            true",
-    "notenougharrows config agriculture beecount 0,            false",
-    "notenougharrows config agriculture beecount 9,            false",
-    "notenougharrows config agriculture beelifetimeticks 20,   true",
-    "notenougharrows config agriculture beelifetimeticks 6000, true",
-    "notenougharrows config agriculture beelifetimeticks 19,   false",
-    "notenougharrows config agriculture beelifetimeticks 6001, false",
+    "notenougharrows config agriculture blossom radius 0,       true",
+    "notenougharrows config agriculture blossom radius 8,       true",
+    "notenougharrows config agriculture blossom radius -1,      false",
+    "notenougharrows config agriculture blossom radius 9,       false",
+    "notenougharrows config agriculture till radius 0,          true",
+    "notenougharrows config agriculture till radius 8,          true",
+    "notenougharrows config agriculture till radius -1,         false",
+    "notenougharrows config agriculture till radius 9,          false",
+    "notenougharrows config agriculture harvest radius 0,       true",
+    "notenougharrows config agriculture harvest radius 8,       true",
+    "notenougharrows config agriculture harvest radius -1,      false",
+    "notenougharrows config agriculture harvest radius 9,       false",
+    "notenougharrows config agriculture bee count 1,            true",
+    "notenougharrows config agriculture bee count 8,            true",
+    "notenougharrows config agriculture bee count 0,            false",
+    "notenougharrows config agriculture bee count 9,            false",
+    "notenougharrows config agriculture bee lifetimeticks 20,   true",
+    "notenougharrows config agriculture bee lifetimeticks 6000, true",
+    "notenougharrows config agriculture bee lifetimeticks 19,   false",
+    "notenougharrows config agriculture bee lifetimeticks 6001, false",
   })
   void eachOptionAcceptsOnlyValuesInsideItsConfiguredBounds(String command, boolean accepted) {
     assertEquals(accepted, CommandParsing.accepts(dispatcher, operator, command));
@@ -54,16 +54,16 @@ class AgricultureCommandNodesTest {
 
   @ParameterizedTest(name = "a non-operator may not run \"{0}\"")
   @CsvSource({
-    "notenougharrows config agriculture blossomradius 0",
-    "notenougharrows config agriculture blossomradius 8",
-    "notenougharrows config agriculture tillradius 0",
-    "notenougharrows config agriculture tillradius 8",
-    "notenougharrows config agriculture harvestradius 0",
-    "notenougharrows config agriculture harvestradius 8",
-    "notenougharrows config agriculture beecount 1",
-    "notenougharrows config agriculture beecount 8",
-    "notenougharrows config agriculture beelifetimeticks 20",
-    "notenougharrows config agriculture beelifetimeticks 6000",
+    "notenougharrows config agriculture blossom radius 0",
+    "notenougharrows config agriculture blossom radius 8",
+    "notenougharrows config agriculture till radius 0",
+    "notenougharrows config agriculture till radius 8",
+    "notenougharrows config agriculture harvest radius 0",
+    "notenougharrows config agriculture harvest radius 8",
+    "notenougharrows config agriculture bee count 1",
+    "notenougharrows config agriculture bee count 8",
+    "notenougharrows config agriculture bee lifetimeticks 20",
+    "notenougharrows config agriculture bee lifetimeticks 6000",
   })
   void everyMutatingNodeIsGatedBehindOperatorPermission(String command) {
     assertEquals(false, CommandParsing.accepts(dispatcher, CommandParsing.source(false), command));

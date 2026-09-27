@@ -1,71 +1,108 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 class ChaosArrowConfigTest {
 
   @Test
-  void startsFromItsDocumentedDefaults() {
+  void defaultsEveryArrow() {
     final ChaosArrowConfig defaults = ChaosArrowConfig.defaults();
 
-    assertEquals(ChaosArrowConfig.DEFAULT_PARTY_ENABLED, defaults.partyEnabled());
-    assertEquals(ChaosArrowConfig.DEFAULT_CHICKEN_ENABLED, defaults.chickenEnabled());
-    assertEquals(ChaosArrowConfig.DEFAULT_PUFFER_ENABLED, defaults.pufferEnabled());
-    assertEquals(ChaosArrowConfig.DEFAULT_PUFFER_DURATION_TICKS, defaults.pufferDurationTicks());
-    assertEquals(ChaosArrowConfig.DEFAULT_STINK_ENABLED, defaults.stinkEnabled());
-    assertEquals(
-        ChaosArrowConfig.DEFAULT_STINK_CLOUD_LIFETIME_TICKS, defaults.stinkCloudLifetimeTicks());
-    assertEquals(ChaosArrowConfig.DEFAULT_BOOMERANG_ENABLED, defaults.boomerangEnabled());
-    assertEquals(ChaosArrowConfig.DEFAULT_POLYMORPH_ENABLED, defaults.polymorphEnabled());
-    assertEquals(
-        ChaosArrowConfig.DEFAULT_POLYMORPH_DURATION_TICKS, defaults.polymorphDurationTicks());
+    assertEquals(PartyArrowConfig.defaults(), defaults.party());
+    assertEquals(ChickenArrowConfig.defaults(), defaults.chicken());
+    assertEquals(PufferArrowConfig.defaults(), defaults.puffer());
+    assertEquals(StinkArrowConfig.defaults(), defaults.stink());
+    assertEquals(BoomerangArrowConfig.defaults(), defaults.boomerang());
+    assertEquals(PolymorphArrowConfig.defaults(), defaults.polymorph());
   }
 
   @Test
-  void defaultsSurviveTheirOwnClamp() {
-    final ChaosArrowConfig defaults = ChaosArrowConfig.defaults();
-
+  void substitutesDefaultsForMissingArrows() {
     assertEquals(
-        defaults,
-        new ChaosArrowConfig(
-            defaults.partyEnabled(),
-            defaults.chickenEnabled(),
-            defaults.pufferEnabled(),
-            defaults.pufferDurationTicks(),
-            defaults.stinkEnabled(),
-            defaults.stinkCloudLifetimeTicks(),
-            defaults.boomerangEnabled(),
-            defaults.polymorphEnabled(),
-            defaults.polymorphDurationTicks()));
+        ChaosArrowConfig.defaults(), new ChaosArrowConfig(null, null, null, null, null, null));
   }
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "1200, 1200", "1201, 1200"})
-  void clampsPufferDurationTicks(final int given, final int expected) {
-    assertEquals(
-        expected, ChaosArrowConfig.defaults().withPufferDurationTicks(given).pufferDurationTicks());
+  @Test
+  void replacesOnlyThePartyArrow() {
+    final PartyArrowConfig replacement = PartyArrowConfig.defaults().withEnabled(false);
+    final ChaosArrowConfig updated = ChaosArrowConfig.defaults().withParty(replacement);
+
+    assertEquals(replacement, updated.party());
+    assertEquals(ChickenArrowConfig.defaults(), updated.chicken());
+    assertEquals(PufferArrowConfig.defaults(), updated.puffer());
+    assertEquals(StinkArrowConfig.defaults(), updated.stink());
+    assertEquals(BoomerangArrowConfig.defaults(), updated.boomerang());
+    assertEquals(PolymorphArrowConfig.defaults(), updated.polymorph());
   }
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "1200, 1200", "1201, 1200"})
-  void clampsStinkCloudLifetimeTicks(final int given, final int expected) {
-    assertEquals(
-        expected,
-        ChaosArrowConfig.defaults().withStinkCloudLifetimeTicks(given).stinkCloudLifetimeTicks());
+  @Test
+  void replacesOnlyTheChickenArrow() {
+    final ChickenArrowConfig replacement = ChickenArrowConfig.defaults().withEnabled(false);
+    final ChaosArrowConfig updated = ChaosArrowConfig.defaults().withChicken(replacement);
+
+    assertEquals(replacement, updated.chicken());
+    assertEquals(PartyArrowConfig.defaults(), updated.party());
+    assertEquals(PufferArrowConfig.defaults(), updated.puffer());
+    assertEquals(StinkArrowConfig.defaults(), updated.stink());
+    assertEquals(BoomerangArrowConfig.defaults(), updated.boomerang());
+    assertEquals(PolymorphArrowConfig.defaults(), updated.polymorph());
   }
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "2400, 2400", "2401, 2400"})
-  void clampsPolymorphDurationTicks(final int given, final int expected) {
-    assertEquals(
-        expected,
-        ChaosArrowConfig.defaults().withPolymorphDurationTicks(given).polymorphDurationTicks());
+  @Test
+  void replacesOnlyThePufferArrow() {
+    final PufferArrowConfig replacement = PufferArrowConfig.defaults().withEnabled(false);
+    final ChaosArrowConfig updated = ChaosArrowConfig.defaults().withPuffer(replacement);
+
+    assertEquals(replacement, updated.puffer());
+    assertEquals(PartyArrowConfig.defaults(), updated.party());
+    assertEquals(ChickenArrowConfig.defaults(), updated.chicken());
+    assertEquals(StinkArrowConfig.defaults(), updated.stink());
+    assertEquals(BoomerangArrowConfig.defaults(), updated.boomerang());
+    assertEquals(PolymorphArrowConfig.defaults(), updated.polymorph());
+  }
+
+  @Test
+  void replacesOnlyTheStinkArrow() {
+    final StinkArrowConfig replacement = StinkArrowConfig.defaults().withEnabled(false);
+    final ChaosArrowConfig updated = ChaosArrowConfig.defaults().withStink(replacement);
+
+    assertEquals(replacement, updated.stink());
+    assertEquals(PartyArrowConfig.defaults(), updated.party());
+    assertEquals(ChickenArrowConfig.defaults(), updated.chicken());
+    assertEquals(PufferArrowConfig.defaults(), updated.puffer());
+    assertEquals(BoomerangArrowConfig.defaults(), updated.boomerang());
+    assertEquals(PolymorphArrowConfig.defaults(), updated.polymorph());
+  }
+
+  @Test
+  void replacesOnlyTheBoomerangArrow() {
+    final BoomerangArrowConfig replacement = BoomerangArrowConfig.defaults().withEnabled(false);
+    final ChaosArrowConfig updated = ChaosArrowConfig.defaults().withBoomerang(replacement);
+
+    assertEquals(replacement, updated.boomerang());
+    assertEquals(PartyArrowConfig.defaults(), updated.party());
+    assertEquals(ChickenArrowConfig.defaults(), updated.chicken());
+    assertEquals(PufferArrowConfig.defaults(), updated.puffer());
+    assertEquals(StinkArrowConfig.defaults(), updated.stink());
+    assertEquals(PolymorphArrowConfig.defaults(), updated.polymorph());
+  }
+
+  @Test
+  void replacesOnlyThePolymorphArrow() {
+    final PolymorphArrowConfig replacement = PolymorphArrowConfig.defaults().withEnabled(false);
+    final ChaosArrowConfig updated = ChaosArrowConfig.defaults().withPolymorph(replacement);
+
+    assertEquals(replacement, updated.polymorph());
+    assertEquals(PartyArrowConfig.defaults(), updated.party());
+    assertEquals(ChickenArrowConfig.defaults(), updated.chicken());
+    assertEquals(PufferArrowConfig.defaults(), updated.puffer());
+    assertEquals(StinkArrowConfig.defaults(), updated.stink());
+    assertEquals(BoomerangArrowConfig.defaults(), updated.boomerang());
   }
 
   @Test
@@ -74,78 +111,38 @@ class ChaosArrowConfigTest {
   }
 
   @Test
-  void fallsBackToDefaultsForAMissingObject() {
-    assertEquals(ChaosArrowConfig.defaults(), ChaosArrowConfig.fromJson(null));
+  void readsOneArrowAndDefaultsTheRest() {
+    final ChaosArrowConfig parsed =
+        ChaosArrowConfig.fromJson(
+            JsonParser.parseString("{\"party\":{\"enabled\":False}}").getAsJsonObject());
+
+    assertEquals(false, parsed.party().enabled());
+    assertEquals(ChickenArrowConfig.defaults(), parsed.chicken());
   }
 
   @Test
-  void readsOnlyTheKeysThatArePresentAndDefaultsTheRest() {
-    final ChaosArrowConfig parsed =
-        ChaosArrowConfig.fromJson(
-            JsonParser.parseString("{\"pufferDurationTicks\":1199}").getAsJsonObject());
+  void nestsEachArrowUnderItsOwnKey() {
+    final JsonObject json = ChaosArrowConfig.defaults().toJson();
 
-    assertEquals(1199, parsed.pufferDurationTicks());
-    assertEquals(ChaosArrowConfig.DEFAULT_PARTY_ENABLED, parsed.partyEnabled());
-  }
-
-  @Test
-  void clampsAnOutOfRangeValueReadFromAFile() {
-    final ChaosArrowConfig parsed =
-        ChaosArrowConfig.fromJson(
-            JsonParser.parseString("{\"pufferDurationTicks\":1300}").getAsJsonObject());
-
-    assertEquals(ChaosArrowConfig.PUFFER_DURATION_TICKS_MAX, parsed.pufferDurationTicks());
-  }
-
-  @Test
-  void fallsBackToTheDefaultForAValueOfTheWrongType() {
-    final ChaosArrowConfig parsed =
-        ChaosArrowConfig.fromJson(
-            JsonParser.parseString("{\"pufferDurationTicks\":\"lots\"}").getAsJsonObject());
-
-    assertEquals(ChaosArrowConfig.DEFAULT_PUFFER_DURATION_TICKS, parsed.pufferDurationTicks());
+    assertTrue(json.get("party").isJsonObject());
+    assertTrue(json.get("chicken").isJsonObject());
+    assertTrue(json.get("puffer").isJsonObject());
+    assertTrue(json.get("stink").isJsonObject());
+    assertTrue(json.get("boomerang").isJsonObject());
+    assertTrue(json.get("polymorph").isJsonObject());
   }
 
   @Test
   void roundTripsThroughJson() {
     final ChaosArrowConfig original =
-        new ChaosArrowConfig(false, false, false, 1199, false, 1199, false, false, 2399);
+        new ChaosArrowConfig(
+            PartyArrowConfig.defaults().withEnabled(false),
+            ChickenArrowConfig.defaults().withEnabled(false),
+            PufferArrowConfig.defaults().withEnabled(false),
+            StinkArrowConfig.defaults().withEnabled(false),
+            BoomerangArrowConfig.defaults().withEnabled(false),
+            PolymorphArrowConfig.defaults().withEnabled(false));
 
     assertEquals(original, ChaosArrowConfig.fromJson(original.toJson()));
-  }
-
-  @Test
-  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
-    final ChaosArrowConfig original = ChaosArrowConfig.defaults();
-
-    final ChaosArrowConfig updated = original.withPartyEnabled(false);
-
-    assertEquals(false, updated.partyEnabled());
-    assertEquals(original.chickenEnabled(), updated.chickenEnabled());
-    assertEquals(original.pufferEnabled(), updated.pufferEnabled());
-    assertEquals(original.pufferDurationTicks(), updated.pufferDurationTicks());
-    assertEquals(original.stinkEnabled(), updated.stinkEnabled());
-    assertEquals(original.stinkCloudLifetimeTicks(), updated.stinkCloudLifetimeTicks());
-    assertEquals(original.boomerangEnabled(), updated.boomerangEnabled());
-    assertEquals(original.polymorphEnabled(), updated.polymorphEnabled());
-    assertEquals(original.polymorphDurationTicks(), updated.polymorphDurationTicks());
-  }
-
-  @Test
-  void everyFieldCanBeChangedOnItsOwn() {
-    final ChaosArrowConfig updated =
-        ChaosArrowConfig.defaults()
-            .withPartyEnabled(false)
-            .withChickenEnabled(false)
-            .withPufferEnabled(false)
-            .withPufferDurationTicks(1199)
-            .withStinkEnabled(false)
-            .withStinkCloudLifetimeTicks(1199)
-            .withBoomerangEnabled(false)
-            .withPolymorphEnabled(false)
-            .withPolymorphDurationTicks(2399);
-
-    assertEquals(
-        new ChaosArrowConfig(false, false, false, 1199, false, 1199, false, false, 2399), updated);
   }
 }

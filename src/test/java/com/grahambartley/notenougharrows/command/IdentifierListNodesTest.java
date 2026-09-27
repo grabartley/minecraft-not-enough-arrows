@@ -41,20 +41,20 @@ class IdentifierListNodesTest {
 
   @Test
   void mountsTheListUnderItsOwnSettingName() {
-    assertEquals("prospectorblocks", IdentifierListNodes.build(OPTION).getLiteral());
+    assertEquals("blocks", IdentifierListNodes.build(OPTION).getLiteral());
   }
 
   @ParameterizedTest(name = "\"{0}\" accepted={1}")
   @CsvSource({
-    "root prospectorblocks add minecraft:stone,     true",
-    "root prospectorblocks add stone,               true",
-    "root prospectorblocks remove minecraft:stone,  true",
-    "root prospectorblocks clear,                   true",
-    "root prospectorblocks add,                     false",
-    "root prospectorblocks remove,                  false",
-    "root prospectorblocks clear extra,             false",
-    "root prospectorblocks add minecraft:Stone,     false",
-    "root prospectorblocks minecraft:stone,         false",
+    "root blocks add minecraft:stone,     true",
+    "root blocks add stone,               true",
+    "root blocks remove minecraft:stone,  true",
+    "root blocks clear,                   true",
+    "root blocks add,                     false",
+    "root blocks remove,                  false",
+    "root blocks clear extra,             false",
+    "root blocks add minecraft:Stone,     false",
+    "root blocks minecraft:stone,         false",
   })
   void editsTheListThroughAddRemoveAndClear(String command, boolean accepted) {
     assertEquals(accepted, CommandParsing.accepts(dispatcher, source, command));
@@ -62,7 +62,7 @@ class IdentifierListNodesTest {
 
   @Test
   void anEditThatChangesNothingIsRejectedWithTheSettingNamed() throws CommandSyntaxException {
-    final int result = dispatcher.execute("root prospectorblocks remove minecraft:stone", source);
+    final int result = dispatcher.execute("root blocks remove minecraft:stone", source);
 
     final ArgumentCaptor<Text> error = ArgumentCaptor.forClass(Text.class);
     verify(source).sendError(error.capture());
@@ -70,13 +70,12 @@ class IdentifierListNodesTest {
         assertInstanceOf(TranslatableTextContent.class, error.getValue().getContent());
     assertEquals(0, result);
     assertEquals("command.not-enough-arrows.list.not_present", content.getKey());
-    assertArrayEquals(new Object[] {"discovery.prospectorBlocks"}, content.getArgs());
+    assertArrayEquals(new Object[] {"discovery.prospector.blocks"}, content.getArgs());
   }
 
   @Test
   void addingAnEntryAlreadyOnTheListIsRejected() throws CommandSyntaxException {
-    final int result =
-        dispatcher.execute("root prospectorblocks add minecraft:diamond_ore", source);
+    final int result = dispatcher.execute("root blocks add minecraft:diamond_ore", source);
 
     final ArgumentCaptor<Text> error = ArgumentCaptor.forClass(Text.class);
     verify(source).sendError(error.capture());

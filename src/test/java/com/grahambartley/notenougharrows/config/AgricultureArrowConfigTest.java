@@ -1,71 +1,74 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 class AgricultureArrowConfigTest {
 
   @Test
-  void startsFromItsDocumentedDefaults() {
+  void defaultsEveryArrow() {
     final AgricultureArrowConfig defaults = AgricultureArrowConfig.defaults();
 
-    assertEquals(AgricultureArrowConfig.DEFAULT_BLOSSOM_RADIUS, defaults.blossomRadius());
-    assertEquals(AgricultureArrowConfig.DEFAULT_TILL_RADIUS, defaults.tillRadius());
-    assertEquals(AgricultureArrowConfig.DEFAULT_HARVEST_RADIUS, defaults.harvestRadius());
-    assertEquals(AgricultureArrowConfig.DEFAULT_BEE_COUNT, defaults.beeCount());
-    assertEquals(AgricultureArrowConfig.DEFAULT_BEE_LIFETIME_TICKS, defaults.beeLifetimeTicks());
+    assertEquals(BlossomArrowConfig.defaults(), defaults.blossom());
+    assertEquals(TillArrowConfig.defaults(), defaults.till());
+    assertEquals(HarvestArrowConfig.defaults(), defaults.harvest());
+    assertEquals(BeeArrowConfig.defaults(), defaults.bee());
   }
 
   @Test
-  void defaultsSurviveTheirOwnClamp() {
-    final AgricultureArrowConfig defaults = AgricultureArrowConfig.defaults();
-
+  void substitutesDefaultsForMissingArrows() {
     assertEquals(
-        defaults,
-        new AgricultureArrowConfig(
-            defaults.blossomRadius(),
-            defaults.tillRadius(),
-            defaults.harvestRadius(),
-            defaults.beeCount(),
-            defaults.beeLifetimeTicks()));
+        AgricultureArrowConfig.defaults(), new AgricultureArrowConfig(null, null, null, null));
   }
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "8, 8", "9, 8"})
-  void clampsBlossomRadius(final int given, final int expected) {
-    assertEquals(
-        expected, AgricultureArrowConfig.defaults().withBlossomRadius(given).blossomRadius());
+  @Test
+  void replacesOnlyTheBlossomArrow() {
+    final BlossomArrowConfig replacement = BlossomArrowConfig.defaults().withRadius(7);
+    final AgricultureArrowConfig updated =
+        AgricultureArrowConfig.defaults().withBlossom(replacement);
+
+    assertEquals(replacement, updated.blossom());
+    assertEquals(TillArrowConfig.defaults(), updated.till());
+    assertEquals(HarvestArrowConfig.defaults(), updated.harvest());
+    assertEquals(BeeArrowConfig.defaults(), updated.bee());
   }
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "8, 8", "9, 8"})
-  void clampsTillRadius(final int given, final int expected) {
-    assertEquals(expected, AgricultureArrowConfig.defaults().withTillRadius(given).tillRadius());
+  @Test
+  void replacesOnlyTheTillArrow() {
+    final TillArrowConfig replacement = TillArrowConfig.defaults().withRadius(7);
+    final AgricultureArrowConfig updated = AgricultureArrowConfig.defaults().withTill(replacement);
+
+    assertEquals(replacement, updated.till());
+    assertEquals(BlossomArrowConfig.defaults(), updated.blossom());
+    assertEquals(HarvestArrowConfig.defaults(), updated.harvest());
+    assertEquals(BeeArrowConfig.defaults(), updated.bee());
   }
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "8, 8", "9, 8"})
-  void clampsHarvestRadius(final int given, final int expected) {
-    assertEquals(
-        expected, AgricultureArrowConfig.defaults().withHarvestRadius(given).harvestRadius());
+  @Test
+  void replacesOnlyTheHarvestArrow() {
+    final HarvestArrowConfig replacement = HarvestArrowConfig.defaults().withRadius(7);
+    final AgricultureArrowConfig updated =
+        AgricultureArrowConfig.defaults().withHarvest(replacement);
+
+    assertEquals(replacement, updated.harvest());
+    assertEquals(BlossomArrowConfig.defaults(), updated.blossom());
+    assertEquals(TillArrowConfig.defaults(), updated.till());
+    assertEquals(BeeArrowConfig.defaults(), updated.bee());
   }
 
-  @ParameterizedTest
-  @CsvSource({"0, 1", "1, 1", "8, 8", "9, 8"})
-  void clampsBeeCount(final int given, final int expected) {
-    assertEquals(expected, AgricultureArrowConfig.defaults().withBeeCount(given).beeCount());
-  }
+  @Test
+  void replacesOnlyTheBeeArrow() {
+    final BeeArrowConfig replacement = BeeArrowConfig.defaults().withCount(7);
+    final AgricultureArrowConfig updated = AgricultureArrowConfig.defaults().withBee(replacement);
 
-  @ParameterizedTest
-  @CsvSource({"19, 20", "20, 20", "6000, 6000", "6001, 6000"})
-  void clampsBeeLifetimeTicks(final int given, final int expected) {
-    assertEquals(
-        expected, AgricultureArrowConfig.defaults().withBeeLifetimeTicks(given).beeLifetimeTicks());
+    assertEquals(replacement, updated.bee());
+    assertEquals(BlossomArrowConfig.defaults(), updated.blossom());
+    assertEquals(TillArrowConfig.defaults(), updated.till());
+    assertEquals(HarvestArrowConfig.defaults(), updated.harvest());
   }
 
   @Test
@@ -75,68 +78,34 @@ class AgricultureArrowConfigTest {
   }
 
   @Test
-  void fallsBackToDefaultsForAMissingObject() {
-    assertEquals(AgricultureArrowConfig.defaults(), AgricultureArrowConfig.fromJson(null));
+  void readsOneArrowAndDefaultsTheRest() {
+    final AgricultureArrowConfig parsed =
+        AgricultureArrowConfig.fromJson(
+            JsonParser.parseString("{\"blossom\":{\"radius\":7}}").getAsJsonObject());
+
+    assertEquals(7, parsed.blossom().radius());
+    assertEquals(TillArrowConfig.defaults(), parsed.till());
   }
 
   @Test
-  void readsOnlyTheKeysThatArePresentAndDefaultsTheRest() {
-    final AgricultureArrowConfig parsed =
-        AgricultureArrowConfig.fromJson(
-            JsonParser.parseString("{\"blossomRadius\":7}").getAsJsonObject());
+  void nestsEachArrowUnderItsOwnKey() {
+    final JsonObject json = AgricultureArrowConfig.defaults().toJson();
 
-    assertEquals(7, parsed.blossomRadius());
-    assertEquals(AgricultureArrowConfig.DEFAULT_TILL_RADIUS, parsed.tillRadius());
-  }
-
-  @Test
-  void clampsAnOutOfRangeValueReadFromAFile() {
-    final AgricultureArrowConfig parsed =
-        AgricultureArrowConfig.fromJson(
-            JsonParser.parseString("{\"blossomRadius\":108}").getAsJsonObject());
-
-    assertEquals(AgricultureArrowConfig.BLOSSOM_RADIUS_MAX, parsed.blossomRadius());
-  }
-
-  @Test
-  void fallsBackToTheDefaultForAValueOfTheWrongType() {
-    final AgricultureArrowConfig parsed =
-        AgricultureArrowConfig.fromJson(
-            JsonParser.parseString("{\"blossomRadius\":\"lots\"}").getAsJsonObject());
-
-    assertEquals(AgricultureArrowConfig.DEFAULT_BLOSSOM_RADIUS, parsed.blossomRadius());
+    assertTrue(json.get("blossom").isJsonObject());
+    assertTrue(json.get("till").isJsonObject());
+    assertTrue(json.get("harvest").isJsonObject());
+    assertTrue(json.get("bee").isJsonObject());
   }
 
   @Test
   void roundTripsThroughJson() {
-    final AgricultureArrowConfig original = new AgricultureArrowConfig(7, 7, 7, 7, 5999);
+    final AgricultureArrowConfig original =
+        new AgricultureArrowConfig(
+            BlossomArrowConfig.defaults().withRadius(7),
+            TillArrowConfig.defaults().withRadius(7),
+            HarvestArrowConfig.defaults().withRadius(7),
+            BeeArrowConfig.defaults().withCount(7));
 
     assertEquals(original, AgricultureArrowConfig.fromJson(original.toJson()));
-  }
-
-  @Test
-  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
-    final AgricultureArrowConfig original = AgricultureArrowConfig.defaults();
-
-    final AgricultureArrowConfig updated = original.withBlossomRadius(7);
-
-    assertEquals(7, updated.blossomRadius());
-    assertEquals(original.tillRadius(), updated.tillRadius());
-    assertEquals(original.harvestRadius(), updated.harvestRadius());
-    assertEquals(original.beeCount(), updated.beeCount());
-    assertEquals(original.beeLifetimeTicks(), updated.beeLifetimeTicks());
-  }
-
-  @Test
-  void everyFieldCanBeChangedOnItsOwn() {
-    final AgricultureArrowConfig updated =
-        AgricultureArrowConfig.defaults()
-            .withBlossomRadius(7)
-            .withTillRadius(7)
-            .withHarvestRadius(7)
-            .withBeeCount(7)
-            .withBeeLifetimeTicks(5999);
-
-    assertEquals(new AgricultureArrowConfig(7, 7, 7, 7, 5999), updated);
   }
 }

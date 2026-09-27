@@ -216,11 +216,17 @@ class NotEnoughArrowsConfigTest {
                 new DisarmArrowConfig(false, 15.5f)),
             TraversalArrowConfig.defaults()
                 .withZipline(ZiplineArrowConfig.defaults().withMaxSpanBlocks(100)),
-            TerrainArrowConfig.defaults().withDrillToolTier(0),
-            AgricultureArrowConfig.defaults().withBeeCount(8),
-            DiscoveryArrowConfig.defaults().withProspectorBlocks(List.of("minecraft:stone")),
-            ChaosArrowConfig.defaults().withPolymorphEnabled(false),
-            SocialArrowConfig.defaults().withCourierUndeliverable(List.of("minecraft:shulker_box")),
+            TerrainArrowConfig.defaults().withDrill(DrillArrowConfig.defaults().withToolTier(0)),
+            AgricultureArrowConfig.defaults().withBee(BeeArrowConfig.defaults().withCount(8)),
+            DiscoveryArrowConfig.defaults()
+                .withProspector(
+                    ProspectorArrowConfig.defaults().withBlocks(List.of("minecraft:stone"))),
+            ChaosArrowConfig.defaults()
+                .withPolymorph(PolymorphArrowConfig.defaults().withEnabled(false)),
+            SocialArrowConfig.defaults()
+                .withCourier(
+                    CourierArrowConfig.defaults()
+                        .withUndeliverable(List.of("minecraft:shulker_box"))),
             new FletchingStationConfig(false));
 
     assertEquals(original, NotEnoughArrowsConfig.fromJson(original.toJson()));
@@ -242,7 +248,8 @@ class NotEnoughArrowsConfigTest {
 
   @Test
   void replacesOnlyTheTerrainFamily() {
-    final TerrainArrowConfig replacement = TerrainArrowConfig.defaults().withDrillToolTier(0);
+    final TerrainArrowConfig replacement =
+        TerrainArrowConfig.defaults().withDrill(DrillArrowConfig.defaults().withToolTier(0));
     final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withTerrain(replacement);
 
     assertEquals(replacement, updated.terrain());
@@ -253,7 +260,8 @@ class NotEnoughArrowsConfigTest {
 
   @Test
   void replacesOnlyTheAgricultureFamily() {
-    final AgricultureArrowConfig replacement = AgricultureArrowConfig.defaults().withBeeCount(8);
+    final AgricultureArrowConfig replacement =
+        AgricultureArrowConfig.defaults().withBee(BeeArrowConfig.defaults().withCount(8));
     final NotEnoughArrowsConfig updated =
         NotEnoughArrowsConfig.defaults().withAgriculture(replacement);
 
@@ -266,7 +274,9 @@ class NotEnoughArrowsConfigTest {
   @Test
   void replacesOnlyTheDiscoveryFamily() {
     final DiscoveryArrowConfig replacement =
-        DiscoveryArrowConfig.defaults().withProspectorBlocks(List.of("minecraft:stone"));
+        DiscoveryArrowConfig.defaults()
+            .withProspector(
+                ProspectorArrowConfig.defaults().withBlocks(List.of("minecraft:stone")));
     final NotEnoughArrowsConfig updated =
         NotEnoughArrowsConfig.defaults().withDiscovery(replacement);
 
@@ -278,7 +288,9 @@ class NotEnoughArrowsConfigTest {
 
   @Test
   void replacesOnlyTheChaosFamily() {
-    final ChaosArrowConfig replacement = ChaosArrowConfig.defaults().withPolymorphEnabled(false);
+    final ChaosArrowConfig replacement =
+        ChaosArrowConfig.defaults()
+            .withPolymorph(PolymorphArrowConfig.defaults().withEnabled(false));
     final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withChaos(replacement);
 
     assertEquals(replacement, updated.chaos());
@@ -290,7 +302,9 @@ class NotEnoughArrowsConfigTest {
   @Test
   void replacesOnlyTheSocialFamily() {
     final SocialArrowConfig replacement =
-        SocialArrowConfig.defaults().withCourierUndeliverable(List.of("minecraft:shulker_box"));
+        SocialArrowConfig.defaults()
+            .withCourier(
+                CourierArrowConfig.defaults().withUndeliverable(List.of("minecraft:shulker_box")));
     final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withSocial(replacement);
 
     assertEquals(replacement, updated.social());

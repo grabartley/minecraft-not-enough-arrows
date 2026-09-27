@@ -26,11 +26,11 @@ class NotEnoughArrowsCommandTest {
           "config physics ricochetbouncecount 2",
           "config ender pearlmaxrangeblocks 64",
           "config traversal zipline maxspanblocks 64",
-          "config terrain drilltooltier 1",
-          "config agriculture beecount 5",
-          "config discovery prospectorblocks add minecraft:stone",
-          "config chaos partyenabled false",
-          "config social magnetradius 4");
+          "config terrain drill tooltier 1",
+          "config agriculture bee count 5",
+          "config discovery prospector blocks add minecraft:stone",
+          "config chaos party enabled false",
+          "config social magnet radius 4");
 
   private CommandDispatcher<ServerCommandSource> dispatcher;
   private ServerCommandSource operator;

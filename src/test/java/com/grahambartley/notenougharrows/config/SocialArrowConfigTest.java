@@ -1,85 +1,57 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 class SocialArrowConfigTest {
 
   @Test
-  void startsFromItsDocumentedDefaults() {
+  void defaultsEveryArrow() {
     final SocialArrowConfig defaults = SocialArrowConfig.defaults();
 
-    assertEquals(SocialArrowConfig.DEFAULT_COURIER_MAX_PAYLOAD, defaults.courierMaxPayload());
-    assertEquals(SocialArrowConfig.DEFAULT_COURIER_UNDELIVERABLE, defaults.courierUndeliverable());
-    assertEquals(
-        SocialArrowConfig.DEFAULT_SNOW_GOLEM_LIFETIME_TICKS, defaults.snowGolemLifetimeTicks());
-    assertEquals(SocialArrowConfig.DEFAULT_MAGNET_RADIUS, defaults.magnetRadius());
+    assertEquals(CourierArrowConfig.defaults(), defaults.courier());
+    assertEquals(SnowGolemArrowConfig.defaults(), defaults.snowGolem());
+    assertEquals(MagnetArrowConfig.defaults(), defaults.magnet());
   }
 
   @Test
-  void defaultsSurviveTheirOwnClamp() {
-    final SocialArrowConfig defaults = SocialArrowConfig.defaults();
-
-    assertEquals(
-        defaults,
-        new SocialArrowConfig(
-            defaults.courierMaxPayload(),
-            defaults.courierUndeliverable(),
-            defaults.snowGolemLifetimeTicks(),
-            defaults.magnetRadius()));
-  }
-
-  @ParameterizedTest
-  @CsvSource({"0, 1", "1, 1", "64, 64", "65, 64"})
-  void clampsCourierMaxPayload(final int given, final int expected) {
-    assertEquals(
-        expected, SocialArrowConfig.defaults().withCourierMaxPayload(given).courierMaxPayload());
+  void substitutesDefaultsForMissingArrows() {
+    assertEquals(SocialArrowConfig.defaults(), new SocialArrowConfig(null, null, null));
   }
 
   @Test
-  void normalisesCourierUndeliverableEntries() {
-    final SocialArrowConfig config =
-        SocialArrowConfig.defaults()
-            .withCourierUndeliverable(
-                List.of("  Minecraft:Stone ", "minecraft:stone", "", "minecraft:dirt"));
+  void replacesOnlyTheCourierArrow() {
+    final CourierArrowConfig replacement = CourierArrowConfig.defaults().withMaxPayload(63);
+    final SocialArrowConfig updated = SocialArrowConfig.defaults().withCourier(replacement);
 
-    assertEquals(List.of("minecraft:stone", "minecraft:dirt"), config.courierUndeliverable());
+    assertEquals(replacement, updated.courier());
+    assertEquals(SnowGolemArrowConfig.defaults(), updated.snowGolem());
+    assertEquals(MagnetArrowConfig.defaults(), updated.magnet());
   }
 
   @Test
-  void capsCourierUndeliverableSoTheSyncPayloadStaysBounded() {
-    final List<String> tooMany =
-        IntStream.rangeClosed(0, SocialArrowConfig.COURIER_UNDELIVERABLE_MAX)
-            .mapToObj(i -> "minecraft:block_" + i)
-            .toList();
+  void replacesOnlyTheSnowGolemArrow() {
+    final SnowGolemArrowConfig replacement =
+        SnowGolemArrowConfig.defaults().withLifetimeTicks(11999);
+    final SocialArrowConfig updated = SocialArrowConfig.defaults().withSnowGolem(replacement);
 
-    assertEquals(
-        SocialArrowConfig.COURIER_UNDELIVERABLE_MAX,
-        SocialArrowConfig.defaults()
-            .withCourierUndeliverable(tooMany)
-            .courierUndeliverable()
-            .size());
+    assertEquals(replacement, updated.snowGolem());
+    assertEquals(CourierArrowConfig.defaults(), updated.courier());
+    assertEquals(MagnetArrowConfig.defaults(), updated.magnet());
   }
 
-  @ParameterizedTest
-  @CsvSource({"19, 20", "20, 20", "12000, 12000", "12001, 12000"})
-  void clampsSnowGolemLifetimeTicks(final int given, final int expected) {
-    assertEquals(
-        expected,
-        SocialArrowConfig.defaults().withSnowGolemLifetimeTicks(given).snowGolemLifetimeTicks());
-  }
+  @Test
+  void replacesOnlyTheMagnetArrow() {
+    final MagnetArrowConfig replacement = MagnetArrowConfig.defaults().withRadius(15);
+    final SocialArrowConfig updated = SocialArrowConfig.defaults().withMagnet(replacement);
 
-  @ParameterizedTest
-  @CsvSource({"-1, 0", "0, 0", "16, 16", "17, 16"})
-  void clampsMagnetRadius(final int given, final int expected) {
-    assertEquals(expected, SocialArrowConfig.defaults().withMagnetRadius(given).magnetRadius());
+    assertEquals(replacement, updated.magnet());
+    assertEquals(CourierArrowConfig.defaults(), updated.courier());
+    assertEquals(SnowGolemArrowConfig.defaults(), updated.snowGolem());
   }
 
   @Test
@@ -88,67 +60,32 @@ class SocialArrowConfigTest {
   }
 
   @Test
-  void fallsBackToDefaultsForAMissingObject() {
-    assertEquals(SocialArrowConfig.defaults(), SocialArrowConfig.fromJson(null));
+  void readsOneArrowAndDefaultsTheRest() {
+    final SocialArrowConfig parsed =
+        SocialArrowConfig.fromJson(
+            JsonParser.parseString("{\"courier\":{\"maxPayload\":63}}").getAsJsonObject());
+
+    assertEquals(63, parsed.courier().maxPayload());
+    assertEquals(SnowGolemArrowConfig.defaults(), parsed.snowGolem());
   }
 
   @Test
-  void readsOnlyTheKeysThatArePresentAndDefaultsTheRest() {
-    final SocialArrowConfig parsed =
-        SocialArrowConfig.fromJson(
-            JsonParser.parseString("{\"courierMaxPayload\":63}").getAsJsonObject());
+  void nestsEachArrowUnderItsOwnKey() {
+    final JsonObject json = SocialArrowConfig.defaults().toJson();
 
-    assertEquals(63, parsed.courierMaxPayload());
-    assertEquals(SocialArrowConfig.DEFAULT_COURIER_UNDELIVERABLE, parsed.courierUndeliverable());
-  }
-
-  @Test
-  void clampsAnOutOfRangeValueReadFromAFile() {
-    final SocialArrowConfig parsed =
-        SocialArrowConfig.fromJson(
-            JsonParser.parseString("{\"courierMaxPayload\":164}").getAsJsonObject());
-
-    assertEquals(SocialArrowConfig.COURIER_MAX_PAYLOAD_MAX, parsed.courierMaxPayload());
-  }
-
-  @Test
-  void fallsBackToTheDefaultForAValueOfTheWrongType() {
-    final SocialArrowConfig parsed =
-        SocialArrowConfig.fromJson(
-            JsonParser.parseString("{\"courierMaxPayload\":\"lots\"}").getAsJsonObject());
-
-    assertEquals(SocialArrowConfig.DEFAULT_COURIER_MAX_PAYLOAD, parsed.courierMaxPayload());
+    assertTrue(json.get("courier").isJsonObject());
+    assertTrue(json.get("snowGolem").isJsonObject());
+    assertTrue(json.get("magnet").isJsonObject());
   }
 
   @Test
   void roundTripsThroughJson() {
     final SocialArrowConfig original =
-        new SocialArrowConfig(63, List.of("minecraft:stone"), 11999, 15);
+        new SocialArrowConfig(
+            CourierArrowConfig.defaults().withMaxPayload(63),
+            SnowGolemArrowConfig.defaults().withLifetimeTicks(11999),
+            MagnetArrowConfig.defaults().withRadius(15));
 
     assertEquals(original, SocialArrowConfig.fromJson(original.toJson()));
-  }
-
-  @Test
-  void changingOneFieldLeavesTheRestOfTheFamilyAlone() {
-    final SocialArrowConfig original = SocialArrowConfig.defaults();
-
-    final SocialArrowConfig updated = original.withCourierMaxPayload(63);
-
-    assertEquals(63, updated.courierMaxPayload());
-    assertEquals(original.courierUndeliverable(), updated.courierUndeliverable());
-    assertEquals(original.snowGolemLifetimeTicks(), updated.snowGolemLifetimeTicks());
-    assertEquals(original.magnetRadius(), updated.magnetRadius());
-  }
-
-  @Test
-  void everyFieldCanBeChangedOnItsOwn() {
-    final SocialArrowConfig updated =
-        SocialArrowConfig.defaults()
-            .withCourierMaxPayload(63)
-            .withCourierUndeliverable(List.of("minecraft:stone"))
-            .withSnowGolemLifetimeTicks(11999)
-            .withMagnetRadius(15);
-
-    assertEquals(new SocialArrowConfig(63, List.of("minecraft:stone"), 11999, 15), updated);
   }
 }

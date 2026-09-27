@@ -20,10 +20,10 @@ class SocialOptionsTest {
   void listsEverySettingInTheOrderTheStatusOutputUses() {
     assertEquals(
         List.of(
-            "social.courierMaxPayload",
-            "social.courierUndeliverable",
-            "social.snowGolemLifetimeTicks",
-            "social.magnetRadius"),
+            "social.courier.maxPayload",
+            "social.courier.undeliverable",
+            "social.snowGolem.lifetimeTicks",
+            "social.magnet.radius"),
         SocialOptions.options().stream().map(ConfigOption::id).toList());
   }
 

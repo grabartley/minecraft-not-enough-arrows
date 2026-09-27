@@ -1,7 +1,10 @@
 package com.grahambartley.notenougharrows.config.option;
 
 import com.grahambartley.notenougharrows.config.ConfigSettings;
+import com.grahambartley.notenougharrows.config.CourierArrowConfig;
+import com.grahambartley.notenougharrows.config.MagnetArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
+import com.grahambartley.notenougharrows.config.SnowGolemArrowConfig;
 import com.grahambartley.notenougharrows.config.SocialArrowConfig;
 import java.util.List;
 import java.util.function.Function;
@@ -25,27 +28,45 @@ public final class SocialOptions {
     return List.of(
         new IntOption<>(
             ConfigSettings.SOCIAL_COURIER_MAX_PAYLOAD,
-            SocialArrowConfig.COURIER_MAX_PAYLOAD_MIN,
-            SocialArrowConfig.COURIER_MAX_PAYLOAD_MAX,
-            config -> config.social().courierMaxPayload(),
-            (config, value) -> social(config, it -> it.withCourierMaxPayload(value))),
+            CourierArrowConfig.MAX_PAYLOAD_MIN,
+            CourierArrowConfig.MAX_PAYLOAD_MAX,
+            config -> config.social().courier().maxPayload(),
+            (config, value) -> courier(config, it -> it.withMaxPayload(value))),
         new IdentifierListOption<>(
             ConfigSettings.SOCIAL_COURIER_UNDELIVERABLE,
-            SocialArrowConfig.COURIER_UNDELIVERABLE_MAX,
-            config -> config.social().courierUndeliverable(),
-            (config, value) -> social(config, it -> it.withCourierUndeliverable(value))),
+            CourierArrowConfig.UNDELIVERABLE_MAX,
+            config -> config.social().courier().undeliverable(),
+            (config, value) -> courier(config, it -> it.withUndeliverable(value))),
         new IntOption<>(
-            ConfigSettings.SOCIAL_SNOW_GOLEM_LIFETIME_TICKS,
-            SocialArrowConfig.SNOW_GOLEM_LIFETIME_TICKS_MIN,
-            SocialArrowConfig.SNOW_GOLEM_LIFETIME_TICKS_MAX,
-            config -> config.social().snowGolemLifetimeTicks(),
-            (config, value) -> social(config, it -> it.withSnowGolemLifetimeTicks(value))),
+            ConfigSettings.SOCIAL_SNOWGOLEM_LIFETIME_TICKS,
+            SnowGolemArrowConfig.LIFETIME_TICKS_MIN,
+            SnowGolemArrowConfig.LIFETIME_TICKS_MAX,
+            config -> config.social().snowGolem().lifetimeTicks(),
+            (config, value) -> snowGolem(config, it -> it.withLifetimeTicks(value))),
         new IntOption<>(
             ConfigSettings.SOCIAL_MAGNET_RADIUS,
-            SocialArrowConfig.MAGNET_RADIUS_MIN,
-            SocialArrowConfig.MAGNET_RADIUS_MAX,
-            config -> config.social().magnetRadius(),
-            (config, value) -> social(config, it -> it.withMagnetRadius(value))));
+            MagnetArrowConfig.RADIUS_MIN,
+            MagnetArrowConfig.RADIUS_MAX,
+            config -> config.social().magnet().radius(),
+            (config, value) -> magnet(config, it -> it.withRadius(value))));
+  }
+
+  private static NotEnoughArrowsConfig courier(
+      final NotEnoughArrowsConfig config,
+      final Function<CourierArrowConfig, CourierArrowConfig> change) {
+    return social(config, it -> it.withCourier(change.apply(it.courier())));
+  }
+
+  private static NotEnoughArrowsConfig snowGolem(
+      final NotEnoughArrowsConfig config,
+      final Function<SnowGolemArrowConfig, SnowGolemArrowConfig> change) {
+    return social(config, it -> it.withSnowGolem(change.apply(it.snowGolem())));
+  }
+
+  private static NotEnoughArrowsConfig magnet(
+      final NotEnoughArrowsConfig config,
+      final Function<MagnetArrowConfig, MagnetArrowConfig> change) {
+    return social(config, it -> it.withMagnet(change.apply(it.magnet())));
   }
 
   private static NotEnoughArrowsConfig social(

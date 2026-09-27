@@ -78,11 +78,11 @@ public final class IdentifierListNodes {
         ConfigValueFormat.of(result.updated()));
   }
 
-  public static Text rejection(final String setting, final IdentifierListEdits.Outcome outcome) {
+  private static Text rejection(final String setting, final IdentifierListEdits.Outcome outcome) {
     return Text.translatable(rejectionKey(outcome), setting);
   }
 
-  public static String rejectionKey(final IdentifierListEdits.Outcome outcome) {
+  static String rejectionKey(final IdentifierListEdits.Outcome outcome) {
     return switch (outcome) {
       case ALREADY_PRESENT -> "command.not-enough-arrows.list.already_present";
       case NOT_PRESENT -> "command.not-enough-arrows.list.not_present";

@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
 import com.grahambartley.notenougharrows.config.option.BooleanOption;
@@ -42,6 +43,17 @@ class OptionCommandNodesTest {
     dispatcher = new CommandDispatcher<>();
     dispatcher.register(CommandManager.literal("root").then(OptionCommandNodes.section(SAMPLE)));
     source = CommandParsing.source(true);
+  }
+
+  @Test
+  void refusesAnOptionWhoseIdSitsOutsideItsSection() {
+    final ConfigSection<NotEnoughArrowsConfig> misfiled =
+        new ConfigSection<>(
+            "sample",
+            List.<ConfigOption<NotEnoughArrowsConfig>>of(
+                new BooleanOption<>("other.enabled", config -> true, (config, value) -> config)));
+
+    assertThrows(IllegalArgumentException.class, () -> OptionCommandNodes.section(misfiled));
   }
 
   @Test

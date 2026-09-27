@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.grahambartley.notenougharrows.config.ConfigValues;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,22 @@ class IdentifierListEditsTest {
     assertEquals(
         IdentifierListEdits.Outcome.INVALID_ID,
         IdentifierListEdits.add(List.of(), raw, MAX_ENTRIES).outcome());
+  }
+
+  @Test
+  void anIdentifierLongerThanTheCapIsRejected() {
+    final String overCap = "minecraft:" + "a".repeat(ConfigValues.MAX_IDENTIFIER_LENGTH - 9);
+
+    assertEquals(
+        IdentifierListEdits.Outcome.INVALID_ID,
+        IdentifierListEdits.add(List.of(), overCap, MAX_ENTRIES).outcome());
+  }
+
+  @Test
+  void anIdentifierAtTheCapIsAccepted() {
+    final String atCap = "minecraft:" + "a".repeat(ConfigValues.MAX_IDENTIFIER_LENGTH - 10);
+
+    assertEquals(List.of(atCap), IdentifierListEdits.add(List.of(), atCap, MAX_ENTRIES).updated());
   }
 
   @Test

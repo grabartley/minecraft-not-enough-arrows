@@ -20,15 +20,15 @@ class ChaosOptionsTest {
   void listsEverySettingInTheOrderTheStatusOutputUses() {
     assertEquals(
         List.of(
-            "chaos.partyEnabled",
-            "chaos.chickenEnabled",
-            "chaos.pufferEnabled",
-            "chaos.pufferDurationTicks",
-            "chaos.stinkEnabled",
-            "chaos.stinkCloudLifetimeTicks",
-            "chaos.boomerangEnabled",
-            "chaos.polymorphEnabled",
-            "chaos.polymorphDurationTicks"),
+            "chaos.party.enabled",
+            "chaos.chicken.enabled",
+            "chaos.puffer.enabled",
+            "chaos.puffer.durationTicks",
+            "chaos.stink.enabled",
+            "chaos.stink.cloudLifetimeTicks",
+            "chaos.boomerang.enabled",
+            "chaos.polymorph.enabled",
+            "chaos.polymorph.durationTicks"),
         ChaosOptions.options().stream().map(ConfigOption::id).toList());
   }
 

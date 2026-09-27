@@ -20,14 +20,16 @@ class DiscoveryOptionsTest {
   void listsEverySettingInTheOrderTheStatusOutputUses() {
     assertEquals(
         List.of(
-            "discovery.torchEnabled",
-            "discovery.beaconLifetimeTicks",
-            "discovery.revealRadius",
-            "discovery.revealDurationTicks",
-            "discovery.prospectorBlocks",
-            "discovery.watcherLifetimeTicks",
-            "discovery.watcherReportIntervalTicks",
-            "discovery.tracerPathLifetimeTicks"),
+            "discovery.torch.enabled",
+            "discovery.beacon.lifetimeTicks",
+            "discovery.prospector.radius",
+            "discovery.prospector.durationTicks",
+            "discovery.prospector.blocks",
+            "discovery.sonar.radius",
+            "discovery.sonar.durationTicks",
+            "discovery.tripwire.lifetimeTicks",
+            "discovery.tripwire.reportIntervalTicks",
+            "discovery.tracer.pathLifetimeTicks"),
         DiscoveryOptions.options().stream().map(ConfigOption::id).toList());
   }
 

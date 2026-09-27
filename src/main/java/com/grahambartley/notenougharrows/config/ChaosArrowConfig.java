@@ -3,227 +3,81 @@ package com.grahambartley.notenougharrows.config;
 import com.google.gson.JsonObject;
 
 public record ChaosArrowConfig(
-    boolean partyEnabled,
-    boolean chickenEnabled,
-    boolean pufferEnabled,
-    int pufferDurationTicks,
-    boolean stinkEnabled,
-    int stinkCloudLifetimeTicks,
-    boolean boomerangEnabled,
-    boolean polymorphEnabled,
-    int polymorphDurationTicks) {
+    PartyArrowConfig party,
+    ChickenArrowConfig chicken,
+    PufferArrowConfig puffer,
+    StinkArrowConfig stink,
+    BoomerangArrowConfig boomerang,
+    PolymorphArrowConfig polymorph) {
 
-  public static final int PUFFER_DURATION_TICKS_MIN = 0;
-  public static final int PUFFER_DURATION_TICKS_MAX = 1200;
-  public static final int STINK_CLOUD_LIFETIME_TICKS_MIN = 0;
-  public static final int STINK_CLOUD_LIFETIME_TICKS_MAX = 1200;
-  public static final int POLYMORPH_DURATION_TICKS_MIN = 0;
-  public static final int POLYMORPH_DURATION_TICKS_MAX = 2400;
-
-  public static final boolean DEFAULT_PARTY_ENABLED = true;
-  public static final boolean DEFAULT_CHICKEN_ENABLED = true;
-  public static final boolean DEFAULT_PUFFER_ENABLED = true;
-  public static final int DEFAULT_PUFFER_DURATION_TICKS = 200;
-  public static final boolean DEFAULT_STINK_ENABLED = true;
-  public static final int DEFAULT_STINK_CLOUD_LIFETIME_TICKS = 200;
-  public static final boolean DEFAULT_BOOMERANG_ENABLED = true;
-  public static final boolean DEFAULT_POLYMORPH_ENABLED = true;
-  public static final int DEFAULT_POLYMORPH_DURATION_TICKS = 400;
-
-  static final String KEY_PARTY_ENABLED = "partyEnabled";
-  static final String KEY_CHICKEN_ENABLED = "chickenEnabled";
-  static final String KEY_PUFFER_ENABLED = "pufferEnabled";
-  static final String KEY_PUFFER_DURATION_TICKS = "pufferDurationTicks";
-  static final String KEY_STINK_ENABLED = "stinkEnabled";
-  static final String KEY_STINK_CLOUD_LIFETIME_TICKS = "stinkCloudLifetimeTicks";
-  static final String KEY_BOOMERANG_ENABLED = "boomerangEnabled";
-  static final String KEY_POLYMORPH_ENABLED = "polymorphEnabled";
-  static final String KEY_POLYMORPH_DURATION_TICKS = "polymorphDurationTicks";
+  static final String KEY_PARTY = "party";
+  static final String KEY_CHICKEN = "chicken";
+  static final String KEY_PUFFER = "puffer";
+  static final String KEY_STINK = "stink";
+  static final String KEY_BOOMERANG = "boomerang";
+  static final String KEY_POLYMORPH = "polymorph";
 
   public ChaosArrowConfig {
-    pufferDurationTicks =
-        ConfigValues.clampInt(
-            pufferDurationTicks, PUFFER_DURATION_TICKS_MIN, PUFFER_DURATION_TICKS_MAX);
-    stinkCloudLifetimeTicks =
-        ConfigValues.clampInt(
-            stinkCloudLifetimeTicks,
-            STINK_CLOUD_LIFETIME_TICKS_MIN,
-            STINK_CLOUD_LIFETIME_TICKS_MAX);
-    polymorphDurationTicks =
-        ConfigValues.clampInt(
-            polymorphDurationTicks, POLYMORPH_DURATION_TICKS_MIN, POLYMORPH_DURATION_TICKS_MAX);
+    party = party == null ? PartyArrowConfig.defaults() : party;
+    chicken = chicken == null ? ChickenArrowConfig.defaults() : chicken;
+    puffer = puffer == null ? PufferArrowConfig.defaults() : puffer;
+    stink = stink == null ? StinkArrowConfig.defaults() : stink;
+    boomerang = boomerang == null ? BoomerangArrowConfig.defaults() : boomerang;
+    polymorph = polymorph == null ? PolymorphArrowConfig.defaults() : polymorph;
   }
 
   public static ChaosArrowConfig defaults() {
     return new ChaosArrowConfig(
-        DEFAULT_PARTY_ENABLED,
-        DEFAULT_CHICKEN_ENABLED,
-        DEFAULT_PUFFER_ENABLED,
-        DEFAULT_PUFFER_DURATION_TICKS,
-        DEFAULT_STINK_ENABLED,
-        DEFAULT_STINK_CLOUD_LIFETIME_TICKS,
-        DEFAULT_BOOMERANG_ENABLED,
-        DEFAULT_POLYMORPH_ENABLED,
-        DEFAULT_POLYMORPH_DURATION_TICKS);
+        PartyArrowConfig.defaults(),
+        ChickenArrowConfig.defaults(),
+        PufferArrowConfig.defaults(),
+        StinkArrowConfig.defaults(),
+        BoomerangArrowConfig.defaults(),
+        PolymorphArrowConfig.defaults());
+  }
+
+  public ChaosArrowConfig withParty(final PartyArrowConfig value) {
+    return new ChaosArrowConfig(value, chicken, puffer, stink, boomerang, polymorph);
+  }
+
+  public ChaosArrowConfig withChicken(final ChickenArrowConfig value) {
+    return new ChaosArrowConfig(party, value, puffer, stink, boomerang, polymorph);
+  }
+
+  public ChaosArrowConfig withPuffer(final PufferArrowConfig value) {
+    return new ChaosArrowConfig(party, chicken, value, stink, boomerang, polymorph);
+  }
+
+  public ChaosArrowConfig withStink(final StinkArrowConfig value) {
+    return new ChaosArrowConfig(party, chicken, puffer, value, boomerang, polymorph);
+  }
+
+  public ChaosArrowConfig withBoomerang(final BoomerangArrowConfig value) {
+    return new ChaosArrowConfig(party, chicken, puffer, stink, value, polymorph);
+  }
+
+  public ChaosArrowConfig withPolymorph(final PolymorphArrowConfig value) {
+    return new ChaosArrowConfig(party, chicken, puffer, stink, boomerang, value);
   }
 
   public static ChaosArrowConfig fromJson(final JsonObject root) {
-    final ChaosArrowConfig defaults = defaults();
     return new ChaosArrowConfig(
-        ConfigValues.readBoolean(root, KEY_PARTY_ENABLED, defaults.partyEnabled()),
-        ConfigValues.readBoolean(root, KEY_CHICKEN_ENABLED, defaults.chickenEnabled()),
-        ConfigValues.readBoolean(root, KEY_PUFFER_ENABLED, defaults.pufferEnabled()),
-        ConfigValues.readInt(
-            root,
-            KEY_PUFFER_DURATION_TICKS,
-            defaults.pufferDurationTicks(),
-            PUFFER_DURATION_TICKS_MIN,
-            PUFFER_DURATION_TICKS_MAX),
-        ConfigValues.readBoolean(root, KEY_STINK_ENABLED, defaults.stinkEnabled()),
-        ConfigValues.readInt(
-            root,
-            KEY_STINK_CLOUD_LIFETIME_TICKS,
-            defaults.stinkCloudLifetimeTicks(),
-            STINK_CLOUD_LIFETIME_TICKS_MIN,
-            STINK_CLOUD_LIFETIME_TICKS_MAX),
-        ConfigValues.readBoolean(root, KEY_BOOMERANG_ENABLED, defaults.boomerangEnabled()),
-        ConfigValues.readBoolean(root, KEY_POLYMORPH_ENABLED, defaults.polymorphEnabled()),
-        ConfigValues.readInt(
-            root,
-            KEY_POLYMORPH_DURATION_TICKS,
-            defaults.polymorphDurationTicks(),
-            POLYMORPH_DURATION_TICKS_MIN,
-            POLYMORPH_DURATION_TICKS_MAX));
+        PartyArrowConfig.fromJson(ConfigValues.readObject(root, KEY_PARTY)),
+        ChickenArrowConfig.fromJson(ConfigValues.readObject(root, KEY_CHICKEN)),
+        PufferArrowConfig.fromJson(ConfigValues.readObject(root, KEY_PUFFER)),
+        StinkArrowConfig.fromJson(ConfigValues.readObject(root, KEY_STINK)),
+        BoomerangArrowConfig.fromJson(ConfigValues.readObject(root, KEY_BOOMERANG)),
+        PolymorphArrowConfig.fromJson(ConfigValues.readObject(root, KEY_POLYMORPH)));
   }
 
   public JsonObject toJson() {
     final JsonObject root = new JsonObject();
-    root.addProperty(KEY_PARTY_ENABLED, partyEnabled);
-    root.addProperty(KEY_CHICKEN_ENABLED, chickenEnabled);
-    root.addProperty(KEY_PUFFER_ENABLED, pufferEnabled);
-    root.addProperty(KEY_PUFFER_DURATION_TICKS, pufferDurationTicks);
-    root.addProperty(KEY_STINK_ENABLED, stinkEnabled);
-    root.addProperty(KEY_STINK_CLOUD_LIFETIME_TICKS, stinkCloudLifetimeTicks);
-    root.addProperty(KEY_BOOMERANG_ENABLED, boomerangEnabled);
-    root.addProperty(KEY_POLYMORPH_ENABLED, polymorphEnabled);
-    root.addProperty(KEY_POLYMORPH_DURATION_TICKS, polymorphDurationTicks);
+    root.add(KEY_PARTY, party.toJson());
+    root.add(KEY_CHICKEN, chicken.toJson());
+    root.add(KEY_PUFFER, puffer.toJson());
+    root.add(KEY_STINK, stink.toJson());
+    root.add(KEY_BOOMERANG, boomerang.toJson());
+    root.add(KEY_POLYMORPH, polymorph.toJson());
     return root;
-  }
-
-  public ChaosArrowConfig withPartyEnabled(final boolean value) {
-    return new ChaosArrowConfig(
-        value,
-        chickenEnabled,
-        pufferEnabled,
-        pufferDurationTicks,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withChickenEnabled(final boolean value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        value,
-        pufferEnabled,
-        pufferDurationTicks,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withPufferEnabled(final boolean value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        value,
-        pufferDurationTicks,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withPufferDurationTicks(final int value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        pufferEnabled,
-        value,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withStinkEnabled(final boolean value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        pufferEnabled,
-        pufferDurationTicks,
-        value,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withStinkCloudLifetimeTicks(final int value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        pufferEnabled,
-        pufferDurationTicks,
-        stinkEnabled,
-        value,
-        boomerangEnabled,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withBoomerangEnabled(final boolean value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        pufferEnabled,
-        pufferDurationTicks,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        value,
-        polymorphEnabled,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withPolymorphEnabled(final boolean value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        pufferEnabled,
-        pufferDurationTicks,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        value,
-        polymorphDurationTicks);
-  }
-
-  public ChaosArrowConfig withPolymorphDurationTicks(final int value) {
-    return new ChaosArrowConfig(
-        partyEnabled,
-        chickenEnabled,
-        pufferEnabled,
-        pufferDurationTicks,
-        stinkEnabled,
-        stinkCloudLifetimeTicks,
-        boomerangEnabled,
-        polymorphEnabled,
-        value);
   }
 }

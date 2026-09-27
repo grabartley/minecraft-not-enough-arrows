@@ -20,20 +20,20 @@ class TerrainOptionsTest {
   void listsEverySettingInTheOrderTheStatusOutputUses() {
     assertEquals(
         List.of(
-            "terrain.drillEnabled",
-            "terrain.drillToolTier",
-            "terrain.pillarEnabled",
-            "terrain.pillarHeightBlocks",
-            "terrain.pillarLifetimeTicks",
-            "terrain.drainEnabled",
-            "terrain.drainRadius",
-            "terrain.drainMaxBlocks",
-            "terrain.freezeEnabled",
-            "terrain.freezeRadius",
-            "terrain.webEnabled",
-            "terrain.webPatchRadius",
-            "terrain.webLifetimeTicks",
-            "terrain.paintEnabled"),
+            "terrain.drill.enabled",
+            "terrain.drill.toolTier",
+            "terrain.pillar.enabled",
+            "terrain.pillar.heightBlocks",
+            "terrain.pillar.lifetimeTicks",
+            "terrain.drain.enabled",
+            "terrain.drain.radius",
+            "terrain.drain.maxBlocks",
+            "terrain.freeze.enabled",
+            "terrain.freeze.radius",
+            "terrain.web.enabled",
+            "terrain.web.patchRadius",
+            "terrain.web.lifetimeTicks",
+            "terrain.paint.enabled"),
         TerrainOptions.options().stream().map(ConfigOption::id).toList());
   }
 

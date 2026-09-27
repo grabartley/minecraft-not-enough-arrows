@@ -263,46 +263,48 @@ screen are rejected outright, with the accepted range in the error.
 | `traversal.scaffold.lifetimeTicks` | 600 | 0 to 12000 |
 | `traversal.bridge.lengthBlocks` | 16 | 1 to 64 |
 | `traversal.bridge.lifetimeTicks` | 600 | 0 to 12000 |
-| `terrain.drillEnabled` | on | on or off |
-| `terrain.drillToolTier` | 2 | 0 to 2 |
-| `terrain.pillarEnabled` | on | on or off |
-| `terrain.pillarHeightBlocks` | 4 | 1 to 16 |
-| `terrain.pillarLifetimeTicks` | 600 | 0 to 12000 |
-| `terrain.drainEnabled` | on | on or off |
-| `terrain.drainRadius` | 3 | 0 to 8 |
-| `terrain.drainMaxBlocks` | 65 | 1 to 512 |
-| `terrain.freezeEnabled` | on | on or off |
-| `terrain.freezeRadius` | 3 | 0 to 8 |
-| `terrain.webEnabled` | on | on or off |
-| `terrain.webPatchRadius` | 1 | 0 to 3 |
-| `terrain.webLifetimeTicks` | 400 | 0 to 12000 |
-| `terrain.paintEnabled` | on | on or off |
-| `agriculture.blossomRadius` | 2 | 0 to 8 |
-| `agriculture.tillRadius` | 2 | 0 to 8 |
-| `agriculture.harvestRadius` | 3 | 0 to 8 |
-| `agriculture.beeCount` | 3 | 1 to 8 |
-| `agriculture.beeLifetimeTicks` | 600 | 20 to 6000 |
-| `discovery.torchEnabled` | on | on or off |
-| `discovery.beaconLifetimeTicks` | 1200 | 0 to 12000 |
-| `discovery.revealRadius` | 12 | 0 to 32 |
-| `discovery.revealDurationTicks` | 200 | 0 to 1200 |
-| `discovery.prospectorBlocks` | 19 vanilla ores | up to 64 block ids |
-| `discovery.watcherLifetimeTicks` | 6000 | 20 to 24000 |
-| `discovery.watcherReportIntervalTicks` | 40 | 20 to 1200 |
-| `discovery.tracerPathLifetimeTicks` | 200 | 0 to 1200 |
-| `chaos.partyEnabled` | on | on or off |
-| `chaos.chickenEnabled` | on | on or off |
-| `chaos.pufferEnabled` | on | on or off |
-| `chaos.pufferDurationTicks` | 200 | 0 to 1200 |
-| `chaos.stinkEnabled` | on | on or off |
-| `chaos.stinkCloudLifetimeTicks` | 200 | 0 to 1200 |
-| `chaos.boomerangEnabled` | on | on or off |
-| `chaos.polymorphEnabled` | on | on or off |
-| `chaos.polymorphDurationTicks` | 400 | 0 to 2400 |
-| `social.courierMaxPayload` | 64 | 1 to 64 |
-| `social.courierUndeliverable` | empty | up to 64 item ids |
-| `social.snowGolemLifetimeTicks` | 1200 | 20 to 12000 |
-| `social.magnetRadius` | 8 | 0 to 16 |
+| `terrain.drill.enabled` | on | on or off |
+| `terrain.drill.toolTier` | 2 | 0 wood, 1 stone, 2 iron |
+| `terrain.pillar.enabled` | on | on or off |
+| `terrain.pillar.heightBlocks` | 4 | 1 to 16 |
+| `terrain.pillar.lifetimeTicks` | 600 | 0 to 12000 |
+| `terrain.drain.enabled` | on | on or off |
+| `terrain.drain.radius` | 3 | 0 to 8 |
+| `terrain.drain.maxBlocks` | 65 | 1 to 512 |
+| `terrain.freeze.enabled` | on | on or off |
+| `terrain.freeze.radius` | 3 | 0 to 8 |
+| `terrain.web.enabled` | on | on or off |
+| `terrain.web.patchRadius` | 1 | 0 to 3 |
+| `terrain.web.lifetimeTicks` | 400 | 0 to 12000 |
+| `terrain.paint.enabled` | on | on or off |
+| `agriculture.blossom.radius` | 2 | 0 to 8 |
+| `agriculture.till.radius` | 2 | 0 to 8 |
+| `agriculture.harvest.radius` | 3 | 0 to 8 |
+| `agriculture.bee.count` | 3 | 1 to 8 |
+| `agriculture.bee.lifetimeTicks` | 600 | 20 to 6000 |
+| `discovery.torch.enabled` | on | on or off |
+| `discovery.beacon.lifetimeTicks` | 1200 | 0 to 12000 |
+| `discovery.prospector.radius` | 8 | 0 to 16 |
+| `discovery.prospector.durationTicks` | 200 | 0 to 1200 |
+| `discovery.prospector.blocks` | 19 vanilla ores | up to 32 block ids |
+| `discovery.sonar.radius` | 16 | 0 to 32 |
+| `discovery.sonar.durationTicks` | 200 | 0 to 1200 |
+| `discovery.tripwire.lifetimeTicks` | 6000 | 20 to 24000 |
+| `discovery.tripwire.reportIntervalTicks` | 40 | 20 to 1200 |
+| `discovery.tracer.pathLifetimeTicks` | 200 | 0 to 1200 |
+| `chaos.party.enabled` | on | on or off |
+| `chaos.chicken.enabled` | on | on or off |
+| `chaos.puffer.enabled` | on | on or off |
+| `chaos.puffer.durationTicks` | 200 | 0 to 1200 |
+| `chaos.stink.enabled` | on | on or off |
+| `chaos.stink.cloudLifetimeTicks` | 200 | 0 to 1200 |
+| `chaos.boomerang.enabled` | on | on or off |
+| `chaos.polymorph.enabled` | on | on or off |
+| `chaos.polymorph.durationTicks` | 400 | 0 to 2400 |
+| `social.courier.maxPayload` | 64 | 1 to 64 |
+| `social.courier.undeliverable` | empty | up to 32 item ids |
+| `social.snowGolem.lifetimeTicks` | 1200 | 20 to 12000 |
+| `social.magnet.radius` | 8 | 0 to 16 |
 | `fletching.stationEnabled` | on | on or off |
 
 The three lists, the gravity arrow's exclusions, the prospector arrow's blocks, and the courier
@@ -312,9 +314,12 @@ arrow's undeliverable items, are edited rather than replaced:
 /nea config physics gravityblockexclusions add <id>
 /nea config physics gravityblockexclusions remove <id>
 /nea config physics gravityblockexclusions clear
-/nea config discovery prospectorblocks add <id>
-/nea config social courierundeliverable add <id>
+/nea config discovery prospector blocks add <id>
+/nea config social courier undeliverable add <id>
 ```
+
+An identifier longer than 64 characters is refused, so a full list always fits in the packet that
+syncs settings to players.
 
 These three are yours alone. They live on your machine, they are never sent anywhere, and changing
 them changes nothing for anyone else:

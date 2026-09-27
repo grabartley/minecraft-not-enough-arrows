@@ -1,8 +1,14 @@
 package com.grahambartley.notenougharrows.config.option;
 
 import com.grahambartley.notenougharrows.config.ConfigSettings;
+import com.grahambartley.notenougharrows.config.DrainArrowConfig;
+import com.grahambartley.notenougharrows.config.DrillArrowConfig;
+import com.grahambartley.notenougharrows.config.FreezeArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
+import com.grahambartley.notenougharrows.config.PaintArrowConfig;
+import com.grahambartley.notenougharrows.config.PillarArrowConfig;
 import com.grahambartley.notenougharrows.config.TerrainArrowConfig;
+import com.grahambartley.notenougharrows.config.WebArrowConfig;
 import java.util.List;
 import java.util.function.Function;
 
@@ -25,76 +31,111 @@ public final class TerrainOptions {
     return List.of(
         new BooleanOption<>(
             ConfigSettings.TERRAIN_DRILL_ENABLED,
-            config -> config.terrain().drillEnabled(),
-            (config, value) -> terrain(config, it -> it.withDrillEnabled(value))),
+            config -> config.terrain().drill().enabled(),
+            (config, value) -> drill(config, it -> it.withEnabled(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_DRILL_TOOL_TIER,
-            TerrainArrowConfig.DRILL_TOOL_TIER_MIN,
-            TerrainArrowConfig.DRILL_TOOL_TIER_MAX,
-            config -> config.terrain().drillToolTier(),
-            (config, value) -> terrain(config, it -> it.withDrillToolTier(value))),
+            DrillArrowConfig.TOOL_TIER_MIN,
+            DrillArrowConfig.TOOL_TIER_MAX,
+            config -> config.terrain().drill().toolTier(),
+            (config, value) -> drill(config, it -> it.withToolTier(value))),
         new BooleanOption<>(
             ConfigSettings.TERRAIN_PILLAR_ENABLED,
-            config -> config.terrain().pillarEnabled(),
-            (config, value) -> terrain(config, it -> it.withPillarEnabled(value))),
+            config -> config.terrain().pillar().enabled(),
+            (config, value) -> pillar(config, it -> it.withEnabled(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_PILLAR_HEIGHT_BLOCKS,
-            TerrainArrowConfig.PILLAR_HEIGHT_BLOCKS_MIN,
-            TerrainArrowConfig.PILLAR_HEIGHT_BLOCKS_MAX,
-            config -> config.terrain().pillarHeightBlocks(),
-            (config, value) -> terrain(config, it -> it.withPillarHeightBlocks(value))),
+            PillarArrowConfig.HEIGHT_BLOCKS_MIN,
+            PillarArrowConfig.HEIGHT_BLOCKS_MAX,
+            config -> config.terrain().pillar().heightBlocks(),
+            (config, value) -> pillar(config, it -> it.withHeightBlocks(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_PILLAR_LIFETIME_TICKS,
-            TerrainArrowConfig.PILLAR_LIFETIME_TICKS_MIN,
-            TerrainArrowConfig.PILLAR_LIFETIME_TICKS_MAX,
-            config -> config.terrain().pillarLifetimeTicks(),
-            (config, value) -> terrain(config, it -> it.withPillarLifetimeTicks(value))),
+            PillarArrowConfig.LIFETIME_TICKS_MIN,
+            PillarArrowConfig.LIFETIME_TICKS_MAX,
+            config -> config.terrain().pillar().lifetimeTicks(),
+            (config, value) -> pillar(config, it -> it.withLifetimeTicks(value))),
         new BooleanOption<>(
             ConfigSettings.TERRAIN_DRAIN_ENABLED,
-            config -> config.terrain().drainEnabled(),
-            (config, value) -> terrain(config, it -> it.withDrainEnabled(value))),
+            config -> config.terrain().drain().enabled(),
+            (config, value) -> drain(config, it -> it.withEnabled(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_DRAIN_RADIUS,
-            TerrainArrowConfig.DRAIN_RADIUS_MIN,
-            TerrainArrowConfig.DRAIN_RADIUS_MAX,
-            config -> config.terrain().drainRadius(),
-            (config, value) -> terrain(config, it -> it.withDrainRadius(value))),
+            DrainArrowConfig.RADIUS_MIN,
+            DrainArrowConfig.RADIUS_MAX,
+            config -> config.terrain().drain().radius(),
+            (config, value) -> drain(config, it -> it.withRadius(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_DRAIN_MAX_BLOCKS,
-            TerrainArrowConfig.DRAIN_MAX_BLOCKS_MIN,
-            TerrainArrowConfig.DRAIN_MAX_BLOCKS_MAX,
-            config -> config.terrain().drainMaxBlocks(),
-            (config, value) -> terrain(config, it -> it.withDrainMaxBlocks(value))),
+            DrainArrowConfig.MAX_BLOCKS_MIN,
+            DrainArrowConfig.MAX_BLOCKS_MAX,
+            config -> config.terrain().drain().maxBlocks(),
+            (config, value) -> drain(config, it -> it.withMaxBlocks(value))),
         new BooleanOption<>(
             ConfigSettings.TERRAIN_FREEZE_ENABLED,
-            config -> config.terrain().freezeEnabled(),
-            (config, value) -> terrain(config, it -> it.withFreezeEnabled(value))),
+            config -> config.terrain().freeze().enabled(),
+            (config, value) -> freeze(config, it -> it.withEnabled(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_FREEZE_RADIUS,
-            TerrainArrowConfig.FREEZE_RADIUS_MIN,
-            TerrainArrowConfig.FREEZE_RADIUS_MAX,
-            config -> config.terrain().freezeRadius(),
-            (config, value) -> terrain(config, it -> it.withFreezeRadius(value))),
+            FreezeArrowConfig.RADIUS_MIN,
+            FreezeArrowConfig.RADIUS_MAX,
+            config -> config.terrain().freeze().radius(),
+            (config, value) -> freeze(config, it -> it.withRadius(value))),
         new BooleanOption<>(
             ConfigSettings.TERRAIN_WEB_ENABLED,
-            config -> config.terrain().webEnabled(),
-            (config, value) -> terrain(config, it -> it.withWebEnabled(value))),
+            config -> config.terrain().web().enabled(),
+            (config, value) -> web(config, it -> it.withEnabled(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_WEB_PATCH_RADIUS,
-            TerrainArrowConfig.WEB_PATCH_RADIUS_MIN,
-            TerrainArrowConfig.WEB_PATCH_RADIUS_MAX,
-            config -> config.terrain().webPatchRadius(),
-            (config, value) -> terrain(config, it -> it.withWebPatchRadius(value))),
+            WebArrowConfig.PATCH_RADIUS_MIN,
+            WebArrowConfig.PATCH_RADIUS_MAX,
+            config -> config.terrain().web().patchRadius(),
+            (config, value) -> web(config, it -> it.withPatchRadius(value))),
         new IntOption<>(
             ConfigSettings.TERRAIN_WEB_LIFETIME_TICKS,
-            TerrainArrowConfig.WEB_LIFETIME_TICKS_MIN,
-            TerrainArrowConfig.WEB_LIFETIME_TICKS_MAX,
-            config -> config.terrain().webLifetimeTicks(),
-            (config, value) -> terrain(config, it -> it.withWebLifetimeTicks(value))),
+            WebArrowConfig.LIFETIME_TICKS_MIN,
+            WebArrowConfig.LIFETIME_TICKS_MAX,
+            config -> config.terrain().web().lifetimeTicks(),
+            (config, value) -> web(config, it -> it.withLifetimeTicks(value))),
         new BooleanOption<>(
             ConfigSettings.TERRAIN_PAINT_ENABLED,
-            config -> config.terrain().paintEnabled(),
-            (config, value) -> terrain(config, it -> it.withPaintEnabled(value))));
+            config -> config.terrain().paint().enabled(),
+            (config, value) -> paint(config, it -> it.withEnabled(value))));
+  }
+
+  private static NotEnoughArrowsConfig drill(
+      final NotEnoughArrowsConfig config,
+      final Function<DrillArrowConfig, DrillArrowConfig> change) {
+    return terrain(config, it -> it.withDrill(change.apply(it.drill())));
+  }
+
+  private static NotEnoughArrowsConfig pillar(
+      final NotEnoughArrowsConfig config,
+      final Function<PillarArrowConfig, PillarArrowConfig> change) {
+    return terrain(config, it -> it.withPillar(change.apply(it.pillar())));
+  }
+
+  private static NotEnoughArrowsConfig drain(
+      final NotEnoughArrowsConfig config,
+      final Function<DrainArrowConfig, DrainArrowConfig> change) {
+    return terrain(config, it -> it.withDrain(change.apply(it.drain())));
+  }
+
+  private static NotEnoughArrowsConfig freeze(
+      final NotEnoughArrowsConfig config,
+      final Function<FreezeArrowConfig, FreezeArrowConfig> change) {
+    return terrain(config, it -> it.withFreeze(change.apply(it.freeze())));
+  }
+
+  private static NotEnoughArrowsConfig web(
+      final NotEnoughArrowsConfig config, final Function<WebArrowConfig, WebArrowConfig> change) {
+    return terrain(config, it -> it.withWeb(change.apply(it.web())));
+  }
+
+  private static NotEnoughArrowsConfig paint(
+      final NotEnoughArrowsConfig config,
+      final Function<PaintArrowConfig, PaintArrowConfig> change) {
+    return terrain(config, it -> it.withPaint(change.apply(it.paint())));
   }
 
   private static NotEnoughArrowsConfig terrain(
