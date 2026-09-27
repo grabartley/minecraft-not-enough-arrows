@@ -156,7 +156,9 @@ Change it in the Mod Menu screen or from the command tree:
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
-`combat`, `control`, and `fletching`.
+`combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, and
+`fletching`. `traversal` through `social` hold the settings for arrows that have not landed yet, so
+they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -245,15 +247,82 @@ screen are rejected outright, with the accepted range in the error.
 | `control.smoke.durationTicks` | 200 | 0 to 6000 |
 | `control.disarm.affectsPlayers` | on | on or off |
 | `control.disarm.throwDistance` | 5.0 | 0.0 to 16.0 |
+| `traversal.zipline.maxSpanBlocks` | 32 | 2 to 128 |
+| `traversal.zipline.pendingWindowTicks` | 600 | 20 to 6000 |
+| `traversal.zipline.rideSpeed` | 0.6 | 0.1 to 3.0 |
+| `traversal.zipline.lifetimeTicks` | 1200 | 0 to 12000 |
+| `traversal.tow.rangeBlocks` | 32 | 1 to 128 |
+| `traversal.tow.maxTicks` | 100 | 1 to 1200 |
+| `traversal.updraft.heightBlocks` | 12 | 1 to 64 |
+| `traversal.updraft.lifetimeTicks` | 200 | 0 to 1200 |
+| `traversal.updraft.strength` | 0.4 | 0.0 to 2.0 |
+| `traversal.vine.lengthBlocks` | 12 | 1 to 64 |
+| `traversal.trampoline.strength` | 1.2 | 0.0 to 4.0 |
+| `traversal.trampoline.lifetimeTicks` | 600 | 0 to 12000 |
+| `traversal.scaffold.heightBlocks` | 8 | 1 to 64 |
+| `traversal.scaffold.lifetimeTicks` | 600 | 0 to 12000 |
+| `traversal.bridge.lengthBlocks` | 16 | 1 to 64 |
+| `traversal.bridge.lifetimeTicks` | 600 | 0 to 12000 |
+| `terrain.drill.enabled` | on | on or off |
+| `terrain.drill.toolTier` | 2 | 0 wood, 1 stone, 2 iron |
+| `terrain.pillar.enabled` | on | on or off |
+| `terrain.pillar.heightBlocks` | 4 | 1 to 16 |
+| `terrain.pillar.lifetimeTicks` | 600 | 0 to 12000 |
+| `terrain.drain.enabled` | on | on or off |
+| `terrain.drain.radius` | 3 | 0 to 8 |
+| `terrain.drain.maxBlocks` | 65 | 1 to 512 |
+| `terrain.freeze.enabled` | on | on or off |
+| `terrain.freeze.radius` | 3 | 0 to 8 |
+| `terrain.freeze.maxBlocks` | 65 | 1 to 512 |
+| `terrain.web.enabled` | on | on or off |
+| `terrain.web.patchRadius` | 1 | 0 to 3 |
+| `terrain.web.lifetimeTicks` | 400 | 0 to 12000 |
+| `terrain.paint.enabled` | on | on or off |
+| `agriculture.blossom.radius` | 2 | 0 to 8 |
+| `agriculture.till.radius` | 2 | 0 to 8 |
+| `agriculture.harvest.radius` | 3 | 0 to 8 |
+| `agriculture.bee.count` | 3 | 1 to 8 |
+| `agriculture.bee.lifetimeTicks` | 600 | 20 to 6000 |
+| `discovery.torch.enabled` | on | on or off |
+| `discovery.beacon.lifetimeTicks` | 1200 | 0 to 12000 |
+| `discovery.prospector.radius` | 8 | 0 to 16 |
+| `discovery.prospector.durationTicks` | 200 | 0 to 1200 |
+| `discovery.prospector.blocks` | 19 vanilla ores | up to 32 block ids |
+| `discovery.sonar.radius` | 16 | 0 to 32 |
+| `discovery.sonar.durationTicks` | 200 | 0 to 1200 |
+| `discovery.tripwire.lifetimeTicks` | 6000 | 20 to 24000 |
+| `discovery.tripwire.reportIntervalTicks` | 40 | 20 to 1200 |
+| `discovery.tracer.pathLifetimeTicks` | 200 | 0 to 1200 |
+| `chaos.party.enabled` | on | on or off |
+| `chaos.chicken.enabled` | on | on or off |
+| `chaos.puffer.enabled` | on | on or off |
+| `chaos.puffer.durationTicks` | 200 | 0 to 1200 |
+| `chaos.stink.enabled` | on | on or off |
+| `chaos.stink.cloudLifetimeTicks` | 200 | 0 to 1200 |
+| `chaos.boomerang.enabled` | on | on or off |
+| `chaos.polymorph.enabled` | on | on or off |
+| `chaos.polymorph.durationTicks` | 400 | 0 to 2400 |
+| `social.courier.maxPayload` | 64 | 1 to 64 |
+| `social.courier.undeliverable` | empty | up to 32 item ids |
+| `social.snowGolem.lifetimeTicks` | 1200 | 20 to 12000 |
+| `social.magnet.radius` | 8 | 0 to 16 |
 | `fletching.stationEnabled` | on | on or off |
 
-The gravity arrow's exclusion list is edited rather than replaced:
+The three lists, the gravity arrow's exclusions, the prospector arrow's blocks, and the courier
+arrow's undeliverable items, are edited rather than replaced:
 
 ```
-/nea config physics gravityblockexclusions add <block>
-/nea config physics gravityblockexclusions remove <block>
+/nea config physics gravityblockexclusions add <id>
+/nea config physics gravityblockexclusions remove <id>
 /nea config physics gravityblockexclusions clear
+/nea config discovery prospector blocks add <id>
+/nea config social courier undeliverable add <id>
 ```
+
+`remove <id>` and `clear` work the same way on every list.
+
+An identifier longer than 64 characters is refused, so a full list always fits in the packet that
+syncs settings to players.
 
 These three are yours alone. They live on your machine, they are never sent anywhere, and changing
 them changes nothing for anyone else:

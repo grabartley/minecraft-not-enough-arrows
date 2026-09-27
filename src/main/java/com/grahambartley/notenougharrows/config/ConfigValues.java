@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ConfigValues {
+  public static final int MAX_IDENTIFIER_LENGTH = 64;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigValues.class);
 
   private ConfigValues() {}
@@ -116,6 +118,13 @@ public final class ConfigValues {
       }
       final String trimmed = entry.trim().toLowerCase(Locale.ROOT);
       if (trimmed.isEmpty()) {
+        continue;
+      }
+      if (trimmed.length() > MAX_IDENTIFIER_LENGTH) {
+        LOGGER.warn(
+            "Not Enough Arrows config identifier {} is longer than {} characters, dropping it",
+            trimmed,
+            MAX_IDENTIFIER_LENGTH);
         continue;
       }
       if (normalized.size() >= maxEntries) {

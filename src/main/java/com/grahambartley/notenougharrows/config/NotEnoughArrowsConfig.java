@@ -10,6 +10,12 @@ public record NotEnoughArrowsConfig(
     EnderArrowConfig ender,
     CombatArrowConfig combat,
     ControlArrowConfig control,
+    TraversalArrowConfig traversal,
+    TerrainArrowConfig terrain,
+    AgricultureArrowConfig agriculture,
+    DiscoveryArrowConfig discovery,
+    ChaosArrowConfig chaos,
+    SocialArrowConfig social,
     FletchingStationConfig fletching) {
 
   static final String KEY_EXPLOSIVE = "explosive";
@@ -19,6 +25,12 @@ public record NotEnoughArrowsConfig(
   static final String KEY_ENDER = "ender";
   static final String KEY_COMBAT = "combat";
   static final String KEY_CONTROL = "control";
+  static final String KEY_TRAVERSAL = "traversal";
+  static final String KEY_TERRAIN = "terrain";
+  static final String KEY_AGRICULTURE = "agriculture";
+  static final String KEY_DISCOVERY = "discovery";
+  static final String KEY_CHAOS = "chaos";
+  static final String KEY_SOCIAL = "social";
   static final String KEY_FLETCHING = "fletching";
 
   public NotEnoughArrowsConfig {
@@ -29,6 +41,12 @@ public record NotEnoughArrowsConfig(
     ender = ender == null ? EnderArrowConfig.defaults() : ender;
     combat = combat == null ? CombatArrowConfig.defaults() : combat;
     control = control == null ? ControlArrowConfig.defaults() : control;
+    traversal = traversal == null ? TraversalArrowConfig.defaults() : traversal;
+    terrain = terrain == null ? TerrainArrowConfig.defaults() : terrain;
+    agriculture = agriculture == null ? AgricultureArrowConfig.defaults() : agriculture;
+    discovery = discovery == null ? DiscoveryArrowConfig.defaults() : discovery;
+    chaos = chaos == null ? ChaosArrowConfig.defaults() : chaos;
+    social = social == null ? SocialArrowConfig.defaults() : social;
     fletching = fletching == null ? FletchingStationConfig.defaults() : fletching;
   }
 
@@ -41,47 +59,253 @@ public record NotEnoughArrowsConfig(
         EnderArrowConfig.defaults(),
         CombatArrowConfig.defaults(),
         ControlArrowConfig.defaults(),
+        TraversalArrowConfig.defaults(),
+        TerrainArrowConfig.defaults(),
+        AgricultureArrowConfig.defaults(),
+        DiscoveryArrowConfig.defaults(),
+        ChaosArrowConfig.defaults(),
+        SocialArrowConfig.defaults(),
         FletchingStationConfig.defaults());
   }
 
   public NotEnoughArrowsConfig withExplosive(final ExplosiveArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        value, grapple, utility, physics, ender, combat, control, fletching);
+        value,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withGrapple(final GrappleArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, value, utility, physics, ender, combat, control, fletching);
+        explosive,
+        value,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withUtility(final UtilityArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, grapple, value, physics, ender, combat, control, fletching);
+        explosive,
+        grapple,
+        value,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withPhysics(final PhysicsArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, grapple, utility, value, ender, combat, control, fletching);
+        explosive,
+        grapple,
+        utility,
+        value,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withEnder(final EnderArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, grapple, utility, physics, value, combat, control, fletching);
+        explosive,
+        grapple,
+        utility,
+        physics,
+        value,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withCombat(final CombatArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, grapple, utility, physics, ender, value, control, fletching);
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        value,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withControl(final ControlArrowConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, grapple, utility, physics, ender, combat, value, fletching);
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        value,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
+  }
+
+  public NotEnoughArrowsConfig withTraversal(final TraversalArrowConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        value,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
+  }
+
+  public NotEnoughArrowsConfig withTerrain(final TerrainArrowConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        value,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching);
+  }
+
+  public NotEnoughArrowsConfig withAgriculture(final AgricultureArrowConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive, grapple, utility, physics, ender, combat, control, traversal, terrain, value,
+        discovery, chaos, social, fletching);
+  }
+
+  public NotEnoughArrowsConfig withDiscovery(final DiscoveryArrowConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        value,
+        chaos,
+        social,
+        fletching);
+  }
+
+  public NotEnoughArrowsConfig withChaos(final ChaosArrowConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        value,
+        social,
+        fletching);
+  }
+
+  public NotEnoughArrowsConfig withSocial(final SocialArrowConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        value,
+        fletching);
   }
 
   public NotEnoughArrowsConfig withFletching(final FletchingStationConfig value) {
     return new NotEnoughArrowsConfig(
-        explosive, grapple, utility, physics, ender, combat, control, value);
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        value);
   }
 
   public static NotEnoughArrowsConfig fromJson(final JsonObject root) {
@@ -93,6 +317,12 @@ public record NotEnoughArrowsConfig(
         EnderArrowConfig.fromJson(ConfigValues.readObject(root, KEY_ENDER)),
         CombatArrowConfig.fromJson(ConfigValues.readObject(root, KEY_COMBAT)),
         ControlArrowConfig.fromJson(ConfigValues.readObject(root, KEY_CONTROL)),
+        TraversalArrowConfig.fromJson(ConfigValues.readObject(root, KEY_TRAVERSAL)),
+        TerrainArrowConfig.fromJson(ConfigValues.readObject(root, KEY_TERRAIN)),
+        AgricultureArrowConfig.fromJson(ConfigValues.readObject(root, KEY_AGRICULTURE)),
+        DiscoveryArrowConfig.fromJson(ConfigValues.readObject(root, KEY_DISCOVERY)),
+        ChaosArrowConfig.fromJson(ConfigValues.readObject(root, KEY_CHAOS)),
+        SocialArrowConfig.fromJson(ConfigValues.readObject(root, KEY_SOCIAL)),
         FletchingStationConfig.fromJson(ConfigValues.readObject(root, KEY_FLETCHING)));
   }
 
@@ -105,6 +335,12 @@ public record NotEnoughArrowsConfig(
     root.add(KEY_ENDER, ender.toJson());
     root.add(KEY_COMBAT, combat.toJson());
     root.add(KEY_CONTROL, control.toJson());
+    root.add(KEY_TRAVERSAL, traversal.toJson());
+    root.add(KEY_TERRAIN, terrain.toJson());
+    root.add(KEY_AGRICULTURE, agriculture.toJson());
+    root.add(KEY_DISCOVERY, discovery.toJson());
+    root.add(KEY_CHAOS, chaos.toJson());
+    root.add(KEY_SOCIAL, social.toJson());
     root.add(KEY_FLETCHING, fletching.toJson());
     return root;
   }

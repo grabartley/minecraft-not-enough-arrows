@@ -84,6 +84,14 @@ class ConfigValuesTest {
   }
 
   @Test
+  void dropsAnIdentifierLongerThanTheCapSoTheSyncPayloadStaysBounded() {
+    final String atCap = "minecraft:" + "a".repeat(ConfigValues.MAX_IDENTIFIER_LENGTH - 10);
+    final String overCap = atCap + "b";
+
+    assertEquals(List.of(atCap), ConfigValues.normalizeIdentifiers(List.of(atCap, overCap)));
+  }
+
+  @Test
   void treatsANullIdentifierListAsEmpty() {
     assertEquals(List.of(), ConfigValues.normalizeIdentifiers(null));
   }

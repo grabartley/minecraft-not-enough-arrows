@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ConfigCodecTest {
+  private static final int DEFAULT_SYNC_BUDGET = 8192;
 
   @Test
   void roundTripsDefaults() {
@@ -53,6 +54,19 @@ class ConfigCodecTest {
                 new AllegianceArrowConfig(5999, 31.5f),
                 new SmokeArrowConfig(15.5f, 1),
                 new DisarmArrowConfig(false, 15.5f)),
+            TraversalArrowConfig.defaults()
+                .withZipline(ZiplineArrowConfig.defaults().withMaxSpanBlocks(100)),
+            TerrainArrowConfig.defaults().withDrill(DrillArrowConfig.defaults().withToolTier(0)),
+            AgricultureArrowConfig.defaults().withBee(BeeArrowConfig.defaults().withCount(8)),
+            DiscoveryArrowConfig.defaults()
+                .withProspector(
+                    ProspectorArrowConfig.defaults().withBlocks(List.of("minecraft:stone"))),
+            ChaosArrowConfig.defaults()
+                .withPolymorph(PolymorphArrowConfig.defaults().withEnabled(false)),
+            SocialArrowConfig.defaults()
+                .withCourier(
+                    CourierArrowConfig.defaults()
+                        .withUndeliverable(List.of("minecraft:shulker_box"))),
             new FletchingStationConfig(false));
 
     assertEquals(original, ConfigCodec.decode(ConfigCodec.encode(original)));
@@ -91,17 +105,46 @@ class ConfigCodecTest {
 
   @Test
   void encodesAMaximallyPopulatedConfigWithinTheWireLimit() {
-    final List<String> exclusions =
-        IntStream.range(0, PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX)
-            .mapToObj(i -> "minecraft:a_rather_long_block_identifier_" + i)
-            .toList();
     final NotEnoughArrowsConfig maximal =
         NotEnoughArrowsConfig.defaults()
-            .withPhysics(new PhysicsArrowConfig(8, exclusions, 16, false));
+            .withPhysics(
+                new PhysicsArrowConfig(
+                    8,
+                    longestIdentifiers(PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX),
+                    16,
+                    false))
+            .withDiscovery(
+                DiscoveryArrowConfig.defaults()
+                    .withProspector(
+                        ProspectorArrowConfig.defaults()
+                            .withBlocks(longestIdentifiers(ProspectorArrowConfig.BLOCKS_MAX))))
+            .withSocial(
+                SocialArrowConfig.defaults()
+                    .withCourier(
+                        CourierArrowConfig.defaults()
+                            .withUndeliverable(
+                                longestIdentifiers(CourierArrowConfig.UNDELIVERABLE_MAX))));
 
     assertEquals(
         PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX,
         maximal.physics().gravityBlockExclusions().size());
+    assertEquals(
+        ProspectorArrowConfig.BLOCKS_MAX, maximal.discovery().prospector().blocks().size());
+    assertEquals(
+        CourierArrowConfig.UNDELIVERABLE_MAX, maximal.social().courier().undeliverable().size());
     assertTrue(ConfigCodec.encode(maximal).length() < ConfigCodec.MAX_ENCODED_LENGTH);
+  }
+
+  @Test
+  void encodesDefaultsWithinTheSyncBudget() {
+    assertTrue(ConfigCodec.encode(NotEnoughArrowsConfig.defaults()).length() < DEFAULT_SYNC_BUDGET);
+  }
+
+  private static List<String> longestIdentifiers(final int count) {
+    return IntStream.range(0, count).mapToObj(i -> padded("minecraft:block_" + i + "_")).toList();
+  }
+
+  private static String padded(final String prefix) {
+    return prefix + "x".repeat(ConfigValues.MAX_IDENTIFIER_LENGTH - prefix.length());
   }
 }

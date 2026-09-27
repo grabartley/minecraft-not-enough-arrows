@@ -10,6 +10,12 @@ public final class PhysicsOptions {
 
   private PhysicsOptions() {}
 
+  public static final IdentifierListOption<NotEnoughArrowsConfig> GRAVITY_BLOCK_EXCLUSIONS =
+      new IdentifierListOption<>(
+          ConfigSettings.PHYSICS_GRAVITY_BLOCK_EXCLUSIONS,
+          PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX,
+          config -> config.physics().gravityBlockExclusions(),
+          (config, value) -> physics(config, it -> it.withGravityBlockExclusions(value)));
   private static final List<ConfigOption<NotEnoughArrowsConfig>> OPTIONS = buildOptions();
   private static final ConfigSection<NotEnoughArrowsConfig> SECTION =
       new ConfigSection<>(ConfigSettings.PHYSICS, OPTIONS);
@@ -30,11 +36,7 @@ public final class PhysicsOptions {
             PhysicsArrowConfig.GRAVITY_IMPACT_RADIUS_MAX,
             config -> config.physics().gravityImpactRadius(),
             (config, value) -> physics(config, it -> it.withGravityImpactRadius(value))),
-        new IdentifierListOption<>(
-            ConfigSettings.PHYSICS_GRAVITY_BLOCK_EXCLUSIONS,
-            PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX,
-            config -> config.physics().gravityBlockExclusions(),
-            (config, value) -> physics(config, it -> it.withGravityBlockExclusions(value))),
+        GRAVITY_BLOCK_EXCLUSIONS,
         new IntOption<>(
             ConfigSettings.PHYSICS_RICOCHET_BOUNCE_COUNT,
             PhysicsArrowConfig.RICOCHET_BOUNCE_COUNT_MIN,

@@ -974,7 +974,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 | CONFIG-8 | The settings screen and the status output are both built from one option catalog, so a setting cannot appear in one surface and be missing from the other |
 | CONFIG-9 | Setting names are reported in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it |
 | CONFIG-10 | The configuration record nests a sub-record per arrow family, and the command tree is composed from per-family builders, so adding a family grows neither a shared record nor a shared command class |
-| CONFIG-11 | The gravity exclusion list is edited rather than replaced, with add, remove, and clear operations |
+| CONFIG-11 | Every identifier list, the gravity exclusions, the prospector blocks, and the courier's undeliverable items, is edited rather than replaced, with add, remove, and clear operations |
 | CONFIG-12 | A reset command restores every setting to its default |
 | CONFIG-13 | Client preferences live in a separate store, in the client configuration directory, and are never sent anywhere. Editing them changes nothing another player can observe |
 | CONFIG-14 | The configuration reaching a client is encoded with the same codec used to read and write the file, so the wire format cannot drift from the file format. The encoded payload is bounded |
@@ -1151,8 +1151,8 @@ Seven arrows leave timed blocks behind, and the fire patch came before them. The
 | PERF-2 | A rope in an unloaded chunk costs nothing until somebody returns to it. Its decay check is scheduled into the chunk rather than run from a server loop |
 | PERF-3 | A fuse whose carrier is not loaded holds rather than burning, and is abandoned if the carrier stays missing rather than being tracked forever |
 | PERF-4 | Nothing force-loads a chunk. A sweep that finds an unloaded chunk skips it and leaves the scheduled tick to handle it |
-| PERF-5 | A configuration sync is roughly a kilobyte and is sent on join and on change only. The encoded payload declares an explicit maximum length rather than relying on a default |
-| PERF-6 | The block exclusion list is capped, so the payload stays bounded no matter what an operator adds |
+| PERF-5 | A configuration sync at defaults is a few kilobytes, held under 8 KB, and is sent on join and on change only. The encoded payload declares an explicit maximum length rather than relying on a default, and a fully populated configuration still fits inside it |
+| PERF-6 | Every identifier list is capped, in entries and in the length of each identifier, so the payload stays bounded no matter what an operator adds |
 | PERF-7 | Fletching recipes are capped at nine ingredients, which bounds the matching cost |
 | PERF-8 | The nocked-arrow answer is sent when it changes, not per tick |
 | PERF-9 | A reveal pulse scans once, over a volume bounded by a configured maximum radius, and never re-scans. Cost is paid at impact and never per tick |
