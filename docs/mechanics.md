@@ -47,7 +47,7 @@ Every block the mod places for a while belongs to a timed structure: a set of po
 | Rule | Behaviour |
 |---|---|
 | Protection | Checked per position as the structure is placed. The first position the shooter may not build at ends the structure there, rather than refusing the whole shot, so the arrow never reveals where a boundary is |
-| What it replaces | Only air or a replaceable block such as a snow layer. A block somebody built is never replaced, and a position another live structure holds is skipped |
+| What it replaces | Only air or a replaceable block such as a snow layer. A block somebody built is never replaced, water and lava are left alone, and a position another live structure holds is skipped |
 | Budget | Each arrow's structure budget caps how many positions one shot can place, which also caps what removing them costs |
 | Lifetime | Read from server config on placement. A lifetime of zero places nothing rather than something permanent |
 | Expiry | Every position is removed together, once, at expiry. A position that no longer holds what was placed is left alone, so building over a structure keeps your block |

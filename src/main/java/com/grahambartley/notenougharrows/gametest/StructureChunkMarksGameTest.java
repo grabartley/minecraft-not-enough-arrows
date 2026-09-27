@@ -121,7 +121,9 @@ public final class StructureChunkMarksGameTest implements FabricGameTest {
             chunk.getPos(),
             saved);
 
-    final StructureMark mark = StructureChunkMarks.at(loaded, pos).orElseThrow();
+    final WorldChunk reloaded = new WorldChunk(world, loaded, null);
+
+    final StructureMark mark = StructureChunkMarks.at(reloaded, pos).orElseThrow();
     context.assertTrue(mark.belongsTo(id), "A reloaded chunk should name the structure");
     context.assertEquals(
         mark.block(), Registries.BLOCK.getId(Blocks.GLASS), "Block named by a reloaded mark");

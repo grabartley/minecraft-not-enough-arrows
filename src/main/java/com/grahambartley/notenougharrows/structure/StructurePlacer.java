@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 
 public final class StructurePlacer {
@@ -57,10 +58,13 @@ public final class StructurePlacer {
           || !BlockPlacement.canOccupy(world, block.pos(), block.state())) {
         continue;
       }
+      final WorldChunk chunk = world.getWorldChunk(block.pos());
+      StructureChunkMarks.mark(chunk, block, id);
       if (world.setBlockState(block.pos(), block.state(), Block.NOTIFY_ALL)) {
-        StructureChunkMarks.mark(world.getWorldChunk(block.pos()), block, id);
         placed.add(block);
         taken.add(block.pos());
+      } else {
+        StructureChunkMarks.unmark(chunk, block.pos());
       }
     }
     return placed.stream().filter(block -> isStillMarked(world, block, id)).toList();

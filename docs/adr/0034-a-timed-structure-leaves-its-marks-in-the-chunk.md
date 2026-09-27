@@ -33,6 +33,8 @@ No timed structure can outlive a crash, an unload, or a restart for longer than 
 
 Fire patches now get it too. Fire lit before a restart is put out by the mod when its chunk loads, rather than being left to vanilla's rules as ADR 0012 accepted. One small edge moves with it: a patch block that burns out on its own leaves the structure, so fire that later spreads back into that position is ordinary vanilla fire and is not put out when the patch expires.
 
+A structure block that moves, pushed by a piston or falling as sand does, leaves the structure the same way a mined block does. It lands unmarked and stays, because what it becomes is no longer something the structure placed.
+
 The world save now carries a small amount of mod data: one mark per placed block, only in chunks that hold a live structure, and removed with the structure. The structures themselves are still not persisted. A mark cannot resume a structure, only clear one, so the non-goal of persisting timed structures across a restart stands.
 
 A world that later loses the mod keeps any marks that were saved, as unknown attachment data Fabric ignores. The blocks they describe stay as ordinary vanilla blocks. This is the same narrow window ADR 0018 accepts for the redstone charge.

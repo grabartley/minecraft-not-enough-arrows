@@ -41,6 +41,7 @@ public final class StaleMarkSweepGameTest implements FabricGameTest {
     context.assertFalse(sweep.hasPendingIn(context.getWorld()), "A live mark is not stale");
     context.assertEquals(sweep.clearIn(context.getWorld()), 0, "Live blocks cleared");
     context.expectBlock(Blocks.OAK_PLANKS, FIRST);
+    StructureChunkMarks.unmark(chunkAt(context, FIRST), context.getAbsolutePos(FIRST));
     context.complete();
   }
 

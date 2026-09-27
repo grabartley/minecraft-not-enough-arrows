@@ -130,4 +130,18 @@ public final class BlockPlacementGameTest implements FabricGameTest {
         "Nothing is occupied without a world or a state");
     context.complete();
   }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aStructureNeverOccupiesWater(TestContext context) {
+    context.setBlockState(OPEN_AIR, Blocks.WATER);
+
+    context.assertFalse(
+        BlockPlacement.canOccupy(
+            context.getWorld(),
+            context.getAbsolutePos(OPEN_AIR),
+            Blocks.OAK_PLANKS.getDefaultState()),
+        "Water is replaceable but would be lost when the structure expires");
+    context.setBlockState(OPEN_AIR, Blocks.AIR);
+    context.complete();
+  }
 }

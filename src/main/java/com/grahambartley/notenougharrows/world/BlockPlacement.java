@@ -35,6 +35,8 @@ public final class BlockPlacement {
       return false;
     }
     final BlockState current = world.getBlockState(pos);
-    return (current.isAir() || current.isReplaceable()) && state.canPlaceAt(world, pos);
+    return current.isReplaceable()
+        && current.getFluidState().isEmpty()
+        && state.canPlaceAt(world, pos);
   }
 }
