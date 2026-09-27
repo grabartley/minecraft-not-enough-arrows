@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.command;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
@@ -18,16 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.ArgumentCaptor;
 
 class IdentifierListNodesTest {
   private static final String ROOT = "root";
   private static final IdentifierListOption<NotEnoughArrowsConfig> OPTION =
-      (IdentifierListOption<NotEnoughArrowsConfig>)
-          DiscoveryOptions.options().stream()
-              .filter(IdentifierListOption.class::isInstance)
-              .findFirst()
-              .orElseThrow();
+      DiscoveryOptions.PROSPECTOR_BLOCKS;
 
   private CommandDispatcher<ServerCommandSource> dispatcher;
   private ServerCommandSource source;
@@ -85,12 +83,21 @@ class IdentifierListNodesTest {
         ((TranslatableTextContent) error.getValue().getContent()).getKey());
   }
 
+  @ParameterizedTest(name = "{0} is not a rejection")
+  @EnumSource(
+      value = IdentifierListEdits.Outcome.class,
+      names = {"ADDED", "REMOVED", "CLEARED"})
+  void aSuccessfulEditHasNoRejectionMessage(IdentifierListEdits.Outcome outcome) {
+    assertThrows(IllegalArgumentException.class, () -> IdentifierListNodes.rejectionKey(outcome));
+  }
+
   @ParameterizedTest(name = "{0} -> {1}")
   @CsvSource({
     "ALREADY_PRESENT, command.not-enough-arrows.list.already_present",
     "NOT_PRESENT,     command.not-enough-arrows.list.not_present",
     "LIST_FULL,       command.not-enough-arrows.list.full",
     "INVALID_ID,      command.not-enough-arrows.list.invalid",
+    "TOO_LONG,        command.not-enough-arrows.list.too_long",
   })
   void eachRejectionReasonGetsItsOwnMessage(IdentifierListEdits.Outcome outcome, String expected) {
     assertEquals(expected, IdentifierListNodes.rejectionKey(outcome));

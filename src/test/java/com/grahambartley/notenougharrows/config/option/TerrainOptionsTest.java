@@ -30,6 +30,7 @@ class TerrainOptionsTest {
             "terrain.drain.maxBlocks",
             "terrain.freeze.enabled",
             "terrain.freeze.radius",
+            "terrain.freeze.maxBlocks",
             "terrain.web.enabled",
             "terrain.web.patchRadius",
             "terrain.web.lifetimeTicks",

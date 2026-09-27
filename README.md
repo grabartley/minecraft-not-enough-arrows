@@ -157,8 +157,8 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, and
-`fletching`. The last six hold the settings for arrows that have not landed yet, so they exist ahead
-of the arrows they will control.
+`fletching`. `traversal` through `social` hold the settings for arrows that have not landed yet, so
+they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -273,6 +273,7 @@ screen are rejected outright, with the accepted range in the error.
 | `terrain.drain.maxBlocks` | 65 | 1 to 512 |
 | `terrain.freeze.enabled` | on | on or off |
 | `terrain.freeze.radius` | 3 | 0 to 8 |
+| `terrain.freeze.maxBlocks` | 65 | 1 to 512 |
 | `terrain.web.enabled` | on | on or off |
 | `terrain.web.patchRadius` | 1 | 0 to 3 |
 | `terrain.web.lifetimeTicks` | 400 | 0 to 12000 |
@@ -317,6 +318,8 @@ arrow's undeliverable items, are edited rather than replaced:
 /nea config discovery prospector blocks add <id>
 /nea config social courier undeliverable add <id>
 ```
+
+`remove <id>` and `clear` work the same way on every list.
 
 An identifier longer than 64 characters is refused, so a full list always fits in the packet that
 syncs settings to players.

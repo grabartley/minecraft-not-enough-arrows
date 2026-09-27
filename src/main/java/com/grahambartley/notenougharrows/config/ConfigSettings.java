@@ -175,6 +175,7 @@ public final class ConfigSettings {
   public static final String TERRAIN_DRAIN_MAX_BLOCKS = TERRAIN_DRAIN + ".maxBlocks";
   public static final String TERRAIN_FREEZE_ENABLED = TERRAIN_FREEZE + ".enabled";
   public static final String TERRAIN_FREEZE_RADIUS = TERRAIN_FREEZE + ".radius";
+  public static final String TERRAIN_FREEZE_MAX_BLOCKS = TERRAIN_FREEZE + ".maxBlocks";
   public static final String TERRAIN_WEB_ENABLED = TERRAIN_WEB + ".enabled";
   public static final String TERRAIN_WEB_PATCH_RADIUS = TERRAIN_WEB + ".patchRadius";
   public static final String TERRAIN_WEB_LIFETIME_TICKS = TERRAIN_WEB + ".lifetimeTicks";

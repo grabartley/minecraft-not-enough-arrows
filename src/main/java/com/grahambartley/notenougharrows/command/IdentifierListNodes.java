@@ -47,12 +47,7 @@ public final class IdentifierListNodes {
                         .executes(context -> edit(context, option, IdentifierListEdits::remove))))
         .then(
             CommandManager.literal(CLEAR)
-                .executes(
-                    context ->
-                        applyResult(
-                            context,
-                            option,
-                            IdentifierListEdits.clear(option.read(ServerConfigService.get())))));
+                .executes(context -> applyResult(context, option, IdentifierListEdits.clear())));
   }
 
   private static int edit(
@@ -87,7 +82,10 @@ public final class IdentifierListNodes {
       case ALREADY_PRESENT -> "command.not-enough-arrows.list.already_present";
       case NOT_PRESENT -> "command.not-enough-arrows.list.not_present";
       case LIST_FULL -> "command.not-enough-arrows.list.full";
-      default -> "command.not-enough-arrows.list.invalid";
+      case TOO_LONG -> "command.not-enough-arrows.list.too_long";
+      case INVALID_ID -> "command.not-enough-arrows.list.invalid";
+      case ADDED, REMOVED, CLEARED ->
+          throw new IllegalArgumentException(outcome + " is not a rejection");
     };
   }
 }

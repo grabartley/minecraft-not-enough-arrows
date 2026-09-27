@@ -81,6 +81,12 @@ public final class TerrainOptions {
             FreezeArrowConfig.RADIUS_MAX,
             config -> config.terrain().freeze().radius(),
             (config, value) -> freeze(config, it -> it.withRadius(value))),
+        new IntOption<>(
+            ConfigSettings.TERRAIN_FREEZE_MAX_BLOCKS,
+            FreezeArrowConfig.MAX_BLOCKS_MIN,
+            FreezeArrowConfig.MAX_BLOCKS_MAX,
+            config -> config.terrain().freeze().maxBlocks(),
+            (config, value) -> freeze(config, it -> it.withMaxBlocks(value))),
         new BooleanOption<>(
             ConfigSettings.TERRAIN_WEB_ENABLED,
             config -> config.terrain().web().enabled(),

@@ -14,6 +14,7 @@ public final class IdentifierListEdits {
     REMOVED,
     CLEARED,
     INVALID_ID,
+    TOO_LONG,
     ALREADY_PRESENT,
     NOT_PRESENT,
     LIST_FULL;
@@ -29,6 +30,9 @@ public final class IdentifierListEdits {
     final String normalized = normalize(id);
     if (normalized == null) {
       return new Result(Outcome.INVALID_ID, current);
+    }
+    if (normalized.length() > ConfigValues.MAX_IDENTIFIER_LENGTH) {
+      return new Result(Outcome.TOO_LONG, current);
     }
     if (current.contains(normalized)) {
       return new Result(Outcome.ALREADY_PRESENT, current);
@@ -54,7 +58,7 @@ public final class IdentifierListEdits {
     return new Result(Outcome.REMOVED, List.copyOf(updated));
   }
 
-  public static Result clear(final List<String> current) {
+  public static Result clear() {
     return new Result(Outcome.CLEARED, List.of());
   }
 
@@ -63,9 +67,6 @@ public final class IdentifierListEdits {
       return null;
     }
     final Identifier identifier = Identifier.tryParse(id.trim().toLowerCase(Locale.ROOT));
-    if (identifier == null || identifier.toString().length() > ConfigValues.MAX_IDENTIFIER_LENGTH) {
-      return null;
-    }
-    return identifier.toString();
+    return identifier == null ? null : identifier.toString();
   }
 }

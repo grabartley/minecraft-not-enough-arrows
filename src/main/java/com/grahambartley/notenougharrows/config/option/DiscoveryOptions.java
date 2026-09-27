@@ -15,6 +15,13 @@ import java.util.function.Function;
 public final class DiscoveryOptions {
   private DiscoveryOptions() {}
 
+  public static final IdentifierListOption<NotEnoughArrowsConfig> PROSPECTOR_BLOCKS =
+      new IdentifierListOption<>(
+          ConfigSettings.DISCOVERY_PROSPECTOR_BLOCKS,
+          ProspectorArrowConfig.BLOCKS_MAX,
+          config -> config.discovery().prospector().blocks(),
+          (config, value) -> prospector(config, it -> it.withBlocks(value)));
+
   private static final List<ConfigOption<NotEnoughArrowsConfig>> OPTIONS = buildOptions();
   private static final ConfigSection<NotEnoughArrowsConfig> SECTION =
       new ConfigSection<>(ConfigSettings.DISCOVERY, OPTIONS);
@@ -51,11 +58,7 @@ public final class DiscoveryOptions {
             ProspectorArrowConfig.DURATION_TICKS_MAX,
             config -> config.discovery().prospector().durationTicks(),
             (config, value) -> prospector(config, it -> it.withDurationTicks(value))),
-        new IdentifierListOption<>(
-            ConfigSettings.DISCOVERY_PROSPECTOR_BLOCKS,
-            ProspectorArrowConfig.BLOCKS_MAX,
-            config -> config.discovery().prospector().blocks(),
-            (config, value) -> prospector(config, it -> it.withBlocks(value))),
+        PROSPECTOR_BLOCKS,
         new IntOption<>(
             ConfigSettings.DISCOVERY_SONAR_RADIUS,
             SonarArrowConfig.RADIUS_MIN,

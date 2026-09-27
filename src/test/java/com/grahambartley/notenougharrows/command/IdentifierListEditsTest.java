@@ -48,7 +48,7 @@ class IdentifierListEditsTest {
     final String overCap = "minecraft:" + "a".repeat(ConfigValues.MAX_IDENTIFIER_LENGTH - 9);
 
     assertEquals(
-        IdentifierListEdits.Outcome.INVALID_ID,
+        IdentifierListEdits.Outcome.TOO_LONG,
         IdentifierListEdits.add(List.of(), overCap, MAX_ENTRIES).outcome());
   }
 
@@ -114,7 +114,7 @@ class IdentifierListEditsTest {
 
   @Test
   void clearingEmptiesTheList() {
-    final IdentifierListEdits.Result result = IdentifierListEdits.clear(List.of("minecraft:sand"));
+    final IdentifierListEdits.Result result = IdentifierListEdits.clear();
 
     assertEquals(IdentifierListEdits.Outcome.CLEARED, result.outcome());
     assertTrue(result.updated().isEmpty());
@@ -126,6 +126,7 @@ class IdentifierListEditsTest {
     "REMOVED,         true",
     "CLEARED,         true",
     "INVALID_ID,      false",
+    "TOO_LONG,        false",
     "ALREADY_PRESENT, false",
     "NOT_PRESENT,     false",
     "LIST_FULL,       false",

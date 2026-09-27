@@ -4,11 +4,14 @@ import com.google.gson.JsonObject;
 
 public record DrillArrowConfig(boolean enabled, int toolTier) {
 
-  public static final int TOOL_TIER_MIN = 0;
-  public static final int TOOL_TIER_MAX = 2;
+  public static final int TOOL_TIER_WOOD = 0;
+  public static final int TOOL_TIER_STONE = 1;
+  public static final int TOOL_TIER_IRON = 2;
+  public static final int TOOL_TIER_MIN = TOOL_TIER_WOOD;
+  public static final int TOOL_TIER_MAX = TOOL_TIER_IRON;
 
   public static final boolean DEFAULT_ENABLED = true;
-  public static final int DEFAULT_TOOL_TIER = 2;
+  public static final int DEFAULT_TOOL_TIER = TOOL_TIER_IRON;
 
   static final String KEY_ENABLED = "enabled";
   static final String KEY_TOOL_TIER = "toolTier";
