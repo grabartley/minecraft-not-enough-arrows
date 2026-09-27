@@ -1,4 +1,4 @@
-# ADR 0033: New family command trees are built from the option catalog
+# ADR 0033: Family command trees are built from the option catalog
 
 - **Status:** Accepted
 - **Date:** 2026-09-27
@@ -15,14 +15,14 @@ The reason ADR 0010 gave for keeping hand-written builders did not hold up. Ever
 
 `OptionCommandNodes` builds a family's command subtree straight from its `ConfigSection`. Each option becomes a node of its own kind, with the option's own bounds as the Brigadier argument range and the option's own writer as the change it applies. An id with more than two segments, such as `traversal.zipline.maxSpanBlocks`, gets one literal per segment, so an arrow's settings share one node.
 
-Each new family still has its own builder class, as CONFIG-10 requires, but the class is a single call into `OptionCommandNodes` with its section. Identifier lists go through `IdentifierListNodes`, which the gravity exclusion list now uses too, so all three lists answer add, remove, and clear with the same checks and the same messages.
+Each family still has its own builder class, as CONFIG-10 requires, but the class is a single call into `OptionCommandNodes` with its section. Identifier lists go through `IdentifierListNodes`, which the gravity exclusion list now uses too, so all three lists answer add, remove, and clear with the same checks and the same messages.
 
-The eight families that already existed keep their hand-written builders. Moving them over is a mechanical follow-up with no behaviour change, and it did not belong in the change that added the new families.
+The eight families that already existed moved across in a follow-up with no behaviour change: every literal, argument type, and range is what their hand-written builders produced.
 
 ## Consequences
 
-For a new family, a setting's bounds are stated once, on the record, and every surface reads them from there. The command tree, the status output, and the screen can only disagree for a new family if the catalog disagrees with itself.
+For every family, a setting's bounds are stated once, on the record, and every surface reads them from there. The command tree, the status output, and the screen can only disagree if the catalog disagrees with itself.
 
-Adding a setting to a new family means a record field, a catalog entry, and English for the screen. The command node follows with no further edit.
+Adding a setting to any family means a record field, a catalog entry, and English for the screen. The command node follows with no further edit.
 
-Accepted drawback: for a while, two ways of building command nodes sit side by side. A reader looking at `PhysicsCommandNodes` sees the old way and one looking at `TraversalCommandNodes` sees the new one, until the older builders are moved across.
+A test that builds its expectations from the catalog can no longer catch command drift, because the tree it checks is built from that same catalog. The independent check is the per-family `*CommandNodesTest` classes, which state each bound as a literal. They must keep doing so rather than reading bounds from the `*Options` sections.
