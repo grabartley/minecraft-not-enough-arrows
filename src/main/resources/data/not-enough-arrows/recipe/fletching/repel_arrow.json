@@ -1,0 +1,20 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:soul_sand"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:repel_arrow",
+    "count": 12
+  }
+}

@@ -2,3 +2,9 @@ accessWidener v2 named
 accessible field net/minecraft/server/network/ServerPlayNetworkHandler floatingTicks I
 accessible class net/minecraft/screen/ScreenHandlerType$Factory
 accessible method net/minecraft/screen/ScreenHandlerType <init> (Lnet/minecraft/screen/ScreenHandlerType$Factory;Lnet/minecraft/resource/featuretoggle/FeatureSet;)V
+accessible method net/minecraft/entity/mob/MobEntity getDropChance (Lnet/minecraft/entity/EquipmentSlot;)F
+accessible class net/minecraft/entity/mob/SlimeEntity$SlimeMoveControl
+accessible field net/minecraft/entity/mob/PhantomEntity targetPosition Lnet/minecraft/util/math/Vec3d;
+accessible field net/minecraft/entity/passive/BatEntity hangingPosition Lnet/minecraft/util/math/BlockPos;
+accessible method net/minecraft/entity/passive/FoxEntity stopActions ()V
+accessible method net/minecraft/entity/mob/MobEntity getItemPickUpRangeExpander ()Lnet/minecraft/util/math/Vec3i;

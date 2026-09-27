@@ -12,6 +12,7 @@ public final class ServerConfigOptions {
           PhysicsOptions.section(),
           EnderOptions.section(),
           CombatOptions.section(),
+          ControlOptions.section(),
           FletchingOptions.section());
   private static final List<ConfigOption<NotEnoughArrowsConfig>> ALL =
       SECTIONS.stream().flatMap(section -> section.options().stream()).toList();

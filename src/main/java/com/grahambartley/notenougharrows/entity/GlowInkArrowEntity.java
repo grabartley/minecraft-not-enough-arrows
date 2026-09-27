@@ -10,12 +10,10 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class GlowInkArrowEntity extends BaseArrowEntity {
-  private static final double MARKING_DAMAGE = 0.5;
 
   public GlowInkArrowEntity(
       final EntityType<? extends GlowInkArrowEntity> entityType, final World world) {
     super(entityType, world);
-    setDamage(MARKING_DAMAGE);
   }
 
   public GlowInkArrowEntity(
@@ -27,7 +25,6 @@ public class GlowInkArrowEntity extends BaseArrowEntity {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     super(entityType, world, x, y, z, stack, weapon);
-    setDamage(MARKING_DAMAGE);
   }
 
   @Override
@@ -35,5 +32,10 @@ public class GlowInkArrowEntity extends BaseArrowEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {
     GlowService.mark(world, entityHitResult.getEntity(), this);
     return ArrowImpact.DEFAULT;
+  }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
   }
 }

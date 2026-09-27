@@ -35,6 +35,18 @@ class ArrowImpactTest {
     assertTrue(impact.runsVanillaResolution());
   }
 
+  @ParameterizedTest
+  @CsvSource({
+    "DEFAULT, DISCARD",
+    "CONSUME, DISCARD",
+    "DISCARD, DISCARD",
+    "RETAIN, RETAIN",
+  })
+  void sparingWhatItHitsSkipsVanillasHitButKeepsTheArrowsOwnChoice(
+      final ArrowImpact impact, final ArrowImpact spared) {
+    assertEquals(spared, impact.sparingWhatItHits());
+  }
+
   @Test
   void offersAnOutcomeForEveryCombinationOfResolutionAndRemoval() {
     assertEquals(4, ArrowImpact.values().length);

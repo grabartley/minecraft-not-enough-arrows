@@ -14,7 +14,6 @@ public class GuardArrowEntity extends StatusArrowEntity {
   public GuardArrowEntity(
       final EntityType<? extends GuardArrowEntity> entityType, final World world) {
     super(entityType, world);
-    setDamage(SUPPORT_DAMAGE);
   }
 
   public GuardArrowEntity(
@@ -26,7 +25,6 @@ public class GuardArrowEntity extends StatusArrowEntity {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     super(entityType, world, x, y, z, stack, weapon);
-    setDamage(SUPPORT_DAMAGE);
   }
 
   @Override

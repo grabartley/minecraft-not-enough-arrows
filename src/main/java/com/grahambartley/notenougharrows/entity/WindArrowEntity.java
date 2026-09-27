@@ -12,13 +12,11 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class WindArrowEntity extends BaseArrowEntity {
-  private static final double DISPLACING_DAMAGE = 0.5;
   private static final double FACE_CLEARANCE = 0.25;
 
   public WindArrowEntity(
       final EntityType<? extends WindArrowEntity> entityType, final World world) {
     super(entityType, world);
-    setDamage(DISPLACING_DAMAGE);
   }
 
   public WindArrowEntity(
@@ -30,7 +28,6 @@ public class WindArrowEntity extends BaseArrowEntity {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     super(entityType, world, x, y, z, stack, weapon);
-    setDamage(DISPLACING_DAMAGE);
   }
 
   @Override
@@ -49,5 +46,10 @@ public class WindArrowEntity extends BaseArrowEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {
     WindBurstService.burst(world, entityHitResult.getPos(), this);
     return ArrowImpact.DEFAULT;
+  }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
   }
 }

@@ -41,7 +41,10 @@ public final class ModNetworkingClient {
         .execute(
             () ->
                 CountdownSync.accept(
-                    payload.carrierId(), payload.delayTicks(), payload.remainingTicks()));
+                    payload.carrierId(),
+                    payload.delayTicks(),
+                    payload.remainingTicks(),
+                    payload.kind()));
   }
 
   private static void handleNockedArrow(

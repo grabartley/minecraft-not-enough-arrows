@@ -17,6 +17,7 @@ public final class CountdownRingRenderer {
   private static final float INNER_RADIUS = 0.14f;
   private static final float BESIDE_OFFSET = 0.42f;
   private static final float ABOVE_OFFSET = 0.18f;
+  private static final float ABOVE_HEAD = 0.5f;
 
   private static final int TRACK_COLOR = 0x66000000;
   private static final int ARC_COLOR = 0xFFE0C060;
@@ -44,8 +45,10 @@ public final class CountdownRingRenderer {
               continue;
             }
 
-            final Vec3d center = carrier.getLerpedPos(tickDelta).add(0.0, ABOVE_OFFSET, 0.0);
-            if (!CountdownGaze.isLookingAt(eye, look, center)) {
+            final Vec3d center =
+                carrier.getLerpedPos(tickDelta).add(0.0, heightAbove(carrier, countdown), 0.0);
+            if (countdown.kind().showsOnlyWhenLookedAt()
+                && !CountdownGaze.isLookingAt(eye, look, center)) {
               continue;
             }
 
@@ -59,6 +62,10 @@ public final class CountdownRingRenderer {
             immediate.draw(RenderLayer.getDebugQuads());
           }
         });
+  }
+
+  private static double heightAbove(final Entity carrier, final Countdown countdown) {
+    return countdown.kind().sitsAboveTheHead() ? carrier.getHeight() + ABOVE_HEAD : ABOVE_OFFSET;
   }
 
   private static void drawRing(
@@ -75,7 +82,9 @@ public final class CountdownRingRenderer {
     matrices.translate(center.x - cameraPos.x, center.y - cameraPos.y, center.z - cameraPos.z);
     matrices.multiply(camera.getRotation());
     matrices.scale(scale, scale, scale);
-    matrices.translate(BESIDE_OFFSET, 0.0f, 0.0f);
+    if (!countdown.kind().sitsAboveTheHead()) {
+      matrices.translate(BESIDE_OFFSET, 0.0f, 0.0f);
+    }
 
     final Matrix4f matrix = matrices.peek().getPositionMatrix();
     final VertexConsumer consumer = consumers.getBuffer(RenderLayer.getDebugQuads());
