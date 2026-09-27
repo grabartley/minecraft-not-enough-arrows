@@ -85,7 +85,8 @@ public final class CountdownBroadcaster {
   }
 
   private static CountdownS2CPayload payloadFor(final Entity carrier, final CountdownTimer timer) {
-    return new CountdownS2CPayload(carrier.getId(), timer.delayTicks(), timer.remainingTicks());
+    return new CountdownS2CPayload(
+        carrier.getId(), timer.delayTicks(), timer.remainingTicks(), timer.kind());
   }
 
   private static void announceTo(

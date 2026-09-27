@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.control;
 
+import com.grahambartley.notenougharrows.countdown.CountdownKind;
 import com.grahambartley.notenougharrows.countdown.CountdownTimer;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import java.util.List;
@@ -37,6 +38,10 @@ public final class AllegianceCountdowns {
     final int remaining = (int) Math.max(0L, hold.expiryTick() - world.getTime());
     final int configured = ServerConfigService.get().control().allegiance().durationTicks();
     return new CountdownTimer(
-        hold.mobId(), Math.max(configured, remaining), remaining, hold.expiryTick());
+        hold.mobId(),
+        Math.max(configured, remaining),
+        remaining,
+        hold.expiryTick(),
+        CountdownKind.ALLEGIANCE);
   }
 }

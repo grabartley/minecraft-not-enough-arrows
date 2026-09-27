@@ -2,9 +2,11 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
+import com.grahambartley.notenougharrows.control.AllegianceCountdowns;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.control.ControlSteering;
 import com.grahambartley.notenougharrows.countdown.CountdownBroadcaster;
+import com.grahambartley.notenougharrows.countdown.CountdownKind;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -167,6 +169,10 @@ public final class AllegianceArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               CountdownBroadcaster.isAnnouncing(context.getWorld(), defender.getUuid()),
               "A turned mob should carry a countdown ring showing how long it has left");
+          context.assertEquals(
+              CountdownKind.ALLEGIANCE,
+              AllegianceCountdowns.timerOn(context.getWorld(), defender.getUuid()).kind(),
+              "A turned mob's ring should be an allegiance ring, always shown above its head");
           context.complete();
         });
   }

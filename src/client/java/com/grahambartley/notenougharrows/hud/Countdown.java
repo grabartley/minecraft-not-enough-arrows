@@ -1,10 +1,17 @@
 package com.grahambartley.notenougharrows.hud;
 
-public record Countdown(int carrierId, int delayTicks, int remainingTicks) {
+import com.grahambartley.notenougharrows.countdown.CountdownKind;
+
+public record Countdown(int carrierId, int delayTicks, int remainingTicks, CountdownKind kind) {
 
   public Countdown {
     delayTicks = Math.max(0, delayTicks);
     remainingTicks = Math.max(0, Math.min(remainingTicks, delayTicks));
+    kind = kind == null ? CountdownKind.FUSE : kind;
+  }
+
+  public Countdown(final int carrierId, final int delayTicks, final int remainingTicks) {
+    this(carrierId, delayTicks, remainingTicks, CountdownKind.FUSE);
   }
 
   public boolean isBurning() {
@@ -12,6 +19,6 @@ public record Countdown(int carrierId, int delayTicks, int remainingTicks) {
   }
 
   public Countdown burned() {
-    return new Countdown(carrierId, delayTicks, remainingTicks - 1);
+    return new Countdown(carrierId, delayTicks, remainingTicks - 1, kind);
   }
 }

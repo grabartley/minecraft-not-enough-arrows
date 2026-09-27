@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.countdown.CountdownBroadcaster;
+import com.grahambartley.notenougharrows.countdown.CountdownKind;
 import com.grahambartley.notenougharrows.fuse.FuseService;
 import com.grahambartley.notenougharrows.network.CountdownPayloads.CountdownS2CPayload;
 import io.netty.buffer.Unpooled;
@@ -36,6 +37,18 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
         "A burning countdown should survive a wire round trip, but was " + received);
     context.assertEquals(
         143, received.remainingTicks(), "A burning countdown should carry the time it has left");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void aPayloadKeepsItsKindAcrossTheWire(TestContext context) {
+    final CountdownS2CPayload original =
+        new CountdownS2CPayload(7, 3600, 3599, CountdownKind.ALLEGIANCE);
+
+    context.assertEquals(
+        CountdownKind.ALLEGIANCE,
+        roundTrip(context, original).kind(),
+        "An allegiance countdown must arrive as one, so the client draws it where it belongs");
     context.complete();
   }
 

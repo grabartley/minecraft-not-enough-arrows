@@ -9,7 +9,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 
@@ -47,8 +46,9 @@ public final class CountdownRingRenderer {
             }
 
             final Vec3d center =
-                carrier.getLerpedPos(tickDelta).add(0.0, heightAbove(carrier), 0.0);
-            if (!CountdownGaze.isLookingAt(eye, look, center)) {
+                carrier.getLerpedPos(tickDelta).add(0.0, heightAbove(carrier, countdown), 0.0);
+            if (countdown.kind().showsOnlyWhenLookedAt()
+                && !CountdownGaze.isLookingAt(eye, look, center)) {
               continue;
             }
 
@@ -64,8 +64,8 @@ public final class CountdownRingRenderer {
         });
   }
 
-  private static double heightAbove(final Entity carrier) {
-    return carrier instanceof LivingEntity ? carrier.getHeight() + ABOVE_HEAD : ABOVE_OFFSET;
+  private static double heightAbove(final Entity carrier, final Countdown countdown) {
+    return countdown.kind().sitsAboveTheHead() ? carrier.getHeight() + ABOVE_HEAD : ABOVE_OFFSET;
   }
 
   private static void drawRing(
@@ -82,7 +82,9 @@ public final class CountdownRingRenderer {
     matrices.translate(center.x - cameraPos.x, center.y - cameraPos.y, center.z - cameraPos.z);
     matrices.multiply(camera.getRotation());
     matrices.scale(scale, scale, scale);
-    matrices.translate(BESIDE_OFFSET, 0.0f, 0.0f);
+    if (!countdown.kind().sitsAboveTheHead()) {
+      matrices.translate(BESIDE_OFFSET, 0.0f, 0.0f);
+    }
 
     final Matrix4f matrix = matrices.peek().getPositionMatrix();
     final VertexConsumer consumer = consumers.getBuffer(RenderLayer.getDebugQuads());

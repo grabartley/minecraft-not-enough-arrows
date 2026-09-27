@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.hud;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.grahambartley.notenougharrows.countdown.CountdownKind;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,5 +71,13 @@ class CountdownSyncTest {
     CountdownSync.accept(CARRIER, 40, 40);
 
     assertEquals(List.of(new Countdown(CARRIER, 40, 40)), CountdownSync.burning());
+  }
+
+  @Test
+  void keepsTheKindOfCountdownWhileItBurnsDown() {
+    CountdownSync.accept(CARRIER, 60, 60, CountdownKind.ALLEGIANCE);
+    CountdownSync.burnDown();
+
+    assertEquals(CountdownKind.ALLEGIANCE, CountdownSync.burning().get(0).kind());
   }
 }

@@ -34,6 +34,10 @@ public final class CountdownSources {
 
   private static CountdownTimer fromFuse(final Fuse fuse) {
     return new CountdownTimer(
-        fuse.hostId(), fuse.delayTicks(), fuse.remainingTicks(), FUSES_NEVER_RESTART);
+        fuse.hostId(),
+        fuse.delayTicks(),
+        fuse.remainingTicks(),
+        FUSES_NEVER_RESTART,
+        CountdownKind.FUSE);
   }
 }

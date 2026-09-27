@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.hud;
 
+import com.grahambartley.notenougharrows.countdown.CountdownKind;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +16,15 @@ public final class CountdownSync {
   }
 
   public static void accept(final int carrierId, final int delayTicks, final int remainingTicks) {
-    final Countdown countdown = new Countdown(carrierId, delayTicks, remainingTicks);
+    accept(carrierId, delayTicks, remainingTicks, CountdownKind.FUSE);
+  }
+
+  public static void accept(
+      final int carrierId,
+      final int delayTicks,
+      final int remainingTicks,
+      final CountdownKind kind) {
+    final Countdown countdown = new Countdown(carrierId, delayTicks, remainingTicks, kind);
     if (countdown.isBurning()) {
       BURNING.put(carrierId, countdown);
     } else {
