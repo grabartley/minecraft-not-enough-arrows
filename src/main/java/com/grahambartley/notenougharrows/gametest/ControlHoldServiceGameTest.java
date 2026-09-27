@@ -76,7 +76,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
     final Vec3d centre = hostile.getBoundingBox().getCenter();
     hostile.setTarget(ControlTestSupport.stillCowAt(context, PREY_STAND));
     ControlHoldService.repel(context.getWorld(), centre, holdingFor(200));
-    ControlHoldService.taunt(context.getWorld(), centre, null, holdingFor(200));
+    ControlHoldService.taunt(context.getWorld(), centre, null, null, holdingFor(200));
 
     context.assertTrue(
         ControlHoldService.heldIn(context.getWorld(), hostile)
@@ -92,7 +92,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
     final Vec3d centre = hostile.getBoundingBox().getCenter();
 
     context.assertEquals(
-        ControlHoldService.taunt(context.getWorld(), centre, null, holdingFor(0)),
+        ControlHoldService.taunt(context.getWorld(), centre, null, null, holdingFor(0)),
         0,
         "A taunt configured to last no time should hold nothing");
     context.assertEquals(
@@ -118,7 +118,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
     context.runAtTick(
         SETTLING_TICKS,
         () -> {
-          ControlHoldService.taunt(context.getWorld(), anchor, null, holdingFor(200));
+          ControlHoldService.taunt(context.getWorld(), anchor, null, null, holdingFor(200));
           final double headingFor = pathTargetDistanceToAnchor(context, hostile, anchor);
 
           context.assertTrue(
@@ -161,7 +161,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
     final CowEntity struck = ControlTestSupport.stillCowAt(context, WALKER_STAND);
 
     ControlHoldService.taunt(
-        context.getWorld(), struck.getBoundingBox().getCenter(), struck, holdingFor(200));
+        context.getWorld(), struck.getBoundingBox().getCenter(), struck, null, holdingFor(200));
 
     context.assertTrue(
         hostile.getTarget() == struck,
@@ -176,7 +176,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
     hostile.setTarget(shooter);
     final Vec3d anchor = Vec3d.ofCenter(context.getAbsolutePos(ANCHOR_STAND));
 
-    ControlHoldService.taunt(context.getWorld(), anchor, null, holdingFor(200));
+    ControlHoldService.taunt(context.getWorld(), anchor, null, null, holdingFor(200));
 
     context.assertTrue(
         hostile.getTarget() == null,
@@ -202,7 +202,7 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
     hostile.setTarget(shooter);
 
     ControlHoldService.taunt(
-        context.getWorld(), struck.getBoundingBox().getCenter(), struck, holdingFor(200));
+        context.getWorld(), struck.getBoundingBox().getCenter(), struck, null, holdingFor(200));
 
     context.assertTrue(
         hostile.getTarget() == struck,

@@ -37,7 +37,11 @@ public class TauntArrowEntity extends AreaControlArrowEntity {
   protected boolean resolveAt(
       final ServerWorld world, final Vec3d center, @Nullable final LivingEntity struck) {
     if (ControlHoldService.taunt(
-            world, center, struck, ServerConfigService.get().control().targeting())
+            world,
+            center,
+            struck,
+            shooter().orElse(null),
+            ServerConfigService.get().control().targeting())
         == 0) {
       return false;
     }

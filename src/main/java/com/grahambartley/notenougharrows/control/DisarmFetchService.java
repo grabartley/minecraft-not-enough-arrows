@@ -11,7 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
@@ -87,8 +86,7 @@ public final class DisarmFetchService {
     if (!(found instanceof ItemEntity thrown) || !thrown.isAlive()) {
       return true;
     }
-    mob.setTarget(null);
-    mob.getBrain().forget(MemoryModuleType.ATTACK_TARGET);
+    MobAggression.aim(mob, null);
     if (DisarmFetch.canGrab(mob.squaredDistanceTo(thrown), thrown.getItemAge())) {
       mob.equipStack(EquipmentSlot.MAINHAND, thrown.getStack().copy());
       mob.sendPickup(thrown, thrown.getStack().getCount());

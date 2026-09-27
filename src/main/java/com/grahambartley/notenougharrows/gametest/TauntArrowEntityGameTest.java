@@ -5,9 +5,12 @@ import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.control.ControlSteering;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.GameMode;
 
 public final class TauntArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "taunt-arrow";
@@ -104,6 +107,31 @@ public final class TauntArrowEntityGameTest implements FabricGameTest {
         FiringRangeSupport.LANDING_TICK,
         () -> {
           context.dontExpectEntity(ModArrows.TAUNT_ARROW.entityType());
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
+  public void hittingAMobPullsEveryoneHuntingTheShooterOntoIt(TestContext context) {
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, CombatTestSupport.LONG_RANGE_SHOOTER_STAND);
+    shooter.changeGameMode(GameMode.SURVIVAL);
+    final CowEntity struck = ControlMatrixGameTest.sturdyStillCow(context, new BlockPos(10, 2, 3));
+    final ZombieEntity hunter = ControlTestSupport.stillZombieAt(context, new BlockPos(1, 3, 6));
+    hunter.setTarget(shooter);
+    context.assertTrue(
+        hunter.squaredDistanceTo(struck) > 8.0 * 8.0,
+        "The hunter must stand beyond the taunt radius of the impact, or this proves nothing");
+
+    MockPlayerSupport.fireEastStraight(context, shooter, ModArrows.TAUNT_ARROW.item());
+
+    context.runAtTick(
+        30,
+        () -> {
+          context.assertTrue(
+              hunter.getTarget() == struck,
+              "A taunt arrow that hits a mob should pull everything hunting the shooter onto it,"
+                  + " however far from the impact they are");
           context.complete();
         });
   }

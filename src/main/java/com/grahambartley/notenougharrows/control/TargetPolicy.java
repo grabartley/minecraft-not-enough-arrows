@@ -6,6 +6,6 @@ public enum TargetPolicy {
   DEFEND_SUBJECT;
 
   public boolean retargetsEveryTick() {
-    return this == DEFEND_SUBJECT;
+    return this != DROP_UNLESS_CORNERED;
   }
 }

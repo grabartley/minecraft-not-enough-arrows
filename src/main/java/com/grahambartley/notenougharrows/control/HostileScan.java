@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.control;
 
 import java.util.List;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.server.world.ServerWorld;
@@ -32,6 +33,16 @@ public final class HostileScan {
         candidate ->
             isHostile(candidate)
                 && center.squaredDistanceTo(candidate.getBoundingBox().getCenter()) <= limit);
+  }
+
+  public static List<MobEntity> hostilesHunting(
+      final ServerWorld world, final LivingEntity prey, final double radius) {
+    if (prey == null) {
+      return List.of();
+    }
+    return hostilesAround(world, prey.getBoundingBox().getCenter(), radius).stream()
+        .filter(candidate -> candidate.getTarget() == prey)
+        .toList();
   }
 
   public static List<MobEntity> engagedHostilesAround(

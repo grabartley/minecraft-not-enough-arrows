@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 class TargetPolicyTest {
 
   @Test
-  void onlyDefendingNeedsItsTargetPickedEveryTick() {
+  void everyPolicyThatPicksATargetReassertsItEveryTickSoVanillaCannotTakeItBack() {
     assertTrue(TargetPolicy.DEFEND_SUBJECT.retargetsEveryTick());
-    assertFalse(TargetPolicy.AIM_AT_SUBJECT.retargetsEveryTick());
+    assertTrue(TargetPolicy.AIM_AT_SUBJECT.retargetsEveryTick());
     assertFalse(TargetPolicy.DROP_UNLESS_CORNERED.retargetsEveryTick());
   }
 }
