@@ -38,7 +38,23 @@ Arrows that leave fire behind share one system rather than each placing blocks o
 
 `explosive.firePatchRadius` and `explosive.firePatchDurationTicks` set the size and the lifetime, and both are editable from the command tree and the settings screen like every other option. Setting either one to zero places no fire at all, which is the switch for a server that wants explosive arrows without the fire.
 
-Expiry is tracked against the world clock in memory rather than written into the world save, so fire lit before a server restart is not put out by the mod afterwards and goes out the way vanilla fire does.
+A fire patch is a timed structure, so it ends the same way every timed structure does, described below.
+
+## Timed Structures
+
+Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches are the first; the traversal, terrain, discovery, control and chaos arrows will build on the same system. Ropes, vines and redstone charges answer for themselves instead.
+
+| Rule | Behaviour |
+|---|---|
+| Protection | Checked per position as the structure is placed. The first position the shooter may not build at ends the structure there, rather than refusing the whole shot, so the arrow never reveals where a boundary is |
+| What it replaces | Only air or a replaceable block such as a snow layer. A block somebody built is never replaced, and a position another live structure holds is skipped |
+| Budget | Each arrow's structure budget caps how many positions one shot can place, which also caps what removing them costs |
+| Lifetime | Read from server config on placement. A lifetime of zero places nothing rather than something permanent |
+| Expiry | Every position is removed together, once, at expiry. A position that no longer holds what was placed is left alone, so building over a structure keeps your block |
+| Mining | A block mined out of a live structure drops as it always would and leaves the structure's record |
+| Standing inside | Removal only takes the blocks away. A player inside is not moved, damaged, or suffocated |
+
+Every placed block also leaves a mark in its chunk's saved data, written alongside the block. A mark only means something while its structure is live in memory, so when a chunk loads, any mark whose structure is gone is cleared along with its block. That is what ends a structure whose chunk unloaded mid-life, and one left behind by a crash. A clean shutdown clears every structure in a loaded chunk before the world saves. Nothing is ever force-loaded to remove a structure early. [ADR 0034](adr/0034-a-timed-structure-leaves-its-marks-in-the-chunk.md) covers why.
 
 ## Fuses and Countdowns
 
