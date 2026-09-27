@@ -11,35 +11,35 @@ import java.util.Locale;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
-public final class ConfigOptionNodes {
-  public static final String VALUE_ARGUMENT = "value";
+final class ConfigOptionNodes {
+  static final String VALUE_ARGUMENT = "value";
 
   private ConfigOptionNodes() {}
 
   @FunctionalInterface
-  public interface IntChange {
+  interface IntChange {
     NotEnoughArrowsConfig apply(NotEnoughArrowsConfig current, int value);
   }
 
   @FunctionalInterface
-  public interface FloatChange {
+  interface FloatChange {
     NotEnoughArrowsConfig apply(NotEnoughArrowsConfig current, float value);
   }
 
   @FunctionalInterface
-  public interface BooleanChange {
+  interface BooleanChange {
     NotEnoughArrowsConfig apply(NotEnoughArrowsConfig current, boolean value);
   }
 
-  public static String literalFor(final String setting) {
+  static String literalFor(final String setting) {
     return setting.substring(setting.lastIndexOf('.') + 1).toLowerCase(Locale.ROOT);
   }
 
-  public static LiteralArgumentBuilder<ServerCommandSource> group(final String setting) {
+  static LiteralArgumentBuilder<ServerCommandSource> group(final String setting) {
     return CommandManager.literal(literalFor(setting));
   }
 
-  public static LiteralArgumentBuilder<ServerCommandSource> intOption(
+  static LiteralArgumentBuilder<ServerCommandSource> intOption(
       final String setting, final int min, final int max, final IntChange change) {
     return group(setting)
         .then(
@@ -55,7 +55,7 @@ public final class ConfigOptionNodes {
                     }));
   }
 
-  public static LiteralArgumentBuilder<ServerCommandSource> floatOption(
+  static LiteralArgumentBuilder<ServerCommandSource> floatOption(
       final String setting, final float min, final float max, final FloatChange change) {
     return group(setting)
         .then(
@@ -71,7 +71,7 @@ public final class ConfigOptionNodes {
                     }));
   }
 
-  public static LiteralArgumentBuilder<ServerCommandSource> booleanOption(
+  static LiteralArgumentBuilder<ServerCommandSource> booleanOption(
       final String setting, final BooleanChange change) {
     return group(setting)
         .then(

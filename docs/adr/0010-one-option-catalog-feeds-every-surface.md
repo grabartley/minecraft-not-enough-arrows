@@ -17,7 +17,7 @@ Settings are described once, as a catalog of `ConfigOption` values under `com.gr
 
 The catalog is generic in its subject, so client state uses the same option types with `ClientState` in place of `NotEnoughArrowsConfig`. The screen therefore draws both stores through one widget factory while the type it is holding still says which store a control belongs to.
 
-The command tree keeps its own builders. Brigadier nodes need argument types, suggestion providers, and per-setting feedback that an option descriptor would have to grow fields to express, and the identifiers those builders use come from the same `ConfigSettings` constants the catalog does, so the two cannot drift on naming. [ADR 0033](0033-new-family-commands-are-built-from-the-catalog.md) supersedes this paragraph: every family's command tree is now built from the catalog.
+[ADR 0033](0033-new-family-commands-are-built-from-the-catalog.md) supersedes this paragraph: every family's command tree is built from the catalog. The original decision kept the command tree on its own builders, on the grounds that Brigadier nodes need argument types and feedback an option descriptor could not express. That turned out not to hold.
 
 ## Consequences
 

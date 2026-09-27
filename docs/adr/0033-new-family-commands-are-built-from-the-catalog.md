@@ -24,3 +24,5 @@ The eight families that already existed moved across in a follow-up with no beha
 For every family, a setting's bounds are stated once, on the record, and every surface reads them from there. The command tree, the status output, and the screen can only disagree if the catalog disagrees with itself.
 
 Adding a setting to any family means a record field, a catalog entry, and English for the screen. The command node follows with no further edit.
+
+A test that builds its expectations from the catalog can no longer catch command drift, because the tree it checks is built from that same catalog. The independent check is the per-family `*CommandNodesTest` classes, which state each bound as a literal. They must keep doing so rather than reading bounds from the `*Options` sections.
