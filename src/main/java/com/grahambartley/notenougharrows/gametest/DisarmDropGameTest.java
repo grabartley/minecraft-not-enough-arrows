@@ -113,20 +113,15 @@ public final class DisarmDropGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aDisarmedMobIsAllowedToFetchTheItemBack(TestContext context) {
+  public void aDisarmedMobIsSentToFetchTheItemBack(TestContext context) {
     final ZombieEntity target = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
     target.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
-
-    context.assertFalse(
-        target.canPickUpLoot(), "A plain zombie should start unable to pick anything up");
 
     DisarmDrop.disarm(context.getWorld(), target, null, true, A_REAL_THROW);
 
     context.assertTrue(
-        target.canPickUpLoot(), "A disarmed mob should be allowed to fetch the item back");
-    context.assertTrue(
         DisarmFetchService.isFetching(context.getWorld(), target),
-        "That permission should be a bounded window, not a permanent change to the mob");
+        "A disarmed mob should be sent to fetch its item back");
     context.complete();
   }
 
@@ -143,15 +138,12 @@ public final class DisarmDropGameTest implements FabricGameTest {
         target.getDropChance(EquipmentSlot.MAINHAND) > natural,
         "Picking the item back up raises the drop chance, which is the state to be undone");
 
-    DisarmFetchService.closeWindowNow(context.getWorld(), target);
+    DisarmFetchService.endErrandNow(context.getWorld(), target);
 
     context.assertEquals(
         target.getDropChance(EquipmentSlot.MAINHAND),
         natural,
-        "Once the fetch window closes the mob's gear must not be a guaranteed drop");
-    context.assertFalse(
-        target.canPickUpLoot(),
-        "Once the fetch window closes the mob must not keep hoovering up loot");
+        "Once the errand ends the mob's gear must not be a guaranteed drop");
     context.complete();
   }
 

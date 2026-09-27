@@ -10,10 +10,10 @@ public enum ControlSteering {
       return Optional.of(anchor);
     }
   },
-  FLEEING(TargetPolicy.LEAVE_ALONE) {
+  FLEEING(TargetPolicy.DROP_UNLESS_CORNERED) {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
-      final Vec3d away = from.subtract(anchor);
+      final Vec3d away = new Vec3d(from.getX() - anchor.getX(), 0.0, from.getZ() - anchor.getZ());
       if (away.lengthSquared() <= 0.0) {
         return Optional.empty();
       }

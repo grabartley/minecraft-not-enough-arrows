@@ -62,7 +62,7 @@ public final class DisarmDrop {
       return false;
     }
     target.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
-    DisarmFetchService.letThemFetchItBack(world, target);
+    DisarmFetchService.sendToFetch(world, target, dropped);
     return true;
   }
 

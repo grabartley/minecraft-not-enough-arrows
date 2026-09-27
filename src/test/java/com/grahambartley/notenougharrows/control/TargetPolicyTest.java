@@ -11,6 +11,6 @@ class TargetPolicyTest {
   void onlyDefendingNeedsItsTargetPickedEveryTick() {
     assertTrue(TargetPolicy.DEFEND_SUBJECT.retargetsEveryTick());
     assertFalse(TargetPolicy.AIM_AT_SUBJECT.retargetsEveryTick());
-    assertFalse(TargetPolicy.LEAVE_ALONE.retargetsEveryTick());
+    assertFalse(TargetPolicy.DROP_UNLESS_CORNERED.retargetsEveryTick());
   }
 }

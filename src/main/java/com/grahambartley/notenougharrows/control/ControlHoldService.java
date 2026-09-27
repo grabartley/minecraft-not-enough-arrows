@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
@@ -137,8 +138,24 @@ public final class ControlHoldService {
       handBack(world, hold);
       return;
     }
-    if (hold.steering().navigates() && world.getTime() % REPATH_INTERVAL_TICKS == 0) {
+    if (hold.steering() == ControlSteering.FLEEING) {
+      keepFleeing(world, mob, hold);
+    } else if (hold.steering().navigates() && world.getTime() % REPATH_INTERVAL_TICKS == 0) {
       steer(mob, hold.anchor(), hold.steering());
+    }
+  }
+
+  private static void keepFleeing(
+      final ServerWorld world, final MobEntity mob, final ControlHold hold) {
+    final boolean pulledBackToAFight = mob.getTarget() != null;
+    if (pulledBackToAFight
+        || mob.getNavigation().isIdle()
+        || world.getTime() % REPATH_INTERVAL_TICKS == 0) {
+      steer(mob, hold.anchor(), hold.steering());
+    }
+    if (!mob.getNavigation().isIdle()) {
+      mob.setTarget(null);
+      mob.getBrain().forget(MemoryModuleType.ATTACK_TARGET);
     }
   }
 
@@ -150,7 +167,7 @@ public final class ControlHoldService {
         yield true;
       }
       case DEFEND_SUBJECT -> defendSubject(world, mob, hold);
-      case LEAVE_ALONE -> true;
+      case DROP_UNLESS_CORNERED -> true;
     };
   }
 
@@ -166,8 +183,24 @@ public final class ControlHoldService {
     if (defended == null) {
       return false;
     }
-    mob.setTarget(DefenderTargets.threatTo(world, defended, mob, hold.defendRadius()).orElse(null));
+    final LivingEntity threat =
+        DefenderTargets.threatTo(world, defended, mob, hold.defendRadius()).orElse(null);
+    mob.setTarget(threat);
+    if (threat == null) {
+      escort(world, mob, defended);
+    }
     return true;
+  }
+
+  private static void escort(
+      final ServerWorld world, final MobEntity mob, final LivingEntity defended) {
+    final double squaredDistance = mob.squaredDistanceTo(defended);
+    if (Escort.isCloseEnough(squaredDistance)) {
+      mob.getNavigation().stop();
+    } else if (Escort.shouldCloseIn(squaredDistance)
+        && (mob.getNavigation().isIdle() || world.getTime() % REPATH_INTERVAL_TICKS == 0)) {
+      mob.getNavigation().startMovingTo(defended, STEERING_SPEED);
+    }
   }
 
   @Nullable

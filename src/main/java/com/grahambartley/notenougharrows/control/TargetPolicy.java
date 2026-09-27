@@ -2,7 +2,7 @@ package com.grahambartley.notenougharrows.control;
 
 public enum TargetPolicy {
   AIM_AT_SUBJECT,
-  LEAVE_ALONE,
+  DROP_UNLESS_CORNERED,
   DEFEND_SUBJECT;
 
   public boolean retargetsEveryTick() {

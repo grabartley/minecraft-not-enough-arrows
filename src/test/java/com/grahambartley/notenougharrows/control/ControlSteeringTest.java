@@ -37,6 +37,18 @@ class ControlSteeringTest {
   }
 
   @Test
+  void fleeingRunsAlongTheGroundHoweverFarAboveOrBelowTheAnchorItStarts() {
+    final Vec3d from = new Vec3d(3.0, ANCHOR.getY() - 4.0, 0.0);
+    final Vec3d destination = ControlSteering.FLEEING.destination(from, ANCHOR).orElseThrow();
+
+    assertEquals(from.getY(), destination.getY(), 1.0e-6);
+    assertEquals(
+        ControlSteering.FLEE_DISTANCE,
+        Math.hypot(destination.getX() - from.getX(), destination.getZ() - from.getZ()),
+        1.0e-6);
+  }
+
+  @Test
   void fleeingFromExactlyTheAnchorPicksNoDirection() {
     assertEquals(Optional.empty(), ControlSteering.FLEEING.destination(ANCHOR, ANCHOR));
   }
@@ -57,12 +69,12 @@ class ControlSteeringTest {
   @Test
   void eachSteeringCarriesTheTargetingItsArrowPromises() {
     assertEquals(TargetPolicy.AIM_AT_SUBJECT, ControlSteering.DRAWN.targetPolicy());
-    assertEquals(TargetPolicy.LEAVE_ALONE, ControlSteering.FLEEING.targetPolicy());
+    assertEquals(TargetPolicy.DROP_UNLESS_CORNERED, ControlSteering.FLEEING.targetPolicy());
     assertEquals(TargetPolicy.DEFEND_SUBJECT, ControlSteering.DEFENDING.targetPolicy());
   }
 
   @Test
-  void aRepelledMobKeepsItsTargetSoItCanStillRetaliate() {
-    assertEquals(TargetPolicy.LEAVE_ALONE, ControlSteering.FLEEING.targetPolicy());
+  void aRepelledMobDropsItsTargetOnlyWhileItHasSomewhereToRun() {
+    assertEquals(TargetPolicy.DROP_UNLESS_CORNERED, ControlSteering.FLEEING.targetPolicy());
   }
 }
