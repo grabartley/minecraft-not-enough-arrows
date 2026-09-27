@@ -7,6 +7,7 @@ import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.control.ControlSteering;
 import com.grahambartley.notenougharrows.countdown.CountdownBroadcaster;
 import com.grahambartley.notenougharrows.countdown.CountdownKind;
+import com.grahambartley.notenougharrows.countdown.CountdownTimer;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -175,5 +176,42 @@ public final class AllegianceArrowEntityGameTest implements FabricGameTest {
               "A turned mob's ring should be an allegiance ring, always shown above its head");
           context.complete();
         });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void onlyTheOwnerIsShownTheirAllysRing(TestContext context) {
+    final ServerPlayerEntity owner =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final ServerPlayerEntity stranger = MockPlayerSupport.playerAt(context, THREAT_STAND);
+    final ZombieEntity ally = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
+    ControlHoldService.enlist(context.getWorld(), ally, owner, AllegianceArrowConfig.defaults());
+
+    final CountdownTimer ring = AllegianceCountdowns.timerOn(context.getWorld(), ally.getUuid());
+    context.assertTrue(ring.isShownTo(owner.getUuid()), "The owner should see their ally's ring");
+    context.assertFalse(
+        ring.isShownTo(stranger.getUuid()), "Nobody else should see another player's ally's ring");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void anotherPlayersAllegianceArrowStealsTheAlly(TestContext context) {
+    final ServerPlayerEntity first =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final ServerPlayerEntity thief = MockPlayerSupport.playerAt(context, THREAT_STAND);
+    final ZombieEntity ally = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
+    ControlHoldService.enlist(context.getWorld(), ally, first, AllegianceArrowConfig.defaults());
+
+    ControlHoldService.enlist(context.getWorld(), ally, thief, AllegianceArrowConfig.defaults());
+
+    context.assertTrue(
+        ControlHoldService.heldIn(context.getWorld(), ally)
+            .flatMap(hold -> hold.subjectId())
+            .filter(thief.getUuid()::equals)
+            .isPresent(),
+        "A second player's allegiance arrow should win the ally over to them");
+    context.assertTrue(
+        AllegianceCountdowns.timerOn(context.getWorld(), ally.getUuid()).isShownTo(thief.getUuid()),
+        "The ring should follow the ally to its new owner");
+    context.complete();
   }
 }

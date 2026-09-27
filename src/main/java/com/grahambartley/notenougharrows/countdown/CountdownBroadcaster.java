@@ -52,7 +52,8 @@ public final class CountdownBroadcaster {
 
       burning.add(timer.hostId());
       if (changes.record(timer.hostId(), carrier.getId(), timer.delayTicks(), timer.version())) {
-        announceTo(PlayerLookup.tracking(carrier), payloadFor(carrier, timer));
+        announceTo(PlayerLookup.tracking(carrier), CountdownS2CPayload.ended(carrier.getId()));
+        announceTo(audienceOf(carrier, timer), payloadFor(carrier, timer));
       }
     }
 
@@ -79,9 +80,16 @@ public final class CountdownBroadcaster {
     }
 
     final CountdownTimer timer = CountdownSources.timerOn(world, tracked.getUuid());
-    if (timer != null && timer.isRunning()) {
+    if (timer != null && timer.isRunning() && timer.isShownTo(viewer.getUuid())) {
       announceTo(List.of(viewer), payloadFor(tracked, timer));
     }
+  }
+
+  private static List<ServerPlayerEntity> audienceOf(
+      final Entity carrier, final CountdownTimer timer) {
+    return PlayerLookup.tracking(carrier).stream()
+        .filter(viewer -> timer.isShownTo(viewer.getUuid()))
+        .toList();
   }
 
   private static CountdownS2CPayload payloadFor(final Entity carrier, final CountdownTimer timer) {

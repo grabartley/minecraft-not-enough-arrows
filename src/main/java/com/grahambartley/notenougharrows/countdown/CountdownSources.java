@@ -5,6 +5,7 @@ import com.grahambartley.notenougharrows.fuse.Fuse;
 import com.grahambartley.notenougharrows.fuse.FuseService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
@@ -38,6 +39,7 @@ public final class CountdownSources {
         fuse.delayTicks(),
         fuse.remainingTicks(),
         FUSES_NEVER_RESTART,
-        CountdownKind.FUSE);
+        CountdownKind.FUSE,
+        Optional.empty());
   }
 }

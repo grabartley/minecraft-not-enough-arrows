@@ -42,6 +42,7 @@ public final class AllegianceCountdowns {
         Math.max(configured, remaining),
         remaining,
         hold.expiryTick(),
-        CountdownKind.ALLEGIANCE);
+        CountdownKind.ALLEGIANCE,
+        hold.subjectId());
   }
 }
