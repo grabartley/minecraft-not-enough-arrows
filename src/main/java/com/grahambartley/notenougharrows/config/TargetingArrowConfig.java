@@ -3,22 +3,30 @@ package com.grahambartley.notenougharrows.config;
 import com.google.gson.JsonObject;
 
 public record TargetingArrowConfig(
-    float tauntRadius, int tauntDurationTicks, float repelRadius, int repelDurationTicks) {
+    float tauntRadius,
+    int tauntDurationTicks,
+    float repelRadius,
+    int repelDurationTicks,
+    float repelDistance) {
 
   public static final float RADIUS_MIN = 0.0f;
   public static final float RADIUS_MAX = 32.0f;
   public static final int DURATION_TICKS_MIN = 0;
   public static final int DURATION_TICKS_MAX = 6000;
+  public static final float DISTANCE_MIN = 0.0f;
+  public static final float DISTANCE_MAX = 64.0f;
 
   public static final float DEFAULT_TAUNT_RADIUS = 8.0f;
   public static final int DEFAULT_TAUNT_DURATION_TICKS = 100;
   public static final float DEFAULT_REPEL_RADIUS = 8.0f;
   public static final int DEFAULT_REPEL_DURATION_TICKS = 200;
+  public static final float DEFAULT_REPEL_DISTANCE = 16.0f;
 
   static final String KEY_TAUNT_RADIUS = "tauntRadius";
   static final String KEY_TAUNT_DURATION_TICKS = "tauntDurationTicks";
   static final String KEY_REPEL_RADIUS = "repelRadius";
   static final String KEY_REPEL_DURATION_TICKS = "repelDurationTicks";
+  static final String KEY_REPEL_DISTANCE = "repelDistance";
 
   public TargetingArrowConfig {
     tauntRadius = ConfigValues.clampFloat(tauntRadius, RADIUS_MIN, RADIUS_MAX);
@@ -27,6 +35,7 @@ public record TargetingArrowConfig(
         ConfigValues.clampInt(tauntDurationTicks, DURATION_TICKS_MIN, DURATION_TICKS_MAX);
     repelDurationTicks =
         ConfigValues.clampInt(repelDurationTicks, DURATION_TICKS_MIN, DURATION_TICKS_MAX);
+    repelDistance = ConfigValues.clampFloat(repelDistance, DISTANCE_MIN, DISTANCE_MAX);
   }
 
   public static TargetingArrowConfig defaults() {
@@ -34,7 +43,8 @@ public record TargetingArrowConfig(
         DEFAULT_TAUNT_RADIUS,
         DEFAULT_TAUNT_DURATION_TICKS,
         DEFAULT_REPEL_RADIUS,
-        DEFAULT_REPEL_DURATION_TICKS);
+        DEFAULT_REPEL_DURATION_TICKS,
+        DEFAULT_REPEL_DISTANCE);
   }
 
   public boolean taunts() {
@@ -46,19 +56,28 @@ public record TargetingArrowConfig(
   }
 
   public TargetingArrowConfig withTauntRadius(final float value) {
-    return new TargetingArrowConfig(value, tauntDurationTicks, repelRadius, repelDurationTicks);
+    return new TargetingArrowConfig(
+        value, tauntDurationTicks, repelRadius, repelDurationTicks, repelDistance);
   }
 
   public TargetingArrowConfig withTauntDurationTicks(final int value) {
-    return new TargetingArrowConfig(tauntRadius, value, repelRadius, repelDurationTicks);
+    return new TargetingArrowConfig(
+        tauntRadius, value, repelRadius, repelDurationTicks, repelDistance);
   }
 
   public TargetingArrowConfig withRepelRadius(final float value) {
-    return new TargetingArrowConfig(tauntRadius, tauntDurationTicks, value, repelDurationTicks);
+    return new TargetingArrowConfig(
+        tauntRadius, tauntDurationTicks, value, repelDurationTicks, repelDistance);
   }
 
   public TargetingArrowConfig withRepelDurationTicks(final int value) {
-    return new TargetingArrowConfig(tauntRadius, tauntDurationTicks, repelRadius, value);
+    return new TargetingArrowConfig(
+        tauntRadius, tauntDurationTicks, repelRadius, value, repelDistance);
+  }
+
+  public TargetingArrowConfig withRepelDistance(final float value) {
+    return new TargetingArrowConfig(
+        tauntRadius, tauntDurationTicks, repelRadius, repelDurationTicks, value);
   }
 
   public static TargetingArrowConfig fromJson(final JsonObject root) {
@@ -79,7 +98,9 @@ public record TargetingArrowConfig(
             KEY_REPEL_DURATION_TICKS,
             defaults.repelDurationTicks(),
             DURATION_TICKS_MIN,
-            DURATION_TICKS_MAX));
+            DURATION_TICKS_MAX),
+        ConfigValues.readFloat(
+            root, KEY_REPEL_DISTANCE, defaults.repelDistance(), DISTANCE_MIN, DISTANCE_MAX));
   }
 
   public JsonObject toJson() {
@@ -88,6 +109,7 @@ public record TargetingArrowConfig(
     root.addProperty(KEY_TAUNT_DURATION_TICKS, tauntDurationTicks);
     root.addProperty(KEY_REPEL_RADIUS, repelRadius);
     root.addProperty(KEY_REPEL_DURATION_TICKS, repelDurationTicks);
+    root.addProperty(KEY_REPEL_DISTANCE, repelDistance);
     return root;
   }
 }

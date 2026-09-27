@@ -16,6 +16,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 
 public final class ControlHoldSteadinessGameTest implements FabricGameTest {
   private static final String BATCH = "control-hold-steadiness";
@@ -45,7 +46,8 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
   }
 
   private static TargetingArrowConfig repellingFor(final int ticks) {
-    return new TargetingArrowConfig(8.0f, ticks, 8.0f, ticks);
+    return new TargetingArrowConfig(
+        8.0f, ticks, 8.0f, ticks, TargetingArrowConfig.DEFAULT_REPEL_DISTANCE);
   }
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 100)
@@ -122,6 +124,37 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
                   + " but it is "
                   + gap
                   + " blocks away");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-distance", tickLimit = 220)
+  public void aRepelledMobStopsOnceItIsTheFleeDistanceAway(TestContext context) {
+    final PlayerEntity player = MockPlayerSupport.mortalPlayerAt(context, MobArena.PLAYER_STAND);
+    player.addStatusEffect(
+        new StatusEffectInstance(StatusEffects.RESISTANCE, HOLD_TICKS * 2, UNHARMABLE));
+    final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, MobArena.NEAR_STAND);
+    final Vec3d[] impact = new Vec3d[1];
+    context.runAtTick(
+        LANDED,
+        () -> {
+          impact[0] = player.getPos();
+          ControlHoldService.repel(context.getWorld(), impact[0], TargetingArrowConfig.defaults());
+        });
+    context.runAtTick(
+        200,
+        () -> {
+          final double away = Math.hypot(zombie.getX() - impact[0].x, zombie.getZ() - impact[0].z);
+          final double fleeDistance = TargetingArrowConfig.DEFAULT_REPEL_DISTANCE;
+          context.assertTrue(
+              away >= fleeDistance - 1.0 && away <= fleeDistance + 4.0,
+              "A repelled mob should stop about the flee distance away rather than keep running,"
+                  + " but it is "
+                  + away
+                  + " blocks from the impact");
+          context.assertTrue(
+              zombie.getTarget() == null,
+              "A mob that stopped running should still leave you alone");
           context.complete();
         });
   }

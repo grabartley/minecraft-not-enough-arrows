@@ -109,6 +109,8 @@ public final class ConfigSettings {
   public static final String CONTROL_TARGETING_REPEL_RADIUS = CONTROL_TARGETING + ".repelRadius";
   public static final String CONTROL_TARGETING_REPEL_DURATION_TICKS =
       CONTROL_TARGETING + ".repelDurationTicks";
+  public static final String CONTROL_TARGETING_REPEL_DISTANCE =
+      CONTROL_TARGETING + ".repelDistance";
   public static final String CONTROL_ALLEGIANCE_DURATION_TICKS =
       CONTROL_ALLEGIANCE + ".durationTicks";
   public static final String CONTROL_ALLEGIANCE_DEFEND_RADIUS =

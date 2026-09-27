@@ -9,6 +9,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 
@@ -17,6 +18,7 @@ public final class CountdownRingRenderer {
   private static final float INNER_RADIUS = 0.14f;
   private static final float BESIDE_OFFSET = 0.42f;
   private static final float ABOVE_OFFSET = 0.18f;
+  private static final float ABOVE_HEAD = 0.5f;
 
   private static final int TRACK_COLOR = 0x66000000;
   private static final int ARC_COLOR = 0xFFE0C060;
@@ -44,7 +46,8 @@ public final class CountdownRingRenderer {
               continue;
             }
 
-            final Vec3d center = carrier.getLerpedPos(tickDelta).add(0.0, ABOVE_OFFSET, 0.0);
+            final Vec3d center =
+                carrier.getLerpedPos(tickDelta).add(0.0, heightAbove(carrier), 0.0);
             if (!CountdownGaze.isLookingAt(eye, look, center)) {
               continue;
             }
@@ -59,6 +62,10 @@ public final class CountdownRingRenderer {
             immediate.draw(RenderLayer.getDebugQuads());
           }
         });
+  }
+
+  private static double heightAbove(final Entity carrier) {
+    return carrier instanceof LivingEntity ? carrier.getHeight() + ABOVE_HEAD : ABOVE_OFFSET;
   }
 
   private static void drawRing(

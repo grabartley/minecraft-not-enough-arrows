@@ -8,14 +8,15 @@ import java.util.UUID;
 public final class CountdownChanges {
   private final Map<UUID, Announced> lastSent = new HashMap<>();
 
-  public record Announced(int carrierId, int delayTicks) {}
+  public record Announced(int carrierId, int delayTicks, long version) {}
 
-  public boolean record(final UUID carrier, final int carrierId, final int delayTicks) {
+  public boolean record(
+      final UUID carrier, final int carrierId, final int delayTicks, final long version) {
     if (carrier == null || delayTicks <= 0) {
       return false;
     }
 
-    final Announced announced = new Announced(carrierId, delayTicks);
+    final Announced announced = new Announced(carrierId, delayTicks, version);
     return !announced.equals(lastSent.put(carrier, announced));
   }
 

@@ -17,7 +17,24 @@ class TargetingArrowConfigTest {
       final int tauntTicks,
       final float repelRadius,
       final int repelTicks) {
-    return new TargetingArrowConfig(tauntRadius, tauntTicks, repelRadius, repelTicks);
+    return new TargetingArrowConfig(
+        tauntRadius,
+        tauntTicks,
+        repelRadius,
+        repelTicks,
+        TargetingArrowConfig.DEFAULT_REPEL_DISTANCE);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"-1.0, 0.0", "0.0, 0.0", "16.0, 16.0", "64.0, 64.0", "99.0, 64.0"})
+  void clampsRepelDistance(final float given, final float expected) {
+    assertEquals(
+        expected, TargetingArrowConfig.defaults().withRepelDistance(given).repelDistance());
+  }
+
+  @Test
+  void defaultsToSendingMobsSixteenBlocksAway() {
+    assertEquals(16.0f, TargetingArrowConfig.defaults().repelDistance());
   }
 
   @ParameterizedTest

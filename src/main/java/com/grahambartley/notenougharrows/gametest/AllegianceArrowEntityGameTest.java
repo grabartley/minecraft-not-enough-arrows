@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.control.ControlSteering;
+import com.grahambartley.notenougharrows.countdown.CountdownBroadcaster;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -148,6 +149,24 @@ public final class AllegianceArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               defender.getTarget() == threat,
               "A turned hostile should keep fighting an attacker that turns on it, as a wolf does");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aTurnedMobShowsHowLongItsAllegianceHasLeft(TestContext context) {
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final ZombieEntity defender = ControlTestSupport.stillZombieAt(context, TARGET_STAND);
+    ControlHoldService.enlist(
+        context.getWorld(), defender, shooter, AllegianceArrowConfig.defaults());
+
+    context.runAtTick(
+        2,
+        () -> {
+          context.assertTrue(
+              CountdownBroadcaster.isAnnouncing(context.getWorld(), defender.getUuid()),
+              "A turned mob should carry a countdown ring showing how long it has left");
           context.complete();
         });
   }

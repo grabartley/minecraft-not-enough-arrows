@@ -238,7 +238,8 @@ screen are rejected outright, with the accepted range in the error.
 | `control.targeting.tauntDurationTicks` | 100 | 0 to 6000 |
 | `control.targeting.repelRadius` | 8.0 | 0.0 to 32.0 |
 | `control.targeting.repelDurationTicks` | 200 | 0 to 6000 |
-| `control.allegiance.durationTicks` | 400 | 0 to 6000 |
+| `control.targeting.repelDistance` | 16.0 | 0.0 to 64.0 |
+| `control.allegiance.durationTicks` | 3600 | 0 to 6000 |
 | `control.allegiance.defendRadius` | 16.0 | 0.0 to 32.0 |
 | `control.smoke.radius` | 3.0 | 0.0 to 16.0 |
 | `control.smoke.durationTicks` | 200 | 0 to 6000 |

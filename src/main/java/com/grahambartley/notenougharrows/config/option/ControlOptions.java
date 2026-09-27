@@ -69,6 +69,13 @@ public final class ControlOptions {
             TargetingArrowConfig.DURATION_TICKS_MAX,
             config -> config.control().targeting().repelDurationTicks(),
             (config, value) -> targeting(config, it -> it.withRepelDurationTicks(value))),
+        new FloatOption<>(
+            ConfigSettings.CONTROL_TARGETING_REPEL_DISTANCE,
+            TargetingArrowConfig.DISTANCE_MIN,
+            TargetingArrowConfig.DISTANCE_MAX,
+            DISTANCE_STEP,
+            config -> config.control().targeting().repelDistance(),
+            (config, value) -> targeting(config, it -> it.withRepelDistance(value))),
         new IntOption<>(
             ConfigSettings.CONTROL_ALLEGIANCE_DURATION_TICKS,
             AllegianceArrowConfig.DURATION_TICKS_MIN,

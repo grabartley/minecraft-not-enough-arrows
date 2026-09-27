@@ -9,7 +9,7 @@ public record AllegianceArrowConfig(int durationTicks, float defendRadius) {
   public static final float DEFEND_RADIUS_MIN = 0.0f;
   public static final float DEFEND_RADIUS_MAX = 32.0f;
 
-  public static final int DEFAULT_DURATION_TICKS = 400;
+  public static final int DEFAULT_DURATION_TICKS = 3600;
   public static final float DEFAULT_DEFEND_RADIUS = 16.0f;
 
   static final String KEY_DURATION_TICKS = "durationTicks";

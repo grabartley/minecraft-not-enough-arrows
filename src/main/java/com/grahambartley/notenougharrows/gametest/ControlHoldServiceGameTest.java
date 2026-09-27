@@ -27,7 +27,8 @@ public final class ControlHoldServiceGameTest implements FabricGameTest {
   private static final double AT_THE_ANCHOR = 2.0;
 
   private static TargetingArrowConfig holdingFor(final int ticks) {
-    return new TargetingArrowConfig(8.0f, ticks, 8.0f, ticks);
+    return new TargetingArrowConfig(
+        8.0f, ticks, 8.0f, ticks, TargetingArrowConfig.DEFAULT_REPEL_DISTANCE);
   }
 
   private static AllegianceArrowConfig enlistingFor(final int ticks) {

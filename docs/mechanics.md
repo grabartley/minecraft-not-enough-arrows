@@ -365,8 +365,8 @@ Where vanilla has a status effect for it, vanilla's is applied, so duration, per
 | Frost | A powder snow bucket | Holds the living thing it hits frozen for `control.frost.durationTicks`, so it shivers and takes freeze damage |
 | Levitation | A shulker shell | Levitation for `control.levitation.durationTicks` |
 | Taunt | A note block | Draws mobs already fighting something, within `control.targeting.tauntRadius`, onto whatever it struck for `control.targeting.tauntDurationTicks` |
-| Repel | Soul sand | Sends every mob within `control.targeting.repelRadius` running from the impact for `control.targeting.repelDurationTicks` |
-| Allegiance | A golden apple | The mob it hits fights for, or at least follows, the shooter for `control.allegiance.durationTicks`, then is handed back |
+| Repel | Soul sand | Sends every mob within `control.targeting.repelRadius` running until it is `control.targeting.repelDistance` from the impact, where it stops and keeps away for the rest of `control.targeting.repelDurationTicks` |
+| Allegiance | A golden apple | The mob it hits fights for, or at least follows, the shooter for `control.allegiance.durationTicks`, three minutes by default, with the explosive arrows' countdown ring above its head showing how long is left, then is handed back |
 | Smoke | A campfire | A cloud of `control.smoke.radius` that blinds what stands inside it for `control.smoke.durationTicks` |
 | Disarm | A fishing rod | Knocks the target's main-hand item out and throws it `control.disarm.throwDistance` blocks |
 

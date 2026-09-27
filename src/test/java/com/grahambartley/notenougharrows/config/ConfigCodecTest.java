@@ -49,7 +49,7 @@ class ConfigCodecTest {
             new ControlArrowConfig(
                 new FrostArrowConfig(1199),
                 new LevitationArrowConfig(1),
-                new TargetingArrowConfig(31.5f, 5999, 0.5f, 1),
+                new TargetingArrowConfig(31.5f, 5999, 0.5f, 1, 63.5f),
                 new AllegianceArrowConfig(5999, 31.5f),
                 new SmokeArrowConfig(15.5f, 1),
                 new DisarmArrowConfig(false, 15.5f)),

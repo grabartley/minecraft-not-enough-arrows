@@ -26,6 +26,7 @@ class ControlOptionsTest {
             "control.targeting.tauntDurationTicks",
             "control.targeting.repelRadius",
             "control.targeting.repelDurationTicks",
+            "control.targeting.repelDistance",
             "control.allegiance.durationTicks",
             "control.allegiance.defendRadius",
             "control.smoke.radius",

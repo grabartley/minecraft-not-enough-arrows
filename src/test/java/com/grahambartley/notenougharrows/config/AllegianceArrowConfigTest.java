@@ -64,4 +64,9 @@ class AllegianceArrowConfigTest {
     assertEquals(3.0f, updated.defendRadius());
     assertEquals(AllegianceArrowConfig.DEFAULT_DURATION_TICKS, updated.durationTicks());
   }
+
+  @Test
+  void lastsThreeMinutesByDefault() {
+    assertEquals(3 * 60 * 20, AllegianceArrowConfig.defaults().durationTicks());
+  }
 }

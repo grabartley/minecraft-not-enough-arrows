@@ -1,8 +1,6 @@
 package com.grahambartley.notenougharrows.countdown;
 
 import com.grahambartley.notenougharrows.countdown.CountdownChanges.Announced;
-import com.grahambartley.notenougharrows.fuse.Fuse;
-import com.grahambartley.notenougharrows.fuse.FuseService;
 import com.grahambartley.notenougharrows.network.CountdownPayloads.CountdownS2CPayload;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,15 +44,15 @@ public final class CountdownBroadcaster {
     final CountdownChanges changes = changesFor(world);
     final Set<UUID> burning = new HashSet<>();
 
-    for (final Fuse fuse : FuseService.fusesIn(world)) {
-      final Entity carrier = world.getEntity(fuse.hostId());
+    for (final CountdownTimer timer : CountdownSources.timersIn(world)) {
+      final Entity carrier = world.getEntity(timer.hostId());
       if (carrier == null || carrier.isRemoved()) {
         continue;
       }
 
-      burning.add(fuse.hostId());
-      if (changes.record(fuse.hostId(), carrier.getId(), fuse.delayTicks())) {
-        announceTo(PlayerLookup.tracking(carrier), payloadFor(carrier, fuse));
+      burning.add(timer.hostId());
+      if (changes.record(timer.hostId(), carrier.getId(), timer.delayTicks(), timer.version())) {
+        announceTo(PlayerLookup.tracking(carrier), payloadFor(carrier, timer));
       }
     }
 
@@ -80,14 +78,14 @@ public final class CountdownBroadcaster {
       return;
     }
 
-    final Fuse fuse = FuseService.fuseOn(world, tracked.getUuid());
-    if (fuse != null && !fuse.hasExpired()) {
-      announceTo(List.of(viewer), payloadFor(tracked, fuse));
+    final CountdownTimer timer = CountdownSources.timerOn(world, tracked.getUuid());
+    if (timer != null && timer.isRunning()) {
+      announceTo(List.of(viewer), payloadFor(tracked, timer));
     }
   }
 
-  private static CountdownS2CPayload payloadFor(final Entity carrier, final Fuse fuse) {
-    return new CountdownS2CPayload(carrier.getId(), fuse.delayTicks(), fuse.remainingTicks());
+  private static CountdownS2CPayload payloadFor(final Entity carrier, final CountdownTimer timer) {
+    return new CountdownS2CPayload(carrier.getId(), timer.delayTicks(), timer.remainingTicks());
   }
 
   private static void announceTo(

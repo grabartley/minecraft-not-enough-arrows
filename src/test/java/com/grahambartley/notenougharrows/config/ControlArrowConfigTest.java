@@ -24,7 +24,7 @@ class ControlArrowConfigTest {
         new ControlArrowConfig(
             new FrostArrowConfig(11),
             new LevitationArrowConfig(22),
-            new TargetingArrowConfig(1.0f, 33, 2.0f, 44),
+            new TargetingArrowConfig(1.0f, 33, 2.0f, 44, 5.0f),
             new AllegianceArrowConfig(55, 6.0f),
             new SmokeArrowConfig(3.0f, 66),
             new DisarmArrowConfig(false, 4.0f));

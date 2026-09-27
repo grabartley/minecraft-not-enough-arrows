@@ -97,7 +97,17 @@ public final class ControlCommandNodes {
                         current,
                         control ->
                             control.withTargeting(
-                                control.targeting().withRepelDurationTicks(value)))));
+                                control.targeting().withRepelDurationTicks(value)))))
+        .then(
+            ConfigOptionNodes.floatOption(
+                ConfigSettings.CONTROL_TARGETING_REPEL_DISTANCE,
+                TargetingArrowConfig.DISTANCE_MIN,
+                TargetingArrowConfig.DISTANCE_MAX,
+                (current, value) ->
+                    change(
+                        current,
+                        control ->
+                            control.withTargeting(control.targeting().withRepelDistance(value)))));
   }
 
   private static LiteralArgumentBuilder<ServerCommandSource> allegiance() {

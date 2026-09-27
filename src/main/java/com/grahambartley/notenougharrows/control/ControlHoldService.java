@@ -5,6 +5,7 @@ import com.grahambartley.notenougharrows.config.TargetingArrowConfig;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -90,10 +91,10 @@ public final class ControlHoldService {
     int held = 0;
     for (final MobEntity mob : MobScan.mobsAround(world, center, targeting.repelRadius())) {
       final ControlHold hold =
-          ControlHold.at(
+          ControlHold.fleeing(
               mob.getUuid(),
               center,
-              ControlSteering.FLEEING,
+              targeting.repelDistance(),
               world.getTime() + targeting.repelDurationTicks());
       trackerFor(world).hold(hold);
       steer(mob, hold.anchor(), hold.steering());
@@ -123,6 +124,11 @@ public final class ControlHoldService {
     trackerFor(world).hold(hold);
     applyTargeting(world, mob, hold);
     return true;
+  }
+
+  public static List<ControlHold> holdsIn(final ServerWorld world) {
+    final ControlHoldTracker tracker = TRACKERS.get(world.getRegistryKey());
+    return tracker == null ? List.of() : tracker.live();
   }
 
   public static Optional<ControlHold> heldIn(final ServerWorld world, final MobEntity mob) {
@@ -178,6 +184,12 @@ public final class ControlHoldService {
 
   private static void keepFleeing(
       final ServerWorld world, final MobEntity mob, final ControlHold hold) {
+    if (hold.hasFledFarEnough(mob.getPos())) {
+      MobSteering.halt(mob);
+      CORNERED.remove(mob.getUuid());
+      MobAggression.aim(mob, null);
+      return;
+    }
     final boolean pulledBackToAFight = mob.getTarget() != null;
     final boolean hasSomewhereToRun =
         pulledBackToAFight
@@ -223,7 +235,7 @@ public final class ControlHoldService {
       return false;
     }
     final LivingEntity threat =
-        DefenderTargets.threatTo(world, defended, mob, hold.defendRadius()).orElse(null);
+        DefenderTargets.threatTo(world, defended, mob, hold.reach()).orElse(null);
     MobAggression.aim(mob, threat);
     if (threat == null) {
       escort(world, mob, defended);
