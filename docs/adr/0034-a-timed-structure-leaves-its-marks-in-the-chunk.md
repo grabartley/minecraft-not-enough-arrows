@@ -23,7 +23,7 @@ The in-memory ledger stays the authority on which structures are live. A mark is
 
 Removal is keyed on the mark rather than on the ledger's list of positions. A mixin on the chunk's block write drops the mark the moment a marked position is changed to a different block, whoever changed it. So a block mined out of a structure drops normally and leaves the record, and a block a player builds into a vacated position is never the structure's to remove, even if it is the same kind of block the structure placed. A fire block that ages is still fire, so the comparison is by block rather than by state.
 
-Placement truncates at the first position the permission check refuses, rather than skipping it, so a structure crossing a protection boundary stops at the boundary and reports nothing about where it is. A position that is not air or a replaceable block, or already belongs to a live structure, is skipped instead, because that is a fact about what is there rather than about protection. A budget caps how many positions one structure can place, which also caps what removing it costs.
+Placement truncates at the first position the permission check refuses, rather than skipping it, so a structure crossing a protection boundary stops at the boundary and reports nothing about where it is. A position that is not air or a replaceable block, or already belongs to a live structure, is skipped instead, because that is a fact about what is there rather than about protection. A budget caps how many positions one structure can place, which also caps what removing it costs. A candidate in a chunk that is not loaded is skipped rather than loaded, so placing a structure never pulls a chunk into memory.
 
 Fire patches are migrated onto this system. A patch resolves each column to its surface before the placer sees it, and that resolution already asks the permission check, so a protected column is skipped exactly as it was before rather than truncating the patch.
 
@@ -31,7 +31,7 @@ Fire patches are migrated onto this system. A patch resolves each column to its 
 
 No timed structure can outlive a crash, an unload, or a restart for longer than it takes the chunk to load again. That is the property the arrows need, and it holds without force-loading anything.
 
-Fire patches now get it too. Fire lit before a restart is put out by the mod when its chunk loads, rather than being left to vanilla's rules as ADR 0012 accepted.
+Fire patches now get it too. Fire lit before a restart is put out by the mod when its chunk loads, rather than being left to vanilla's rules as ADR 0012 accepted. One small edge moves with it: a patch block that burns out on its own leaves the structure, so fire that later spreads back into that position is ordinary vanilla fire and is not put out when the patch expires.
 
 The world save now carries a small amount of mod data: one mark per placed block, only in chunks that hold a live structure, and removed with the structure. The structures themselves are still not persisted. A mark cannot resume a structure, only clear one, so the non-goal of persisting timed structures across a restart stands.
 

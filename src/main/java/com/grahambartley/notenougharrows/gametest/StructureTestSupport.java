@@ -7,6 +7,7 @@ import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.minecraft.block.Blocks;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -48,7 +49,8 @@ final class StructureTestSupport {
     relative.stream()
         .map(pos -> chunkAt(context, pos))
         .distinct()
-        .forEach(chunk -> TimedStructureService.onChunkLoad(context.getWorld(), chunk));
+        .forEach(
+            chunk -> ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(context.getWorld(), chunk));
   }
 
   static WorldChunk chunkAt(final TestContext context, final BlockPos relative) {

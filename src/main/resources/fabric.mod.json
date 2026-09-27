@@ -66,6 +66,7 @@
       "com.grahambartley.notenougharrows.gametest.FallingBlocksGameTest",
       "com.grahambartley.notenougharrows.gametest.FirePatchPlacerGameTest",
       "com.grahambartley.notenougharrows.gametest.FirePatchServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.StaleMarkSweepGameTest",
       "com.grahambartley.notenougharrows.gametest.StructureChunkMarksGameTest",
       "com.grahambartley.notenougharrows.gametest.StructurePlacerGameTest",
       "com.grahambartley.notenougharrows.gametest.StructureRemovalGameTest",

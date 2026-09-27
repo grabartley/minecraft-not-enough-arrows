@@ -19,6 +19,7 @@ import com.grahambartley.notenougharrows.structure.StructureChunkMarks;
 import com.grahambartley.notenougharrows.structure.TimedStructure;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import java.util.Optional;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
@@ -281,7 +282,9 @@ public final class TimedStructureServiceGameTest implements FabricGameTest {
   public void stoppingTheServerClearsEveryStructureBeforeTheWorldSaves(TestContext context) {
     buildLine(context, LONG_LIFETIME_TICKS);
 
-    TimedStructureService.clearAll(context.getWorld());
+    ServerLifecycleEvents.SERVER_STOPPING
+        .invoker()
+        .onServerStopping(context.getWorld().getServer());
 
     LINE.forEach(pos -> context.expectBlock(Blocks.AIR, pos));
     context.assertTrue(

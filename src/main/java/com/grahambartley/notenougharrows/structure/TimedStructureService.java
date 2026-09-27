@@ -1,6 +1,5 @@
 package com.grahambartley.notenougharrows.structure;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class TimedStructureService {
   private static final Map<RegistryKey<World>, StructureLedger> LEDGERS = new HashMap<>();
-  private static final Map<RegistryKey<World>, List<StructureMark>> STALE = new HashMap<>();
+  private static final StaleMarkSweep STALE = new StaleMarkSweep();
 
   private TimedStructureService() {}
 
@@ -51,14 +50,13 @@ public final class TimedStructureService {
     }
 
     final StructureLedger ledger = ledgerFor(world);
+    final UUID id = UUID.randomUUID();
     final List<StructureBlock> placed =
-        StructurePlacer.place(world, candidates, source, owner, budget, ledger::holds);
+        StructurePlacer.place(world, id, candidates, source, owner, budget, ledger::holds);
     if (placed.isEmpty()) {
       return Optional.empty();
     }
 
-    final UUID id = UUID.randomUUID();
-    placed.forEach(block -> StructureChunkMarks.mark(world.getWorldChunk(block.pos()), block, id));
     final TimedStructure structure =
         new TimedStructure(
             id,
@@ -86,7 +84,7 @@ public final class TimedStructureService {
   }
 
   public static void clearAll(final ServerWorld world) {
-    clearStaleIn(world);
+    STALE.clearIn(world);
     final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
     if (ledger == null) {
       return;
@@ -96,17 +94,9 @@ public final class TimedStructureService {
   }
 
   public static void onChunkLoad(final ServerWorld world, final WorldChunk chunk) {
-    final StructureMarks marks = StructureChunkMarks.in(chunk);
-    if (marks.isEmpty()) {
-      return;
-    }
     final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
     final long tick = world.getTime();
-    final List<StructureMark> stale =
-        marks.stale(mark -> ledger != null && ledger.isLive(mark.structure(), tick));
-    if (!stale.isEmpty()) {
-      STALE.computeIfAbsent(world.getRegistryKey(), key -> new ArrayList<>()).addAll(stale);
-    }
+    STALE.notice(world, chunk, mark -> ledger != null && ledger.isLive(mark.structure(), tick));
   }
 
   public static void onBlockChanged(
@@ -124,23 +114,12 @@ public final class TimedStructureService {
 
   public static void forget() {
     LEDGERS.clear();
-    STALE.clear();
+    STALE.forget();
   }
 
   private static void tick(final ServerWorld world) {
-    clearStaleIn(world);
+    STALE.clearIn(world);
     expireIn(world, world.getTime(), StructureRemoval.loadedIn(world));
-  }
-
-  private static void clearStaleIn(final ServerWorld world) {
-    final List<StructureMark> stale = STALE.remove(world.getRegistryKey());
-    if (stale == null) {
-      return;
-    }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
-    stale.stream()
-        .filter(mark -> isLoaded.test(mark.pos()))
-        .forEach(mark -> StructureRemoval.clear(world, mark.pos(), mark.structure()));
   }
 
   private static void clearEverything(final MinecraftServer server) {

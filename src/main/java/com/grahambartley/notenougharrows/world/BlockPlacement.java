@@ -26,4 +26,15 @@ public final class BlockPlacement {
     }
     return state.canPlaceAt(world, pos);
   }
+
+  public static boolean canOccupy(
+      @Nullable final ServerWorld world,
+      @Nullable final BlockPos pos,
+      @Nullable final BlockState state) {
+    if (world == null || pos == null || state == null || !world.isInBuildLimit(pos)) {
+      return false;
+    }
+    final BlockState current = world.getBlockState(pos);
+    return (current.isAir() || current.isReplaceable()) && state.canPlaceAt(world, pos);
+  }
 }

@@ -11,9 +11,12 @@ import static com.grahambartley.notenougharrows.gametest.StructureTestSupport.ab
 
 import com.grahambartley.notenougharrows.structure.StructureBlock;
 import com.grahambartley.notenougharrows.structure.StructureBudget;
+import com.grahambartley.notenougharrows.structure.StructureChunkMarks;
 import com.grahambartley.notenougharrows.structure.StructurePlacer;
+import com.grahambartley.notenougharrows.structure.StructureRemoval;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -93,6 +96,7 @@ public final class StructurePlacerGameTest implements FabricGameTest {
     final List<StructureBlock> placed =
         StructurePlacer.place(
             context.getWorld(),
+            UUID.randomUUID(),
             absolute(context, LINE),
             PLANKS,
             null,
@@ -120,6 +124,7 @@ public final class StructurePlacerGameTest implements FabricGameTest {
     final List<StructureBlock> placed =
         StructurePlacer.place(
             context.getWorld(),
+            UUID.randomUUID(),
             absolute(context, LINE),
             (world, candidate) ->
                 candidate.equals(declined) ? null : PLANKS.resolve(world, candidate),
@@ -137,6 +142,7 @@ public final class StructurePlacerGameTest implements FabricGameTest {
     final List<StructureBlock> placed =
         StructurePlacer.place(
             context.getWorld(),
+            UUID.randomUUID(),
             absolute(context, new BlockPos(1, 4, 3)),
             (world, candidate) -> new StructureBlock(candidate, Blocks.TORCH.getDefaultState()),
             null,
@@ -147,9 +153,54 @@ public final class StructurePlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void everyPlacedBlockIsMarkedInItsChunkForItsStructure(TestContext context) {
+    final UUID id = UUID.randomUUID();
+
+    StructurePlacer.place(
+        context.getWorld(),
+        id,
+        absolute(context, LINE),
+        PLANKS,
+        null,
+        StructureBudget.of(LINE.size()),
+        NOTHING_HELD);
+
+    for (final BlockPos pos : absolute(context, LINE)) {
+      context.assertTrue(
+          StructureChunkMarks.at(context.getWorld().getWorldChunk(pos), pos)
+              .filter(mark -> mark.belongsTo(id))
+              .isPresent(),
+          "Every placed block should carry its structure's mark");
+    }
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aCandidateInAChunkThatIsNotLoadedIsSkippedWithoutLoadingIt(TestContext context) {
+    final BlockPos unvisited = new BlockPos(20_000_000, 70, 20_000_000);
+    final List<BlockPos> candidates = new ArrayList<>(List.of(unvisited));
+    candidates.addAll(absolute(context, FIRST));
+
+    final List<StructureBlock> placed = place(context, candidates, candidates.size());
+
+    context.assertEquals(placed.size(), 1, "Blocks placed beside an unloaded candidate");
+    context.expectBlock(Blocks.OAK_PLANKS, FIRST);
+    context.assertFalse(
+        StructureRemoval.loadedIn(context.getWorld()).test(unvisited),
+        "Placing a structure should never load a chunk");
+    context.complete();
+  }
+
   private static List<StructureBlock> place(
       final TestContext context, final List<BlockPos> candidates, final int budget) {
     return StructurePlacer.place(
-        context.getWorld(), candidates, PLANKS, null, StructureBudget.of(budget), NOTHING_HELD);
+        context.getWorld(),
+        UUID.randomUUID(),
+        candidates,
+        PLANKS,
+        null,
+        StructureBudget.of(budget),
+        NOTHING_HELD);
   }
 }

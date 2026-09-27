@@ -12,7 +12,7 @@ import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Uuids;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.Chunk;
 
 public final class StructureChunkMarks {
   private static final Codec<StructureMark> MARK_CODEC =
@@ -41,21 +41,21 @@ public final class StructureChunkMarks {
     NotEnoughArrows.LOGGER.debug("Registered {}", TYPE.identifier());
   }
 
-  public static StructureMarks in(final WorldChunk chunk) {
+  public static StructureMarks in(final Chunk chunk) {
     final StructureMarks marks = chunk.getAttached(TYPE);
     return marks == null ? StructureMarks.NONE : marks;
   }
 
-  public static void mark(final WorldChunk chunk, final StructureBlock block, final UUID id) {
+  public static void mark(final Chunk chunk, final StructureBlock block, final UUID id) {
     final Identifier blockId = Registries.BLOCK.getId(block.state().getBlock());
     chunk.setAttached(TYPE, in(chunk).with(new StructureMark(block.pos(), blockId, id)));
   }
 
-  public static Optional<StructureMark> at(final WorldChunk chunk, final BlockPos pos) {
+  public static Optional<StructureMark> at(final Chunk chunk, final BlockPos pos) {
     return in(chunk).at(pos);
   }
 
-  public static void unmark(final WorldChunk chunk, final BlockPos pos) {
+  public static void unmark(final Chunk chunk, final BlockPos pos) {
     final StructureMarks marks = chunk.getAttached(TYPE);
     if (marks == null || marks.at(pos).isEmpty()) {
       return;

@@ -18,11 +18,14 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkSerializer;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.storage.StorageKey;
 
 public final class StructureChunkMarksGameTest implements FabricGameTest {
   private static final String BATCH = "structure-chunk-marks";
@@ -101,18 +104,27 @@ public final class StructureChunkMarksGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void aMarkedChunkWritesItsMarksIntoTheChunkSave(TestContext context) {
+  public void aMarkedChunkReadsItsMarksBackFromTheChunkSave(TestContext context) {
+    final ServerWorld world = context.getWorld();
     final BlockPos pos = context.getAbsolutePos(FIRST);
     final WorldChunk chunk = chunkAt(context, FIRST);
     final UUID id = UUID.randomUUID();
     StructureChunkMarks.mark(chunk, new StructureBlock(pos, Blocks.GLASS.getDefaultState()), id);
 
-    final NbtCompound saved = ChunkSerializer.serialize(context.getWorld(), chunk);
+    final NbtCompound saved = ChunkSerializer.serialize(world, chunk);
     StructureChunkMarks.unmark(chunk, pos);
+    final ProtoChunk loaded =
+        ChunkSerializer.deserialize(
+            world,
+            world.getPointOfInterestStorage(),
+            new StorageKey("structure-marks", world.getRegistryKey(), "chunk"),
+            chunk.getPos(),
+            saved);
 
-    context.assertTrue(
-        saved.toString().contains(StructureChunkMarks.TYPE.identifier().toString()),
-        "A chunk saved while it carries marks should write them with its blocks");
+    final StructureMark mark = StructureChunkMarks.at(loaded, pos).orElseThrow();
+    context.assertTrue(mark.belongsTo(id), "A reloaded chunk should name the structure");
+    context.assertEquals(
+        mark.block(), Registries.BLOCK.getId(Blocks.GLASS), "Block named by a reloaded mark");
     context.complete();
   }
 }

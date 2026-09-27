@@ -71,4 +71,63 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     return BlockPlacement.canPlace(
         context.getWorld(), absolutePos, Blocks.TORCH.getDefaultState(), null);
   }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aStructureMayOccupyOpenAir(TestContext context) {
+    context.assertTrue(
+        BlockPlacement.canOccupy(
+            context.getWorld(),
+            context.getAbsolutePos(OPEN_AIR),
+            Blocks.OAK_PLANKS.getDefaultState()),
+        "Open air is free for a structure to occupy");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aStructureMayOccupyAReplaceableBlock(TestContext context) {
+    context.setBlockState(OPEN_AIR.down(), Blocks.STONE);
+    context.setBlockState(OPEN_AIR, Blocks.SNOW);
+
+    context.assertTrue(
+        BlockPlacement.canOccupy(
+            context.getWorld(),
+            context.getAbsolutePos(OPEN_AIR),
+            Blocks.OAK_PLANKS.getDefaultState()),
+        "A snow layer makes way the way it does for a player");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aStructureNeverOccupiesABuiltBlock(TestContext context) {
+    context.setBlockState(OPEN_AIR, Blocks.STONE);
+
+    context.assertFalse(
+        BlockPlacement.canOccupy(
+            context.getWorld(),
+            context.getAbsolutePos(OPEN_AIR),
+            Blocks.OAK_PLANKS.getDefaultState()),
+        "A built block is never replaced by a structure");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aStructureBlockThatCannotStandThereIsRefused(TestContext context) {
+    context.assertFalse(
+        BlockPlacement.canOccupy(
+            context.getWorld(), context.getAbsolutePos(OPEN_AIR), Blocks.TORCH.getDefaultState()),
+        "A torch in mid air has nothing to stand on");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aStructureNeverOccupiesAPositionOutsideTheWorld(TestContext context) {
+    context.assertFalse(
+        BlockPlacement.canOccupy(
+            context.getWorld(), FAR_OUTSIDE_THE_BORDER, Blocks.OAK_PLANKS.getDefaultState()),
+        "Nothing may be occupied outside the world");
+    context.assertFalse(
+        BlockPlacement.canOccupy(null, FAR_OUTSIDE_THE_BORDER, null),
+        "Nothing is occupied without a world or a state");
+    context.complete();
+  }
 }

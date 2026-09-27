@@ -1,39 +1,81 @@
 package com.grahambartley.notenougharrows.structure;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 import net.minecraft.util.math.BlockPos;
 
-public record StructureMarks(List<StructureMark> marks) {
+public final class StructureMarks {
   public static final StructureMarks NONE = new StructureMarks(List.of());
 
-  public StructureMarks {
-    marks = marks == null ? List.of() : List.copyOf(marks);
+  private final Map<BlockPos, StructureMark> byPos;
+
+  public StructureMarks(final List<StructureMark> marks) {
+    this(indexed(marks));
+  }
+
+  private StructureMarks(final Map<BlockPos, StructureMark> byPos) {
+    this.byPos = byPos;
+  }
+
+  public List<StructureMark> marks() {
+    return List.copyOf(byPos.values());
   }
 
   public boolean isEmpty() {
-    return marks.isEmpty();
+    return byPos.isEmpty();
   }
 
   public Optional<StructureMark> at(final BlockPos pos) {
-    return marks.stream().filter(mark -> mark.pos().equals(pos)).findFirst();
+    return Optional.ofNullable(byPos.get(pos));
   }
 
   public StructureMarks with(final StructureMark mark) {
-    return new StructureMarks(Stream.concat(withoutPos(mark.pos()), Stream.of(mark)).toList());
+    final Map<BlockPos, StructureMark> next = new LinkedHashMap<>(byPos);
+    next.remove(mark.pos());
+    next.put(mark.pos(), mark);
+    return new StructureMarks(next);
   }
 
   public StructureMarks without(final BlockPos pos) {
-    return new StructureMarks(withoutPos(pos).toList());
+    if (!byPos.containsKey(pos)) {
+      return this;
+    }
+    final Map<BlockPos, StructureMark> next = new LinkedHashMap<>(byPos);
+    next.remove(pos);
+    return new StructureMarks(next);
   }
 
   public List<StructureMark> stale(final Predicate<StructureMark> isLive) {
-    return marks.stream().filter(isLive.negate()).toList();
+    return byPos.values().stream().filter(isLive.negate()).toList();
   }
 
-  private Stream<StructureMark> withoutPos(final BlockPos pos) {
-    return marks.stream().filter(held -> !held.pos().equals(pos));
+  @Override
+  public boolean equals(final Object other) {
+    return other instanceof StructureMarks marks && marks().equals(marks.marks());
+  }
+
+  @Override
+  public int hashCode() {
+    return marks().hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return "StructureMarks" + marks();
+  }
+
+  private static Map<BlockPos, StructureMark> indexed(final List<StructureMark> marks) {
+    final Map<BlockPos, StructureMark> byPos = new LinkedHashMap<>();
+    if (marks != null) {
+      marks.forEach(
+          mark -> {
+            byPos.remove(mark.pos());
+            byPos.put(mark.pos(), mark);
+          });
+    }
+    return byPos;
   }
 }
