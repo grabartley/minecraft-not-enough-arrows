@@ -115,8 +115,8 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 🗜️ | **Railgun** | Very fast, and it barely drops | Iron ingot |
 | 🧊 | **Frost** | Holds what you hit frozen, the way powder snow does | Powder snow bucket |
 | 🎈 | **Levitation** | Floats what you hit upward, then lets go | Shulker shell |
-| 🔔 | **Taunt** | Pulls nearby hostiles onto whatever it lands on | Note block |
-| 🏃 | **Repel** | Sends nearby hostiles running from where it lands | Soul sand |
+| 🔔 | **Taunt** | Turns every mob fighting you onto whatever it lands on | Note block |
+| 🏃 | **Repel** | Sends every nearby mob running from where it lands | Soul sand |
 | 🤝 | **Allegiance** | The mob you hit fights for you for a while | Golden apple |
 | 🌫️ | **Smoke** | A cloud that blinds. It blocks nothing | Campfire |
 | 🪃 | **Disarm** | Throws the held item across the ground | Fishing rod |

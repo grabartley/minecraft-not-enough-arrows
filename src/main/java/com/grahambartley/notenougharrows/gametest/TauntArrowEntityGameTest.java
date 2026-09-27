@@ -111,12 +111,15 @@ public final class TauntArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
+  @GameTest(
+      templateName = CombatTestSupport.LONG_RANGE,
+      batchId = BATCH + "-long-range",
+      tickLimit = 60)
   public void hittingAMobPullsEveryoneHuntingTheShooterOntoIt(TestContext context) {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, CombatTestSupport.LONG_RANGE_SHOOTER_STAND);
     shooter.changeGameMode(GameMode.SURVIVAL);
-    final CowEntity struck = ControlMatrixGameTest.sturdyStillCow(context, new BlockPos(10, 2, 3));
+    final CowEntity struck = ControlTestSupport.sturdyStillCow(context, new BlockPos(10, 2, 3));
     final ZombieEntity hunter = ControlTestSupport.stillZombieAt(context, new BlockPos(1, 3, 6));
     hunter.setTarget(shooter);
     context.assertTrue(

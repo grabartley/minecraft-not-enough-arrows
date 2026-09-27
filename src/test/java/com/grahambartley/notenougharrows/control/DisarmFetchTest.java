@@ -13,10 +13,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 class DisarmFetchTest {
 
   @ParameterizedTest
-  @CsvSource({"0.0, 20, true", "2.25, 20, true", "2.26, 20, false", "0.0, 19, false"})
-  void grabsOnlyASettledItemWithinReach(
-      final double squaredDistance, final int itemAge, final boolean expected) {
-    assertEquals(expected, DisarmFetch.canGrab(squaredDistance, itemAge));
+  @CsvSource({"true, 20, true", "true, 19, false", "false, 20, false", "false, 0, false"})
+  void grabsOnlyASettledItemWithinVanillasPickupRange(
+      final boolean withinRange, final int itemAge, final boolean expected) {
+    assertEquals(expected, DisarmFetch.canGrab(withinRange, itemAge));
   }
 
   @org.junit.jupiter.api.Test

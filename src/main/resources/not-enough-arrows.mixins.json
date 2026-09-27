@@ -3,7 +3,9 @@
 	"package": "com.grahambartley.notenougharrows.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"LevelStorageMixin"
+		"LevelStorageMixin",
+		"MobEntityTargetMixin",
+		"BatEntityFlightMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

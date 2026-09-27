@@ -14,11 +14,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 public final class DisarmFetchService {
   public static final int FETCH_WINDOW_TICKS = 600;
-  public static final int REPATH_INTERVAL_TICKS = 5;
   public static final double FETCH_SPEED = 1.2;
 
   private static final Map<RegistryKey<World>, Map<UUID, DisarmFetch>> ERRANDS = new HashMap<>();
@@ -87,17 +87,28 @@ public final class DisarmFetchService {
       return true;
     }
     MobAggression.aim(mob, null);
-    if (DisarmFetch.canGrab(mob.squaredDistanceTo(thrown), thrown.getItemAge())) {
+    if (DisarmFetch.canGrab(withinPickupRange(mob, thrown), thrown.getItemAge())) {
       mob.equipStack(EquipmentSlot.MAINHAND, thrown.getStack().copy());
       mob.sendPickup(thrown, thrown.getStack().getCount());
       thrown.discard();
-      mob.getNavigation().stop();
+      MobSteering.halt(mob);
       return true;
     }
-    if (world.getTime() % REPATH_INTERVAL_TICKS == 0 || mob.getNavigation().isIdle()) {
-      mob.getNavigation().startMovingTo(thrown, FETCH_SPEED);
+    if (!MobSteering.isUnderway(mob)
+        || MobSteering.steersItself(mob)
+        || MobSteering.hasWanderedOffCourse(mob, thrown.getPos())) {
+      MobSteering.moveTo(mob, thrown.getPos(), FETCH_SPEED);
     }
+    MobSteering.closeTheLastGap(mob, thrown.getPos(), FETCH_SPEED);
+    MobSteering.keepPace(mob, FETCH_SPEED);
     return false;
+  }
+
+  private static boolean withinPickupRange(final MobEntity mob, final ItemEntity thrown) {
+    final Vec3i reach = mob.getItemPickUpRangeExpander();
+    return mob.getBoundingBox()
+        .expand(reach.getX(), reach.getY(), reach.getZ())
+        .intersects(thrown.getBoundingBox());
   }
 
   private static void keepTheirGearAsDroppableAsItWas(

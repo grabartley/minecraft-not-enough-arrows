@@ -60,4 +60,13 @@ final class ControlTestSupport {
     skeleton.setVelocity(Vec3d.ZERO);
     return skeleton;
   }
+
+  static CowEntity sturdyStillCow(final TestContext context, final BlockPos relativePos) {
+    context.setBlockState(relativePos.down(), Blocks.BEDROCK);
+    final CowEntity cow = context.spawnMob(EntityType.COW, relativePos);
+    cow.setAiDisabled(true);
+    cow.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(STURDY_MAX_HEALTH);
+    cow.setHealth(cow.getMaxHealth());
+    return cow;
+  }
 }

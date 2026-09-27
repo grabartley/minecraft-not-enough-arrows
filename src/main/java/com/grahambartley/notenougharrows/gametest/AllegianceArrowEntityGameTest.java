@@ -99,15 +99,15 @@ public final class AllegianceArrowEntityGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
-  public void somethingThatWasNeverHostileIsLeftAlone(TestContext context) {
+  public void evenAPeacefulMobCanBeEnlisted(TestContext context) {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
     final CowEntity bystander = ControlTestSupport.stillCowAt(context, TARGET_STAND);
 
-    context.assertFalse(
+    context.assertTrue(
         ControlHoldService.enlist(
             context.getWorld(), bystander, shooter, AllegianceArrowConfig.defaults()),
-        "An allegiance arrow should turn only a hostile mob");
+        "An allegiance arrow works on every mob, so even a cow should follow its shooter");
     context.complete();
   }
 
