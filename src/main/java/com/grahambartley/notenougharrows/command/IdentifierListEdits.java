@@ -1,13 +1,12 @@
 package com.grahambartley.notenougharrows.command;
 
-import com.grahambartley.notenougharrows.config.PhysicsArrowConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.util.Identifier;
 
-public final class GravityExclusions {
-  private GravityExclusions() {}
+public final class IdentifierListEdits {
+  private IdentifierListEdits() {}
 
   public enum Outcome {
     ADDED,
@@ -25,15 +24,15 @@ public final class GravityExclusions {
 
   public record Result(Outcome outcome, List<String> updated) {}
 
-  public static Result add(final List<String> current, final String blockId) {
-    final String normalized = normalize(blockId);
+  public static Result add(final List<String> current, final String id, final int maxEntries) {
+    final String normalized = normalize(id);
     if (normalized == null) {
       return new Result(Outcome.INVALID_ID, current);
     }
     if (current.contains(normalized)) {
       return new Result(Outcome.ALREADY_PRESENT, current);
     }
-    if (current.size() >= PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX) {
+    if (current.size() >= maxEntries) {
       return new Result(Outcome.LIST_FULL, current);
     }
     final List<String> updated = new ArrayList<>(current);
@@ -41,8 +40,8 @@ public final class GravityExclusions {
     return new Result(Outcome.ADDED, List.copyOf(updated));
   }
 
-  public static Result remove(final List<String> current, final String blockId) {
-    final String normalized = normalize(blockId);
+  public static Result remove(final List<String> current, final String id) {
+    final String normalized = normalize(id);
     if (normalized == null) {
       return new Result(Outcome.INVALID_ID, current);
     }
@@ -58,11 +57,11 @@ public final class GravityExclusions {
     return new Result(Outcome.CLEARED, List.of());
   }
 
-  public static String normalize(final String blockId) {
-    if (blockId == null) {
+  public static String normalize(final String id) {
+    if (id == null) {
       return null;
     }
-    final Identifier identifier = Identifier.tryParse(blockId.trim().toLowerCase(Locale.ROOT));
+    final Identifier identifier = Identifier.tryParse(id.trim().toLowerCase(Locale.ROOT));
     return identifier == null ? null : identifier.toString();
   }
 }

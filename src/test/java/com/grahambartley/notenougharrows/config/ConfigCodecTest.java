@@ -53,6 +53,13 @@ class ConfigCodecTest {
                 new AllegianceArrowConfig(5999, 31.5f),
                 new SmokeArrowConfig(15.5f, 1),
                 new DisarmArrowConfig(false, 15.5f)),
+            TraversalArrowConfig.defaults()
+                .withZipline(ZiplineArrowConfig.defaults().withMaxSpanBlocks(100)),
+            TerrainArrowConfig.defaults().withDrillToolTier(0),
+            AgricultureArrowConfig.defaults().withBeeCount(8),
+            DiscoveryArrowConfig.defaults().withProspectorBlocks(List.of("minecraft:stone")),
+            ChaosArrowConfig.defaults().withPolymorphEnabled(false),
+            SocialArrowConfig.defaults().withCourierUndeliverable(List.of("minecraft:shulker_box")),
             new FletchingStationConfig(false));
 
     assertEquals(original, ConfigCodec.decode(ConfigCodec.encode(original)));
@@ -97,11 +104,30 @@ class ConfigCodecTest {
             .toList();
     final NotEnoughArrowsConfig maximal =
         NotEnoughArrowsConfig.defaults()
-            .withPhysics(new PhysicsArrowConfig(8, exclusions, 16, false));
+            .withPhysics(new PhysicsArrowConfig(8, exclusions, 16, false))
+            .withDiscovery(
+                DiscoveryArrowConfig.defaults()
+                    .withProspectorBlocks(
+                        longIdentifiers(DiscoveryArrowConfig.PROSPECTOR_BLOCKS_MAX)))
+            .withSocial(
+                SocialArrowConfig.defaults()
+                    .withCourierUndeliverable(
+                        longIdentifiers(SocialArrowConfig.COURIER_UNDELIVERABLE_MAX)));
 
     assertEquals(
         PhysicsArrowConfig.GRAVITY_BLOCK_EXCLUSIONS_MAX,
         maximal.physics().gravityBlockExclusions().size());
+    assertEquals(
+        DiscoveryArrowConfig.PROSPECTOR_BLOCKS_MAX, maximal.discovery().prospectorBlocks().size());
+    assertEquals(
+        SocialArrowConfig.COURIER_UNDELIVERABLE_MAX,
+        maximal.social().courierUndeliverable().size());
     assertTrue(ConfigCodec.encode(maximal).length() < ConfigCodec.MAX_ENCODED_LENGTH);
+  }
+
+  private static List<String> longIdentifiers(final int count) {
+    return IntStream.range(0, count)
+        .mapToObj(i -> "minecraft:a_rather_long_block_identifier_" + i)
+        .toList();
   }
 }

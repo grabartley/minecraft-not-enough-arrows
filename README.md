@@ -156,7 +156,9 @@ Change it in the Mod Menu screen or from the command tree:
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
-`combat`, `control`, and `fletching`.
+`combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, and
+`fletching`. The last six hold the settings for arrows that have not landed yet, so they exist ahead
+of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -245,14 +247,73 @@ screen are rejected outright, with the accepted range in the error.
 | `control.smoke.durationTicks` | 200 | 0 to 6000 |
 | `control.disarm.affectsPlayers` | on | on or off |
 | `control.disarm.throwDistance` | 5.0 | 0.0 to 16.0 |
+| `traversal.zipline.maxSpanBlocks` | 32 | 2 to 128 |
+| `traversal.zipline.pendingWindowTicks` | 600 | 20 to 6000 |
+| `traversal.zipline.rideSpeed` | 0.6 | 0.1 to 3.0 |
+| `traversal.zipline.lifetimeTicks` | 1200 | 0 to 12000 |
+| `traversal.tow.rangeBlocks` | 32 | 1 to 128 |
+| `traversal.tow.maxTicks` | 100 | 1 to 1200 |
+| `traversal.updraft.heightBlocks` | 12 | 1 to 64 |
+| `traversal.updraft.lifetimeTicks` | 200 | 0 to 1200 |
+| `traversal.updraft.strength` | 0.4 | 0.0 to 2.0 |
+| `traversal.vine.lengthBlocks` | 12 | 1 to 64 |
+| `traversal.trampoline.strength` | 1.2 | 0.0 to 4.0 |
+| `traversal.trampoline.lifetimeTicks` | 600 | 0 to 12000 |
+| `traversal.scaffold.heightBlocks` | 8 | 1 to 64 |
+| `traversal.scaffold.lifetimeTicks` | 600 | 0 to 12000 |
+| `traversal.bridge.lengthBlocks` | 16 | 1 to 64 |
+| `traversal.bridge.lifetimeTicks` | 600 | 0 to 12000 |
+| `terrain.drillEnabled` | on | on or off |
+| `terrain.drillToolTier` | 2 | 0 to 2 |
+| `terrain.pillarEnabled` | on | on or off |
+| `terrain.pillarHeightBlocks` | 4 | 1 to 16 |
+| `terrain.pillarLifetimeTicks` | 600 | 0 to 12000 |
+| `terrain.drainEnabled` | on | on or off |
+| `terrain.drainRadius` | 3 | 0 to 8 |
+| `terrain.drainMaxBlocks` | 65 | 1 to 512 |
+| `terrain.freezeEnabled` | on | on or off |
+| `terrain.freezeRadius` | 3 | 0 to 8 |
+| `terrain.webEnabled` | on | on or off |
+| `terrain.webPatchRadius` | 1 | 0 to 3 |
+| `terrain.webLifetimeTicks` | 400 | 0 to 12000 |
+| `terrain.paintEnabled` | on | on or off |
+| `agriculture.blossomRadius` | 2 | 0 to 8 |
+| `agriculture.tillRadius` | 2 | 0 to 8 |
+| `agriculture.harvestRadius` | 3 | 0 to 8 |
+| `agriculture.beeCount` | 3 | 1 to 8 |
+| `agriculture.beeLifetimeTicks` | 600 | 20 to 6000 |
+| `discovery.torchEnabled` | on | on or off |
+| `discovery.beaconLifetimeTicks` | 1200 | 0 to 12000 |
+| `discovery.revealRadius` | 12 | 0 to 32 |
+| `discovery.revealDurationTicks` | 200 | 0 to 1200 |
+| `discovery.prospectorBlocks` | 19 vanilla ores | up to 64 block ids |
+| `discovery.watcherLifetimeTicks` | 6000 | 20 to 24000 |
+| `discovery.watcherReportIntervalTicks` | 40 | 20 to 1200 |
+| `discovery.tracerPathLifetimeTicks` | 200 | 0 to 1200 |
+| `chaos.partyEnabled` | on | on or off |
+| `chaos.chickenEnabled` | on | on or off |
+| `chaos.pufferEnabled` | on | on or off |
+| `chaos.pufferDurationTicks` | 200 | 0 to 1200 |
+| `chaos.stinkEnabled` | on | on or off |
+| `chaos.stinkCloudLifetimeTicks` | 200 | 0 to 1200 |
+| `chaos.boomerangEnabled` | on | on or off |
+| `chaos.polymorphEnabled` | on | on or off |
+| `chaos.polymorphDurationTicks` | 400 | 0 to 2400 |
+| `social.courierMaxPayload` | 64 | 1 to 64 |
+| `social.courierUndeliverable` | empty | up to 64 item ids |
+| `social.snowGolemLifetimeTicks` | 1200 | 20 to 12000 |
+| `social.magnetRadius` | 8 | 0 to 16 |
 | `fletching.stationEnabled` | on | on or off |
 
-The gravity arrow's exclusion list is edited rather than replaced:
+The three lists, the gravity arrow's exclusions, the prospector arrow's blocks, and the courier
+arrow's undeliverable items, are edited rather than replaced:
 
 ```
-/nea config physics gravityblockexclusions add <block>
-/nea config physics gravityblockexclusions remove <block>
+/nea config physics gravityblockexclusions add <id>
+/nea config physics gravityblockexclusions remove <id>
 /nea config physics gravityblockexclusions clear
+/nea config discovery prospectorblocks add <id>
+/nea config social courierundeliverable add <id>
 ```
 
 These three are yours alone. They live on your machine, they are never sent anywhere, and changing

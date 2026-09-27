@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.grahambartley.notenougharrows.command.ConfigStatusLines.StatusEntry;
 import com.grahambartley.notenougharrows.config.ConfigSettings;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
+import com.grahambartley.notenougharrows.config.option.IdentifierListOption;
+import com.grahambartley.notenougharrows.config.option.ServerConfigOptions;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -96,8 +98,12 @@ class ConfigStatusLinesTest {
             .map(segment -> segment.toLowerCase(Locale.ROOT))
             .collect(Collectors.joining(" "));
     final String value =
-        entry.setting().equals(ConfigSettings.PHYSICS_GRAVITY_BLOCK_EXCLUSIONS)
-            ? PhysicsCommandNodes.ADD + " minecraft:sand"
+        ServerConfigOptions.all().stream()
+                .anyMatch(
+                    option ->
+                        option.id().equals(entry.setting())
+                            && option instanceof IdentifierListOption<?>)
+            ? IdentifierListNodes.ADD + " minecraft:sand"
             : entry.value();
     return "notenougharrows config " + path + " " + value;
   }

@@ -30,6 +30,12 @@ class ServerConfigOptionsTest {
             "ender",
             "combat",
             "control",
+            "traversal",
+            "terrain",
+            "agriculture",
+            "discovery",
+            "chaos",
+            "social",
             "fletching"),
         ServerConfigOptions.sections().stream().map(ConfigSection::id).toList());
   }

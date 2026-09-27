@@ -21,6 +21,12 @@ class NotEnoughArrowsConfigTest {
     assertEquals(EnderArrowConfig.defaults(), defaults.ender());
     assertEquals(CombatArrowConfig.defaults(), defaults.combat());
     assertEquals(ControlArrowConfig.defaults(), defaults.control());
+    assertEquals(TraversalArrowConfig.defaults(), defaults.traversal());
+    assertEquals(TerrainArrowConfig.defaults(), defaults.terrain());
+    assertEquals(AgricultureArrowConfig.defaults(), defaults.agriculture());
+    assertEquals(DiscoveryArrowConfig.defaults(), defaults.discovery());
+    assertEquals(ChaosArrowConfig.defaults(), defaults.chaos());
+    assertEquals(SocialArrowConfig.defaults(), defaults.social());
     assertEquals(FletchingStationConfig.defaults(), defaults.fletching());
   }
 
@@ -28,7 +34,8 @@ class NotEnoughArrowsConfigTest {
   void substitutesDefaultsForNullFamilies() {
     assertEquals(
         NotEnoughArrowsConfig.defaults(),
-        new NotEnoughArrowsConfig(null, null, null, null, null, null, null, null));
+        new NotEnoughArrowsConfig(
+            null, null, null, null, null, null, null, null, null, null, null, null, null, null));
   }
 
   @Test
@@ -147,6 +154,13 @@ class NotEnoughArrowsConfigTest {
     assertTrue(json.get("physics").isJsonObject());
     assertTrue(json.get("ender").isJsonObject());
     assertTrue(json.get("combat").isJsonObject());
+    assertTrue(json.get("control").isJsonObject());
+    assertTrue(json.get("traversal").isJsonObject());
+    assertTrue(json.get("terrain").isJsonObject());
+    assertTrue(json.get("agriculture").isJsonObject());
+    assertTrue(json.get("discovery").isJsonObject());
+    assertTrue(json.get("chaos").isJsonObject());
+    assertTrue(json.get("social").isJsonObject());
     assertTrue(json.get("fletching").isJsonObject());
   }
 
@@ -200,8 +214,120 @@ class NotEnoughArrowsConfigTest {
                 new AllegianceArrowConfig(5999, 31.5f),
                 new SmokeArrowConfig(15.5f, 1),
                 new DisarmArrowConfig(false, 15.5f)),
+            TraversalArrowConfig.defaults()
+                .withZipline(ZiplineArrowConfig.defaults().withMaxSpanBlocks(100)),
+            TerrainArrowConfig.defaults().withDrillToolTier(0),
+            AgricultureArrowConfig.defaults().withBeeCount(8),
+            DiscoveryArrowConfig.defaults().withProspectorBlocks(List.of("minecraft:stone")),
+            ChaosArrowConfig.defaults().withPolymorphEnabled(false),
+            SocialArrowConfig.defaults().withCourierUndeliverable(List.of("minecraft:shulker_box")),
             new FletchingStationConfig(false));
 
     assertEquals(original, NotEnoughArrowsConfig.fromJson(original.toJson()));
+  }
+
+  @Test
+  void replacesOnlyTheTraversalFamily() {
+    final TraversalArrowConfig replacement =
+        TraversalArrowConfig.defaults()
+            .withZipline(ZiplineArrowConfig.defaults().withMaxSpanBlocks(100));
+    final NotEnoughArrowsConfig updated =
+        NotEnoughArrowsConfig.defaults().withTraversal(replacement);
+
+    assertEquals(replacement, updated.traversal());
+    assertEquals(
+        NotEnoughArrowsConfig.defaults().withTraversal(TraversalArrowConfig.defaults()),
+        updated.withTraversal(TraversalArrowConfig.defaults()));
+  }
+
+  @Test
+  void replacesOnlyTheTerrainFamily() {
+    final TerrainArrowConfig replacement = TerrainArrowConfig.defaults().withDrillToolTier(0);
+    final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withTerrain(replacement);
+
+    assertEquals(replacement, updated.terrain());
+    assertEquals(
+        NotEnoughArrowsConfig.defaults().withTerrain(TerrainArrowConfig.defaults()),
+        updated.withTerrain(TerrainArrowConfig.defaults()));
+  }
+
+  @Test
+  void replacesOnlyTheAgricultureFamily() {
+    final AgricultureArrowConfig replacement = AgricultureArrowConfig.defaults().withBeeCount(8);
+    final NotEnoughArrowsConfig updated =
+        NotEnoughArrowsConfig.defaults().withAgriculture(replacement);
+
+    assertEquals(replacement, updated.agriculture());
+    assertEquals(
+        NotEnoughArrowsConfig.defaults().withAgriculture(AgricultureArrowConfig.defaults()),
+        updated.withAgriculture(AgricultureArrowConfig.defaults()));
+  }
+
+  @Test
+  void replacesOnlyTheDiscoveryFamily() {
+    final DiscoveryArrowConfig replacement =
+        DiscoveryArrowConfig.defaults().withProspectorBlocks(List.of("minecraft:stone"));
+    final NotEnoughArrowsConfig updated =
+        NotEnoughArrowsConfig.defaults().withDiscovery(replacement);
+
+    assertEquals(replacement, updated.discovery());
+    assertEquals(
+        NotEnoughArrowsConfig.defaults().withDiscovery(DiscoveryArrowConfig.defaults()),
+        updated.withDiscovery(DiscoveryArrowConfig.defaults()));
+  }
+
+  @Test
+  void replacesOnlyTheChaosFamily() {
+    final ChaosArrowConfig replacement = ChaosArrowConfig.defaults().withPolymorphEnabled(false);
+    final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withChaos(replacement);
+
+    assertEquals(replacement, updated.chaos());
+    assertEquals(
+        NotEnoughArrowsConfig.defaults().withChaos(ChaosArrowConfig.defaults()),
+        updated.withChaos(ChaosArrowConfig.defaults()));
+  }
+
+  @Test
+  void replacesOnlyTheSocialFamily() {
+    final SocialArrowConfig replacement =
+        SocialArrowConfig.defaults().withCourierUndeliverable(List.of("minecraft:shulker_box"));
+    final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withSocial(replacement);
+
+    assertEquals(replacement, updated.social());
+    assertEquals(
+        NotEnoughArrowsConfig.defaults().withSocial(SocialArrowConfig.defaults()),
+        updated.withSocial(SocialArrowConfig.defaults()));
+  }
+
+  @Test
+  void aFileFromBeforeTheNewFamiliesGainsThemAtTheirDefaults() {
+    final JsonObject legacy =
+        NotEnoughArrowsConfig.defaults().withEnder(new EnderArrowConfig(96, 8, true)).toJson();
+    legacy.remove("traversal");
+    legacy.remove("terrain");
+    legacy.remove("agriculture");
+    legacy.remove("discovery");
+    legacy.remove("chaos");
+    legacy.remove("social");
+
+    final NotEnoughArrowsConfig loaded = NotEnoughArrowsConfig.fromJson(legacy);
+    final JsonObject rewritten = loaded.toJson();
+
+    assertEquals(new EnderArrowConfig(96, 8, true), loaded.ender());
+    assertEquals(TraversalArrowConfig.defaults(), loaded.traversal());
+    assertEquals(TraversalArrowConfig.defaults().toJson(), rewritten.get("traversal"));
+    assertEquals(TerrainArrowConfig.defaults(), loaded.terrain());
+    assertEquals(TerrainArrowConfig.defaults().toJson(), rewritten.get("terrain"));
+    assertEquals(AgricultureArrowConfig.defaults(), loaded.agriculture());
+    assertEquals(AgricultureArrowConfig.defaults().toJson(), rewritten.get("agriculture"));
+    assertEquals(DiscoveryArrowConfig.defaults(), loaded.discovery());
+    assertEquals(DiscoveryArrowConfig.defaults().toJson(), rewritten.get("discovery"));
+    assertEquals(ChaosArrowConfig.defaults(), loaded.chaos());
+    assertEquals(ChaosArrowConfig.defaults().toJson(), rewritten.get("chaos"));
+    assertEquals(SocialArrowConfig.defaults(), loaded.social());
+    assertEquals(SocialArrowConfig.defaults().toJson(), rewritten.get("social"));
+    for (final String key : legacy.keySet()) {
+      assertEquals(legacy.get(key), rewritten.get(key), key);
+    }
   }
 }

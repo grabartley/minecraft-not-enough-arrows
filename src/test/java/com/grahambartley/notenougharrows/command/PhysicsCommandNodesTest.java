@@ -48,15 +48,4 @@ class PhysicsCommandNodesTest {
   void theExclusionListIsEditedThroughAddRemoveAndClear(String command, boolean accepted) {
     assertEquals(accepted, CommandParsing.accepts(dispatcher, operator, command));
   }
-
-  @ParameterizedTest(name = "{0} -> {1}")
-  @CsvSource({
-    "ALREADY_PRESENT, command.not-enough-arrows.exclusions.already_present",
-    "NOT_PRESENT,     command.not-enough-arrows.exclusions.not_present",
-    "LIST_FULL,       command.not-enough-arrows.exclusions.full",
-    "INVALID_ID,      command.not-enough-arrows.exclusions.invalid",
-  })
-  void eachRejectionReasonGetsItsOwnMessage(GravityExclusions.Outcome outcome, String expected) {
-    assertEquals(expected, PhysicsCommandNodes.rejectionKey(outcome));
-  }
 }

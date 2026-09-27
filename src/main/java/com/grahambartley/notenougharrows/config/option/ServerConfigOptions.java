@@ -13,6 +13,12 @@ public final class ServerConfigOptions {
           EnderOptions.section(),
           CombatOptions.section(),
           ControlOptions.section(),
+          TraversalOptions.section(),
+          TerrainOptions.section(),
+          AgricultureOptions.section(),
+          DiscoveryOptions.section(),
+          ChaosOptions.section(),
+          SocialOptions.section(),
           FletchingOptions.section());
   private static final List<ConfigOption<NotEnoughArrowsConfig>> ALL =
       SECTIONS.stream().flatMap(section -> section.options().stream()).toList();

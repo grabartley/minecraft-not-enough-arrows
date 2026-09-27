@@ -24,7 +24,13 @@ class NotEnoughArrowsCommandTest {
           "config grapple maxrangeblocks 64",
           "config utility redstonesignalstrength 7",
           "config physics ricochetbouncecount 2",
-          "config ender pearlmaxrangeblocks 64");
+          "config ender pearlmaxrangeblocks 64",
+          "config traversal zipline maxspanblocks 64",
+          "config terrain drilltooltier 1",
+          "config agriculture beecount 5",
+          "config discovery prospectorblocks add minecraft:stone",
+          "config chaos partyenabled false",
+          "config social magnetradius 4");
 
   private CommandDispatcher<ServerCommandSource> dispatcher;
   private ServerCommandSource operator;
