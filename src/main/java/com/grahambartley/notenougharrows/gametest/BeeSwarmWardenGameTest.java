@@ -15,6 +15,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.GameMode;
 
 public final class BeeSwarmWardenGameTest implements FabricGameTest {
   private static final String BATCH = "bee-swarm-warden";
@@ -115,7 +116,7 @@ public final class BeeSwarmWardenGameTest implements FabricGameTest {
       templateName = FiringRangeSupport.TEMPLATE,
       batchId = BATCH,
       tickLimit = TerrainTestSupport.TICK_LIMIT)
-  public void aBeeReloadedBeforeItsLifetimeEndsIsTrackedAgain(TestContext context) {
+  public void aBeeReloadedBeforeItsLifetimeEndsIsWatchedAgain(TestContext context) {
     final BeeEntity bee = EntityType.BEE.create(context.getWorld());
     bee.refreshPositionAndAngles(context.getAbsolute(RELEASE), 0.0f, 0.0f);
     bee.setAttached(
@@ -146,6 +147,23 @@ public final class BeeSwarmWardenGameTest implements FabricGameTest {
           context.assertTrue(wild.isAlive(), "A wild bee is left alone");
           context.complete();
         });
+  }
+
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aBeeStillStingsSomeoneElse(TestContext context) {
+    final PlayerEntity shooter = context.createMockPlayer(GameMode.SURVIVAL);
+    final CowEntity struck = ControlTestSupport.stillCowAt(context, TARGET_STAND);
+    final float health = struck.getHealth();
+    final BeeEntity bee =
+        release(context, shooter, struck, new BeeArrowConfig(1, LONG_LIFE)).get(0);
+
+    bee.tryAttack(struck);
+
+    context.assertTrue(struck.getHealth() < health, "The cow should be stung");
+    context.complete();
   }
 
   private static List<BeeEntity> release(

@@ -12,7 +12,6 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
 
 public final class BeeSwarmReleaseGameTest implements FabricGameTest {
   private static final String BATCH = "bee-swarm-release";
@@ -61,23 +60,6 @@ public final class BeeSwarmReleaseGameTest implements FabricGameTest {
     for (final BeeEntity bee : release(context, null, null, new BeeArrowConfig(3, LONG_LIFE))) {
       context.assertTrue(bee.getTarget() == null, "Nothing was struck to be angry at");
     }
-    context.complete();
-  }
-
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = BATCH,
-      tickLimit = TerrainTestSupport.TICK_LIMIT)
-  public void aBeeStillStingsSomeoneElse(TestContext context) {
-    final PlayerEntity shooter = context.createMockPlayer(GameMode.SURVIVAL);
-    final CowEntity struck = ControlTestSupport.stillCowAt(context, TARGET_STAND);
-    final float health = struck.getHealth();
-    final BeeEntity bee =
-        release(context, shooter, struck, new BeeArrowConfig(1, LONG_LIFE)).get(0);
-
-    bee.tryAttack(struck);
-
-    context.assertTrue(struck.getHealth() < health, "The cow should be stung");
     context.complete();
   }
 
