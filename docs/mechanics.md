@@ -739,7 +739,7 @@ Server settings are edited on a draft and sent to the server when the screen clo
 | Multiplayer, not an operator | Read-only, with the reason shown under the title | Editable |
 | Title screen, no world joined | Read-only, showing defaults | Editable |
 
-The server checks operator permission again when the update arrives, so a client that ignores the read-only state changes nothing. A refused update is answered with a fresh sync, which puts the client's view back on the server's values. An update the server cannot decode is refused the same way, with its own message, rather than being read as a request for defaults.
+The server checks operator permission again when the update arrives, so a client that ignores the read-only state changes nothing. A refused update is answered with a fresh sync, which puts the client's view back on the server's values. An update the server cannot decode, or one missing any settings family, is refused the same way, with its own message, rather than being read as a request for defaults.
 
 ## Fletching Recipes
 
