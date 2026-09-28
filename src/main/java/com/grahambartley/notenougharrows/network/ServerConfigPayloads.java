@@ -60,7 +60,7 @@ public final class ServerConfigPayloads {
 
     private static UpdateServerConfigC2SPayload read(final RegistryByteBuf buf) {
       return new UpdateServerConfigC2SPayload(
-          ConfigCodec.tryDecode(buf.readString(ConfigCodec.MAX_ENCODED_LENGTH)));
+          ConfigCodec.decodeComplete(buf.readString(ConfigCodec.MAX_ENCODED_LENGTH)));
     }
   }
 }

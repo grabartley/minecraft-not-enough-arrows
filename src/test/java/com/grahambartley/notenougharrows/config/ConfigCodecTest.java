@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import java.util.List;
 import java.util.Optional;
@@ -96,16 +97,30 @@ class ConfigCodecTest {
   @ParameterizedTest
   @NullAndEmptySource
   @ValueSource(strings = {"   ", "{ not json ", "[1,2,3]", "\"a string\"", "12", "null"})
-  void findsNothingInContentThatIsNotAConfigObject(final String json) {
-    assertTrue(ConfigCodec.tryDecode(json).isEmpty());
+  void decodesNothingCompleteFromContentThatIsNotAConfigObject(final String json) {
+    assertTrue(ConfigCodec.decodeComplete(json).isEmpty());
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"{}", "{ \"grapple\": 5 }", "{ \"sound\": {} }"})
+  void decodesNothingCompleteFromAnObjectMissingAFamily(final String json) {
+    assertTrue(ConfigCodec.decodeComplete(json).isEmpty());
   }
 
   @Test
-  void findsTheConfigThatWasEncoded() {
+  void decodesNothingCompleteWhenAFamilyIsNotAnObject() {
+    final JsonObject root = NotEnoughArrowsConfig.defaults().toJson();
+    root.addProperty("grapple", 5);
+
+    assertTrue(ConfigCodec.decodeComplete(root.toString()).isEmpty());
+  }
+
+  @Test
+  void decodesCompleteTheConfigThatWasEncoded() {
     final NotEnoughArrowsConfig original =
         NotEnoughArrowsConfig.defaults().withSound(new SoundConfig(0.35f));
 
-    assertEquals(Optional.of(original), ConfigCodec.tryDecode(ConfigCodec.encode(original)));
+    assertEquals(Optional.of(original), ConfigCodec.decodeComplete(ConfigCodec.encode(original)));
   }
 
   @Test

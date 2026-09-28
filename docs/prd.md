@@ -980,7 +980,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 | CONFIG-14 | The configuration reaching a client is encoded with the same codec used to read and write the file, so the wire format cannot drift from the file format. The encoded payload is bounded |
 | CONFIG-15 | A malformed sync degrades to defaults on the client rather than failing loudly, because a client does not own that state |
 | CONFIG-16 | The command tree is reachable under a short alias as well as the full mod name. The alias is a redirect onto the same tree rather than a second tree, so the two roots cannot offer different subcommands or different permission gating |
-| CONFIG-17 | A settings update from a client that cannot be decoded is refused rather than read as defaults. Nothing is stored or broadcast, the sender is resynced and told the update was unreadable. Restoring defaults is the reset command's job alone |
+| CONFIG-17 | A settings update from a client that cannot be decoded, or that is missing any settings family, is refused rather than read as defaults. Nothing is stored or broadcast, the sender is resynced and told the update was unreadable. Restoring defaults is the reset command's job alone |
 
 **Not supported:** Per-player server settings. Per-dimension settings. A setting reachable from the screen but not from a command. A client changing a server setting it does not have permission for.
 

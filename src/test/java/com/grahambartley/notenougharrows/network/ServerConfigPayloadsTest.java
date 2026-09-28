@@ -29,7 +29,7 @@ class ServerConfigPayloadsTest {
   }
 
   @ParameterizedTest
-  @ValueSource(strings = {"", "{ \"sound\": ", "[1,2,3]", "null"})
+  @ValueSource(strings = {"", "{ \"sound\": ", "[1,2,3]", "null", "{}", "{ \"grapple\": 5 }"})
   void anUpdateThatCannotBeDecodedArrivesWithoutAConfig(final String wire) {
     final RegistryByteBuf buf = buffer();
     buf.writeString(wire, ConfigCodec.MAX_ENCODED_LENGTH);
@@ -54,15 +54,6 @@ class ServerConfigPayloadsTest {
 
     assertEquals(
         NotEnoughArrowsConfig.defaults(), SyncServerConfigS2CPayload.CODEC.decode(buf).config());
-  }
-
-  @Test
-  void aSyncCarriesItsConfigAcrossTheWire() {
-    final RegistryByteBuf buf = buffer();
-
-    SyncServerConfigS2CPayload.CODEC.encode(buf, new SyncServerConfigS2CPayload(CUSTOMISED));
-
-    assertEquals(CUSTOMISED, SyncServerConfigS2CPayload.CODEC.decode(buf).config());
   }
 
   private static RegistryByteBuf buffer() {

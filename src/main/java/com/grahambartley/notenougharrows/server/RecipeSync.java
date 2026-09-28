@@ -18,7 +18,7 @@ public final class RecipeSync {
     return new SynchronizeRecipesS2CPacket(withoutModRecipes(sync.getRecipes()));
   }
 
-  public static List<RecipeEntry<?>> withoutModRecipes(final Collection<RecipeEntry<?>> recipes) {
+  private static List<RecipeEntry<?>> withoutModRecipes(final Collection<RecipeEntry<?>> recipes) {
     return recipes.stream().filter(recipe -> !isModRecipe(recipe)).toList();
   }
 

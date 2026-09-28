@@ -27,6 +27,6 @@ Every crafting table recipe vanilla ships still reaches a vanilla client, unchan
 
 The filter runs inside `ServerCommonNetworkHandler.send`, so every packet the server sends passes one `instanceof` check. Only a recipe sync goes further, and only then is the connection asked what it can receive.
 
-The gametest mock player sits on a connection that never declared any channel, so the filter is exercised there as the vanilla case. The modded case is proven by the pure rule taking a check that answers yes, and by a real client in automated QA.
+The rule is proven by gametests that hand it a check answering yes and no, and the check itself by a gametest on a mock player's connection, which never declared any channel. Neither goes through the mixin, whose wiring only a real client joining a real server can prove, so that is what automated QA does.
 
 As ADR 0026 already says, this does not make a vanilla client safe on this server in general. Any of this mod's items in an inventory, on the ground, or in a crafting result slot still travels as an index the vanilla client cannot resolve. This record closes one more path where the mod would break the connection on its own, and the one that fires on every join.
