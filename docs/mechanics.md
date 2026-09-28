@@ -417,11 +417,27 @@ Like every arrow in the mod, each of the seven is craftable at a crafting table 
 
 ## Sounds
 
-The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
+The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
 
-| Sound | Used for |
-|---|---|
-| `not-enough-arrows:countdown_beep` | The single beep every explosive arrow plays while its fuse burns |
+Every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range and applies `sound.volume`. Every one also carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is what `client.modSoundVolume` recognises on each client. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
+
+An arrow that needs an impact sound (IDENT-7) declares it on its `ArrowDefinition`. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one.
+
+| Sound | Plays | Used for | Vanilla meaning kept (IDENT-8) |
+|---|---|---|---|
+| `countdown_beep` | Mod asset | The single beep every explosive arrow plays while its fuse burns, shared by the three tiers | Own asset |
+| `smoke_arrow_impact` | `block.fire.extinguish` | A smoke arrow's cloud bursting | Yes: a hiss of smoke |
+| `repel_arrow_impact` | `block.soul_sand.break` | A repel arrow pushing mobs off | Under review: vanilla means soul sand breaking |
+| `taunt_arrow_impact` | `block.note_block.bell` | A taunt arrow calling mobs to it | Yes: a bell that draws attention |
+| `disarm_arrow_impact` | `block.tripwire.detach` | A disarm arrow knocking an item loose | Yes: something coming unhooked |
+| `allegiance_arrow_impact` | `entity.player.levelup` | An allegiance arrow turning a mob | Under review: vanilla means a level gained |
+| `ricochet_arrow_bounce` | `entity.arrow.hit` | A ricochet arrow bouncing off a block | Yes: an arrow striking something |
+| `ender_teleport` | `entity.enderman.teleport` | The ender pearl and recall arrows moving something, shared as one teleport system | Yes: a teleport |
+| `frost_arrow_freeze_crack` | `block.glass.break` | A frost arrow encasing its target | Under review: vanilla means glass breaking |
+| `frost_arrow_freeze_settle` | `block.powder_snow.place` | Snow settling as the freeze lands | Yes: powder snow settling |
+| `frost_arrow_thaw` | `block.powder_snow.break` | The ice around a frozen target giving way | Yes: powder snow breaking |
+
+This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
 
 The countdown communicates urgency through cadence rather than through different sounds: one short beep is replayed at a shortening interval as detonation approaches, so a player who hears the beeps speeding up knows to move. Keeping it to one asset is what makes that escalation smooth, because the interval is the only thing changing.
 

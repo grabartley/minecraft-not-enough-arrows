@@ -25,10 +25,28 @@ class ClientStateTest {
     assertEquals(1.0f, defaults.countdownRingScale());
   }
 
+  @Test
+  void defaultsPlayTheModsSoundsAtFullVolume() {
+    assertEquals(1.0f, ClientState.defaults().modSoundVolume());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"-1.0, 0.0", "0.0, 0.0", "0.5, 0.5", "1.0, 1.0", "3.0, 1.0"})
+  void clampsTheModSoundVolumeRatherThanRejectingIt(final float given, final float expected) {
+    assertEquals(expected, new ClientState(true, true, 1.0f, given).modSoundVolume());
+  }
+
+  @Test
+  void aDocumentFromBeforeTheVolumeSettingPlaysAtFullVolume() {
+    assertEquals(
+        ClientState.DEFAULT_MOD_SOUND_VOLUME,
+        ClientState.fromJson(parse("{\"countdownRingScale\":1.5}")).modSoundVolume());
+  }
+
   @ParameterizedTest
   @CsvSource({"0.1, 0.5", "0.5, 0.5", "1.0, 1.0", "2.0, 2.0", "9.0, 2.0"})
   void clampsTheHudScaleRatherThanRejectingIt(final float given, final float expected) {
-    assertEquals(expected, new ClientState(true, true, given).countdownRingScale());
+    assertEquals(expected, new ClientState(true, true, given, 1.0f).countdownRingScale());
   }
 
   @Test
@@ -45,9 +63,9 @@ class ClientStateTest {
   static Stream<Arguments> states() {
     return Stream.of(
         Arguments.of(ClientState.defaults()),
-        Arguments.of(new ClientState(false, false, 0.5f)),
-        Arguments.of(new ClientState(true, false, 2.0f)),
-        Arguments.of(new ClientState(false, true, 1.25f)));
+        Arguments.of(new ClientState(false, false, 0.5f, 0.0f)),
+        Arguments.of(new ClientState(true, false, 2.0f, 1.0f)),
+        Arguments.of(new ClientState(false, true, 1.25f, 0.25f)));
   }
 
   @Test
@@ -101,9 +119,10 @@ class ClientStateTest {
   void changesOneValueAtATime() {
     final ClientState defaults = ClientState.defaults();
 
-    assertEquals(new ClientState(false, true, 1.0f), defaults.withShowCountdownRing(false));
-    assertEquals(new ClientState(true, false, 1.0f), defaults.withPlayCountdownSound(false));
-    assertEquals(new ClientState(true, true, 2.0f), defaults.withCountdownRingScale(2.0f));
+    assertEquals(new ClientState(false, true, 1.0f, 1.0f), defaults.withShowCountdownRing(false));
+    assertEquals(new ClientState(true, false, 1.0f, 1.0f), defaults.withPlayCountdownSound(false));
+    assertEquals(new ClientState(true, true, 2.0f, 1.0f), defaults.withCountdownRingScale(2.0f));
+    assertEquals(new ClientState(true, true, 1.0f, 0.3f), defaults.withModSoundVolume(0.3f));
   }
 
   @Test
@@ -113,6 +132,7 @@ class ClientStateTest {
     assertTrue(json.has("showCountdownRing"));
     assertTrue(json.has("playCountdownSound"));
     assertTrue(json.has("countdownRingScale"));
+    assertTrue(json.has("modSoundVolume"));
   }
 
   private static JsonObject parse(final String json) {

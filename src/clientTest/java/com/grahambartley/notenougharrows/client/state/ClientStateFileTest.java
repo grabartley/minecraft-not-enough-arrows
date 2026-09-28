@@ -86,7 +86,7 @@ class ClientStateFileTest {
   @Test
   void survivesARestartByRoundTrippingThroughTheFile() {
     final Path path = tempDir.resolve("not-enough-arrows").resolve("client-state.json");
-    final ClientState saved = new ClientState(false, false, 1.75f);
+    final ClientState saved = new ClientState(false, false, 1.75f, 1.0f);
 
     assertTrue(ClientStateFile.save(path, saved));
 
@@ -125,7 +125,7 @@ class ClientStateFileTest {
   void overwritesAnExistingFileWhenSaving() {
     final Path path = tempDir.resolve("client-state.json");
     ClientStateFile.save(path, ClientState.defaults());
-    final ClientState updated = new ClientState(false, true, 0.5f);
+    final ClientState updated = new ClientState(false, true, 0.5f, 1.0f);
 
     assertTrue(ClientStateFile.save(path, updated));
     assertEquals(updated, ClientStateFile.load(path));

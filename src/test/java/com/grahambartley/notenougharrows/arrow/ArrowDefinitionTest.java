@@ -3,10 +3,13 @@ package com.grahambartley.notenougharrows.arrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
+import java.util.Optional;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -45,7 +48,8 @@ class ArrowDefinitionTest {
                 width,
                 height,
                 ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
-                ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL));
+                ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
+                null));
   }
 
   @ParameterizedTest
@@ -62,7 +66,8 @@ class ArrowDefinitionTest {
                 ArrowDefinition.DEFAULT_SIZE,
                 ArrowDefinition.DEFAULT_SIZE,
                 maxTrackingRange,
-                trackingTickInterval));
+                trackingTickInterval,
+                null));
   }
 
   @Test
@@ -110,5 +115,52 @@ class ArrowDefinitionTest {
 
     assertEquals(NotEnoughArrows.MOD_ID, definition.id().getNamespace());
     assertEquals("tnt_arrow", definition.id().getPath());
+  }
+
+  @Test
+  void declaresNoImpactSoundUnlessAsked() {
+    assertTrue(
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY)
+            .declaredImpactSound()
+            .isEmpty());
+  }
+
+  @Test
+  void carriesTheImpactSoundItDeclares() {
+    final ArrowSound sound =
+        ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "smoke_arrow_impact"));
+
+    final ArrowDefinition<BaseArrowEntity> definition =
+        ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, SPAWN_FACTORY, sound);
+
+    assertEquals(Optional.of(sound), definition.declaredImpactSound());
+  }
+
+  @Test
+  void declaringASoundKeepsTheDefaultsOfAPlainArrow() {
+    final ArrowDefinition<BaseArrowEntity> plain =
+        ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+
+    final ArrowDefinition<BaseArrowEntity> voiced =
+        ArrowDefinition.of(
+            "smoke_arrow",
+            ENTITY_FACTORY,
+            SPAWN_FACTORY,
+            ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "smoke_arrow_impact")));
+
+    assertEquals(plain.path(), voiced.path());
+    assertSame(plain.entityFactory(), voiced.entityFactory());
+    assertSame(plain.spawnFactory(), voiced.spawnFactory());
+    assertEquals(plain.width(), voiced.width());
+    assertEquals(plain.height(), voiced.height());
+    assertEquals(plain.maxTrackingRange(), voiced.maxTrackingRange());
+    assertEquals(plain.trackingTickInterval(), voiced.trackingTickInterval());
+  }
+
+  @Test
+  void rejectsANullImpactSound() {
+    assertThrows(
+        NullPointerException.class,
+        () -> ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY, null));
   }
 }

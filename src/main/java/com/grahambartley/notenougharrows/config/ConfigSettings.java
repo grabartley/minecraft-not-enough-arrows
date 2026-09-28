@@ -15,6 +15,7 @@ public final class ConfigSettings {
   public static final String CHAOS = "chaos";
   public static final String SOCIAL = "social";
   public static final String FLETCHING = "fletching";
+  public static final String SOUND = "sound";
 
   public static final String EXPLOSIVE_GUNPOWDER = EXPLOSIVE + ".gunpowder";
   public static final String EXPLOSIVE_TNT = EXPLOSIVE + ".tnt";
@@ -241,6 +242,8 @@ public final class ConfigSettings {
   public static final String SOCIAL_MAGNET_RADIUS = SOCIAL_MAGNET + ".radius";
 
   public static final String FLETCHING_STATION_ENABLED = FLETCHING + ".stationEnabled";
+
+  public static final String SOUND_VOLUME = SOUND + ".volume";
 
   public static final String ALL = "all";
 

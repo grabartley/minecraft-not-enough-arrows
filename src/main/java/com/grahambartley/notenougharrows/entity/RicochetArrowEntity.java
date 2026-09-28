@@ -1,6 +1,8 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.config.PhysicsArrowConfig;
 import com.grahambartley.notenougharrows.ricochet.Ricochet;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
@@ -9,7 +11,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -83,7 +84,7 @@ public class RicochetArrowEntity extends BaseArrowEntity {
     setVelocity(Ricochet.deflect(getVelocity(), surface));
     velocityModified = true;
     setDamage(Ricochet.damageAfterBounce(getDamage(), retainsDamage));
-    playSound(SoundEvents.ENTITY_ARROW_HIT, BOUNCE_VOLUME, BOUNCE_PITCH);
+    ModSoundPlayer.playFrom(this, ModSounds.RICOCHET_ARROW_BOUNCE, BOUNCE_VOLUME, BOUNCE_PITCH);
     bounces++;
   }
 }

@@ -2,6 +2,10 @@ package com.grahambartley.notenougharrows.mixin.client;
 
 import com.grahambartley.notenougharrows.client.state.ClientStateService;
 import com.grahambartley.notenougharrows.sound.CountdownMute;
+import com.grahambartley.notenougharrows.sound.ModSoundVolume;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,5 +25,27 @@ public class SoundSystemMixin {
     if (CountdownMute.silences(sound.getId(), ClientStateService.get().playCountdownSound())) {
       info.cancel();
     }
+  }
+
+  @ModifyExpressionValue(
+      method = "play(Lnet/minecraft/client/sound/SoundInstance;)V",
+      at =
+          @At(
+              value = "INVOKE",
+              target =
+                  "Lnet/minecraft/client/sound/SoundSystem;getAdjustedVolume(FLnet/minecraft/sound/SoundCategory;)F"))
+  private float notEnoughArrows$scaleModSoundOnPlay(
+      final float adjusted, @Local(argsOnly = true) final SoundInstance sound) {
+    return ModSoundVolume.adjust(
+        sound.getId(), adjusted, ClientStateService.get().modSoundVolume());
+  }
+
+  @ModifyReturnValue(
+      method = "getAdjustedVolume(Lnet/minecraft/client/sound/SoundInstance;)F",
+      at = @At("RETURN"))
+  private float notEnoughArrows$scaleModSoundOnTick(
+      final float adjusted, final SoundInstance sound) {
+    return ModSoundVolume.adjust(
+        sound.getId(), adjusted, ClientStateService.get().modSoundVolume());
   }
 }

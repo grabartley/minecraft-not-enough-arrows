@@ -60,7 +60,7 @@ class ClientStateServiceTest {
   @Test
   void persistsAnUpdateSoItSurvivesARestart() {
     ClientStateService.loadFromConfigDir(configDir);
-    final ClientState updated = new ClientState(false, false, 2.0f);
+    final ClientState updated = new ClientState(false, false, 2.0f, 1.0f);
 
     assertTrue(ClientStateService.updateInConfigDir(configDir, updated));
 
@@ -70,7 +70,7 @@ class ClientStateServiceTest {
 
   @Test
   void publishesAnUpdateImmediatelyWithoutWaitingForAReload() {
-    final ClientState updated = new ClientState(false, false, 2.0f);
+    final ClientState updated = new ClientState(false, false, 2.0f, 1.0f);
 
     ClientStateService.updateInConfigDir(configDir, updated);
 
@@ -88,8 +88,8 @@ class ClientStateServiceTest {
   void keepsTwoInstallationsIndependent() {
     final Path first = configDir.resolve("first");
     final Path second = configDir.resolve("second");
-    final ClientState firstState = new ClientState(false, false, 0.5f);
-    final ClientState secondState = new ClientState(true, false, 2.0f);
+    final ClientState firstState = new ClientState(false, false, 0.5f, 1.0f);
+    final ClientState secondState = new ClientState(true, false, 2.0f, 1.0f);
 
     ClientStateService.updateInConfigDir(first, firstState);
     ClientStateService.updateInConfigDir(second, secondState);

@@ -1,10 +1,11 @@
 package com.grahambartley.notenougharrows.control;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 
 public final class FrostEffects {
@@ -21,8 +22,8 @@ public final class FrostEffects {
 
   public static void frozeOver(final ServerWorld world, final LivingEntity target) {
     snow(world, target, BURST_PARTICLES, BURST_SPEED);
-    sound(world, target, SoundEvents.BLOCK_GLASS_BREAK, FREEZE_PITCH);
-    sound(world, target, SoundEvents.BLOCK_POWDER_SNOW_PLACE, 1.0f);
+    sound(world, target, ModSounds.FROST_ARROW_FREEZE_CRACK, FREEZE_PITCH);
+    sound(world, target, ModSounds.FROST_ARROW_FREEZE_SETTLE, 1.0f);
   }
 
   public static void stillFrozen(final ServerWorld world, final LivingEntity target) {
@@ -40,7 +41,7 @@ public final class FrostEffects {
         target.getHeight() / 3.0,
         target.getWidth() / 2.0,
         0.0);
-    sound(world, target, SoundEvents.BLOCK_POWDER_SNOW_BREAK, THAW_PITCH);
+    sound(world, target, ModSounds.FROST_ARROW_THAW, THAW_PITCH);
   }
 
   private static void snow(
@@ -63,14 +64,7 @@ public final class FrostEffects {
       final LivingEntity target,
       final SoundEvent event,
       final float pitch) {
-    world.playSound(
-        null,
-        target.getX(),
-        target.getY(),
-        target.getZ(),
-        event,
-        target.getSoundCategory(),
-        SOUND_VOLUME,
-        pitch);
+    ModSoundPlayer.play(
+        world, target.getPos(), event, target.getSoundCategory(), SOUND_VOLUME, pitch);
   }
 }

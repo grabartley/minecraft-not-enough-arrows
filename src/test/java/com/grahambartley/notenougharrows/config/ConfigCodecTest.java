@@ -67,7 +67,8 @@ class ConfigCodecTest {
                 .withCourier(
                     CourierArrowConfig.defaults()
                         .withUndeliverable(List.of("minecraft:shulker_box"))),
-            new FletchingStationConfig(false));
+            new FletchingStationConfig(false),
+            new SoundConfig(0.35f));
 
     assertEquals(original, ConfigCodec.decode(ConfigCodec.encode(original)));
   }

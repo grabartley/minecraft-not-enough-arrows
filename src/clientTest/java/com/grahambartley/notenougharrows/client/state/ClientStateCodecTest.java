@@ -21,7 +21,7 @@ class ClientStateCodecTest {
 
   @Test
   void survivesARoundTripThroughTheEncodedForm() {
-    final ClientState state = new ClientState(false, true, 1.75f);
+    final ClientState state = new ClientState(false, true, 1.75f, 0.4f);
 
     assertEquals(state, ClientStateCodec.decode(ClientStateCodec.encode(state)));
   }
@@ -29,7 +29,7 @@ class ClientStateCodecTest {
   @Test
   void readsAHandEditedDocument() {
     assertEquals(
-        new ClientState(false, false, 0.5f),
+        new ClientState(false, false, 0.5f, 1.0f),
         ClientStateCodec.decode(
             "{\"showCountdownRing\": false, \"playCountdownSound\": false,"
                 + " \"countdownRingScale\": 0.5}"));

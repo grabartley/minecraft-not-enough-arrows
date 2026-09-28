@@ -19,7 +19,8 @@ public final class ServerConfigOptions {
           DiscoveryOptions.section(),
           ChaosOptions.section(),
           SocialOptions.section(),
-          FletchingOptions.section());
+          FletchingOptions.section(),
+          SoundOptions.section());
   private static final List<ConfigOption<NotEnoughArrowsConfig>> ALL =
       SECTIONS.stream().flatMap(section -> section.options().stream()).toList();
 

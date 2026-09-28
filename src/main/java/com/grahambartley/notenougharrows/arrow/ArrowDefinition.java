@@ -3,9 +3,11 @@ package com.grahambartley.notenougharrows.arrow;
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public record ArrowDefinition<E extends BaseArrowEntity>(
     String path,
@@ -14,7 +16,8 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     float width,
     float height,
     int maxTrackingRange,
-    int trackingTickInterval) {
+    int trackingTickInterval,
+    @Nullable ArrowSound impactSound) {
 
   public static final float DEFAULT_SIZE = 0.5f;
   public static final int DEFAULT_MAX_TRACKING_RANGE = 4;
@@ -56,7 +59,28 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         DEFAULT_SIZE,
         DEFAULT_SIZE,
         DEFAULT_MAX_TRACKING_RANGE,
-        DEFAULT_TRACKING_TICK_INTERVAL);
+        DEFAULT_TRACKING_TICK_INTERVAL,
+        null);
+  }
+
+  public static <E extends BaseArrowEntity> ArrowDefinition<E> of(
+      final String path,
+      final EntityType.EntityFactory<E> entityFactory,
+      final ArrowEntityFactory spawnFactory,
+      final ArrowSound impactSound) {
+    return new ArrowDefinition<>(
+        path,
+        entityFactory,
+        spawnFactory,
+        DEFAULT_SIZE,
+        DEFAULT_SIZE,
+        DEFAULT_MAX_TRACKING_RANGE,
+        DEFAULT_TRACKING_TICK_INTERVAL,
+        Objects.requireNonNull(impactSound, "impactSound"));
+  }
+
+  public Optional<ArrowSound> declaredImpactSound() {
+    return Optional.ofNullable(impactSound);
   }
 
   public Identifier id() {

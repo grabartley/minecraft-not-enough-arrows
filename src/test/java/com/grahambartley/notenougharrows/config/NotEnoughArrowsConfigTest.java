@@ -28,6 +28,7 @@ class NotEnoughArrowsConfigTest {
     assertEquals(ChaosArrowConfig.defaults(), defaults.chaos());
     assertEquals(SocialArrowConfig.defaults(), defaults.social());
     assertEquals(FletchingStationConfig.defaults(), defaults.fletching());
+    assertEquals(SoundConfig.defaults(), defaults.sound());
   }
 
   @Test
@@ -35,7 +36,8 @@ class NotEnoughArrowsConfigTest {
     assertEquals(
         NotEnoughArrowsConfig.defaults(),
         new NotEnoughArrowsConfig(
-            null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+            null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+            null));
   }
 
   @Test
@@ -162,6 +164,7 @@ class NotEnoughArrowsConfigTest {
     assertTrue(json.get("chaos").isJsonObject());
     assertTrue(json.get("social").isJsonObject());
     assertTrue(json.get("fletching").isJsonObject());
+    assertTrue(json.get("sound").isJsonObject());
   }
 
   @Test
@@ -227,7 +230,8 @@ class NotEnoughArrowsConfigTest {
                 .withCourier(
                     CourierArrowConfig.defaults()
                         .withUndeliverable(List.of("minecraft:shulker_box"))),
-            new FletchingStationConfig(false));
+            new FletchingStationConfig(false),
+            new SoundConfig(0.35f));
 
     assertEquals(original, NotEnoughArrowsConfig.fromJson(original.toJson()));
   }
@@ -343,5 +347,35 @@ class NotEnoughArrowsConfigTest {
     for (final String key : legacy.keySet()) {
       assertEquals(legacy.get(key), rewritten.get(key), key);
     }
+  }
+
+  @Test
+  void replacesOnlyTheSoundFamily() {
+    final SoundConfig replacement = new SoundConfig(0.25f);
+    final NotEnoughArrowsConfig updated = NotEnoughArrowsConfig.defaults().withSound(replacement);
+
+    assertEquals(replacement, updated.sound());
+    assertEquals(NotEnoughArrowsConfig.defaults(), updated.withSound(SoundConfig.defaults()));
+  }
+
+  @Test
+  void everyOtherFamilyChangeKeepsTheSoundFamily() {
+    final SoundConfig quiet = new SoundConfig(0.25f);
+    final NotEnoughArrowsConfig base = NotEnoughArrowsConfig.defaults().withSound(quiet);
+
+    assertEquals(quiet, base.withExplosive(ExplosiveArrowConfig.defaults()).sound());
+    assertEquals(quiet, base.withSocial(SocialArrowConfig.defaults()).sound());
+    assertEquals(quiet, base.withFletching(new FletchingStationConfig(false)).sound());
+  }
+
+  @Test
+  void aFileFromBeforeTheSoundFamilyPlaysAtFullVolume() {
+    final JsonObject legacy = NotEnoughArrowsConfig.defaults().toJson();
+    legacy.remove("sound");
+
+    final NotEnoughArrowsConfig loaded = NotEnoughArrowsConfig.fromJson(legacy);
+
+    assertEquals(SoundConfig.defaults(), loaded.sound());
+    assertEquals(SoundConfig.defaults().toJson(), loaded.toJson().get("sound"));
   }
 }

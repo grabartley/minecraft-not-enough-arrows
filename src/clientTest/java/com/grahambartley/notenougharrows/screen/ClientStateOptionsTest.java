@@ -24,7 +24,11 @@ class ClientStateOptionsTest {
       case BooleanOption<ClientState> booleanOption ->
           booleanOption.write(ClientState.defaults(), !booleanOption.read(ClientState.defaults()));
       case FloatOption<ClientState> floatOption ->
-          floatOption.write(ClientState.defaults(), floatOption.max());
+          floatOption.write(
+              ClientState.defaults(),
+              floatOption.read(ClientState.defaults()) == floatOption.max()
+                  ? floatOption.min()
+                  : floatOption.max());
       default -> throw new AssertionError("unexpected option type for " + option.id());
     };
   }
@@ -33,7 +37,10 @@ class ClientStateOptionsTest {
   void listsEveryPerInstallationSetting() {
     assertEquals(
         List.of(
-            "client.showCountdownRing", "client.playCountdownSound", "client.countdownRingScale"),
+            "client.showCountdownRing",
+            "client.playCountdownSound",
+            "client.countdownRingScale",
+            "client.modSoundVolume"),
         ClientStateOptions.options().stream().map(ConfigOption::id).toList());
   }
 
