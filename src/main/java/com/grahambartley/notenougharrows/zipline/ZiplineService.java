@@ -42,6 +42,7 @@ public final class ZiplineService {
         || struck == null
         || arrowId == null
         || zipline == null
+        || zipline.lifetimeTicks() <= 0
         || !AnchorSite.isSuitable(world, struck)) {
       return ZiplineOutcome.NOTHING;
     }
@@ -57,7 +58,10 @@ public final class ZiplineService {
     if (!result.wasStrung()) {
       return holdFor(world, shooter, struck, arrowId, zipline, ZiplineOutcome.of(result.refusal()));
     }
-    world.getEntity(first.get().arrowId()).discard();
+    final Entity firstArrow = world.getEntity(first.get().arrowId());
+    if (firstArrow != null) {
+      firstArrow.discard();
+    }
     announce(world, result.span());
     return ZiplineOutcome.STRUNG;
   }

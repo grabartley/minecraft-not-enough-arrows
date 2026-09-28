@@ -155,6 +155,29 @@ public final class TowServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 20)
+  public void aShooterWhoGoesOutOfReachLetsGo(TestContext context) {
+    final ServerPlayerEntity shooter = shooter(context);
+    final CowEntity cow = context.spawnEntity(EntityType.COW, FAR_TARGET);
+    start(context, shooter, cow);
+
+    context.runAtTick(
+        3,
+        () ->
+            MockPlayerSupport.moveTo(
+                context,
+                shooter,
+                SHOOTER_STAND.add(0.0, 0.0, TowArrowConfig.DEFAULT_RANGE_BLOCKS + 20.0)));
+    context.runAtTick(
+        5,
+        () -> {
+          context.assertTrue(
+              TowService.towOf(context.getWorld(), cow.getUuid()) == null,
+              "A shooter who pearls away does not keep dragging from out of range");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 20)
   public void aTargetThatDiesIsLetGo(TestContext context) {
     final ServerPlayerEntity shooter = shooter(context);
     final CowEntity cow = context.spawnEntity(EntityType.COW, FAR_TARGET);

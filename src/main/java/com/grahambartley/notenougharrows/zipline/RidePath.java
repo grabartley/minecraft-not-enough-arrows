@@ -9,6 +9,7 @@ public final class RidePath {
   public static final double LOOK_AHEAD_BLOCKS = 2.0;
   public static final double ARRIVAL_DISTANCE = GrapplePull.ARRIVAL_DISTANCE;
   public static final double ACCELERATION_SHARE = 0.1;
+  public static final double THROWN_OFF_DISTANCE = 6.0;
   private static final double NEGLIGIBLE = 1.0E-6;
 
   private RidePath() {}
@@ -28,6 +29,14 @@ public final class RidePath {
 
   public static double remaining(final Vec3d from, final Vec3d to, final Vec3d grip) {
     return (1.0 - progress(from, to, grip)) * from.distanceTo(to);
+  }
+
+  public static double offLine(final Vec3d from, final Vec3d to, final Vec3d grip) {
+    return grip.distanceTo(from.lerp(to, progress(from, to, grip)));
+  }
+
+  public static boolean isThrownOff(final Vec3d from, final Vec3d to, final Vec3d grip) {
+    return offLine(from, to, grip) > THROWN_OFF_DISTANCE;
   }
 
   public static boolean hasArrived(final Vec3d from, final Vec3d to, final Vec3d grip) {

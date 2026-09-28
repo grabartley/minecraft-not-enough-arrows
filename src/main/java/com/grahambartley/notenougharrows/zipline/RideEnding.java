@@ -5,6 +5,7 @@ public enum RideEnding {
   OBSTRUCTED(true),
   OUT_OF_TIME(true),
   LET_GO(false),
+  THROWN_OFF(false),
   SPAN_LOST(false),
   REPLACED(false),
   RIDER_GONE(false);

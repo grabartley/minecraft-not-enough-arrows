@@ -114,9 +114,9 @@ public final class TowService {
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
-    final double topSpeed = ServerConfigService.get().traversal().tow().speed();
+    final TowArrowConfig tow = ServerConfigService.get().traversal().tow();
     for (final TowSession session : tracker.tows()) {
-      final TowEnding ending = towOnce(world, tracker, session, topSpeed);
+      final TowEnding ending = towOnce(world, tracker, session, tow);
       if (ending != null) {
         end(world, session.targetId(), ending);
       }
@@ -128,7 +128,7 @@ public final class TowService {
       final ServerWorld world,
       final TowTracker tracker,
       final TowSession session,
-      final double topSpeed) {
+      final TowArrowConfig tow) {
     final Entity target = world.getEntity(session.targetId());
     if (isGone(target)) {
       return TowEnding.TARGET_GONE;
@@ -142,6 +142,9 @@ public final class TowService {
             || RideService.rideOf(world, target.getUuid()) != null)) {
       return TowEnding.REPLACED;
     }
+    if (!Reach.isWithin(target.getPos(), shooter.getPos(), tow.rangeBlocks())) {
+      return TowEnding.OUT_OF_REACH;
+    }
     if (TowPull.hasArrived(target.getPos(), shooter.getPos())) {
       return TowEnding.ARRIVED;
     }
@@ -154,7 +157,7 @@ public final class TowService {
       return TowEnding.OBSTRUCTED;
     }
     tracker.add(pulled);
-    drag(target, shooter, TowPull.speedAt(session.pulledTicks(), topSpeed));
+    drag(target, shooter, TowPull.speedAt(session.pulledTicks(), tow.speed()));
     return null;
   }
 

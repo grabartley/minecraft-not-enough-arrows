@@ -29,6 +29,6 @@ public record Span(UUID id, List<BlockPos> cable, long expiryTick) {
   }
 
   public boolean isWhole(final List<BlockPos> standing) {
-    return standing != null && standing.size() == cable.size() && standing.containsAll(cable);
+    return standing != null && standing.size() == cable.size();
   }
 }

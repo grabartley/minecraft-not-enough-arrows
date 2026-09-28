@@ -117,6 +117,23 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aZiplineWithNoLifetimeAnchorsNothingRatherThanClaimingABlockage(TestContext context) {
+    ZiplineTestSupport.raiseAnchors(context);
+    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+
+    context.assertEquals(
+        ZiplineOutcome.NOTHING,
+        ZiplineService.shoot(
+            context.getWorld(),
+            shooter,
+            context.getAbsolutePos(ZiplineTestSupport.WEST_ANCHOR),
+            arrow(context).getUuid(),
+            ZiplineTestSupport.zipline(ZiplineArrowConfig.DEFAULT_MAX_SPAN_BLOCKS, 0)),
+        "Outcome");
+    context.complete();
+  }
+
+  @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aShotWithNoShooterAnchorsNothing(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
 

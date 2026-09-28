@@ -65,6 +65,34 @@ class RidePathTest {
   }
 
   @Test
+  void aRiderHangingBelowTheSpanIsOnlyThatFarOffIt() {
+    final Vec3d below = FROM.lerp(TO, 0.5).subtract(0.0, 1.5, 0.0);
+
+    assertEquals(
+        1.5 * Math.cos(Math.atan2(10.0, 20.0)), RidePath.offLine(FROM, TO, below), EPSILON);
+    assertFalse(RidePath.isThrownOff(FROM, TO, below));
+  }
+
+  @Test
+  void aRiderWithinReachOfTheCableIsStillHoldingOn() {
+    final Vec3d reaching = FROM.lerp(TO, 0.5).add(0.0, 0.0, RidePath.THROWN_OFF_DISTANCE - 0.1);
+
+    assertFalse(RidePath.isThrownOff(FROM, TO, reaching));
+  }
+
+  @Test
+  void aRiderMovedWellAwayFromTheCableHasBeenThrownOff() {
+    final Vec3d elsewhere = FROM.lerp(TO, 0.5).add(0.0, 0.0, RidePath.THROWN_OFF_DISTANCE + 0.1);
+
+    assertTrue(RidePath.isThrownOff(FROM, TO, elsewhere));
+  }
+
+  @Test
+  void theDistanceOffPastAnEndIsMeasuredFromThatEnd() {
+    assertEquals(3.0, RidePath.offLine(FROM, TO, TO.add(0.0, 0.0, 3.0)), EPSILON);
+  }
+
+  @Test
   void theAimLooksAheadAlongTheSpan() {
     final Vec3d aim = RidePath.aim(FROM, TO, FROM);
 

@@ -6,6 +6,7 @@ public enum TowEnding {
   OUT_OF_TIME,
   TARGET_GONE,
   SHOOTER_GONE,
+  OUT_OF_REACH,
   REPLACED;
 
   public boolean stopsTheTarget() {

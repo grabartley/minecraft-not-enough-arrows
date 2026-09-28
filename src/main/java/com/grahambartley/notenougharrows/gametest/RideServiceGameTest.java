@@ -27,6 +27,7 @@ public final class RideServiceGameTest implements FabricGameTest {
   private static final Vec3d WEST_GRIP_CENTER = new Vec3d(1.5, 4.5, 3.5);
   private static final Vec3d EAST_GRIP_CENTER = new Vec3d(5.5, 4.5, 3.5);
   private static final Vec3d NEAR_EAST_END = new Vec3d(4.8, 4.5, 3.5);
+  private static final Vec3d FAR_FROM_THE_CABLE = new Vec3d(3.5, 4.5, 13.5);
   private static final BlockPos GRAPPLE_ANCHOR = new BlockPos(1, 2, 0);
   private static final int SETTLE_TICK = 3;
   private static final int SHORT_LIFETIME_TICKS = 10;
@@ -141,6 +142,63 @@ public final class RideServiceGameTest implements FabricGameTest {
           context.assertTrue(
               RideService.rideOf(context.getWorld(), rider.getUuid()) != null,
               "A rider still sneaking from boarding should not let go at once");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aRiderMovedAwayFromTheCableIsNotFlownBackToIt(TestContext context) {
+    span(context, ZiplineTestSupport.LONG_LIFETIME_TICKS);
+    final ServerPlayerEntity rider = riderAt(context, WEST_GRIP_CENTER);
+    board(context, rider);
+
+    context.runAtTick(
+        SETTLE_TICK,
+        () -> TraversalTestSupport.placeCenteredAt(context, rider, FAR_FROM_THE_CABLE));
+    context.runAtTick(
+        SETTLE_TICK + 2,
+        () -> {
+          context.assertTrue(
+              RideService.rideOf(context.getWorld(), rider.getUuid()) == null,
+              "A rider taken off the cable, by a recall or a teleport, is no longer riding");
+          context.assertFalse(
+              GrappleFallGuard.spares(rider.getUuid()), "The mod does not pay for that fall");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aRiderWhoSitsInABoatMidRideLetsGo(TestContext context) {
+    span(context, ZiplineTestSupport.LONG_LIFETIME_TICKS);
+    final ServerPlayerEntity rider = riderAt(context, WEST_GRIP_CENTER);
+    board(context, rider);
+    final var boat = context.spawnEntity(EntityType.BOAT, new BlockPos(1, 3, 1));
+
+    context.runAtTick(SETTLE_TICK, () -> rider.startRiding(boat, true));
+    context.runAtTick(
+        SETTLE_TICK + 2,
+        () -> {
+          context.assertTrue(
+              RideService.rideOf(context.getWorld(), rider.getUuid()) == null,
+              "A seated rider cannot hold the cable");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void usingTheCableAgainMidRideCarriesOnRatherThanRestarting(TestContext context) {
+    span(context, ZiplineTestSupport.LONG_LIFETIME_TICKS);
+    final ServerPlayerEntity rider = riderAt(context, WEST_GRIP_CENTER);
+    board(context, rider);
+
+    context.runAtTick(
+        SETTLE_TICK,
+        () -> {
+          final RideSession before = RideService.rideOf(context.getWorld(), rider.getUuid());
+          TraversalTestSupport.placeCenteredAt(context, rider, EAST_GRIP_CENTER);
+          context.assertTrue(board(context, rider), "Using the cable again is accepted");
+          context.assertEquals(
+              before, RideService.rideOf(context.getWorld(), rider.getUuid()), "Same ride");
           context.complete();
         });
   }
@@ -282,22 +340,6 @@ public final class RideServiceGameTest implements FabricGameTest {
               second.getVelocity().getX() < 0.0, "The second rider is still carried west");
           context.complete();
         });
-  }
-
-  @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void boardingAgainReplacesTheRideRatherThanStackingASecond(TestContext context) {
-    span(context, ZiplineTestSupport.LONG_LIFETIME_TICKS);
-    final ServerPlayerEntity rider = riderAt(context, WEST_GRIP_CENTER);
-    board(context, rider);
-    final RideSession first = RideService.rideOf(context.getWorld(), rider.getUuid());
-
-    TraversalTestSupport.placeCenteredAt(context, rider, EAST_GRIP_CENTER);
-    board(context, rider);
-
-    context.assertTrue(
-        !first.to().equals(RideService.rideOf(context.getWorld(), rider.getUuid()).to()),
-        "The second boarding replaces the first ride");
-    context.complete();
   }
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)

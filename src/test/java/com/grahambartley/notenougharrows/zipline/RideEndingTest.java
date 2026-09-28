@@ -17,6 +17,7 @@ class RideEndingTest {
   @Test
   void aRiderWhoLetGoFallsUnderVanillasRules() {
     assertFalse(RideEnding.LET_GO.ownsTheFall());
+    assertFalse(RideEnding.THROWN_OFF.ownsTheFall());
   }
 
   @Test

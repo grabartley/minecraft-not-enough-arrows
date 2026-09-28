@@ -38,17 +38,16 @@ public final class RideService {
       @Nullable final ServerWorld world,
       @Nullable final ServerPlayerEntity rider,
       @Nullable final BlockPos cablePos) {
-    if (world == null
-        || rider == null
-        || cablePos == null
-        || rider.isSpectator()
-        || rider.isSleeping()
-        || rider.hasVehicle()) {
+    if (world == null || rider == null || cablePos == null || !canHoldOn(rider)) {
       return false;
     }
     final Optional<Span> span = SpanService.spanAt(world, cablePos);
     if (span.isEmpty()) {
       return false;
+    }
+    final RideSession current = rideOf(world, rider.getUuid());
+    if (current != null && current.spanId().equals(span.get().id())) {
+      return true;
     }
     end(world, rider.getUuid(), RideEnding.REPLACED);
     GrappleService.end(world, rider.getUuid(), GrappleEnding.CANCELLED);
@@ -132,6 +131,9 @@ public final class RideService {
       return RideEnding.LET_GO;
     }
     final Vec3d grip = gripOf(rider);
+    if (!canHoldOn(rider) || RidePath.isThrownOff(session.from(), session.to(), grip)) {
+      return RideEnding.THROWN_OFF;
+    }
     if (RidePath.hasArrived(session.from(), session.to(), grip)) {
       return RideEnding.ARRIVED;
     }
@@ -157,6 +159,10 @@ public final class RideService {
     rider.velocityModified = true;
     rider.fallDistance = 0.0f;
     GrappleFlightCheck.clearFloatingCountFor(rider);
+  }
+
+  private static boolean canHoldOn(final ServerPlayerEntity rider) {
+    return !rider.isSpectator() && !rider.isSleeping() && !rider.hasVehicle();
   }
 
   private static Vec3d gripOf(final ServerPlayerEntity rider) {
