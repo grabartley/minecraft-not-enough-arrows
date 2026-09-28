@@ -48,9 +48,9 @@ public final class ZiplineService {
     }
     final Optional<PendingAnchor> first =
         PendingAnchorService.claim(world, shooter)
-            .filter(anchor -> !anchor.arrowId().equals(arrowId))
-            .filter(anchor -> stillStands(world.getEntity(anchor.arrowId())));
-    if (first.isEmpty()) {
+            .filter(anchor -> !anchor.arrowId().equals(arrowId));
+    final Entity firstArrow = first.map(anchor -> world.getEntity(anchor.arrowId())).orElse(null);
+    if (first.isEmpty() || !stillStands(firstArrow)) {
       return holdFor(world, shooter, struck, arrowId, zipline, ZiplineOutcome.ANCHOR_SET);
     }
     final SpanResult result =
@@ -58,10 +58,7 @@ public final class ZiplineService {
     if (!result.wasStrung()) {
       return holdFor(world, shooter, struck, arrowId, zipline, ZiplineOutcome.of(result.refusal()));
     }
-    final Entity firstArrow = world.getEntity(first.get().arrowId());
-    if (firstArrow != null) {
-      firstArrow.discard();
-    }
+    firstArrow.discard();
     announce(world, result.span());
     return ZiplineOutcome.STRUNG;
   }

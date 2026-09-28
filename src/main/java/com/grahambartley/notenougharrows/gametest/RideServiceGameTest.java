@@ -27,6 +27,9 @@ public final class RideServiceGameTest implements FabricGameTest {
   private static final Vec3d WEST_GRIP_CENTER = new Vec3d(1.5, 4.5, 3.5);
   private static final Vec3d EAST_GRIP_CENTER = new Vec3d(5.5, 4.5, 3.5);
   private static final Vec3d NEAR_EAST_END = new Vec3d(4.8, 4.5, 3.5);
+  private static final BlockPos SECOND_WEST_ANCHOR = new BlockPos(0, 5, 5);
+  private static final BlockPos SECOND_EAST_ANCHOR = new BlockPos(6, 5, 5);
+  private static final BlockPos SECOND_CABLE = new BlockPos(2, 5, 5);
   private static final Vec3d FAR_FROM_THE_CABLE = new Vec3d(3.5, 4.5, 13.5);
   private static final BlockPos GRAPPLE_ANCHOR = new BlockPos(1, 2, 0);
   private static final int SETTLE_TICK = 3;
@@ -201,6 +204,31 @@ public final class RideServiceGameTest implements FabricGameTest {
               before, RideService.rideOf(context.getWorld(), rider.getUuid()), "Same ride");
           context.complete();
         });
+  }
+
+  @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void usingTheCableOfAnotherSpanMidRideSwitchesToIt(TestContext context) {
+    span(context, ZiplineTestSupport.LONG_LIFETIME_TICKS);
+    TraversalTestSupport.stone(context, SECOND_WEST_ANCHOR, SECOND_EAST_ANCHOR);
+    final Span second =
+        SpanService.string(
+                context.getWorld(),
+                null,
+                context.getAbsolutePos(SECOND_WEST_ANCHOR),
+                context.getAbsolutePos(SECOND_EAST_ANCHOR),
+                ZiplineTestSupport.longLived())
+            .strungSpan()
+            .orElseThrow();
+    final ServerPlayerEntity rider = riderAt(context, WEST_GRIP_CENTER);
+    board(context, rider);
+
+    RideService.board(context.getWorld(), rider, context.getAbsolutePos(SECOND_CABLE));
+
+    context.assertEquals(
+        second.id(),
+        RideService.rideOf(context.getWorld(), rider.getUuid()).spanId(),
+        "The rider moves onto the second span");
+    context.complete();
   }
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
