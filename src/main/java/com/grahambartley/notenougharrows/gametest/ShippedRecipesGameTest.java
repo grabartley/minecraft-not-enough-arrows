@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModRecipes;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
+import com.grahambartley.notenougharrows.item.TintedArrowItem;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipe;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipeInput;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.Ingredient;
@@ -20,6 +22,7 @@ import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.input.CraftingRecipeInput;
+import net.minecraft.registry.Registries;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.test.CustomTestProvider;
 import net.minecraft.test.TestContext;
@@ -58,8 +61,16 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
 
   private static void assertCraftingTableRecipeYieldsEight(
       final TestContext context, final RegisteredArrow<?> arrow) {
+    for (final RecipeCase recipeCase : RecipeCase.of(arrow)) {
+      assertCraftingTableRecipeYieldsEight(context, recipeCase);
+    }
+    context.complete();
+  }
+
+  private static void assertCraftingTableRecipeYieldsEight(
+      final TestContext context, final RecipeCase recipeCase) {
     final RecipeManager recipes = recipeManager(context);
-    final Identifier id = arrow.id();
+    final Identifier id = recipeCase.tableId();
     final ShapedRecipe recipe = craftingRecipe(context, recipes, id);
     final CraftingRecipeInput grid = gridOf(recipe);
 
@@ -75,19 +86,41 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     final ItemStack crafted = recipe.craft(grid, registries(context));
 
     context.assertTrue(
-        crafted.isOf(arrow.item()),
-        "The crafting table recipe " + id + " should still yield that arrow");
+        ItemStack.areItemsAndComponentsEqual(crafted, recipeCase.result()),
+        "The crafting table recipe "
+            + id
+            + " should yield "
+            + recipeCase.result()
+            + " but yielded "
+            + crafted
+            + " "
+            + crafted.getComponentChanges());
     context.assertEquals(
         crafted.getCount(),
         CRAFTING_TABLE_YIELD,
         "The crafting table recipe " + id + " should still yield " + CRAFTING_TABLE_YIELD);
-    context.complete();
+    recipeCase
+        .centre()
+        .ifPresent(
+            centre ->
+                context.assertTrue(
+                    recipe.getIngredients().stream()
+                        .anyMatch(ingredient -> ingredient.test(new ItemStack(centre))),
+                    "The crafting table recipe " + id + " should be built around " + centre));
   }
 
   private static void assertStationRecipeYieldsTwelve(
       final TestContext context, final RegisteredArrow<?> arrow) {
+    for (final RecipeCase recipeCase : RecipeCase.of(arrow)) {
+      assertStationRecipeYieldsTwelve(context, recipeCase);
+    }
+    context.complete();
+  }
+
+  private static void assertStationRecipeYieldsTwelve(
+      final TestContext context, final RecipeCase recipeCase) {
     final RecipeManager recipes = recipeManager(context);
-    final Identifier id = stationRecipeId(arrow);
+    final Identifier id = recipeCase.stationId();
     final FletchingRecipe recipe = stationRecipe(context, recipes, id);
     final FletchingRecipeInput inputs = stationInputsOf(recipe);
 
@@ -103,19 +136,34 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     final ItemStack crafted = recipe.craft(inputs, registries(context));
 
     context.assertTrue(
-        crafted.isOf(arrow.item()), "The station recipe " + id + " should yield that arrow");
+        ItemStack.areItemsAndComponentsEqual(crafted, recipeCase.result()),
+        "The station recipe "
+            + id
+            + " should yield "
+            + recipeCase.result()
+            + " but yielded "
+            + crafted
+            + " "
+            + crafted.getComponentChanges());
     context.assertEquals(
         crafted.getCount(),
         STATION_YIELD,
         "The station recipe " + id + " should yield " + STATION_YIELD);
-    context.complete();
   }
 
   private static void assertStationCostsTheSameAndYieldsMore(
       final TestContext context, final RegisteredArrow<?> arrow) {
+    for (final RecipeCase recipeCase : RecipeCase.of(arrow)) {
+      assertStationCostsTheSameAndYieldsMore(context, recipeCase);
+    }
+    context.complete();
+  }
+
+  private static void assertStationCostsTheSameAndYieldsMore(
+      final TestContext context, final RecipeCase recipeCase) {
     final RecipeManager recipes = recipeManager(context);
-    final ShapedRecipe table = craftingRecipe(context, recipes, arrow.id());
-    final FletchingRecipe station = stationRecipe(context, recipes, stationRecipeId(arrow));
+    final ShapedRecipe table = craftingRecipe(context, recipes, recipeCase.tableId());
+    final FletchingRecipe station = stationRecipe(context, recipes, recipeCase.stationId());
     final List<Cost> tableCost = costOf(table);
     final List<Cost> stationCost = costOf(station);
     final int tableYield = table.getResult(registries(context)).getCount();
@@ -124,7 +172,7 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     context.assertTrue(
         tableCost.equals(stationCost),
         "The station should ask for exactly what the crafting table asks for to make "
-            + arrow.id()
+            + recipeCase.tableId()
             + ", but asks for "
             + describe(stationCost)
             + " against "
@@ -132,12 +180,38 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
     context.assertTrue(
         stationYield > tableYield,
         "The station should yield more "
-            + arrow.id()
+            + recipeCase.tableId()
             + " than the crafting table for the same cost, but yielded "
             + stationYield
             + " against "
             + tableYield);
-    context.complete();
+  }
+
+  private record RecipeCase(
+      Identifier tableId, Identifier stationId, ItemStack result, Optional<Item> centre) {
+
+    static List<RecipeCase> of(final RegisteredArrow<?> arrow) {
+      final Identifier id = arrow.id();
+      if (!(arrow.item() instanceof TintedArrowItem tinted)) {
+        return List.of(
+            new RecipeCase(id, stationIdOf(id), new ItemStack(arrow.item()), Optional.empty()));
+      }
+      return tinted.palette().choices().stream()
+          .map(
+              choice -> {
+                final Identifier tableId = id.withSuffixedPath("/" + choice.key());
+                return new RecipeCase(
+                    tableId,
+                    stationIdOf(tableId),
+                    tinted.stackOf(choice),
+                    Optional.of(Registries.ITEM.get(choice.ingredient())));
+              })
+          .toList();
+    }
+
+    private static Identifier stationIdOf(final Identifier tableId) {
+      return tableId.withPrefixedPath("fletching/");
+    }
   }
 
   private static List<Cost> costOf(final ShapedRecipe recipe) {
@@ -234,10 +308,6 @@ public final class ShippedRecipesGameTest implements FabricGameTest {
 
   private static ItemStack oneOf(final Ingredient ingredient) {
     return ingredient.getMatchingStacks()[0].copyWithCount(1);
-  }
-
-  private static Identifier stationRecipeId(final RegisteredArrow<?> arrow) {
-    return Identifier.of(arrow.id().getNamespace(), "fletching/" + arrow.id().getPath());
   }
 
   private static RegistryWrapper.WrapperLookup registries(final TestContext context) {

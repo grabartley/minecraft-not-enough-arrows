@@ -21,6 +21,7 @@ import com.grahambartley.notenougharrows.entity.IncendiaryArrowEntity;
 import com.grahambartley.notenougharrows.entity.LevitationArrowEntity;
 import com.grahambartley.notenougharrows.entity.LifestealArrowEntity;
 import com.grahambartley.notenougharrows.entity.MilkArrowEntity;
+import com.grahambartley.notenougharrows.entity.PaintArrowEntity;
 import com.grahambartley.notenougharrows.entity.RailgunArrowEntity;
 import com.grahambartley.notenougharrows.entity.RecallArrowEntity;
 import com.grahambartley.notenougharrows.entity.RedstoneArrowEntity;
@@ -34,6 +35,7 @@ import com.grahambartley.notenougharrows.entity.TauntArrowEntity;
 import com.grahambartley.notenougharrows.entity.TntArrowEntity;
 import com.grahambartley.notenougharrows.entity.VolleyArrowEntity;
 import com.grahambartley.notenougharrows.entity.WindArrowEntity;
+import com.grahambartley.notenougharrows.tint.DyePalette;
 import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -228,6 +230,11 @@ public final class ModArrows {
               DisarmArrowEntity::new,
               ModArrows::disarmArrow,
               ArrowSound.own(ModSounds.DISARM_ARROW_IMPACT.getId())));
+
+  public static final RegisteredArrow<PaintArrowEntity> PAINT_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.tinted(
+              "paint_arrow", PaintArrowEntity::new, ModArrows::paintArrow, DyePalette.create()));
 
   private ModArrows() {}
 
@@ -531,5 +538,15 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new AllegianceArrowEntity(ALLEGIANCE_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static PaintArrowEntity paintArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new PaintArrowEntity(PAINT_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
+import com.grahambartley.notenougharrows.entity.TintedArrowEntity;
+import com.grahambartley.notenougharrows.tint.DyePalette;
+import com.grahambartley.notenougharrows.tint.TintPalette;
 import java.util.List;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
@@ -17,6 +20,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class ArrowDefinitionTest {
   private static final EntityType.EntityFactory<BaseArrowEntity> ENTITY_FACTORY =
+      (type, world) -> null;
+  private static final EntityType.EntityFactory<TintedArrowEntity> TINTED_FACTORY =
       (type, world) -> null;
   private static final ArrowEntityFactory SPAWN_FACTORY = (world, x, y, z, stack, weapon) -> null;
 
@@ -185,5 +190,45 @@ class ArrowDefinitionTest {
                 ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
                 ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
                 null));
+  }
+
+  @Test
+  void isNotTintedUnlessAsked() {
+    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).palette().isEmpty());
+  }
+
+  @Test
+  void carriesThePaletteItIsTintedBy() {
+    final TintPalette palette = DyePalette.create();
+
+    final ArrowDefinition<TintedArrowEntity> definition =
+        ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, palette);
+
+    assertSame(palette, definition.palette().orElseThrow());
+  }
+
+  @Test
+  void givesATintedArrowThePlainArrowDefaults() {
+    final ArrowSound sound = ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "paint_splat"));
+
+    final ArrowDefinition<TintedArrowEntity> definition =
+        ArrowDefinition.tinted(
+            "paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, DyePalette.create(), sound);
+
+    assertEquals("paint_arrow", definition.path());
+    assertSame(TINTED_FACTORY, definition.entityFactory());
+    assertSame(SPAWN_FACTORY, definition.spawnFactory());
+    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.width());
+    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.height());
+    assertEquals(ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE, definition.maxTrackingRange());
+    assertEquals(ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL, definition.trackingTickInterval());
+    assertEquals(List.of(sound), definition.sounds());
+  }
+
+  @Test
+  void rejectsATintedArrowWithoutAPalette() {
+    assertThrows(
+        NullPointerException.class,
+        () -> ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, null));
   }
 }

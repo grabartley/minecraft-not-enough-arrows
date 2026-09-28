@@ -13,23 +13,31 @@ public final class NotEnoughArrowsEmiPlugin implements EmiPlugin {
   private final EmiInfoRecipes recipes;
   private final Supplier<List<InfoEntry>> entries;
   private final EmiStationRegistrar station;
+  private final EmiVariantComparisons variants;
 
   public NotEnoughArrowsEmiPlugin() {
-    this(EmiInfoRecipes.viaItemRegistry(), RecipeViewerInfo::arrowEntries, new EmiStationRecipes());
+    this(
+        EmiInfoRecipes.viaItemRegistry(),
+        RecipeViewerInfo::arrowEntries,
+        new EmiStationRecipes(),
+        EmiVariantComparisons.forTintedArrows());
   }
 
   NotEnoughArrowsEmiPlugin(
       final EmiInfoRecipes recipes,
       final Supplier<List<InfoEntry>> entries,
-      final EmiStationRegistrar station) {
+      final EmiStationRegistrar station,
+      final EmiVariantComparisons variants) {
     this.recipes = Objects.requireNonNull(recipes, "recipes");
     this.entries = Objects.requireNonNull(entries, "entries");
     this.station = Objects.requireNonNull(station, "station");
+    this.variants = Objects.requireNonNull(variants, "variants");
   }
 
   @Override
   public void register(final EmiRegistry registry) {
     Objects.requireNonNull(registry, "registry");
+    variants.register(registry);
     recipes.from(entries.get()).forEach(registry::addRecipe);
     station.register(registry);
   }

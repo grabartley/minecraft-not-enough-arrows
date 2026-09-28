@@ -27,7 +27,8 @@ public final class ModItemGroups {
             .displayName(Text.translatable("itemGroup." + NotEnoughArrows.MOD_ID + ".arrows"))
             .entries(
                 (context, entries) ->
-                    ModArrows.registered().forEach(arrow -> entries.add(arrow.item())))
+                    ModArrows.registered()
+                        .forEach(arrow -> entries.addAll(arrow.item().variants())))
             .build());
   }
 

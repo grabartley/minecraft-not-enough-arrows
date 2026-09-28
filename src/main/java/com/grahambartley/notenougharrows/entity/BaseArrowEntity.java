@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
@@ -97,7 +98,11 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
 
   @Override
   protected ItemStack getDefaultItemStack() {
-    return new ItemStack(Registries.ITEM.get(Registries.ENTITY_TYPE.getId(getType())));
+    return new ItemStack(arrowItem());
+  }
+
+  protected Item arrowItem() {
+    return Registries.ITEM.get(Registries.ENTITY_TYPE.getId(getType()));
   }
 
   private void resolve(

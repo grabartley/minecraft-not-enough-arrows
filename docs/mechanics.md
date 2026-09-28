@@ -24,6 +24,21 @@ A charged crossbow shows it held, in an inventory or hotbar slot, dropped on the
 
 Across a server, everyone sees it. A charged crossbow needs no help, because the loaded stack rides on the crossbow itself. A drawn bow does: the arrow it is about to fire is found by searching the shooter's inventory, and a player's inventory is never sent to anyone else's client, so the server tells the clients watching that player which arrow is nocked. Your own bow does not wait on that round trip, and the message is sent once when the arrow changes rather than every tick.
 
+## Tinted Arrows
+
+A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one arrow carrying a potion. The paint arrow carries a dye; the sapling and party arrows will carry a sapling and a music disc the same way. However many choices it has, a tinted arrow is one item, one entity type, one entry in the `minecraft:arrows` tag, and one arrow towards the release count.
+
+| Rule | Behaviour |
+|---|---|
+| Recipes | One crafting table recipe per choice, the usual ring of eight arrows around that choice's own item, at `recipe/<arrow>/<choice>.json`, and a station recipe for each at `recipe/fletching/<arrow>/<choice>.json` |
+| Name | The item's name states its choice, such as *Red Paint Arrow*, so two variants never differ by colour alone |
+| Creative tab and recipe viewers | One entry per choice, as vanilla does for tipped arrows. EMI and JEI tell the variants apart, so looking one up finds its own recipe |
+| Look | One drawing shared by every variant, with part of it tinted to the choice, both as an item and in flight |
+| Firing and recovery | The choice rides on the arrow's item stack, so it survives being fired, recovered and fired again, a chunk unloading, and a server restart |
+| Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow. The unrecognised value is kept rather than overwritten |
+
+The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow, but it does not paint anything yet. What it does on impact arrives with the terrain arrows, and its sprite is a placeholder until the terrain art is drawn. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
+
 ## Fire Patches
 
 Arrows that leave fire behind share one system rather than each placing blocks of their own, so a server owner has one set of rules to reason about and one switch to turn all of it off.
@@ -476,6 +491,8 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/homing_arrow.png` | The homing arrow's item sprite |
 | `textures/item/volley_arrow.png` | The volley arrow's item sprite |
 | `textures/item/railgun_arrow.png` | The railgun arrow's item sprite |
+| `textures/item/paint_arrow.png` | The paint arrow's item sprite, left untinted |
+| `textures/item/paint_arrow_head.png` | The paint arrow's head, tinted to the dye it carries |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
@@ -499,6 +516,8 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/homing_arrow.png` | The homing arrow in flight and planted in a block |
 | `textures/entity/arrow/volley_arrow.png` | The volley arrow in flight and planted in a block |
 | `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
+| `textures/entity/arrow/paint_arrow.png` | The paint arrow in flight and planted in a block, left untinted |
+| `textures/entity/arrow/paint_arrow_tint.png` | The paint arrow's head in flight, drawn over the arrow and tinted to its dye |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
@@ -703,7 +722,7 @@ Scroll position, row hit-testing, and where the scroller sits along its travel a
 | `en_us.json` | Every word a player reads |
 | `NotEnoughArrowsEmiPlugin` and `NotEnoughArrowsJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
 
-The info list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
+The info list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. A tinted arrow's entry covers every one of its variants, and both viewers are told to tell those variants apart by the choice they carry, so each colour of paint arrow resolves to its own recipes. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
 
 The station category takes the fletching table as its workstation and its icon, and the recipes come from the loaded datapack rather than from code, so a pack that changes the rates or adds arrows of its own shows up in both viewers with no further work. Looking up an arrow finds the station recipe that makes it, and looking up an ingredient finds what it goes into, because each input slot carries the count the station demands and the result slot carries the count it returns. That is the whole point of the integration: the crafting table recipe and the station recipe sit side by side asking for the same items, and the only thing that differs is the number that comes out.
 

@@ -20,8 +20,8 @@ public final class StationRecipesGameTest implements FabricGameTest {
 
     context.assertEquals(
         listed.size(),
-        ModArrows.registered().size(),
-        "Every arrow the mod registers should surface one station recipe to a viewer");
+        ModArrows.registered().stream().mapToInt(arrow -> arrow.item().variants().size()).sum(),
+        "Every arrow the mod registers should surface one station recipe per variant to a viewer");
     context.complete();
   }
 

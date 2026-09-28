@@ -26,6 +26,8 @@ class NotEnoughArrowsEmiPluginTest {
   private static final Identifier TNT_ARROW = Identifier.of(NotEnoughArrows.MOD_ID, "tnt_arrow");
   private static final Identifier ROPE_ARROW = Identifier.of(NotEnoughArrows.MOD_ID, "rope_arrow");
 
+  private static final EmiVariantComparisons NO_VARIANTS = new EmiVariantComparisons(List::of);
+
   private final Map<Identifier, EmiRecipe> byRecipeId = new HashMap<>();
   private final EmiInfoRecipes recipes = new EmiInfoRecipes(this::build);
   private final EmiRegistry registry = mock(EmiRegistry.class);
@@ -43,7 +45,7 @@ class NotEnoughArrowsEmiPluginTest {
   private final EmiStationRegistrar station = stationRegistrations::add;
 
   private NotEnoughArrowsEmiPlugin pluginFor(final InfoEntry... entries) {
-    return new NotEnoughArrowsEmiPlugin(recipes, () -> List.of(entries), station);
+    return new NotEnoughArrowsEmiPlugin(recipes, () -> List.of(entries), station, NO_VARIANTS);
   }
 
   @Test
@@ -98,10 +100,16 @@ class NotEnoughArrowsEmiPluginTest {
   @Test
   void rejectsCollaboratorsItWasNeverGiven() {
     assertThrows(
-        NullPointerException.class, () -> new NotEnoughArrowsEmiPlugin(null, List::of, station));
+        NullPointerException.class,
+        () -> new NotEnoughArrowsEmiPlugin(null, List::of, station, NO_VARIANTS));
     assertThrows(
-        NullPointerException.class, () -> new NotEnoughArrowsEmiPlugin(recipes, null, station));
+        NullPointerException.class,
+        () -> new NotEnoughArrowsEmiPlugin(recipes, null, station, NO_VARIANTS));
     assertThrows(
-        NullPointerException.class, () -> new NotEnoughArrowsEmiPlugin(recipes, List::of, null));
+        NullPointerException.class,
+        () -> new NotEnoughArrowsEmiPlugin(recipes, List::of, null, NO_VARIANTS));
+    assertThrows(
+        NullPointerException.class,
+        () -> new NotEnoughArrowsEmiPlugin(recipes, List::of, station, null));
   }
 }

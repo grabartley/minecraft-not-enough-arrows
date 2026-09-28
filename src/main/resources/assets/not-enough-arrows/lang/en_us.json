@@ -30,6 +30,8 @@
   "item.not-enough-arrows.allegiance_arrow": "Allegiance Arrow",
   "item.not-enough-arrows.smoke_arrow": "Smoke Arrow",
   "item.not-enough-arrows.disarm_arrow": "Disarm Arrow",
+  "item.not-enough-arrows.paint_arrow": "Paint Arrow",
+  "item.not-enough-arrows.tinted_arrow": "%s %s",
   "block.not-enough-arrows.rope": "Rope",
   "block.not-enough-arrows.redstone_charge": "Redstone Charge",
   "container.not-enough-arrows.fletching_station": "Fletching Station",
@@ -369,5 +371,6 @@
   "info.not-enough-arrows.repel_arrow": "Sends every hostile within the configured reach of the impact running from it for the configured time, then hands them back. A repelled mob is fleeing rather than harmless, so one you corner can still fight back.",
   "info.not-enough-arrows.smoke_arrow": "Opens a cloud at the impact that blinds everything standing inside it for the configured time. It is not a block: it stops no arrow, blocks no movement, and clears away leaving nothing behind.",
   "info.not-enough-arrows.disarm_arrow": "Knocks whatever the target is holding in its main hand out of it and throws it the configured distance away from you, so the target has to go and fetch it. It never destroys the item, never sends it to the shooter, and never takes a worn armour piece. A mob it disarms is allowed to pick the item back up, which vanilla otherwise refuses most mobs. Whether it works on another player is a server setting, on by default, decided where the arrow lands.",
-  "info.not-enough-arrows.allegiance_arrow": "Turns the hostile mob it hits into your defender for the configured time. It stops fighting you, goes after whoever is attacking you instead, player or mob, and hands itself back when the time runs out. It never turns a player, and a dispensed arrow has nobody to defend."
+  "info.not-enough-arrows.allegiance_arrow": "Turns the hostile mob it hits into your defender for the configured time. It stops fighting you, goes after whoever is attacking you instead, player or mob, and hands itself back when the time runs out. It never turns a player, and a dispensed arrow has nobody to defend.",
+  "info.not-enough-arrows.paint_arrow": "Carries the colour of the dye it was crafted from, and its name says which. There is one recipe per dye, each a ring of eight arrows around that dye."
 }

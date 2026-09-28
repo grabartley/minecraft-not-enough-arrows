@@ -3,6 +3,9 @@ package com.grahambartley.notenougharrows.compat.jei;
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.compat.info.InfoEntry;
 import com.grahambartley.notenougharrows.compat.info.RecipeViewerInfo;
+import com.grahambartley.notenougharrows.item.BaseArrowItem;
+import com.grahambartley.notenougharrows.item.TintedArrowItem;
+import com.grahambartley.notenougharrows.item.TintedArrowItems;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipe;
 import com.grahambartley.notenougharrows.recipe.StationRecipes;
 import java.util.List;
@@ -12,6 +15,7 @@ import mezz.jei.api.registration.IModInfoRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
@@ -36,6 +40,13 @@ public final class NotEnoughArrowsJeiPlugin implements IModPlugin {
   @Override
   public void registerModInfo(final IModInfoRegistration registration) {
     registration.addModAliases(NotEnoughArrows.MOD_ID, MOD_ALIASES);
+  }
+
+  @Override
+  public void registerItemSubtypes(final ISubtypeRegistration registration) {
+    for (final TintedArrowItem item : TintedArrowItems.registered()) {
+      registration.registerSubtypeInterpreter(item, TintedArrowSubtypes.of(item));
+    }
   }
 
   @Override
@@ -69,6 +80,9 @@ public final class NotEnoughArrowsJeiPlugin implements IModPlugin {
   }
 
   private static List<ItemStack> stacksOf(final InfoEntry entry) {
-    return entry.itemIds().stream().map(id -> new ItemStack(Registries.ITEM.get(id))).toList();
+    return entry.itemIds().stream()
+        .map(Registries.ITEM::get)
+        .flatMap(item -> BaseArrowItem.variantsOf(item).stream())
+        .toList();
   }
 }
