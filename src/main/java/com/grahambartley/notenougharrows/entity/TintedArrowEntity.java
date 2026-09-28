@@ -8,13 +8,14 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.item.ItemStack;
-import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class TintedArrowEntity extends BaseArrowEntity {
   private static final TrackedData<String> CHOICE =
       DataTracker.registerData(TintedArrowEntity.class, TrackedDataHandlerRegistry.STRING);
+
+  @Nullable private TintedArrowItem item;
 
   protected TintedArrowEntity(
       final EntityType<? extends TintedArrowEntity> entityType, final World world) {
@@ -32,8 +33,6 @@ public abstract class TintedArrowEntity extends BaseArrowEntity {
     super(entityType, world, x, y, z, stack, weapon);
     syncChoice();
   }
-
-  @Nullable private TintedArrowItem item;
 
   public TintChoice tint() {
     return tintedItem().palette().resolve(new ArrowChoice(dataTracker.get(CHOICE)));
@@ -57,7 +56,7 @@ public abstract class TintedArrowEntity extends BaseArrowEntity {
 
   private TintedArrowItem tintedItem() {
     if (item == null) {
-      item = (TintedArrowItem) Registries.ITEM.get(Registries.ENTITY_TYPE.getId(getType()));
+      item = (TintedArrowItem) arrowItem();
     }
     return item;
   }

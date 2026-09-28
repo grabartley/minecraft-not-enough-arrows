@@ -21,7 +21,7 @@ The choice travels with the arrow's item stack, which the projectile already sav
 
 ## Consequences
 
-A new tinted arrow is declared with `ArrowDefinition.tinted`, which only accepts an entity that extends `TintedArrowEntity`, so the palette and the entity cannot be wired apart. It needs a two-layer sprite, and one recipe file per choice. The creative tab, both recipe viewers, the item colour, and the in-flight tint all follow from the palette with no per-arrow wiring.
+A new tinted arrow is declared with `ArrowDefinition.tinted`, whose signature only accepts an entity that extends `TintedArrowEntity`, so declaring one that way cannot pair a palette with an entity that cannot carry it. It needs a two-layer sprite, and one recipe file per choice. The creative tab, both recipe viewers, the item colour, and the in-flight tint all follow from the palette with no per-arrow wiring.
 
 The default is written into the item as its default component, so an arrow made without a choice, such as one from `/give`, stacks with the default arrow crafted from its recipe instead of sitting beside it as a lookalike.
 

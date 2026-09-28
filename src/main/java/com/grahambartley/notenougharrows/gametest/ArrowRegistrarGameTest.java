@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.ModDataComponents;
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
+import com.grahambartley.notenougharrows.entity.TintedArrowEntity;
 import com.grahambartley.notenougharrows.item.TintedArrowItem;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.item.Item;
@@ -62,6 +63,10 @@ public final class ArrowRegistrarGameTest implements FabricGameTest {
       context.assertTrue(
           item instanceof TintedArrowItem,
           "A tinted arrow " + definition.id() + " should register a tinted item");
+      context.assertTrue(
+          Registries.ENTITY_TYPE.get(definition.id()).create(context.getWorld())
+              instanceof TintedArrowEntity,
+          "A tinted arrow " + definition.id() + " should fly as an entity that can carry a tint");
       context.assertEquals(
           new ItemStack(item).get(ModDataComponents.ARROW_CHOICE),
           definition.palette().get().fallback().asComponent(),
