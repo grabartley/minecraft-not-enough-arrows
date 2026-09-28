@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.item.TintedArrowItem;
 import com.grahambartley.notenougharrows.nock.NockedArrowChanges;
 import java.util.UUID;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -18,6 +19,39 @@ public final class NockedArrowChangesGameTest implements FabricGameTest {
 
   private static ItemStack grappleArrow() {
     return new ItemStack(ModArrows.GRAPPLE_ARROW.item());
+  }
+
+  private static ItemStack paintArrow(final String key) {
+    final TintedArrowItem paint = (TintedArrowItem) ModArrows.PAINT_ARROW.item();
+    return paint.stackOf(paint.palette().find(key).orElseThrow());
+  }
+
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
+  public void reportsAChangeWhenTheNockedArrowChangesOnlyItsChoice(final TestContext context) {
+    final NockedArrowChanges changes = new NockedArrowChanges();
+    changes.record(AN_ARCHER, paintArrow("red"));
+
+    context.assertTrue(
+        changes.record(AN_ARCHER, paintArrow("blue")),
+        "Swapping a red paint arrow for a blue one should be worth a packet");
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = EMPTY_STRUCTURE,
+      batchId = NockedArrowTestSupport.BATCH,
+      tickLimit = NockedArrowTestSupport.TICK_LIMIT)
+  public void staysSilentWhenOnlyTheStackSizeOfTheNockedArrowChanges(final TestContext context) {
+    final NockedArrowChanges changes = new NockedArrowChanges();
+    changes.record(AN_ARCHER, paintArrow("red").copyWithCount(12));
+
+    context.assertFalse(
+        changes.record(AN_ARCHER, paintArrow("red").copyWithCount(11)),
+        "Firing one of a stack of red paint arrows should not resend red");
+    context.complete();
   }
 
   @GameTest(

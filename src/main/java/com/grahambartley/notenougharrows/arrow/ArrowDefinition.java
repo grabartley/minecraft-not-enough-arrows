@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.arrow;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
+import com.grahambartley.notenougharrows.entity.TintedArrowEntity;
 import com.grahambartley.notenougharrows.tint.TintPalette;
 import java.util.Arrays;
 import java.util.List;
@@ -90,21 +91,22 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         Arrays.asList(Objects.requireNonNull(sounds, "sounds")));
   }
 
-  public ArrowDefinition<E> tintedBy(final TintPalette tintPalette) {
+  public static <E extends TintedArrowEntity> ArrowDefinition<E> tinted(
+      final String path,
+      final EntityType.EntityFactory<E> entityFactory,
+      final ArrowEntityFactory spawnFactory,
+      final TintPalette palette,
+      final ArrowSound... sounds) {
     return new ArrowDefinition<>(
         path,
         entityFactory,
         spawnFactory,
-        width,
-        height,
-        maxTrackingRange,
-        trackingTickInterval,
-        sounds,
-        Optional.of(Objects.requireNonNull(tintPalette, "tintPalette")));
-  }
-
-  public boolean isTinted() {
-    return palette.isPresent();
+        DEFAULT_SIZE,
+        DEFAULT_SIZE,
+        DEFAULT_MAX_TRACKING_RANGE,
+        DEFAULT_TRACKING_TICK_INTERVAL,
+        Arrays.asList(Objects.requireNonNull(sounds, "sounds")),
+        Optional.of(Objects.requireNonNull(palette, "palette")));
   }
 
   public Identifier id() {

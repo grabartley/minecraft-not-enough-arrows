@@ -233,9 +233,8 @@ public final class ModArrows {
 
   public static final RegisteredArrow<PaintArrowEntity> PAINT_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.<PaintArrowEntity>of(
-                  "paint_arrow", PaintArrowEntity::new, ModArrows::paintArrow)
-              .tintedBy(DyePalette.create()));
+          ArrowDefinition.tinted(
+              "paint_arrow", PaintArrowEntity::new, ModArrows::paintArrow, DyePalette.create()));
 
   private ModArrows() {}
 

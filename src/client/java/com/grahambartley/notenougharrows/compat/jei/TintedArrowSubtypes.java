@@ -1,6 +1,8 @@
 package com.grahambartley.notenougharrows.compat.jei;
 
+import com.grahambartley.notenougharrows.ModDataComponents;
 import com.grahambartley.notenougharrows.item.TintedArrowItem;
+import com.grahambartley.notenougharrows.tint.ArrowChoice;
 import java.util.Objects;
 import java.util.function.Function;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
@@ -16,7 +18,9 @@ public final class TintedArrowSubtypes<S> implements ISubtypeInterpreter<S> {
 
   public static TintedArrowSubtypes<ItemStack> of(final TintedArrowItem item) {
     Objects.requireNonNull(item, "item");
-    return new TintedArrowSubtypes<>(stack -> item.choiceOf(stack).key());
+    final ArrowChoice fallback = item.palette().fallback().asComponent();
+    return new TintedArrowSubtypes<>(
+        stack -> stack.getOrDefault(ModDataComponents.ARROW_CHOICE, fallback).key());
   }
 
   @Override

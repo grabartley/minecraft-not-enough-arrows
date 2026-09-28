@@ -515,9 +515,9 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/guard_arrow.png` | The guard arrow in flight and planted in a block |
 | `textures/entity/arrow/homing_arrow.png` | The homing arrow in flight and planted in a block |
 | `textures/entity/arrow/volley_arrow.png` | The volley arrow in flight and planted in a block |
+| `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
 | `textures/entity/arrow/paint_arrow.png` | The paint arrow in flight and planted in a block, left untinted |
 | `textures/entity/arrow/paint_arrow_tint.png` | The paint arrow's head in flight, drawn over the arrow and tinted to its dye |
-| `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
