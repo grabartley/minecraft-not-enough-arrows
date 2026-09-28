@@ -30,3 +30,5 @@ The rule and the reachability check stay separate, which matters for more than t
 The check cannot be exercised by a gametest. `TestContext` builds its mock player on a connection that never declared any channel, so `canSend` is false for it, which is the correct answer for a player with no client attached and is asserted as such. Proving the opposite case needs a real client, which is what automated QA runs.
 
 One consequence is worth stating plainly because it is larger than this record: the same raw-registry-index problem applies to every custom block, item, and entity this mod registers. This record does not solve that, and a vanilla client on a server running this mod remains on thin ice generally. It closes the one path where the mod would otherwise reach out and break the connection itself.
+
+[ADR 0040](0040-a-vanilla-client-is-sent-no-recipe-of-this-mod.md) applies the same rule to the recipe sync every player receives on join.

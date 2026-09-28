@@ -6,7 +6,8 @@
 		"LevelStorageMixin",
 		"MobEntityTargetMixin",
 		"BatEntityFlightMixin",
-		"WorldChunkStructureMixin"
+		"WorldChunkStructureMixin",
+		"ServerCommonNetworkHandlerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

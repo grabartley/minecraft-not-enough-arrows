@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonParseException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -90,6 +91,21 @@ class ConfigCodecTest {
   @ValueSource(strings = {"{ not json ", "[1,2,3]", "\"a string\"", "12", "null"})
   void fallsBackToDefaultsWhenAskedToBeLenient(final String json) {
     assertEquals(NotEnoughArrowsConfig.defaults(), ConfigCodec.decodeOrDefaults(json));
+  }
+
+  @ParameterizedTest
+  @NullAndEmptySource
+  @ValueSource(strings = {"   ", "{ not json ", "[1,2,3]", "\"a string\"", "12", "null"})
+  void findsNothingInContentThatIsNotAConfigObject(final String json) {
+    assertTrue(ConfigCodec.tryDecode(json).isEmpty());
+  }
+
+  @Test
+  void findsTheConfigThatWasEncoded() {
+    final NotEnoughArrowsConfig original =
+        NotEnoughArrowsConfig.defaults().withSound(new SoundConfig(0.35f));
+
+    assertEquals(Optional.of(original), ConfigCodec.tryDecode(ConfigCodec.encode(original)));
   }
 
   @Test

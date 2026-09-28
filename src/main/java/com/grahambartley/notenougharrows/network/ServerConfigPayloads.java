@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.network;
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.config.ConfigCodec;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
+import java.util.Optional;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.packet.CustomPayload;
@@ -37,12 +38,16 @@ public final class ServerConfigPayloads {
     }
   }
 
-  public record UpdateServerConfigC2SPayload(NotEnoughArrowsConfig config)
+  public record UpdateServerConfigC2SPayload(Optional<NotEnoughArrowsConfig> config)
       implements CustomPayload {
     public static final CustomPayload.Id<UpdateServerConfigC2SPayload> ID =
         new CustomPayload.Id<>(UPDATE_SERVER_CONFIG_ID);
     public static final PacketCodec<RegistryByteBuf, UpdateServerConfigC2SPayload> CODEC =
         PacketCodec.of(UpdateServerConfigC2SPayload::write, UpdateServerConfigC2SPayload::read);
+
+    public UpdateServerConfigC2SPayload(final NotEnoughArrowsConfig config) {
+      this(Optional.of(config));
+    }
 
     @Override
     public CustomPayload.Id<? extends CustomPayload> getId() {
@@ -50,12 +55,12 @@ public final class ServerConfigPayloads {
     }
 
     private void write(final RegistryByteBuf buf) {
-      buf.writeString(ConfigCodec.encode(config), ConfigCodec.MAX_ENCODED_LENGTH);
+      buf.writeString(config.map(ConfigCodec::encode).orElse(""), ConfigCodec.MAX_ENCODED_LENGTH);
     }
 
     private static UpdateServerConfigC2SPayload read(final RegistryByteBuf buf) {
       return new UpdateServerConfigC2SPayload(
-          ConfigCodec.decodeOrDefaults(buf.readString(ConfigCodec.MAX_ENCODED_LENGTH)));
+          ConfigCodec.tryDecode(buf.readString(ConfigCodec.MAX_ENCODED_LENGTH)));
     }
   }
 }

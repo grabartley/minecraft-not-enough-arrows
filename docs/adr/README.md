@@ -47,6 +47,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0037](0037-a-terrain-arrow-only-does-what-a-player-could-have-done-by-hand.md) | A terrain arrow only does what a player could have done by hand |
 | [0038](0038-an-agriculture-arrow-runs-vanillas-own-item-behaviour.md) | An agriculture arrow runs vanilla's own item behaviour |
 | [0039](0039-a-traversal-structure-worth-more-than-its-recipe-is-built-from-the-mods-own-blocks.md) | A traversal structure worth more than its recipe is built from the mod's own blocks |
+| [0040](0040-a-vanilla-client-is-sent-no-recipe-of-this-mod.md) | A vanilla client is sent no recipe of this mod |
 
 ## Writing A New Record
 

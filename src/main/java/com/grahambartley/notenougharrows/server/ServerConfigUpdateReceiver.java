@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.server;
 
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
 import com.grahambartley.notenougharrows.network.ServerConfigPayloads.UpdateServerConfigC2SPayload;
+import java.util.Optional;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -16,7 +17,8 @@ public final class ServerConfigUpdateReceiver {
   public enum Outcome {
     APPLIED("config.not-enough-arrows.update.applied"),
     REJECTED("config.not-enough-arrows.update.rejected"),
-    FAILED("config.not-enough-arrows.update.failed");
+    FAILED("config.not-enough-arrows.update.failed"),
+    MALFORMED("config.not-enough-arrows.update.malformed");
 
     private final String messageKey;
 
@@ -34,8 +36,9 @@ public final class ServerConfigUpdateReceiver {
         UpdateServerConfigC2SPayload.ID, ServerConfigUpdateReceiver::handle);
   }
 
-  public static Outcome apply(final ServerPlayerEntity player, final NotEnoughArrowsConfig config) {
-    if (player == null || config == null) {
+  public static Outcome apply(
+      final ServerPlayerEntity player, final Optional<NotEnoughArrowsConfig> config) {
+    if (player == null) {
       return Outcome.FAILED;
     }
     if (!player.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL)) {
@@ -45,7 +48,14 @@ public final class ServerConfigUpdateReceiver {
       ServerConfigService.syncTo(player);
       return Outcome.REJECTED;
     }
-    if (!ServerConfigService.update(player.getServer(), config)) {
+    if (config.isEmpty()) {
+      LOGGER.warn(
+          "Ignored a Not Enough Arrows config update from {} that could not be decoded",
+          player.getGameProfile().getName());
+      ServerConfigService.syncTo(player);
+      return Outcome.MALFORMED;
+    }
+    if (!ServerConfigService.update(player.getServer(), config.get())) {
       ServerConfigService.syncTo(player);
       return Outcome.FAILED;
     }

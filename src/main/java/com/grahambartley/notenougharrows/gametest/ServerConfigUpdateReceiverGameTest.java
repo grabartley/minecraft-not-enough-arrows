@@ -1,11 +1,15 @@
 package com.grahambartley.notenougharrows.gametest;
 
+import com.grahambartley.notenougharrows.config.ConfigFile;
+import com.grahambartley.notenougharrows.config.ConfigPaths;
 import com.grahambartley.notenougharrows.config.GrappleArrowConfig;
 import com.grahambartley.notenougharrows.config.NotEnoughArrowsConfig;
 import com.grahambartley.notenougharrows.config.ServerConfigHolder;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import com.grahambartley.notenougharrows.server.ServerConfigUpdateReceiver;
 import com.grahambartley.notenougharrows.server.ServerConfigUpdateReceiver.Outcome;
+import java.nio.file.Path;
+import java.util.Optional;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.server.OperatorEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,6 +18,7 @@ import net.minecraft.test.AfterBatch;
 import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.WorldSavePath;
 
 public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest {
   private static final String BATCH = "server-config-update";
@@ -35,7 +40,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
     final ServerPlayerEntity operator = operator(context);
 
     final Outcome outcome =
-        ServerConfigUpdateReceiver.apply(operator, configWithRange(CHANGED_RANGE));
+        ServerConfigUpdateReceiver.apply(operator, Optional.of(configWithRange(CHANGED_RANGE)));
 
     context.assertTrue(
         outcome == Outcome.APPLIED,
@@ -53,7 +58,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
     final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
 
     final Outcome outcome =
-        ServerConfigUpdateReceiver.apply(bystander, configWithRange(CHANGED_RANGE));
+        ServerConfigUpdateReceiver.apply(bystander, Optional.of(configWithRange(CHANGED_RANGE)));
 
     context.assertTrue(
         outcome == Outcome.REJECTED,
@@ -66,7 +71,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
     ServerConfigService.update(context.getWorld().getServer(), NotEnoughArrowsConfig.defaults());
     final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
 
-    ServerConfigUpdateReceiver.apply(bystander, configWithRange(CHANGED_RANGE));
+    ServerConfigUpdateReceiver.apply(bystander, Optional.of(configWithRange(CHANGED_RANGE)));
 
     context.assertEquals(
         GrappleArrowConfig.DEFAULT_MAX_RANGE_BLOCKS,
@@ -78,9 +83,54 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void anUpdateWithoutAPlayerFails(TestContext context) {
     context.assertTrue(
-        ServerConfigUpdateReceiver.apply(null, NotEnoughArrowsConfig.defaults()) == Outcome.FAILED,
+        ServerConfigUpdateReceiver.apply(null, Optional.of(NotEnoughArrowsConfig.defaults()))
+            == Outcome.FAILED,
         "An update with no sender should fail rather than apply");
     context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void anOperatorsUndecodableUpdateIsReportedAsMalformed(TestContext context) {
+    final ServerPlayerEntity operator = operator(context);
+
+    final Outcome outcome = ServerConfigUpdateReceiver.apply(operator, Optional.empty());
+
+    context.assertTrue(
+        outcome == Outcome.MALFORMED,
+        "An update that could not be decoded should be reported as malformed, was " + outcome);
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void anUndecodableUpdateLeavesTheLiveConfigAlone(TestContext context) {
+    ServerConfigService.update(context.getWorld().getServer(), configWithRange(CHANGED_RANGE));
+
+    ServerConfigUpdateReceiver.apply(operator(context), Optional.empty());
+
+    context.assertEquals(
+        CHANGED_RANGE,
+        ServerConfigService.get().grapple().maxRangeBlocks(),
+        "Live config after an undecodable update");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void anUndecodableUpdateLeavesTheSavedConfigAlone(TestContext context) {
+    ServerConfigService.update(context.getWorld().getServer(), configWithRange(CHANGED_RANGE));
+
+    ServerConfigUpdateReceiver.apply(operator(context), Optional.empty());
+
+    context.assertEquals(
+        CHANGED_RANGE,
+        ConfigFile.load(savedConfigPath(context)).grapple().maxRangeBlocks(),
+        "Saved config after an undecodable update");
+    context.complete();
+  }
+
+  private static Path savedConfigPath(final TestContext context) {
+    return new ConfigPaths(
+            context.getWorld().getServer().getSavePath(WorldSavePath.ROOT).normalize())
+        .getServerConfigPath();
   }
 
   private static ServerPlayerEntity operator(final TestContext context) {

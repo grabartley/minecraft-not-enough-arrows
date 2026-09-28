@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import java.util.Optional;
 
 public final class ConfigCodec {
   public static final int MAX_ENCODED_LENGTH = 32767;
@@ -32,6 +33,17 @@ public final class ConfigCodec {
       return decode(json);
     } catch (final JsonParseException | IllegalStateException ex) {
       return NotEnoughArrowsConfig.defaults();
+    }
+  }
+
+  public static Optional<NotEnoughArrowsConfig> tryDecode(final String json) {
+    if (json == null || json.isBlank()) {
+      return Optional.empty();
+    }
+    try {
+      return Optional.of(decode(json));
+    } catch (final JsonParseException | IllegalStateException ex) {
+      return Optional.empty();
     }
   }
 }

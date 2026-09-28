@@ -980,6 +980,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 | CONFIG-14 | The configuration reaching a client is encoded with the same codec used to read and write the file, so the wire format cannot drift from the file format. The encoded payload is bounded |
 | CONFIG-15 | A malformed sync degrades to defaults on the client rather than failing loudly, because a client does not own that state |
 | CONFIG-16 | The command tree is reachable under a short alias as well as the full mod name. The alias is a redirect onto the same tree rather than a second tree, so the two roots cannot offer different subcommands or different permission gating |
+| CONFIG-17 | A settings update from a client that cannot be decoded is refused rather than read as defaults. Nothing is stored or broadcast, the sender is resynced and told the update was unreadable. Restoring defaults is the reset command's job alone |
 
 **Not supported:** Per-player server settings. Per-dimension settings. A setting reachable from the screen but not from a command. A client changing a server setting it does not have permission for.
 
@@ -1047,6 +1048,7 @@ Access control is stated in one place because it is the difference between a too
 | Teleport themselves | Yes | Yes | Yes | Yes | No |
 | Move another player with a recall arrow | Only if the operator enabled it | Same | Same | n/a | No |
 | Open the fletching station | Yes, if the operator enabled it | Yes | Yes | No, the station's screen is this mod's own and a client without the mod has none to draw ([ADR 0026](adr/0026-the-station-opens-only-for-a-client-that-can-draw-it.md)) | n/a |
+| Receive this mod's recipes in the join recipe sync | Yes | Yes | Yes | No, they name this mod's serializer and items, which a vanilla client cannot decode, so they are left out and it stays connected ([ADR 0040](adr/0040-a-vanilla-client-is-sent-no-recipe-of-this-mod.md)) | n/a |
 
 | Requirement | Statement |
 |---|---|

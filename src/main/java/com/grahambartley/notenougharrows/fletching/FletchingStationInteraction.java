@@ -1,10 +1,9 @@
 package com.grahambartley.notenougharrows.fletching;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
-import com.grahambartley.notenougharrows.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
+import com.grahambartley.notenougharrows.server.ModdedClients;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.screen.NamedScreenHandlerFactory;
@@ -42,7 +41,7 @@ public final class FletchingStationInteraction {
   }
 
   public static boolean canDrawTheStation(final ServerPlayerEntity player) {
-    return ServerPlayNetworking.canSend(player, SyncServerConfigS2CPayload.ID);
+    return ModdedClients.hasTheMod(player.networkHandler);
   }
 
   private static boolean handsEmpty(final PlayerEntity player) {
