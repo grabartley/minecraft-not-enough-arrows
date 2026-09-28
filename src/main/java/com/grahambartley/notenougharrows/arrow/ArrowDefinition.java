@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
 
 public record ArrowDefinition<E extends BaseArrowEntity>(
     String path,
@@ -17,7 +16,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     float height,
     int maxTrackingRange,
     int trackingTickInterval,
-    @Nullable ArrowSound impactSound) {
+    Optional<ArrowSound> impactSound) {
 
   public static final float DEFAULT_SIZE = 0.5f;
   public static final int DEFAULT_MAX_TRACKING_RANGE = 4;
@@ -29,6 +28,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     Objects.requireNonNull(path, "path");
     Objects.requireNonNull(entityFactory, "entityFactory");
     Objects.requireNonNull(spawnFactory, "spawnFactory");
+    Objects.requireNonNull(impactSound, "impactSound");
 
     if (!VALID_PATH.matcher(path).matches()) {
       throw new IllegalArgumentException(
@@ -60,7 +60,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         DEFAULT_SIZE,
         DEFAULT_MAX_TRACKING_RANGE,
         DEFAULT_TRACKING_TICK_INTERVAL,
-        null);
+        Optional.empty());
   }
 
   public static <E extends BaseArrowEntity> ArrowDefinition<E> of(
@@ -76,11 +76,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         DEFAULT_SIZE,
         DEFAULT_MAX_TRACKING_RANGE,
         DEFAULT_TRACKING_TICK_INTERVAL,
-        Objects.requireNonNull(impactSound, "impactSound"));
-  }
-
-  public Optional<ArrowSound> declaredImpactSound() {
-    return Optional.ofNullable(impactSound);
+        Optional.of(impactSound));
   }
 
   public Identifier id() {

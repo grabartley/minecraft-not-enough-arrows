@@ -94,5 +94,31 @@
         "type": "event"
       }
     ]
+  },
+  "explosive_arrow_blast": {
+    "subtitle": "subtitles.entity.generic.explode",
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "wind_arrow_burst": {
+    "subtitle": "subtitles.entity.wind_charge.wind_burst",
+    "sounds": [
+      {
+        "name": "minecraft:entity.wind_charge.wind_burst",
+        "type": "event"
+      }
+    ]
+  },
+  "fletching_station_select": {
+    "sounds": [
+      {
+        "name": "minecraft:ui.stonecutter.select_recipe",
+        "type": "event"
+      }
+    ]
   }
 }

@@ -1,11 +1,11 @@
 package com.grahambartley.notenougharrows.screen;
 
+import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.fletching.FletchingStationScreenHandler;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 public class FletchingStationScreen extends HandledScreen<FletchingStationScreenHandler> {
@@ -101,7 +101,7 @@ public class FletchingStationScreen extends HandledScreen<FletchingStationScreen
     }
     client
         .getSoundManager()
-        .play(PositionedSoundInstance.master(SoundEvents.UI_STONECUTTER_SELECT_RECIPE, 1.0f));
+        .play(PositionedSoundInstance.master(ModSounds.FLETCHING_STATION_SELECT, 1.0f));
     client.interactionManager.clickButton(handler.syncId, index);
   }
 }

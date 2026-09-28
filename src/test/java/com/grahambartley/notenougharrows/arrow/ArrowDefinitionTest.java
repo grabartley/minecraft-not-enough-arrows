@@ -49,7 +49,7 @@ class ArrowDefinitionTest {
                 height,
                 ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
                 ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
-                null));
+                Optional.empty()));
   }
 
   @ParameterizedTest
@@ -67,7 +67,7 @@ class ArrowDefinitionTest {
                 ArrowDefinition.DEFAULT_SIZE,
                 maxTrackingRange,
                 trackingTickInterval,
-                null));
+                Optional.empty()));
   }
 
   @Test
@@ -120,9 +120,7 @@ class ArrowDefinitionTest {
   @Test
   void declaresNoImpactSoundUnlessAsked() {
     assertTrue(
-        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY)
-            .declaredImpactSound()
-            .isEmpty());
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).impactSound().isEmpty());
   }
 
   @Test
@@ -133,7 +131,7 @@ class ArrowDefinitionTest {
     final ArrowDefinition<BaseArrowEntity> definition =
         ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, SPAWN_FACTORY, sound);
 
-    assertEquals(Optional.of(sound), definition.declaredImpactSound());
+    assertEquals(Optional.of(sound), definition.impactSound());
   }
 
   @Test

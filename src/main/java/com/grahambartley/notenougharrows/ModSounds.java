@@ -26,6 +26,10 @@ public final class ModSounds {
   public static final SoundEvent FROST_ARROW_FREEZE_SETTLE =
       REGISTRAR.declare("frost_arrow_freeze_settle");
   public static final SoundEvent FROST_ARROW_THAW = REGISTRAR.declare("frost_arrow_thaw");
+  public static final SoundEvent EXPLOSIVE_ARROW_BLAST = REGISTRAR.declare("explosive_arrow_blast");
+  public static final SoundEvent WIND_ARROW_BURST = REGISTRAR.declare("wind_arrow_burst");
+  public static final SoundEvent FLETCHING_STATION_SELECT =
+      REGISTRAR.declare("fletching_station_select");
 
   private ModSounds() {}
 

@@ -6,7 +6,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import net.minecraft.util.Identifier;
 
@@ -42,7 +41,6 @@ public final class ArrowSoundAudit {
   }
 
   private static boolean sameSystem(final ArrowSound first, final ArrowSound second) {
-    final Optional<String> system = first.sharedSystem();
-    return system.isPresent() && system.equals(second.sharedSystem());
+    return first.sharedSystem().isPresent() && first.sharedSystem().equals(second.sharedSystem());
   }
 }

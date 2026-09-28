@@ -41,6 +41,11 @@ class ArrowSoundTest {
     assertThrows(NullPointerException.class, () -> ArrowSound.sharedBy(null, BEEP));
   }
 
+  @Test
+  void rejectsAMissingSystemRatherThanAnEmptyOne() {
+    assertThrows(NullPointerException.class, () -> new ArrowSound(BEEP, null));
+  }
+
   @ParameterizedTest
   @ValueSource(strings = {"", " ", "\t"})
   void rejectsABlankSystemName(final String system) {

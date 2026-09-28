@@ -419,7 +419,7 @@ Like every arrow in the mod, each of the seven is craftable at a crafting table 
 
 The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
 
-Every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range and applies `sound.volume`. Every one also carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is what `client.modSoundVolume` recognises on each client. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
+Every sound the mod plays in the world is played server-side through `ModSoundPlayer`, which reaches every player in range and applies `sound.volume`. Explosions are created silent and their sound is played the same way, at vanilla's loudness and pitch spread. The one exception is the fletching station's click, a menu sound only the clicking player hears, so only `client.modSoundVolume` reaches it. Every one also carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is what `client.modSoundVolume` recognises on each client. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
 
 An arrow that needs an impact sound (IDENT-7) declares it on its `ArrowDefinition`. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one.
 
@@ -436,6 +436,9 @@ An arrow that needs an impact sound (IDENT-7) declares it on its `ArrowDefinitio
 | `frost_arrow_freeze_crack` | `block.glass.break` | A frost arrow encasing its target | Under review: vanilla means glass breaking |
 | `frost_arrow_freeze_settle` | `block.powder_snow.place` | Snow settling as the freeze lands | Yes: powder snow settling |
 | `frost_arrow_thaw` | `block.powder_snow.break` | The ice around a frozen target giving way | Yes: powder snow breaking |
+| `explosive_arrow_blast` | `entity.generic.explode` | The blast at the end of every explosive tier's fuse | Yes: an explosion |
+| `wind_arrow_burst` | `entity.wind_charge.wind_burst` | A wind arrow's gust | Yes: a wind charge bursting |
+| `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
 This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
 

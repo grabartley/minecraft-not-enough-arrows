@@ -55,12 +55,27 @@ class ModSoundsTest {
   }
 
   @Test
-  void everySoundsJsonEntryCarriesASubtitle() throws IOException {
+  void everySoundOutsideTheInterfaceCarriesASubtitle() throws IOException {
     final JsonObject json = soundsJson();
 
     final List<String> silentToSubtitles =
-        json.keySet().stream().filter(path -> !json.getAsJsonObject(path).has("subtitle")).toList();
+        json.keySet().stream()
+            .filter(path -> !json.getAsJsonObject(path).has("subtitle"))
+            .filter(path -> !playsAnInterfaceSound(json.getAsJsonObject(path)))
+            .toList();
 
     assertTrue(silentToSubtitles.isEmpty(), "Sounds with no subtitle: " + silentToSubtitles);
+  }
+
+  private static boolean playsAnInterfaceSound(final JsonObject entry) {
+    return entry.getAsJsonArray("sounds").asList().stream()
+        .allMatch(
+            sound ->
+                sound.isJsonObject()
+                    && sound
+                        .getAsJsonObject()
+                        .get("name")
+                        .getAsString()
+                        .startsWith("minecraft:ui."));
   }
 }

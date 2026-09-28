@@ -62,7 +62,11 @@ public final class ModArrows {
 
   public static final RegisteredArrow<WindArrowEntity> WIND_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("wind_arrow", WindArrowEntity::new, ModArrows::windArrow));
+          ArrowDefinition.of(
+              "wind_arrow",
+              WindArrowEntity::new,
+              ModArrows::windArrow,
+              ArrowSound.own(ModSounds.WIND_ARROW_BURST.getId())));
 
   public static final RegisteredArrow<GunpowderArrowEntity> GUNPOWDER_ARROW =
       REGISTRAR.register(
@@ -70,7 +74,7 @@ public final class ModArrows {
               "gunpowder_arrow",
               GunpowderArrowEntity::new,
               ModArrows::gunpowderArrow,
-              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP_ID)));
+              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId())));
 
   public static final RegisteredArrow<TntArrowEntity> TNT_ARROW =
       REGISTRAR.register(
@@ -78,7 +82,7 @@ public final class ModArrows {
               "tnt_arrow",
               TntArrowEntity::new,
               ModArrows::tntArrow,
-              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP_ID)));
+              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId())));
 
   public static final RegisteredArrow<FireChargeArrowEntity> FIRE_CHARGE_ARROW =
       REGISTRAR.register(
@@ -86,7 +90,7 @@ public final class ModArrows {
               "fire_charge_arrow",
               FireChargeArrowEntity::new,
               ModArrows::fireChargeArrow,
-              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP_ID)));
+              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId())));
 
   public static final RegisteredArrow<IncendiaryArrowEntity> INCENDIARY_ARROW =
       REGISTRAR.register(

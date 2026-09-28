@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.blast;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.config.ExplosiveArrowConfig;
 import com.grahambartley.notenougharrows.entity.ExplosiveArrowEntity;
 import com.grahambartley.notenougharrows.explosive.ExplosiveTier;
@@ -15,6 +17,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -121,7 +124,11 @@ public final class BlastService {
         carrier.getZ(),
         power,
         false,
-        World.ExplosionSourceType.TNT);
+        World.ExplosionSourceType.TNT,
+        ParticleTypes.EXPLOSION,
+        ParticleTypes.EXPLOSION_EMITTER,
+        ModSoundPlayer.silentExplosion());
+    ModSoundPlayer.playExplosion(world, carrier.getPos(), ModSounds.EXPLOSIVE_ARROW_BLAST);
   }
 
   @Nullable
