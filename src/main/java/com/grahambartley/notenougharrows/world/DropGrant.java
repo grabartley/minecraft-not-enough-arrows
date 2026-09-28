@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.world;
 
 import java.util.List;
 import net.minecraft.block.Block;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -24,6 +25,24 @@ public final class DropGrant {
       }
       if (!remainder.isEmpty()) {
         Block.dropStack(world, pos, remainder);
+      }
+    }
+  }
+
+  public static void collect(final List<ItemEntity> drops, @Nullable final PlayerEntity receiver) {
+    if (receiver == null || !receiver.isAlive()) {
+      return;
+    }
+    for (final ItemEntity drop : drops) {
+      if (!drop.isAlive()) {
+        continue;
+      }
+      final ItemStack remainder = drop.getStack().copy();
+      receiver.getInventory().insertStack(remainder);
+      if (remainder.isEmpty()) {
+        drop.discard();
+      } else {
+        drop.setStack(remainder);
       }
     }
   }

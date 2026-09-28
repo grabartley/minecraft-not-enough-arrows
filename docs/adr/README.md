@@ -45,6 +45,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0035](0035-the-mods-sound-category-is-its-namespace.md) | The mod's sound category is its namespace |
 | [0036](0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) | A tinted arrow carries its choice on the stack |
 | [0037](0037-a-terrain-arrow-only-does-what-a-player-could-have-done-by-hand.md) | A terrain arrow only does what a player could have done by hand |
+| [0038](0038-an-agriculture-arrow-runs-vanillas-own-item-behaviour.md) | An agriculture arrow runs vanilla's own item behaviour |
 
 ## Writing A New Record
 

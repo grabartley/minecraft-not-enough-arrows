@@ -35,6 +35,12 @@
     "not-enough-arrows:pillar_arrow",
     "not-enough-arrows:drain_arrow",
     "not-enough-arrows:freeze_arrow",
-    "not-enough-arrows:web_arrow"
+    "not-enough-arrows:web_arrow",
+    "not-enough-arrows:blossom_arrow",
+    "not-enough-arrows:harvest_arrow",
+    "not-enough-arrows:till_arrow",
+    "not-enough-arrows:sapling_arrow",
+    "not-enough-arrows:shear_arrow",
+    "not-enough-arrows:bee_arrow"
   ]
 }

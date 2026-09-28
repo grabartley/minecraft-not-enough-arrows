@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.gametest;
 
+import com.grahambartley.notenougharrows.AgricultureArrows;
 import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import java.util.Collection;
@@ -42,7 +43,12 @@ public final class HarmlessArrowGameTest implements FabricGameTest {
           ModArrows.DRILL_ARROW,
           ModArrows.PILLAR_ARROW,
           ModArrows.DRAIN_ARROW,
-          ModArrows.WEB_ARROW);
+          ModArrows.WEB_ARROW,
+          AgricultureArrows.BLOSSOM_ARROW,
+          AgricultureArrows.HARVEST_ARROW,
+          AgricultureArrows.TILL_ARROW,
+          AgricultureArrows.SAPLING_ARROW,
+          AgricultureArrows.BEE_ARROW);
 
   @CustomTestProvider
   public Collection<TestFunction> anEffectArrowLeavesWhatItHitsUnhurt() {

@@ -26,7 +26,7 @@ Across a server, everyone sees it. A charged crossbow needs no help, because the
 
 ## Tinted Arrows
 
-A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one arrow carrying a potion. The paint arrow carries a dye; the sapling and party arrows will carry a sapling and a music disc the same way. However many choices it has, a tinted arrow is one item, one entity type, one entry in the `minecraft:arrows` tag, and one arrow towards the release count.
+A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one arrow carrying a potion. The paint arrow carries a dye and the sapling arrow a sapling; the party arrow will carry a music disc the same way. However many choices it has, a tinted arrow is one item, one entity type, one entry in the `minecraft:arrows` tag, and one arrow towards the release count.
 
 | Rule | Behaviour |
 |---|---|
@@ -35,9 +35,11 @@ A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one 
 | Creative tab and recipe viewers | One entry per choice, as vanilla does for tipped arrows. EMI and JEI tell the variants apart, so looking one up finds its own recipe |
 | Look | One drawing shared by every variant, with part of it tinted to the choice, both as an item and in flight |
 | Firing and recovery | The choice rides on the arrow's item stack, so it survives being fired, recovered and fired again, a chunk unloading, and a server restart |
-| Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow. The unrecognised value is kept rather than overwritten |
+| Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow and oak for the sapling arrow. The unrecognised value is kept rather than overwritten |
 
 The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow. What it paints is under Terrain Arrows below. Its sprite is a placeholder until the terrain art is drawn. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
+
+The sapling arrow offers one choice per member of vanilla's `minecraft:saplings` tag: oak, spruce, birch, jungle, acacia, dark oak, cherry, the mangrove propagule, azalea and flowering azalea. Its name reads *Oak Sapling Arrow*, *Mangrove Sapling Arrow* and so on, and its head is tinted a leaf colour for each. What it plants is under Agriculture Arrows below, and its sprite is a placeholder until the agriculture art is drawn.
 
 ## Fire Patches
 
@@ -324,6 +326,32 @@ Every setting is read fresh on impact, so a change takes effect on the next shot
 
 All six sprites are placeholders, the paint arrow's included, until the terrain art is drawn.
 
+## Agriculture Arrows
+
+Six arrows that do a farm's chores at range. Each one runs the same vanilla code as the item it was crafted from, so it bone meals, hoes, plants and shears exactly as that item would, and [ADR 0038](adr/0038-an-agriculture-arrow-runs-vanillas-own-item-behaviour.md) covers why.
+
+| Arrow | Crafted around | On a block | On a creature | Spent |
+|---|---|---|---|---|
+| Blossom | Bone meal | Bone meals everything growable in a sphere around where it lands | Hits like an arrow, and bone meals around the creature | Only if it grew something |
+| Harvest | An iron hoe | Reaps every ripe crop in a sphere, replants each from its own harvest, and sends the rest to the shooter | Hits like an arrow, and harvests around the creature | Only if it harvested something |
+| Till | A water bucket | Turns a flat circle of grass, dirt and path into wet farmland | Hits like an arrow, and tills the ground under the creature | Only if it tilled something |
+| Sapling | Any sapling or propagule | Plants the sapling it carries where it lands | Hits like an arrow | Only if it planted |
+| Shear | Shears | Carves a pumpkin, or takes the honeycomb from a full hive | Shears a sheep, mooshroom, snow golem or bogged, unhurt. Anything else is left unhurt and the arrow glances off | Only if it sheared something |
+| Bee | A honeycomb | Releases bees where it lands | Hits like an arrow, and releases bees angry at the creature | Yes |
+
+| Rule | Behaviour |
+|---|---|
+| Protection | Every position is checked with the world's own permission check, which carries spawn protection and the world border, and so is a creature before it is shorn. A dispensed arrow has no player behind it and is checked against the world border alone. A refusal is silent |
+| Blossom | A sphere of `agriculture.blossom.radius`, nearest first. Every position bone meal would grow when the arrow lands is bone mealed once, with the usual green sparkle: crops, saplings, grass, moss, mushrooms, flowers and the rest. What that growth creates is not bone mealed again by the same shot. Water is not bone mealed into seagrass |
+| Harvest | A sphere of `agriculture.harvest.radius`. Wheat, carrots, potatoes, beetroot, nether wart and cocoa count, and only at their last stage. The crop's own loot table is run with an iron hoe, one of the seeds it names is planted back at its first stage, cocoa keeping its side of the log, and the rest goes to the shooter. A crop whose harvest held no seed is left standing. Sweet berries, melons, pumpkins, pitcher plants and torchflowers are not harvested |
+| Till | A flat circle of `agriculture.till.radius` on the layer of the block struck. Grass, dirt and dirt paths with air above them become farmland, as a hoe would, and farmland that has dried out is soaked. Everything is left at full moisture, and like any farmland it dries out again without water nearby. Coarse and rooted dirt are left alone, since a hoe turns those into dirt rather than farmland |
+| Sapling | Planted through vanilla's own placement, on the face the arrow struck, so it goes only where a hand could have planted it and replaces short grass as a hand would. Stone, occupied ground and anywhere planting would push water out are refused, and the arrow can be picked back up still carrying its sapling. A mangrove propagule holds water, so it may be planted underwater |
+| Shear | A sheep, mooshroom, snow golem and bogged are shorn through vanilla's own shearing, so a mooshroom becomes a cow. A pumpkin is carved on the face struck, or the face toward the shooter when struck from above, and drops four seeds. A beehive or nest at full honey gives three honeycomb and releases its bees calmly, as a dispenser with shears does. The shear arrow never hurts anything it hits |
+| Drops | Harvest and shear drops go into the shooter's inventory, and anything that does not fit stays on the ground where vanilla put it. A dispensed arrow leaves everything on the ground. A creative player with a full inventory loses the overflow, as vanilla's own pickup does |
+| Bees | `agriculture.bee.count` real bees, released at the impact point. They go for a creature the arrow struck, and a shot into the ground releases them with nothing to go for. They never sting the shooter, and one that turns on the shooter is sent back after its target. They cannot enter a hive or breed, and each is removed `agriculture.bee.lifetimeTicks` after it was released, including when its chunk comes back after it should have gone |
+
+Every setting is read fresh on impact, so a change takes effect on the next shot. All six sprites are placeholders until the agriculture art is drawn.
+
 ## Ricochet Arrow
 
 The ricochet arrow glances off the surfaces it hits instead of embedding in them, so a shot can be banked around a corner or off a ceiling into somewhere a straight line does not reach. It is the trick-shot arrow, and it is only that if the bounce is predictable enough to aim with, which is what [ADR 0020](adr/0020-a-bounce-is-a-deflection-rather-than-a-landing.md) is about.
@@ -490,6 +518,12 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | `pillar_arrow_rise` | `block.piston.extend` | A pillar arrow raising its column | Yes: something pushed up out of place |
 | `drain_arrow_absorb` | `block.sponge.absorb` | A drain arrow soaking up water | Yes: a sponge absorbing |
 | `freeze_arrow_freeze` | `block.glass.place` | A freeze arrow setting fluid solid | Yes: ice is placed with glass's sounds |
+| `blossom_arrow_bloom` | `item.bone_meal.use` | A blossom arrow bone mealing | Yes: bone meal used |
+| `harvest_arrow_reap` | `block.crop.break` | A harvest arrow reaping its crops | Yes: a crop broken |
+| `till_arrow_till` | `item.hoe.till` | A till arrow turning ground to farmland | Yes: a hoe tilling |
+| `shear_arrow_carve` | `block.pumpkin.carve` | A shear arrow carving a pumpkin | Yes: a pumpkin carved |
+| `shear_arrow_hive` | `block.beehive.shear` | A shear arrow taking honeycomb from a hive | Yes: a hive shorn |
+| `bee_arrow_release` | `block.beehive.exit` | A bee arrow letting its bees out | Yes: bees leaving a hive |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
 This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
@@ -533,6 +567,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/drain_arrow.png` | The drain arrow's item sprite, a placeholder |
 | `textures/item/freeze_arrow.png` | The freeze arrow's item sprite, a placeholder |
 | `textures/item/web_arrow.png` | The web arrow's item sprite, a placeholder |
+| `textures/item/blossom_arrow.png` | The blossom arrow's item sprite, a placeholder |
+| `textures/item/harvest_arrow.png` | The harvest arrow's item sprite, a placeholder |
+| `textures/item/till_arrow.png` | The till arrow's item sprite, a placeholder |
+| `textures/item/sapling_arrow.png` | The sapling arrow's item sprite, left untinted, a placeholder |
+| `textures/item/sapling_arrow_head.png` | The sapling arrow's head, tinted to the sapling it carries, a placeholder |
+| `textures/item/shear_arrow.png` | The shear arrow's item sprite, a placeholder |
+| `textures/item/bee_arrow.png` | The bee arrow's item sprite, a placeholder |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
@@ -563,6 +604,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/drain_arrow.png` | The drain arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/freeze_arrow.png` | The freeze arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/web_arrow.png` | The web arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/blossom_arrow.png` | The blossom arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/harvest_arrow.png` | The harvest arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/till_arrow.png` | The till arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/sapling_arrow.png` | The sapling arrow in flight and planted in a block, left untinted, a placeholder |
+| `textures/entity/arrow/sapling_arrow_tint.png` | The sapling arrow's head in flight, tinted to its sapling, a placeholder |
+| `textures/entity/arrow/shear_arrow.png` | The shear arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/bee_arrow.png` | The bee arrow in flight and planted in a block, a placeholder |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.

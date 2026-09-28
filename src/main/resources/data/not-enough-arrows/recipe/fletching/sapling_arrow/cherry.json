@@ -1,0 +1,23 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:cherry_sapling"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:sapling_arrow",
+    "count": 12,
+    "components": {
+      "not-enough-arrows:arrow_choice": "cherry"
+    }
+  }
+}

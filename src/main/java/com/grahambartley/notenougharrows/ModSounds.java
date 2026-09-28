@@ -34,6 +34,12 @@ public final class ModSounds {
   public static final SoundEvent PILLAR_ARROW_RISE = REGISTRAR.declare("pillar_arrow_rise");
   public static final SoundEvent DRAIN_ARROW_ABSORB = REGISTRAR.declare("drain_arrow_absorb");
   public static final SoundEvent FREEZE_ARROW_FREEZE = REGISTRAR.declare("freeze_arrow_freeze");
+  public static final SoundEvent BLOSSOM_ARROW_BLOOM = REGISTRAR.declare("blossom_arrow_bloom");
+  public static final SoundEvent HARVEST_ARROW_REAP = REGISTRAR.declare("harvest_arrow_reap");
+  public static final SoundEvent TILL_ARROW_TILL = REGISTRAR.declare("till_arrow_till");
+  public static final SoundEvent SHEAR_ARROW_CARVE = REGISTRAR.declare("shear_arrow_carve");
+  public static final SoundEvent SHEAR_ARROW_HIVE = REGISTRAR.declare("shear_arrow_hive");
+  public static final SoundEvent BEE_ARROW_RELEASE = REGISTRAR.declare("bee_arrow_release");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 

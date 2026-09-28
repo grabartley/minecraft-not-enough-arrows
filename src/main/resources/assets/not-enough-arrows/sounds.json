@@ -149,6 +149,60 @@
       }
     ]
   },
+  "blossom_arrow_bloom": {
+    "subtitle": "subtitles.item.bone_meal.use",
+    "sounds": [
+      {
+        "name": "minecraft:item.bone_meal.use",
+        "type": "event"
+      }
+    ]
+  },
+  "harvest_arrow_reap": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "minecraft:block.crop.break",
+        "type": "event"
+      }
+    ]
+  },
+  "till_arrow_till": {
+    "subtitle": "subtitles.item.hoe.till",
+    "sounds": [
+      {
+        "name": "minecraft:item.hoe.till",
+        "type": "event"
+      }
+    ]
+  },
+  "shear_arrow_carve": {
+    "subtitle": "subtitles.block.pumpkin.carve",
+    "sounds": [
+      {
+        "name": "minecraft:block.pumpkin.carve",
+        "type": "event"
+      }
+    ]
+  },
+  "shear_arrow_hive": {
+    "subtitle": "subtitles.block.beehive.shear",
+    "sounds": [
+      {
+        "name": "minecraft:block.beehive.shear",
+        "type": "event"
+      }
+    ]
+  },
+  "bee_arrow_release": {
+    "subtitle": "subtitles.block.beehive.exit",
+    "sounds": [
+      {
+        "name": "minecraft:block.beehive.exit",
+        "type": "event"
+      }
+    ]
+  },
   "fletching_station_select": {
     "sounds": [
       {

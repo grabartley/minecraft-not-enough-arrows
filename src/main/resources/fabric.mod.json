@@ -157,7 +157,22 @@
       "com.grahambartley.notenougharrows.gametest.ModDataComponentsGameTest",
       "com.grahambartley.notenougharrows.gametest.TintedArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.TintedArrowItemGameTest",
-      "com.grahambartley.notenougharrows.gametest.TintedArrowItemsGameTest"
+      "com.grahambartley.notenougharrows.gametest.TintedArrowItemsGameTest",
+      "com.grahambartley.notenougharrows.gametest.BlossomServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.BlossomArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.HarvestServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.HarvestArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.ReplantSeedGameTest",
+      "com.grahambartley.notenougharrows.gametest.MatureCropGameTest",
+      "com.grahambartley.notenougharrows.gametest.TillServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.TillArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.SaplingPlantingGameTest",
+      "com.grahambartley.notenougharrows.gametest.SaplingArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.ShearServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.ShearArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeeSwarmServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeeArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.SpawnedDropsGameTest"
     ]
   },
   "mixins": [

@@ -279,7 +279,12 @@ public final class ModArrows {
   private ModArrows() {}
 
   public static void register() {
+    AgricultureArrows.register();
     NotEnoughArrows.LOGGER.info("Registered {} arrow types", REGISTRAR.registrations().size());
+  }
+
+  static ArrowRegistrar registrar() {
+    return REGISTRAR;
   }
 
   public static List<RegisteredArrow<?>> registered() {
