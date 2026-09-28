@@ -17,6 +17,7 @@ public final class ModEntities {
           SHOCK_BOLT_ID,
           EntityType.Builder.create(LightningEntity::new, SpawnGroup.MISC)
               .disableSaving()
+              .disableSummon()
               .dimensions(0.0f, 0.0f)
               .maxTrackingRange(16)
               .trackingTickInterval(Integer.MAX_VALUE)

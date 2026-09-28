@@ -33,12 +33,10 @@ class ModSoundPlayerTest {
   private static final List<Path> ALLOWED =
       List.of(
           Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModSoundPlayer.java"),
-          Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModExplosion.java"),
-          Path.of(
-              "src/client/java/com/grahambartley/notenougharrows/mixin/client/LightningEntityMixin.java"));
+          Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModExplosion.java"));
   private static final Pattern BYPASS =
       Pattern.compile(
-          "\\.playSound(FromEntity|ToPlayer|AtBlockCenter)?\\s*\\(|(?<![.\\w])playSound\\s*\\("
+          "\\.playSound(FromEntity|ToPlayer|AtBlockCenter)?\\s*\\(|(?<![.\\w;])playSound\\s*\\("
               + "|SoundEvents\\.|\\.createExplosion\\s*\\(|\\.syncWorldEvent\\s*\\(");
 
   private record Sent(
@@ -106,6 +104,7 @@ class ModSoundPlayerTest {
     assertTrue(BYPASS.matcher("world.syncWorldEvent(WorldEvents.ANVIL_USED, pos, 0);").find());
     assertTrue(BYPASS.matcher("world.playSoundAtBlockCenter(pos, sound").find());
     assertFalse(BYPASS.matcher("ModExplosion.create(world, shooter").find());
+    assertFalse(BYPASS.matcher("target = \"Lnet/minecraft/world/World;playSound(DDD\"").find());
     assertFalse(BYPASS.matcher("ModSoundPlayer.play(world, at").find());
     assertFalse(BYPASS.matcher("ModSoundPlayer.playFrom(this, sound").find());
     assertFalse(BYPASS.matcher("ModSounds.SMOKE_ARROW_IMPACT").find());

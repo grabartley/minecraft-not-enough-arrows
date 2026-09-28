@@ -27,7 +27,7 @@ A player or an operator can quieten the mod with one setting each, and nothing e
 
 Every sound needs a mod identifier even when it plays a vanilla event, so reusing a vanilla sound costs a `ModSounds` line and a `sounds.json` alias rather than a `SoundEvents` reference. That friction is deliberate: it puts every borrowed sound on the reviewed list IDENT-8 asks for.
 
-A sound played by calling `World.playSound` or `Entity.playSound` directly, or an explosion's own built-in sound, would carry a vanilla identifier and escape both settings. Explosions go through `ModExplosion`, which creates them with vanilla's empty sound and plays the mod's alias at vanilla's loudness and pitch spread. `ModSoundPlayerTest` fails if any mod source other than `ModSoundPlayer`, `ModExplosion`, and the shock bolt's sound mixin plays a sound, creates an explosion, or names a vanilla `SoundEvents` entry.
+A sound played by calling `World.playSound` or `Entity.playSound` directly, or an explosion's own built-in sound, would carry a vanilla identifier and escape both settings. Explosions go through `ModExplosion`, which creates them with vanilla's empty sound and plays the mod's alias at vanilla's loudness and pitch spread. `ModSoundPlayerTest` fails if any mod source other than `ModSoundPlayer` and `ModExplosion` plays a sound, creates an explosion, or names a vanilla `SoundEvents` entry.
 
 A modified client can ignore `sound.volume` above 0, as it can ignore any volume. The setting controls what players hear, not what reaches them.
 
