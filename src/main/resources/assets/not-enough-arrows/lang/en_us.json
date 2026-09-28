@@ -31,6 +31,11 @@
   "item.not-enough-arrows.smoke_arrow": "Smoke Arrow",
   "item.not-enough-arrows.disarm_arrow": "Disarm Arrow",
   "item.not-enough-arrows.paint_arrow": "Paint Arrow",
+  "item.not-enough-arrows.drill_arrow": "Drill Arrow",
+  "item.not-enough-arrows.pillar_arrow": "Pillar Arrow",
+  "item.not-enough-arrows.drain_arrow": "Drain Arrow",
+  "item.not-enough-arrows.freeze_arrow": "Freeze Arrow",
+  "item.not-enough-arrows.web_arrow": "Web Arrow",
   "item.not-enough-arrows.tinted_arrow": "%s %s",
   "block.not-enough-arrows.rope": "Rope",
   "block.not-enough-arrows.redstone_charge": "Redstone Charge",
@@ -372,5 +377,10 @@
   "info.not-enough-arrows.smoke_arrow": "Opens a cloud at the impact that blinds everything standing inside it for the configured time. It is not a block: it stops no arrow, blocks no movement, and clears away leaving nothing behind.",
   "info.not-enough-arrows.disarm_arrow": "Knocks whatever the target is holding in its main hand out of it and throws it the configured distance away from you, so the target has to go and fetch it. It never destroys the item, never sends it to the shooter, and never takes a worn armour piece. A mob it disarms is allowed to pick the item back up, which vanilla otherwise refuses most mobs. Whether it works on another player is a server setting, on by default, decided where the arrow lands.",
   "info.not-enough-arrows.allegiance_arrow": "Turns the hostile mob it hits into your defender for the configured time. It stops fighting you, goes after whoever is attacking you instead, player or mob, and hands itself back when the time runs out. It never turns a player, and a dispensed arrow has nobody to defend.",
-  "info.not-enough-arrows.paint_arrow": "Carries the colour of the dye it was crafted from, and its name says which. There is one recipe per dye, each a ring of eight arrows around that dye."
+  "info.not-enough-arrows.paint_arrow": "Recolours the block it strikes, or the sheep, to the colour of the dye it was crafted from, and its name says which. It paints only what vanilla already dyes: any wool or carpet, and undyed glass, glass panes, terracotta and candles. Anything else, concrete included, is left alone and the arrow can be picked back up. There is one recipe per dye, each a ring of eight arrows around that dye.",
+  "info.not-enough-arrows.drill_arrow": "Breaks the one block it strikes as a pickaxe of the configured tier would, iron by default, and hands you what that pickaxe would have dropped, spilling onto the ground whatever your inventory has no room for. A block that tier could not harvest, a block no player could break, and anything holding items are all left standing, and the arrow sticks in them instead.",
+  "info.not-enough-arrows.pillar_arrow": "Raises a column of dirt straight up from the block it strikes, to the configured height, stopping at the first thing in the way. The dirt is paid for by the recipe rather than taken from the world, and it sinks away again once the configured time runs out.",
+  "info.not-enough-arrows.drain_arrow": "Soaks up the water around where it lands, as a sponge would, up to the configured volume, so one arrow cannot empty an ocean. It takes seagrass and kelp with the water and dries out a block holding water, but it never touches lava, which no sponge absorbs.",
+  "info.not-enough-arrows.freeze_arrow": "Turns still water around where it lands into ice and still lava into obsidian, and puts out any fire in reach, up to the configured volume. It only ever converts what was fluid or fire, never a solid block, and it never hurts a living thing, which is the frost arrow's job rather than this one's.",
+  "info.not-enough-arrows.web_arrow": "Spins a patch of cobweb where it lands, or around whatever it hits, which clears away on its own after the configured time. It only fills empty space, so it never replaces a block that was already there."
 }

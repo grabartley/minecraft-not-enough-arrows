@@ -1,4 +1,4 @@
-package com.grahambartley.notenougharrows.gravity;
+package com.grahambartley.notenougharrows.world;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -11,28 +11,28 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class GravityShapeTest {
+class BlockSphereTest {
   private static final BlockPos CENTER = new BlockPos(10, 64, -30);
 
   @ParameterizedTest
   @ValueSource(ints = {0, -1, -8})
-  void aRadiusOfZeroOrLessDropsOnlyTheBlockThatWasHit(final int radius) {
-    assertEquals(List.of(CENTER), GravityShape.blocks(CENTER, radius));
+  void aRadiusOfZeroOrLessIsTheCentreAlone(final int radius) {
+    assertEquals(List.of(CENTER), BlockSphere.blocks(CENTER, radius));
   }
 
   @Test
-  void aMissingCentreDropsNothing() {
-    assertEquals(List.of(), GravityShape.blocks(null, 4));
+  void aMissingCentreHoldsNothing() {
+    assertEquals(List.of(), BlockSphere.blocks(null, 4));
   }
 
   @ParameterizedTest
   @CsvSource({"1, 7", "2, 33", "3, 123", "4, 257", "8, 2109"})
   void theBlockCountMatchesTheSphereOfThatRadius(final int radius, final int expectedBlocks) {
-    assertEquals(expectedBlocks, GravityShape.blocks(CENTER, radius).size());
+    assertEquals(expectedBlocks, BlockSphere.blocks(CENTER, radius).size());
   }
 
   @Test
-  void aRadiusOfOneReachesTheSixBlocksTouchingTheOneThatWasHit() {
+  void aRadiusOfOneReachesTheSixBlocksTouchingTheCentre() {
     assertEquals(
         List.of(
             CENTER,
@@ -42,29 +42,29 @@ class GravityShapeTest {
             CENTER.add(0, 0, 1),
             CENTER.add(0, 1, 0),
             CENTER.add(1, 0, 0)),
-        GravityShape.blocks(CENTER, 1));
+        BlockSphere.blocks(CENTER, 1));
   }
 
   @ParameterizedTest
   @ValueSource(ints = {1, 2, 3, 8})
   void everyBlockStaysWithinTheRadius(final int radius) {
-    for (final BlockPos block : GravityShape.blocks(CENTER, radius)) {
+    for (final BlockPos block : BlockSphere.blocks(CENTER, radius)) {
       assertTrue(
           squaredDistance(block) <= (long) radius * radius,
-          "Block " + block + " falls outside radius " + radius);
+          "Block " + block + " lies outside radius " + radius);
     }
   }
 
   @ParameterizedTest
   @ValueSource(ints = {0, 1, 2, 3, 8})
-  void theBlockThatWasHitAlwaysFallsFirst(final int radius) {
-    assertEquals(CENTER, GravityShape.blocks(CENTER, radius).get(0));
+  void theCentreAlwaysComesFirst(final int radius) {
+    assertEquals(CENTER, BlockSphere.blocks(CENTER, radius).get(0));
   }
 
   @Test
-  void blocksAreOrderedOutwardsFromTheBlockThatWasHit() {
+  void blocksAreOrderedOutwardsFromTheCentre() {
     long previousDistance = -1;
-    for (final BlockPos block : GravityShape.blocks(CENTER, 3)) {
+    for (final BlockPos block : BlockSphere.blocks(CENTER, 3)) {
       final long distance = squaredDistance(block);
       assertTrue(distance >= previousDistance, "Block " + block + " broke outward ordering");
       previousDistance = distance;
@@ -72,8 +72,8 @@ class GravityShapeTest {
   }
 
   @Test
-  void everyBlockIsDroppedOnlyOnce() {
-    final List<BlockPos> blocks = GravityShape.blocks(CENTER, 4);
+  void everyBlockAppearsOnlyOnce() {
+    final List<BlockPos> blocks = BlockSphere.blocks(CENTER, 4);
 
     assertEquals(blocks.size(), blocks.stream().distinct().count());
   }
@@ -81,7 +81,7 @@ class GravityShapeTest {
   @ParameterizedTest
   @ValueSource(ints = {0, 2})
   void theReturnedBlocksCannotBeEdited(final int radius) {
-    final List<BlockPos> blocks = GravityShape.blocks(CENTER, radius);
+    final List<BlockPos> blocks = BlockSphere.blocks(CENTER, radius);
 
     assertThrows(UnsupportedOperationException.class, () -> blocks.add(BlockPos.ORIGIN));
   }

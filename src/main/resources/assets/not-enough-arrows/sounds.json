@@ -113,6 +113,42 @@
       }
     ]
   },
+  "drill_arrow_bore": {
+    "subtitle": "subtitles.block.grindstone.use",
+    "sounds": [
+      {
+        "name": "minecraft:block.grindstone.use",
+        "type": "event"
+      }
+    ]
+  },
+  "pillar_arrow_rise": {
+    "subtitle": "subtitles.block.piston.move",
+    "sounds": [
+      {
+        "name": "minecraft:block.piston.extend",
+        "type": "event"
+      }
+    ]
+  },
+  "drain_arrow_absorb": {
+    "subtitle": "subtitles.block.sponge.absorb",
+    "sounds": [
+      {
+        "name": "minecraft:block.sponge.absorb",
+        "type": "event"
+      }
+    ]
+  },
+  "freeze_arrow_freeze": {
+    "subtitle": "subtitles.block.generic.place",
+    "sounds": [
+      {
+        "name": "minecraft:block.glass.place",
+        "type": "event"
+      }
+    ]
+  },
   "fletching_station_select": {
     "sounds": [
       {

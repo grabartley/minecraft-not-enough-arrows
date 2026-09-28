@@ -30,6 +30,10 @@ public final class ModSounds {
   public static final SoundEvent WIND_ARROW_BURST = REGISTRAR.declare("wind_arrow_burst");
   public static final SoundEvent SHOCK_ARROW_THUNDER = REGISTRAR.declare("shock_arrow_thunder");
   public static final SoundEvent SHOCK_ARROW_IMPACT = REGISTRAR.declare("shock_arrow_impact");
+  public static final SoundEvent DRILL_ARROW_BORE = REGISTRAR.declare("drill_arrow_bore");
+  public static final SoundEvent PILLAR_ARROW_RISE = REGISTRAR.declare("pillar_arrow_rise");
+  public static final SoundEvent DRAIN_ARROW_ABSORB = REGISTRAR.declare("drain_arrow_absorb");
+  public static final SoundEvent FREEZE_ARROW_FREEZE = REGISTRAR.declare("freeze_arrow_freeze");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 

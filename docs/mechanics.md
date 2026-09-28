@@ -37,7 +37,7 @@ A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one 
 | Firing and recovery | The choice rides on the arrow's item stack, so it survives being fired, recovered and fired again, a chunk unloading, and a server restart |
 | Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow. The unrecognised value is kept rather than overwritten |
 
-The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow, but it does not paint anything yet. What it does on impact arrives with the terrain arrows, and its sprite is a placeholder until the terrain art is drawn. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
+The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow. What it paints is under Terrain Arrows below. Its sprite is a placeholder until the terrain art is drawn. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
 
 ## Fire Patches
 
@@ -57,7 +57,7 @@ A fire patch is a timed structure, so it ends the same way every timed structure
 
 ## Timed Structures
 
-Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches are the first; the traversal, terrain, discovery, control and chaos arrows will build on the same system. Ropes, vines and redstone charges answer for themselves instead.
+Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar and web arrows use it too; the traversal, discovery, control and chaos arrows will build on the same system. Ropes, vines and redstone charges answer for themselves instead.
 
 | Rule | Behaviour |
 |---|---|
@@ -293,6 +293,37 @@ Both settings are read fresh on every impact, so an operator changing either tak
 
 Like every arrow in the mod, it is craftable at a crafting table from eight arrows around one slime ball, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
+## Terrain Arrows
+
+Six arrows that change a block at range: break it, raise ground under it, drain it, freeze it, web it, or recolour it. Every one of them is held to what a player standing at the target could have done by hand with the item the arrow was crafted from, and [ADR 0037](adr/0037-a-terrain-arrow-only-does-what-a-player-could-have-done-by-hand.md) covers why.
+
+| Arrow | Crafted around | On a block | On a creature | Spent |
+|---|---|---|---|---|
+| Drill | An iron pickaxe | Breaks the one block it struck as the configured pickaxe tier would, and hands you what that pickaxe would have dropped | Hits like an arrow | Only if it broke something |
+| Pillar | Dirt | Raises a timed column of dirt straight up from the block it struck | Hits like an arrow | Only if it raised something |
+| Drain | A sponge | Soaks up water around the impact, as a sponge would | Hits like an arrow, and drains around the creature | Yes |
+| Freeze | Blue ice | Turns still water to ice and still lava to obsidian, and puts out fire, around the impact | Leaves it unhurt, and freezes around it | Yes |
+| Web | A cobweb | Spins a timed patch of cobweb where it lands | Hits like an arrow, and webs around the creature | Yes |
+| Paint | Any dye | Recolours the block it struck to the arrow's colour | Recolours a sheep. Anything else is left unhurt and the arrow glances off | Only if it painted something |
+
+| Rule | Behaviour |
+|---|---|
+| Protection | Every position is checked with the world's own permission check, which carries spawn protection and the world border. A dispensed arrow has no player behind it and is checked against the world border alone. A refusal is silent |
+| Drill eligibility | The gravity arrow's rule: inside the build limit, solid, breakable by a player, and carrying no block entity. A chest, bedrock and a sign are always left alone |
+| Drill tier | `terrain.drill.toolTier`, 0 for wood, 1 for stone, 2 for iron by default. A block that pickaxe could not harvest, such as obsidian, is left standing |
+| Drill drops | The block's own loot table run with that pickaxe, so stone gives cobblestone and diamond ore a diamond. Ore experience drops as it would for a player. Drops go into the shooter's inventory and anything that does not fit lands at the block; a dispensed drill drops everything at the block |
+| Pillar | `terrain.pillar.heightBlocks` blocks of dirt, starting on top of the block struck, stopping at the first position that is not open or where a creature stands, so nothing is ever buried. It is a timed structure and sinks away after `terrain.pillar.lifetimeTicks` |
+| Drain | A sphere of `terrain.drain.radius` around the impact, nearest first, capped at `terrain.drain.maxBlocks`. Takes water, flowing water, seagrass and kelp, and dries out a block holding water. Never lava. Skips any position it may not touch and carries on |
+| Freeze | A sphere of `terrain.freeze.radius`, nearest first, capped at `terrain.freeze.maxBlocks`. Still water becomes ice, still lava becomes obsidian, and fire goes out. Flowing fluid, a block holding water and every solid block are left alone. Putting out one of the mod's own fire patches ends that part of the patch too |
+| Web | A sphere of `terrain.web.patchRadius` of cobweb, filling only open space, which clears away after `terrain.web.lifetimeTicks` |
+| Paint | Any wool or carpet takes the arrow's colour. Undyed glass, glass panes, terracotta and candles take their first colour, keeping a candle's count and flame. Everything else, including concrete and glass already stained, is left alone. A sheep is painted as a dye in hand would: alive, unsheared and not already that colour |
+| Radius zero | Means the position struck alone |
+| Switches | Each arrow has its own `terrain.<arrow>.enabled`. A switched off terrain arrow behaves as a plain arrow |
+
+Every setting is read fresh on impact, so a change takes effect on the next shot. What a terrain arrow changed is never put back, apart from the pillar and web, which are timed.
+
+All six sprites are placeholders, the paint arrow's included, until the terrain art is drawn.
+
 ## Ricochet Arrow
 
 The ricochet arrow glances off the surfaces it hits instead of embedding in them, so a shot can be banked around a corner or off a ceiling into somewhere a straight line does not reach. It is the trick-shot arrow, and it is only that if the bounce is predictable enough to aim with, which is what [ADR 0020](adr/0020-a-bounce-is-a-deflection-rather-than-a-landing.md) is about.
@@ -455,6 +486,10 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | `wind_arrow_burst` | `entity.wind_charge.wind_burst` | A wind arrow's gust | Yes: a wind charge bursting |
 | `shock_arrow_thunder` | `entity.lightning_bolt.thunder` | The thunder of a shock arrow's bolt | Yes: lightning |
 | `shock_arrow_impact` | `entity.lightning_bolt.impact` | The crack where a shock arrow's bolt lands | Yes: lightning striking |
+| `drill_arrow_bore` | `block.grindstone.use` | A drill arrow breaking its block | Under review: vanilla means a grindstone in use |
+| `pillar_arrow_rise` | `block.piston.extend` | A pillar arrow raising its column | Yes: something pushed up out of place |
+| `drain_arrow_absorb` | `block.sponge.absorb` | A drain arrow soaking up water | Yes: a sponge absorbing |
+| `freeze_arrow_freeze` | `block.glass.place` | A freeze arrow setting fluid solid | Yes: ice is placed with glass's sounds |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
 This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
@@ -493,6 +528,11 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/railgun_arrow.png` | The railgun arrow's item sprite |
 | `textures/item/paint_arrow.png` | The paint arrow's item sprite, left untinted |
 | `textures/item/paint_arrow_head.png` | The paint arrow's head, tinted to the dye it carries |
+| `textures/item/drill_arrow.png` | The drill arrow's item sprite, a placeholder |
+| `textures/item/pillar_arrow.png` | The pillar arrow's item sprite, a placeholder |
+| `textures/item/drain_arrow.png` | The drain arrow's item sprite, a placeholder |
+| `textures/item/freeze_arrow.png` | The freeze arrow's item sprite, a placeholder |
+| `textures/item/web_arrow.png` | The web arrow's item sprite, a placeholder |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
@@ -518,6 +558,11 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
 | `textures/entity/arrow/paint_arrow.png` | The paint arrow in flight and planted in a block, left untinted |
 | `textures/entity/arrow/paint_arrow_tint.png` | The paint arrow's head in flight, drawn over the arrow and tinted to its dye |
+| `textures/entity/arrow/drill_arrow.png` | The drill arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/pillar_arrow.png` | The pillar arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/drain_arrow.png` | The drain arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/freeze_arrow.png` | The freeze arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/web_arrow.png` | The web arrow in flight and planted in a block, a placeholder |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.

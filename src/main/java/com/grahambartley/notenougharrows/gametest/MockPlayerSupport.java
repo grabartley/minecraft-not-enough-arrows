@@ -64,9 +64,14 @@ final class MockPlayerSupport {
 
   static void fireEastFromBow(
       final TestContext context, final ServerPlayerEntity shooter, final Item arrow) {
+    fireEastFromBow(context, shooter, new ItemStack(arrow, A_QUIVER));
+  }
+
+  static void fireEastFromBow(
+      final TestContext context, final ServerPlayerEntity shooter, final ItemStack quiver) {
     shooter.setYaw(EASTWARD_YAW);
     shooter.setPitch(LEVEL_PITCH);
-    shooter.getInventory().setStack(0, new ItemStack(arrow, A_QUIVER));
+    shooter.getInventory().setStack(0, quiver);
 
     Items.BOW.onStoppedUsing(new ItemStack(Items.BOW), context.getWorld(), shooter, FULLY_DRAWN);
   }

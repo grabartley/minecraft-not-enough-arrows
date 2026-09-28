@@ -1,13 +1,12 @@
-package com.grahambartley.notenougharrows.gravity;
+package com.grahambartley.notenougharrows.world;
 
-import com.grahambartley.notenougharrows.world.BlockOrder;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.util.math.BlockPos;
 
-public final class GravityShape {
+public final class BlockSphere {
 
-  private GravityShape() {}
+  private BlockSphere() {}
 
   public static List<BlockPos> blocks(final BlockPos center, final int radius) {
     if (center == null) {

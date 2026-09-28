@@ -7,8 +7,11 @@ import com.grahambartley.notenougharrows.arrow.ArrowSound;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import com.grahambartley.notenougharrows.entity.AllegianceArrowEntity;
 import com.grahambartley.notenougharrows.entity.DisarmArrowEntity;
+import com.grahambartley.notenougharrows.entity.DrainArrowEntity;
+import com.grahambartley.notenougharrows.entity.DrillArrowEntity;
 import com.grahambartley.notenougharrows.entity.EnderPearlArrowEntity;
 import com.grahambartley.notenougharrows.entity.FireChargeArrowEntity;
+import com.grahambartley.notenougharrows.entity.FreezeArrowEntity;
 import com.grahambartley.notenougharrows.entity.FrostArrowEntity;
 import com.grahambartley.notenougharrows.entity.GlowInkArrowEntity;
 import com.grahambartley.notenougharrows.entity.GrappleArrowEntity;
@@ -22,6 +25,7 @@ import com.grahambartley.notenougharrows.entity.LevitationArrowEntity;
 import com.grahambartley.notenougharrows.entity.LifestealArrowEntity;
 import com.grahambartley.notenougharrows.entity.MilkArrowEntity;
 import com.grahambartley.notenougharrows.entity.PaintArrowEntity;
+import com.grahambartley.notenougharrows.entity.PillarArrowEntity;
 import com.grahambartley.notenougharrows.entity.RailgunArrowEntity;
 import com.grahambartley.notenougharrows.entity.RecallArrowEntity;
 import com.grahambartley.notenougharrows.entity.RedstoneArrowEntity;
@@ -34,6 +38,7 @@ import com.grahambartley.notenougharrows.entity.SmokeArrowEntity;
 import com.grahambartley.notenougharrows.entity.TauntArrowEntity;
 import com.grahambartley.notenougharrows.entity.TntArrowEntity;
 import com.grahambartley.notenougharrows.entity.VolleyArrowEntity;
+import com.grahambartley.notenougharrows.entity.WebArrowEntity;
 import com.grahambartley.notenougharrows.entity.WindArrowEntity;
 import com.grahambartley.notenougharrows.tint.DyePalette;
 import java.util.List;
@@ -235,6 +240,41 @@ public final class ModArrows {
       REGISTRAR.register(
           ArrowDefinition.tinted(
               "paint_arrow", PaintArrowEntity::new, ModArrows::paintArrow, DyePalette.create()));
+
+  public static final RegisteredArrow<DrillArrowEntity> DRILL_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "drill_arrow",
+              DrillArrowEntity::new,
+              ModArrows::drillArrow,
+              ArrowSound.own(ModSounds.DRILL_ARROW_BORE.getId())));
+
+  public static final RegisteredArrow<PillarArrowEntity> PILLAR_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "pillar_arrow",
+              PillarArrowEntity::new,
+              ModArrows::pillarArrow,
+              ArrowSound.own(ModSounds.PILLAR_ARROW_RISE.getId())));
+
+  public static final RegisteredArrow<DrainArrowEntity> DRAIN_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "drain_arrow",
+              DrainArrowEntity::new,
+              ModArrows::drainArrow,
+              ArrowSound.own(ModSounds.DRAIN_ARROW_ABSORB.getId())));
+
+  public static final RegisteredArrow<FreezeArrowEntity> FREEZE_ARROW =
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "freeze_arrow",
+              FreezeArrowEntity::new,
+              ModArrows::freezeArrow,
+              ArrowSound.own(ModSounds.FREEZE_ARROW_FREEZE.getId())));
+
+  public static final RegisteredArrow<WebArrowEntity> WEB_ARROW =
+      REGISTRAR.register(ArrowDefinition.of("web_arrow", WebArrowEntity::new, ModArrows::webArrow));
 
   private ModArrows() {}
 
@@ -548,5 +588,55 @@ public final class ModArrows {
       final ItemStack stack,
       @Nullable final ItemStack weapon) {
     return new PaintArrowEntity(PAINT_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static DrillArrowEntity drillArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new DrillArrowEntity(DRILL_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static PillarArrowEntity pillarArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new PillarArrowEntity(PILLAR_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static DrainArrowEntity drainArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new DrainArrowEntity(DRAIN_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static FreezeArrowEntity freezeArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new FreezeArrowEntity(FREEZE_ARROW.entityType(), world, x, y, z, stack, weapon);
+  }
+
+  private static WebArrowEntity webArrow(
+      final World world,
+      final double x,
+      final double y,
+      final double z,
+      final ItemStack stack,
+      @Nullable final ItemStack weapon) {
+    return new WebArrowEntity(WEB_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

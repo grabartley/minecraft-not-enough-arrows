@@ -58,6 +58,13 @@ The **gravity arrow** cuts the ground out from under whatever you hit. A sphere 
 being attached to anything and falls, which is a fast way down through a ceiling and a fast way to
 ruin someone's floor.
 
+Six more change the block you hit instead of dropping it. The **drill arrow** mines it and hands you
+whatever an iron pickaxe would have got. The **pillar arrow** pushes a column of dirt up out of it
+for a while, the **drain arrow** soaks up a pond, the **freeze arrow** turns water to ice and lava to
+obsidian, and the **web arrow** hangs cobweb wherever it lands. The **paint arrow** comes in all
+sixteen dye colours and recolours wool, carpet, glass, terracotta, candles, and sheep. None of them
+touches anything you could not have changed standing there with the item it was crafted from.
+
 The **glow ink arrow** outlines what you hit through walls, for everyone on the server, so the
 creeper behind the ridge is now a problem everybody can see.
 
@@ -120,6 +127,12 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 🤝 | **Allegiance** | The mob you hit fights for you for a while | Golden apple |
 | 🌫️ | **Smoke** | A cloud that blinds. It blocks nothing | Campfire |
 | 🪃 | **Disarm** | Throws the held item across the ground | Fishing rod |
+| ⛏️ | **Drill** | Mines the one block you hit and hands you its drop | Iron pickaxe |
+| 🟫 | **Pillar** | Raises a column of dirt on the block you hit, for a while | Dirt |
+| 🧽 | **Drain** | Soaks up the water where it lands | Sponge |
+| ❄️ | **Freeze** | Water to ice, lava to obsidian, fire out. Hurts nothing | Blue ice |
+| 🕸️ | **Web** | A patch of cobweb where it lands, for a while | Cobweb |
+| 🎨 | **Paint** | Recolours wool, carpet, glass, terracotta, candles, and sheep | Any dye, one colour each |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
@@ -157,8 +170,8 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`. `traversal` through `social` hold the settings for arrows that have not
-landed yet, so they exist ahead of the arrows they will control.
+`fletching`, and `sound`. `traversal` and `agriculture` through `social` hold the settings for
+arrows that have not landed yet, so they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
