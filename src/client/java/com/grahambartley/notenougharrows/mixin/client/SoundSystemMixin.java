@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.mixin.client;
 
 import com.grahambartley.notenougharrows.client.state.ClientStateService;
+import com.grahambartley.notenougharrows.config.ClientConfigHolder;
 import com.grahambartley.notenougharrows.sound.CountdownMute;
 import com.grahambartley.notenougharrows.sound.ModSoundVolume;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -36,8 +37,7 @@ public class SoundSystemMixin {
                   "Lnet/minecraft/client/sound/SoundSystem;getAdjustedVolume(FLnet/minecraft/sound/SoundCategory;)F"))
   private float notEnoughArrows$scaleModSoundOnPlay(
       final float adjusted, @Local(argsOnly = true) final SoundInstance sound) {
-    return ModSoundVolume.adjust(
-        sound.getId(), adjusted, ClientStateService.get().modSoundVolume());
+    return notEnoughArrows$scale(sound, adjusted);
   }
 
   @ModifyReturnValue(
@@ -45,7 +45,14 @@ public class SoundSystemMixin {
       at = @At("RETURN"))
   private float notEnoughArrows$scaleModSoundOnTick(
       final float adjusted, final SoundInstance sound) {
+    return notEnoughArrows$scale(sound, adjusted);
+  }
+
+  private static float notEnoughArrows$scale(final SoundInstance sound, final float adjusted) {
     return ModSoundVolume.adjust(
-        sound.getId(), adjusted, ClientStateService.get().modSoundVolume());
+        sound.getId(),
+        adjusted,
+        ClientConfigHolder.get().sound().volume(),
+        ClientStateService.get().modSoundVolume());
   }
 }

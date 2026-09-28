@@ -1,17 +1,26 @@
 package com.grahambartley.notenougharrows.sound;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
-import com.grahambartley.notenougharrows.audio.SoundVolume;
+import com.grahambartley.notenougharrows.config.ConfigValues;
+import com.grahambartley.notenougharrows.config.SoundConfig;
 import net.minecraft.util.Identifier;
 
 public final class ModSoundVolume {
 
   private ModSoundVolume() {}
 
-  public static float adjust(final Identifier soundId, final float volume, final float modVolume) {
+  public static float adjust(
+      final Identifier soundId,
+      final float adjusted,
+      final float serverVolume,
+      final float clientVolume) {
     if (!NotEnoughArrows.MOD_ID.equals(soundId.getNamespace())) {
-      return volume;
+      return adjusted;
     }
-    return SoundVolume.scale(volume, modVolume);
+    return adjusted * bounded(serverVolume) * bounded(clientVolume);
+  }
+
+  private static float bounded(final float volume) {
+    return ConfigValues.clampFloat(volume, SoundConfig.VOLUME_MIN, SoundConfig.VOLUME_MAX);
   }
 }

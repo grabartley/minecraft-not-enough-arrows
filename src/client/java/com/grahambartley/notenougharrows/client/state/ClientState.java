@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.client.state;
 
 import com.google.gson.JsonObject;
 import com.grahambartley.notenougharrows.config.ConfigValues;
+import com.grahambartley.notenougharrows.config.SoundConfig;
 
 public record ClientState(
     boolean showCountdownRing,
@@ -11,8 +12,8 @@ public record ClientState(
 
   public static final float COUNTDOWN_RING_SCALE_MIN = 0.5f;
   public static final float COUNTDOWN_RING_SCALE_MAX = 2.0f;
-  public static final float MOD_SOUND_VOLUME_MIN = 0.0f;
-  public static final float MOD_SOUND_VOLUME_MAX = 1.0f;
+  public static final float MOD_SOUND_VOLUME_MIN = SoundConfig.VOLUME_MIN;
+  public static final float MOD_SOUND_VOLUME_MAX = SoundConfig.VOLUME_MAX;
 
   public static final boolean DEFAULT_SHOW_COUNTDOWN_RING = true;
   public static final boolean DEFAULT_PLAY_COUNTDOWN_SOUND = true;

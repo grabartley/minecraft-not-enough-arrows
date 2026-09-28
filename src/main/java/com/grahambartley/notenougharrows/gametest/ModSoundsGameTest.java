@@ -83,10 +83,10 @@ public final class ModSoundsGameTest implements FabricGameTest {
     context.complete();
   }
 
-  private static Map<Identifier, ArrowSound> declaredArrowSounds() {
-    final Map<Identifier, ArrowSound> declared = new LinkedHashMap<>();
+  private static Map<Identifier, List<ArrowSound>> declaredArrowSounds() {
+    final Map<Identifier, List<ArrowSound>> declared = new LinkedHashMap<>();
     for (final ArrowDefinition<?> definition : ModArrows.catalog().definitions()) {
-      definition.impactSound().ifPresent(sound -> declared.put(definition.id(), sound));
+      declared.put(definition.id(), definition.sounds());
     }
     return declared;
   }

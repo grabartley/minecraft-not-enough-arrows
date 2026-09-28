@@ -3,8 +3,6 @@ package com.grahambartley.notenougharrows.audio;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import java.io.IOException;
@@ -19,7 +17,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -33,11 +30,14 @@ class ModSoundPlayerTest {
       List.of(Path.of("src/main/java"), Path.of("src/client/java"));
   private static final Path GAMETESTS =
       Path.of("src/main/java/com/grahambartley/notenougharrows/gametest");
-  private static final Path PLAYER =
-      Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModSoundPlayer.java");
+  private static final List<Path> ALLOWED =
+      List.of(
+          Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModSoundPlayer.java"),
+          Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModExplosion.java"));
   private static final Pattern BYPASS =
       Pattern.compile(
-          "\\.playSound(FromEntity|ToPlayer)?\\s*\\(|(?<![.\\w])playSound\\s*\\(|SoundEvents\\.");
+          "\\.playSound(FromEntity|ToPlayer|AtBlockCenter)?\\s*\\(|(?<![.\\w])playSound\\s*\\("
+              + "|SoundEvents\\.|\\.createExplosion\\s*\\(|\\.syncWorldEvent\\s*\\(");
 
   private record Sent(
       Vec3d at, SoundEvent sound, SoundCategory category, float volume, float pitch) {}
@@ -47,13 +47,13 @@ class ModSoundPlayerTest {
       (at, sound, category, volume, pitch) ->
           sent.add(new Sent(at, sound, category, volume, pitch));
 
-  @ParameterizedTest(name = "volume {0} at server volume {1} is sent at {2}")
-  @CsvSource({"1.0, 1.0, 1.0", "1.0, 0.5, 0.5", "0.8, 0.5, 0.4", "4.0, 0.25, 1.0", "2.0, 1.0, 2.0"})
-  void sendsTheSoundScaledByTheServerVolume(
-      final float volume, final float serverVolume, final float expected) {
+  @ParameterizedTest(name = "volume {0} at server volume {1}")
+  @CsvSource({"1.0, 1.0", "1.0, 0.5", "0.8, 0.05", "4.0, 0.25", "2.0, 1.0"})
+  void sendsTheVolumeUntouchedSoTheSoundKeepsItsVanillaRange(
+      final float volume, final float serverVolume) {
     ModSoundPlayer.play(sink, serverVolume, AT, SOUND, SoundCategory.NEUTRAL, volume, 1.2f);
 
-    assertEquals(List.of(new Sent(AT, SOUND, SoundCategory.NEUTRAL, expected, 1.2f)), sent);
+    assertEquals(List.of(new Sent(AT, SOUND, SoundCategory.NEUTRAL, volume, 1.2f)), sent);
   }
 
   @Test
@@ -78,34 +78,19 @@ class ModSoundPlayerTest {
     assertTrue(sent.isEmpty());
   }
 
-  @ParameterizedTest(name = "rolls {0} and {1} pitch at {2}")
-  @CsvSource({"0.5, 0.5, 0.7", "1.0, 0.0, 0.84", "0.0, 1.0, 0.56"})
-  void anExplosionPitchSpreadsLikeVanillas(
-      final float first, final float second, final float pitch) {
-    final Random random = mock(Random.class);
-    when(random.nextFloat()).thenReturn(first, second);
-
-    assertEquals(pitch, ModSoundPlayer.explosionPitch(random), 1.0e-6f);
-  }
-
-  @Test
-  void anExplosionIsAsLoudAsVanillas() {
-    assertEquals(4.0f, ModSoundPlayer.EXPLOSION_VOLUME);
-  }
-
   @Test
   void isTheOnlyPlaceTheModReachesForAVanillaSoundOrPlaysOne() {
     final List<Path> bypassing =
         SOURCE_ROOTS.stream()
             .flatMap(ModSoundPlayerTest::sources)
             .filter(path -> !path.startsWith(GAMETESTS))
-            .filter(path -> !path.equals(PLAYER))
+            .filter(path -> !ALLOWED.contains(path))
             .filter(ModSoundPlayerTest::bypasses)
             .toList();
 
     assertTrue(
         bypassing.isEmpty(),
-        "These play or name a sound outside ModSoundPlayer, so a mod volume cannot reach it: "
+        "These play or name a sound outside ModSoundPlayer, so sound.volume cannot reach it: "
             + bypassing);
   }
 
@@ -115,6 +100,10 @@ class ModSoundPlayerTest {
     assertTrue(BYPASS.matcher("    playSound(SoundEvents.ENTITY_ARROW_HIT, 1f, 1f);").find());
     assertTrue(BYPASS.matcher("world.playSoundFromEntity(null, e").find());
     assertTrue(BYPASS.matcher("        SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST);").find());
+    assertTrue(BYPASS.matcher("    world.createExplosion(shooter, x, y, z, power, TNT);").find());
+    assertTrue(BYPASS.matcher("world.syncWorldEvent(WorldEvents.ANVIL_USED, pos, 0);").find());
+    assertTrue(BYPASS.matcher("world.playSoundAtBlockCenter(pos, sound").find());
+    assertFalse(BYPASS.matcher("ModExplosion.create(world, shooter").find());
     assertFalse(BYPASS.matcher("ModSoundPlayer.play(world, at").find());
     assertFalse(BYPASS.matcher("ModSoundPlayer.playFrom(this, sound").find());
     assertFalse(BYPASS.matcher("ModSounds.SMOKE_ARROW_IMPACT").find());

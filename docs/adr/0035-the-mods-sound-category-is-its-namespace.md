@@ -15,9 +15,11 @@ Several arrows already play vanilla sounds whose identifiers belong to Minecraft
 
 The mod's category is its namespace. Every sound the mod plays is declared in `ModSounds` under a `not-enough-arrows:` identifier. Where the sound is a vanilla one, its `sounds.json` entry is an alias that plays the vanilla event and keeps the vanilla subtitle.
 
-Two settings scale those sounds and nothing else. `sound.volume` is a server setting, applied in `ModSoundPlayer` before the sound is sent, so it reaches every player and an operator controls it. `client.modSoundVolume` is a client setting, applied in `SoundSystem` to any sound in the mod's namespace. They multiply.
+Two settings scale those sounds and nothing else. `sound.volume` is a server setting an operator controls, and it reaches every client with the rest of the synced server config. `client.modSoundVolume` is each player's own. Each client multiplies a mod sound's loudness by both, in `SoundSystem`, after vanilla has clamped the sound's loudness to its 0 to 1 range.
 
-Sounds keep whichever vanilla category they already used, so the vanilla sliders still apply on top. The fletching station's menu click is played on the client for the clicking player alone, so only the client setting reaches it.
+Scaling happens on the client, after the clamp, because a sound's volume on the wire is also its range. An explosion is sent at volume 4, which vanilla reads as full loudness out to 64 blocks. Scaling that 4 down on the server would shorten how far the explosion is heard and leave it as loud as ever for everyone inside the new range. Scaling after the clamp turns the loudness down and leaves the range alone. The server still decides whether a sound exists: at a `sound.volume` of 0, `ModSoundPlayer` sends nothing.
+
+Sounds keep whichever vanilla category they already used, so the vanilla sliders still apply on top. The fletching station's menu click is played on the client for the clicking player alone.
 
 ## Consequences
 
@@ -25,7 +27,9 @@ A player or an operator can quieten the mod with one setting each, and nothing e
 
 Every sound needs a mod identifier even when it plays a vanilla event, so reusing a vanilla sound costs a `ModSounds` line and a `sounds.json` alias rather than a `SoundEvents` reference. That friction is deliberate: it puts every borrowed sound on the reviewed list IDENT-8 asks for.
 
-A sound played by calling `World.playSound` or `Entity.playSound` directly would skip `sound.volume`. `ModSoundPlayerTest` fails if any mod source outside `ModSoundPlayer` calls either or names a vanilla `SoundEvents` entry. An explosion's own sound would skip it too, so explosions are created with an empty sound and `ModSoundPlayer` plays the mod's alias at vanilla's loudness.
+A sound played by calling `World.playSound` or `Entity.playSound` directly, or an explosion's own built-in sound, would carry a vanilla identifier and escape both settings. Explosions go through `ModExplosion`, which creates them with vanilla's empty sound and plays the mod's alias at vanilla's loudness and pitch spread. `ModSoundPlayerTest` fails if any mod source other than `ModSoundPlayer` and `ModExplosion` plays a sound, creates an explosion, or names a vanilla `SoundEvents` entry.
+
+A modified client can ignore `sound.volume` above 0, as it can ignore any volume. The setting controls what players hear, not what reaches them.
 
 The hit and pickup sounds vanilla plays for every arrow, modded or not, are the bow's sounds rather than the mod's, so they stay under vanilla's own sliders.
 

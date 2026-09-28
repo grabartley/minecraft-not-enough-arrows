@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.wind;
 
 import com.grahambartley.notenougharrows.ModSounds;
-import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
+import com.grahambartley.notenougharrows.audio.ModExplosion;
 import com.grahambartley.notenougharrows.config.UtilityArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import java.util.ArrayList;
@@ -46,20 +46,16 @@ public final class WindBurstService {
       final Vec3d center,
       @Nullable final Entity source,
       @Nullable final Entity shooter) {
-    world.createExplosion(
+    ModExplosion.create(
+        world,
         source,
-        null,
         new WindExplosionBehavior(shooter),
-        center.getX(),
-        center.getY(),
-        center.getZ(),
+        center,
         WIND_CHARGE_EXPLOSION_POWER,
-        false,
         World.ExplosionSourceType.TRIGGER,
         ParticleTypes.GUST_EMITTER_SMALL,
         ParticleTypes.GUST_EMITTER_LARGE,
-        ModSoundPlayer.silentExplosion());
-    ModSoundPlayer.playExplosion(world, center, ModSounds.WIND_ARROW_BURST);
+        ModSounds.WIND_ARROW_BURST);
   }
 
   private static List<Entity> displaceEntities(

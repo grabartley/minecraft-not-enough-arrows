@@ -42,6 +42,10 @@ import org.jetbrains.annotations.Nullable;
 public final class ModArrows {
   private static final ArrowRegistrar REGISTRAR = new ArrowRegistrar();
   private static final String EXPLOSIVE_FUSE = "explosive_fuse";
+  private static final ArrowSound EXPLOSIVE_FUSE_BEEP =
+      ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId());
+  private static final ArrowSound EXPLOSIVE_BLAST =
+      ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.EXPLOSIVE_ARROW_BLAST.getId());
   private static final String ENDER_TELEPORT = "ender_teleport";
 
   public static final RegisteredArrow<GrappleArrowEntity> GRAPPLE_ARROW =
@@ -74,7 +78,8 @@ public final class ModArrows {
               "gunpowder_arrow",
               GunpowderArrowEntity::new,
               ModArrows::gunpowderArrow,
-              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId())));
+              EXPLOSIVE_FUSE_BEEP,
+              EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<TntArrowEntity> TNT_ARROW =
       REGISTRAR.register(
@@ -82,7 +87,8 @@ public final class ModArrows {
               "tnt_arrow",
               TntArrowEntity::new,
               ModArrows::tntArrow,
-              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId())));
+              EXPLOSIVE_FUSE_BEEP,
+              EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<FireChargeArrowEntity> FIRE_CHARGE_ARROW =
       REGISTRAR.register(
@@ -90,7 +96,8 @@ public final class ModArrows {
               "fire_charge_arrow",
               FireChargeArrowEntity::new,
               ModArrows::fireChargeArrow,
-              ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId())));
+              EXPLOSIVE_FUSE_BEEP,
+              EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<IncendiaryArrowEntity> INCENDIARY_ARROW =
       REGISTRAR.register(
@@ -168,7 +175,9 @@ public final class ModArrows {
               "frost_arrow",
               FrostArrowEntity::new,
               ModArrows::frostArrow,
-              ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_CRACK.getId())));
+              ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_CRACK.getId()),
+              ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_SETTLE.getId()),
+              ArrowSound.own(ModSounds.FROST_ARROW_THAW.getId())));
 
   public static final RegisteredArrow<LevitationArrowEntity> LEVITATION_ARROW =
       REGISTRAR.register(

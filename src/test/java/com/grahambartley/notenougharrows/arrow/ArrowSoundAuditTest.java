@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,17 +19,18 @@ class ArrowSoundAuditTest {
     return Identifier.of(NotEnoughArrows.MOD_ID, path);
   }
 
-  private static Map<Identifier, ArrowSound> declared(final Object... arrowThenSound) {
-    final Map<Identifier, ArrowSound> declared = new LinkedHashMap<>();
+  private static Map<Identifier, List<ArrowSound>> declared(final Object... arrowThenSound) {
+    final Map<Identifier, List<ArrowSound>> declared = new LinkedHashMap<>();
     for (int i = 0; i < arrowThenSound.length; i += 2) {
-      declared.put(id((String) arrowThenSound[i]), (ArrowSound) arrowThenSound[i + 1]);
+      final ArrowSound sound = (ArrowSound) arrowThenSound[i + 1];
+      declared.computeIfAbsent(id((String) arrowThenSound[i]), key -> new ArrayList<>()).add(sound);
     }
     return declared;
   }
 
   @Test
   void reportsNothingWhenEveryDeclaredSoundIsRegistered() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "smoke_arrow", ArrowSound.own(id("smoke_arrow_impact")),
             "taunt_arrow", ArrowSound.own(id("taunt_arrow_impact")));
@@ -41,7 +43,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsEveryArrowWhoseSoundWasNeverRegistered() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "smoke_arrow", ArrowSound.own(id("smoke_arrow_impact")),
             "taunt_arrow", ArrowSound.own(id("taunt_arrow_impact")),
@@ -59,7 +61,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void aSoundRegisteredUnderAnotherNamespaceDoesNotCount() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared("smoke_arrow", ArrowSound.own(id("smoke_arrow_impact")));
 
     assertEquals(
@@ -70,7 +72,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsNoSharingWhenEveryArrowHasItsOwnSound() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "smoke_arrow", ArrowSound.own(id("smoke_arrow_impact")),
             "taunt_arrow", ArrowSound.own(id("taunt_arrow_impact")));
@@ -80,7 +82,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void allowsArrowsOfOneSystemToShareItsSound() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "gunpowder_arrow", ArrowSound.sharedBy("explosive_fuse", id("countdown_beep")),
             "tnt_arrow", ArrowSound.sharedBy("explosive_fuse", id("countdown_beep")),
@@ -91,7 +93,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsTwoUnrelatedArrowsSharingOneSound() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "smoke_arrow", ArrowSound.own(id("puff")),
             "stink_arrow", ArrowSound.own(id("puff")));
@@ -101,7 +103,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsASystemSoundBorrowedByAnArrowOutsideTheSystem() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "tnt_arrow", ArrowSound.sharedBy("explosive_fuse", id("countdown_beep")),
             "redstone_arrow", ArrowSound.own(id("countdown_beep")));
@@ -111,7 +113,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsAnOwnSoundLaterClaimedByASystem() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "redstone_arrow", ArrowSound.own(id("countdown_beep")),
             "tnt_arrow", ArrowSound.sharedBy("explosive_fuse", id("countdown_beep")));
@@ -121,7 +123,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsOneSoundSharedByTwoDifferentSystems() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "tnt_arrow", ArrowSound.sharedBy("explosive_fuse", id("whoosh")),
             "recall_arrow", ArrowSound.sharedBy("ender_teleport", id("whoosh")));
@@ -131,7 +133,7 @@ class ArrowSoundAuditTest {
 
   @Test
   void reportsEachSharedSoundOnceInDeclarationOrder() {
-    final Map<Identifier, ArrowSound> declared =
+    final Map<Identifier, List<ArrowSound>> declared =
         declared(
             "a_arrow", ArrowSound.own(id("second")),
             "b_arrow", ArrowSound.own(id("first")),
@@ -148,5 +150,38 @@ class ArrowSoundAuditTest {
     assertThrows(NullPointerException.class, () -> ArrowSoundAudit.unregistered(null, List.of()));
     assertThrows(NullPointerException.class, () -> ArrowSoundAudit.unregistered(Map.of(), null));
     assertThrows(NullPointerException.class, () -> ArrowSoundAudit.sharedWithoutASystem(null));
+  }
+
+  @Test
+  void reportsAnArrowWhenAnyOfItsSoundsIsUnregistered() {
+    final Map<Identifier, List<ArrowSound>> declared =
+        declared(
+            "frost_arrow", ArrowSound.own(id("freeze_crack")),
+            "frost_arrow", ArrowSound.own(id("thaw")));
+
+    assertEquals(
+        List.of(id("frost_arrow")),
+        ArrowSoundAudit.unregistered(declared, List.of(id("freeze_crack"))));
+  }
+
+  @Test
+  void anArrowRepeatingItsOwnSoundIsNotSharing() {
+    final Map<Identifier, List<ArrowSound>> declared =
+        declared(
+            "frost_arrow", ArrowSound.own(id("crunch")),
+            "frost_arrow", ArrowSound.own(id("crunch")));
+
+    assertTrue(ArrowSoundAudit.sharedWithoutASystem(declared).isEmpty());
+  }
+
+  @Test
+  void checksEverySoundAnArrowDeclaresForSharing() {
+    final Map<Identifier, List<ArrowSound>> declared =
+        declared(
+            "tnt_arrow", ArrowSound.sharedBy("explosive_fuse", id("countdown_beep")),
+            "tnt_arrow", ArrowSound.sharedBy("explosive_fuse", id("blast")),
+            "wind_arrow", ArrowSound.own(id("blast")));
+
+    assertEquals(List.of(id("blast")), ArrowSoundAudit.sharedWithoutASystem(declared));
   }
 }

@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
-import java.util.Optional;
+import java.util.List;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ class ArrowDefinitionTest {
                 height,
                 ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
                 ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
-                Optional.empty()));
+                List.of()));
   }
 
   @ParameterizedTest
@@ -67,7 +67,7 @@ class ArrowDefinitionTest {
                 ArrowDefinition.DEFAULT_SIZE,
                 maxTrackingRange,
                 trackingTickInterval,
-                Optional.empty()));
+                List.of()));
   }
 
   @Test
@@ -118,20 +118,19 @@ class ArrowDefinitionTest {
   }
 
   @Test
-  void declaresNoImpactSoundUnlessAsked() {
-    assertTrue(
-        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).impactSound().isEmpty());
+  void declaresNoSoundUnlessAsked() {
+    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).sounds().isEmpty());
   }
 
   @Test
-  void carriesTheImpactSoundItDeclares() {
+  void carriesTheSoundItDeclares() {
     final ArrowSound sound =
         ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "smoke_arrow_impact"));
 
     final ArrowDefinition<BaseArrowEntity> definition =
         ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, SPAWN_FACTORY, sound);
 
-    assertEquals(Optional.of(sound), definition.impactSound());
+    assertEquals(List.of(sound), definition.sounds());
   }
 
   @Test
@@ -156,9 +155,35 @@ class ArrowDefinitionTest {
   }
 
   @Test
-  void rejectsANullImpactSound() {
+  void carriesEverySoundItDeclaresInOrder() {
+    final ArrowSound crack = ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "crack"));
+    final ArrowSound thaw = ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "thaw"));
+
+    assertEquals(
+        List.of(crack, thaw),
+        ArrowDefinition.of("frost_arrow", ENTITY_FACTORY, SPAWN_FACTORY, crack, thaw).sounds());
+  }
+
+  @Test
+  void rejectsANullSound() {
     assertThrows(
         NullPointerException.class,
-        () -> ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY, null));
+        () -> ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY, (ArrowSound) null));
+  }
+
+  @Test
+  void rejectsANullSoundList() {
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            new ArrowDefinition<>(
+                "tnt_arrow",
+                ENTITY_FACTORY,
+                SPAWN_FACTORY,
+                ArrowDefinition.DEFAULT_SIZE,
+                ArrowDefinition.DEFAULT_SIZE,
+                ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
+                ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
+                null));
   }
 }

@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.blast;
 
 import com.grahambartley.notenougharrows.ModSounds;
-import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
+import com.grahambartley.notenougharrows.audio.ModExplosion;
 import com.grahambartley.notenougharrows.config.ExplosiveArrowConfig;
 import com.grahambartley.notenougharrows.entity.ExplosiveArrowEntity;
 import com.grahambartley.notenougharrows.explosive.ExplosiveTier;
@@ -115,20 +115,16 @@ public final class BlastService {
     if (power <= 0f) {
       return;
     }
-    world.createExplosion(
+    ModExplosion.create(
+        world,
         shooter,
-        null,
         new BlastBehavior(explosive.damageTerrain(), explosive.damageEntities()),
-        carrier.getX(),
-        carrier.getY(),
-        carrier.getZ(),
+        carrier.getPos(),
         power,
-        false,
         World.ExplosionSourceType.TNT,
         ParticleTypes.EXPLOSION,
         ParticleTypes.EXPLOSION_EMITTER,
-        ModSoundPlayer.silentExplosion());
-    ModSoundPlayer.playExplosion(world, carrier.getPos(), ModSounds.EXPLOSIVE_ARROW_BLAST);
+        ModSounds.EXPLOSIVE_ARROW_BLAST);
   }
 
   @Nullable
