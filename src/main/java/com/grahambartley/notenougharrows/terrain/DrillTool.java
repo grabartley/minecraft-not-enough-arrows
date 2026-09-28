@@ -13,7 +13,8 @@ public final class DrillTool {
     return switch (toolTier) {
       case DrillArrowConfig.TOOL_TIER_WOOD -> new ItemStack(Items.WOODEN_PICKAXE);
       case DrillArrowConfig.TOOL_TIER_STONE -> new ItemStack(Items.STONE_PICKAXE);
-      default -> new ItemStack(Items.IRON_PICKAXE);
+      case DrillArrowConfig.TOOL_TIER_IRON -> new ItemStack(Items.IRON_PICKAXE);
+      default -> throw new IllegalArgumentException("No drill tool tier " + toolTier);
     };
   }
 
