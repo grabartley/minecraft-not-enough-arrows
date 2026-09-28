@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.ModEntities;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -9,6 +10,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 
 public final class ShockArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "shock-arrow";
@@ -134,6 +136,40 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
         () -> {
           context.expectBlock(Blocks.STONE, FiringRangeSupport.BACKSTOP);
           context.dontExpectEntity(ModArrows.SHOCK_ARROW.entityType());
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void anArrowsFlashIsTheModsOwnBoltRatherThanVanillaLightning(TestContext context) {
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final Box range = context.getTestBox().expand(8.0);
+    final boolean[] seen = {false, false};
+    context.runAtEveryTick(
+        () -> {
+          seen[0] |=
+              !context
+                  .getWorld()
+                  .getEntitiesByType(ModEntities.SHOCK_BOLT, range, bolt -> true)
+                  .isEmpty();
+          seen[1] |=
+              !context
+                  .getWorld()
+                  .getEntitiesByType(EntityType.LIGHTNING_BOLT, range, bolt -> true)
+                  .isEmpty();
+        });
+    MockPlayerSupport.fireEastStraight(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.SHOCK_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK + SETTLED,
+        () -> {
+          context.assertTrue(seen[0], "A shock arrow should flash with the mod's shock bolt");
+          context.assertFalse(
+              seen[1],
+              "A shock arrow must not spawn vanilla lightning, whose thunder no volume reaches");
           context.complete();
         });
   }

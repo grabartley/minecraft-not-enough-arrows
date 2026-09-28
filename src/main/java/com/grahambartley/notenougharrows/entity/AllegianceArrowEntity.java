@@ -1,12 +1,13 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +42,7 @@ public class AllegianceArrowEntity extends BaseArrowEntity {
         ControlHoldService.enlist(
             world, mob, shooter().orElse(null), ServerConfigService.get().control().allegiance());
     if (enlisted) {
-      playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, IMPACT_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playFrom(this, ModSounds.ALLEGIANCE_ARROW_IMPACT, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }
 

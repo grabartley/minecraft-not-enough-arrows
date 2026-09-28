@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.config.DisarmArrowConfig;
 import com.grahambartley.notenougharrows.control.DisarmDrop;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
@@ -8,7 +10,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +47,7 @@ public class DisarmArrowEntity extends BaseArrowEntity {
         shooter().map(Entity::getPos).orElse(null),
         disarm.affectsPlayers(),
         disarm.throwDistance())) {
-      playSound(SoundEvents.BLOCK_TRIPWIRE_DETACH, IMPACT_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playFrom(this, ModSounds.DISARM_ARROW_IMPACT, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }
 

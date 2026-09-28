@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.fuse;
 
 import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import java.util.HashMap;
 import java.util.List;
@@ -131,19 +132,12 @@ public final class FuseService {
   }
 
   private static void beep(final ServerWorld world, final Entity host) {
-    final float volume = ServerConfigService.get().explosive().beepVolume();
-    if (volume <= 0f) {
-      return;
-    }
-
-    world.playSound(
-        null,
-        host.getX(),
-        host.getY(),
-        host.getZ(),
+    ModSoundPlayer.play(
+        world,
+        host.getPos(),
         ModSounds.COUNTDOWN_BEEP,
         SoundCategory.NEUTRAL,
-        volume,
+        ServerConfigService.get().explosive().beepVolume(),
         BEEP_PITCH);
   }
 

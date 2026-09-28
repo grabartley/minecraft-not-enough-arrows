@@ -12,7 +12,9 @@ public final class ClientStateOptions {
   public static final String SHOW_COUNTDOWN_RING = SECTION + ".showCountdownRing";
   public static final String PLAY_COUNTDOWN_SOUND = SECTION + ".playCountdownSound";
   public static final String COUNTDOWN_RING_SCALE = SECTION + ".countdownRingScale";
+  public static final String MOD_SOUND_VOLUME = SECTION + ".modSoundVolume";
   public static final float COUNTDOWN_RING_SCALE_STEP = 0.05f;
+  public static final float MOD_SOUND_VOLUME_STEP = 0.05f;
 
   private static final List<ConfigOption<ClientState>> OPTIONS = buildOptions();
   private static final ConfigSection<ClientState> CLIENT_SECTION =
@@ -44,6 +46,13 @@ public final class ClientStateOptions {
             ClientState.COUNTDOWN_RING_SCALE_MAX,
             COUNTDOWN_RING_SCALE_STEP,
             ClientState::countdownRingScale,
-            ClientState::withCountdownRingScale));
+            ClientState::withCountdownRingScale),
+        new FloatOption<>(
+            MOD_SOUND_VOLUME,
+            ClientState.MOD_SOUND_VOLUME_MIN,
+            ClientState.MOD_SOUND_VOLUME_MAX,
+            MOD_SOUND_VOLUME_STEP,
+            ClientState::modSoundVolume,
+            ClientState::withModSoundVolume));
   }
 }

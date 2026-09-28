@@ -46,7 +46,8 @@ public final class NotEnoughArrowsCommand {
                         .then(DiscoveryCommandNodes.build())
                         .then(ChaosCommandNodes.build())
                         .then(SocialCommandNodes.build())
-                        .then(FletchingCommandNodes.build())));
+                        .then(FletchingCommandNodes.build())
+                        .then(SoundCommandNodes.build())));
 
     dispatcher.register(
         CommandManager.literal(ALIAS).redirect(root).executes(NotEnoughArrowsCommand::help));

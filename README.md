@@ -156,9 +156,9 @@ Change it in the Mod Menu screen or from the command tree:
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
-`combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, and
-`fletching`. `traversal` through `social` hold the settings for arrows that have not landed yet, so
-they exist ahead of the arrows they will control.
+`combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
+`fletching`, and `sound`. `traversal` through `social` hold the settings for arrows that have not
+landed yet, so they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -307,6 +307,7 @@ screen are rejected outright, with the accepted range in the error.
 | `social.snowGolem.lifetimeTicks` | 1200 | 20 to 12000 |
 | `social.magnet.radius` | 8 | 0 to 16 |
 | `fletching.stationEnabled` | on | on or off |
+| `sound.volume` | 1.0 | 0.0 to 1.0 |
 
 The three lists, the gravity arrow's exclusions, the prospector arrow's blocks, and the courier
 arrow's undeliverable items, are edited rather than replaced:
@@ -324,7 +325,7 @@ arrow's undeliverable items, are edited rather than replaced:
 An identifier longer than 64 characters is refused, so a full list always fits in the packet that
 syncs settings to players.
 
-These three are yours alone. They live on your machine, they are never sent anywhere, and changing
+These four are yours alone. They live on your machine, they are never sent anywhere, and changing
 them changes nothing for anyone else:
 
 | Setting | Default | Range |
@@ -332,6 +333,13 @@ them changes nothing for anyone else:
 | `client.showCountdownRing` | on | on or off |
 | `client.playCountdownSound` | on | on or off |
 | `client.countdownRingScale` | 1.0 | 0.5 to 2.0 |
+| `client.modSoundVolume` | 1.0 | 0.0 to 1.0 |
+
+`sound.volume` and `client.modSoundVolume` scale every sound this mod plays and nothing else, so a
+server and a player can each turn the mod down without touching the game's own volume sliders. The
+two multiply, and zero on either silences the mod's sounds. Turning them down makes the mod
+quieter without shortening how far its sounds carry. Nothing in the mod needs to be heard to
+be survived: an explosive arrow's countdown ring still shows with every sound off.
 
 </details>
 

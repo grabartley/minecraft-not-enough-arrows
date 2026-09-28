@@ -1,11 +1,12 @@
 package com.grahambartley.notenougharrows.ender;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,14 +57,6 @@ public final class EnderTeleport {
         PARTICLE_SPREAD,
         PARTICLE_SPREAD,
         PARTICLE_SPEED);
-    world.playSound(
-        null,
-        at.getX(),
-        at.getY(),
-        at.getZ(),
-        SoundEvents.ENTITY_ENDERMAN_TELEPORT,
-        channel,
-        SOUND_VOLUME,
-        SOUND_PITCH);
+    ModSoundPlayer.play(world, at, ModSounds.ENDER_TELEPORT, channel, SOUND_VOLUME, SOUND_PITCH);
   }
 }

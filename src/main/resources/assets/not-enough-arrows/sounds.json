@@ -4,5 +4,139 @@
     "sounds": [
       "not-enough-arrows:countdown_beep"
     ]
+  },
+  "smoke_arrow_impact": {
+    "subtitle": "subtitles.block.fire.extinguish",
+    "sounds": [
+      {
+        "name": "minecraft:block.fire.extinguish",
+        "type": "event"
+      }
+    ]
+  },
+  "repel_arrow_impact": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "minecraft:block.soul_sand.break",
+        "type": "event"
+      }
+    ]
+  },
+  "taunt_arrow_impact": {
+    "subtitle": "subtitles.block.note_block.note",
+    "sounds": [
+      {
+        "name": "minecraft:block.note_block.bell",
+        "type": "event"
+      }
+    ]
+  },
+  "disarm_arrow_impact": {
+    "subtitle": "subtitles.block.tripwire.detach",
+    "sounds": [
+      {
+        "name": "minecraft:block.tripwire.detach",
+        "type": "event"
+      }
+    ]
+  },
+  "allegiance_arrow_impact": {
+    "subtitle": "subtitles.entity.player.levelup",
+    "sounds": [
+      {
+        "name": "minecraft:entity.player.levelup",
+        "type": "event"
+      }
+    ]
+  },
+  "ricochet_arrow_bounce": {
+    "subtitle": "subtitles.entity.arrow.hit",
+    "sounds": [
+      {
+        "name": "minecraft:entity.arrow.hit",
+        "type": "event"
+      }
+    ]
+  },
+  "ender_teleport": {
+    "subtitle": "subtitles.entity.enderman.teleport",
+    "sounds": [
+      {
+        "name": "minecraft:entity.enderman.teleport",
+        "type": "event"
+      }
+    ]
+  },
+  "frost_arrow_freeze_crack": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "minecraft:block.glass.break",
+        "type": "event"
+      }
+    ]
+  },
+  "frost_arrow_freeze_settle": {
+    "subtitle": "subtitles.block.generic.place",
+    "sounds": [
+      {
+        "name": "minecraft:block.powder_snow.place",
+        "type": "event"
+      }
+    ]
+  },
+  "frost_arrow_thaw": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "minecraft:block.powder_snow.break",
+        "type": "event"
+      }
+    ]
+  },
+  "explosive_arrow_blast": {
+    "subtitle": "subtitles.entity.generic.explode",
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.explode",
+        "type": "event"
+      }
+    ]
+  },
+  "wind_arrow_burst": {
+    "subtitle": "subtitles.entity.wind_charge.wind_burst",
+    "sounds": [
+      {
+        "name": "minecraft:entity.wind_charge.wind_burst",
+        "type": "event"
+      }
+    ]
+  },
+  "fletching_station_select": {
+    "sounds": [
+      {
+        "name": "minecraft:ui.stonecutter.select_recipe",
+        "type": "event"
+      }
+    ]
+  },
+  "shock_arrow_thunder": {
+    "subtitle": "subtitles.entity.lightning_bolt.thunder",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.thunder",
+        "type": "event"
+      }
+    ]
+  },
+  "shock_arrow_impact": {
+    "subtitle": "subtitles.entity.lightning_bolt.impact",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.impact",
+        "type": "event"
+      }
+    ]
   }
 }

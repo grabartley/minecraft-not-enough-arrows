@@ -16,7 +16,8 @@ public record NotEnoughArrowsConfig(
     DiscoveryArrowConfig discovery,
     ChaosArrowConfig chaos,
     SocialArrowConfig social,
-    FletchingStationConfig fletching) {
+    FletchingStationConfig fletching,
+    SoundConfig sound) {
 
   static final String KEY_EXPLOSIVE = "explosive";
   static final String KEY_GRAPPLE = "grapple";
@@ -32,6 +33,7 @@ public record NotEnoughArrowsConfig(
   static final String KEY_CHAOS = "chaos";
   static final String KEY_SOCIAL = "social";
   static final String KEY_FLETCHING = "fletching";
+  static final String KEY_SOUND = "sound";
 
   public NotEnoughArrowsConfig {
     explosive = explosive == null ? ExplosiveArrowConfig.defaults() : explosive;
@@ -48,6 +50,7 @@ public record NotEnoughArrowsConfig(
     chaos = chaos == null ? ChaosArrowConfig.defaults() : chaos;
     social = social == null ? SocialArrowConfig.defaults() : social;
     fletching = fletching == null ? FletchingStationConfig.defaults() : fletching;
+    sound = sound == null ? SoundConfig.defaults() : sound;
   }
 
   public static NotEnoughArrowsConfig defaults() {
@@ -65,7 +68,8 @@ public record NotEnoughArrowsConfig(
         DiscoveryArrowConfig.defaults(),
         ChaosArrowConfig.defaults(),
         SocialArrowConfig.defaults(),
-        FletchingStationConfig.defaults());
+        FletchingStationConfig.defaults(),
+        SoundConfig.defaults());
   }
 
   public NotEnoughArrowsConfig withExplosive(final ExplosiveArrowConfig value) {
@@ -83,7 +87,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withGrapple(final GrappleArrowConfig value) {
@@ -101,7 +106,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withUtility(final UtilityArrowConfig value) {
@@ -119,7 +125,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withPhysics(final PhysicsArrowConfig value) {
@@ -137,7 +144,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withEnder(final EnderArrowConfig value) {
@@ -155,7 +163,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withCombat(final CombatArrowConfig value) {
@@ -173,7 +182,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withControl(final ControlArrowConfig value) {
@@ -191,7 +201,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withTraversal(final TraversalArrowConfig value) {
@@ -209,7 +220,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withTerrain(final TerrainArrowConfig value) {
@@ -227,13 +239,14 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withAgriculture(final AgricultureArrowConfig value) {
     return new NotEnoughArrowsConfig(
         explosive, grapple, utility, physics, ender, combat, control, traversal, terrain, value,
-        discovery, chaos, social, fletching);
+        discovery, chaos, social, fletching, sound);
   }
 
   public NotEnoughArrowsConfig withDiscovery(final DiscoveryArrowConfig value) {
@@ -251,7 +264,8 @@ public record NotEnoughArrowsConfig(
         value,
         chaos,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withChaos(final ChaosArrowConfig value) {
@@ -269,7 +283,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         value,
         social,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withSocial(final SocialArrowConfig value) {
@@ -287,7 +302,8 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         value,
-        fletching);
+        fletching,
+        sound);
   }
 
   public NotEnoughArrowsConfig withFletching(final FletchingStationConfig value) {
@@ -305,6 +321,26 @@ public record NotEnoughArrowsConfig(
         discovery,
         chaos,
         social,
+        value,
+        sound);
+  }
+
+  public NotEnoughArrowsConfig withSound(final SoundConfig value) {
+    return new NotEnoughArrowsConfig(
+        explosive,
+        grapple,
+        utility,
+        physics,
+        ender,
+        combat,
+        control,
+        traversal,
+        terrain,
+        agriculture,
+        discovery,
+        chaos,
+        social,
+        fletching,
         value);
   }
 
@@ -323,7 +359,8 @@ public record NotEnoughArrowsConfig(
         DiscoveryArrowConfig.fromJson(ConfigValues.readObject(root, KEY_DISCOVERY)),
         ChaosArrowConfig.fromJson(ConfigValues.readObject(root, KEY_CHAOS)),
         SocialArrowConfig.fromJson(ConfigValues.readObject(root, KEY_SOCIAL)),
-        FletchingStationConfig.fromJson(ConfigValues.readObject(root, KEY_FLETCHING)));
+        FletchingStationConfig.fromJson(ConfigValues.readObject(root, KEY_FLETCHING)),
+        SoundConfig.fromJson(ConfigValues.readObject(root, KEY_SOUND)));
   }
 
   public JsonObject toJson() {
@@ -342,6 +379,7 @@ public record NotEnoughArrowsConfig(
     root.add(KEY_CHAOS, chaos.toJson());
     root.add(KEY_SOCIAL, social.toJson());
     root.add(KEY_FLETCHING, fletching.toJson());
+    root.add(KEY_SOUND, sound.toJson());
     return root;
   }
 }

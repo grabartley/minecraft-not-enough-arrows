@@ -19,7 +19,7 @@ class ClientStateHolderTest {
 
   @Test
   void holdsWhateverItWasGiven() {
-    final ClientState state = new ClientState(false, false, 1.5f);
+    final ClientState state = new ClientState(false, false, 1.5f, 1.0f);
 
     ClientStateHolder.set(state);
 
@@ -28,8 +28,8 @@ class ClientStateHolderTest {
 
   @Test
   void replacesEarlierStateRatherThanMergingIt() {
-    ClientStateHolder.set(new ClientState(false, false, 1.5f));
-    final ClientState latest = new ClientState(true, false, 0.5f);
+    ClientStateHolder.set(new ClientState(false, false, 1.5f, 1.0f));
+    final ClientState latest = new ClientState(true, false, 0.5f, 1.0f);
 
     ClientStateHolder.set(latest);
 
@@ -38,7 +38,7 @@ class ClientStateHolderTest {
 
   @Test
   void fallsBackToDefaultsRatherThanHoldingNothing() {
-    ClientStateHolder.set(new ClientState(false, false, 1.5f));
+    ClientStateHolder.set(new ClientState(false, false, 1.5f, 1.0f));
 
     ClientStateHolder.set(null);
 
@@ -47,7 +47,7 @@ class ClientStateHolderTest {
 
   @Test
   void resetsToDefaults() {
-    ClientStateHolder.set(new ClientState(false, false, 1.5f));
+    ClientStateHolder.set(new ClientState(false, false, 1.5f, 1.0f));
 
     ClientStateHolder.reset();
 

@@ -1,12 +1,13 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.control.SmokeCloudService;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -37,7 +38,7 @@ public class SmokeArrowEntity extends AreaControlArrowEntity {
     if (!SmokeCloudService.open(world, center, ServerConfigService.get().control().smoke())) {
       return false;
     }
-    playSound(SoundEvents.BLOCK_FIRE_EXTINGUISH, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(this, ModSounds.SMOKE_ARROW_IMPACT, IMPACT_VOLUME, IMPACT_PITCH);
     return true;
   }
 }

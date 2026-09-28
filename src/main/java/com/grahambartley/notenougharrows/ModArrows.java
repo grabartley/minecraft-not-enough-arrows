@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows;
 import com.grahambartley.notenougharrows.arrow.ArrowCatalog;
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
 import com.grahambartley.notenougharrows.arrow.ArrowRegistrar;
+import com.grahambartley.notenougharrows.arrow.ArrowSound;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import com.grahambartley.notenougharrows.entity.AllegianceArrowEntity;
 import com.grahambartley.notenougharrows.entity.DisarmArrowEntity;
@@ -40,6 +41,12 @@ import org.jetbrains.annotations.Nullable;
 
 public final class ModArrows {
   private static final ArrowRegistrar REGISTRAR = new ArrowRegistrar();
+  private static final String EXPLOSIVE_FUSE = "explosive_fuse";
+  private static final ArrowSound EXPLOSIVE_FUSE_BEEP =
+      ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.COUNTDOWN_BEEP.getId());
+  private static final ArrowSound EXPLOSIVE_BLAST =
+      ArrowSound.sharedBy(EXPLOSIVE_FUSE, ModSounds.EXPLOSIVE_ARROW_BLAST.getId());
+  private static final String ENDER_TELEPORT = "ender_teleport";
 
   public static final RegisteredArrow<GrappleArrowEntity> GRAPPLE_ARROW =
       REGISTRAR.register(
@@ -59,20 +66,38 @@ public final class ModArrows {
 
   public static final RegisteredArrow<WindArrowEntity> WIND_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("wind_arrow", WindArrowEntity::new, ModArrows::windArrow));
+          ArrowDefinition.of(
+              "wind_arrow",
+              WindArrowEntity::new,
+              ModArrows::windArrow,
+              ArrowSound.own(ModSounds.WIND_ARROW_BURST.getId())));
 
   public static final RegisteredArrow<GunpowderArrowEntity> GUNPOWDER_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
-              "gunpowder_arrow", GunpowderArrowEntity::new, ModArrows::gunpowderArrow));
+              "gunpowder_arrow",
+              GunpowderArrowEntity::new,
+              ModArrows::gunpowderArrow,
+              EXPLOSIVE_FUSE_BEEP,
+              EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<TntArrowEntity> TNT_ARROW =
-      REGISTRAR.register(ArrowDefinition.of("tnt_arrow", TntArrowEntity::new, ModArrows::tntArrow));
+      REGISTRAR.register(
+          ArrowDefinition.of(
+              "tnt_arrow",
+              TntArrowEntity::new,
+              ModArrows::tntArrow,
+              EXPLOSIVE_FUSE_BEEP,
+              EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<FireChargeArrowEntity> FIRE_CHARGE_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
-              "fire_charge_arrow", FireChargeArrowEntity::new, ModArrows::fireChargeArrow));
+              "fire_charge_arrow",
+              FireChargeArrowEntity::new,
+              ModArrows::fireChargeArrow,
+              EXPLOSIVE_FUSE_BEEP,
+              EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<IncendiaryArrowEntity> INCENDIARY_ARROW =
       REGISTRAR.register(
@@ -85,20 +110,36 @@ public final class ModArrows {
 
   public static final RegisteredArrow<RicochetArrowEntity> RICOCHET_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("ricochet_arrow", RicochetArrowEntity::new, ModArrows::ricochetArrow));
+          ArrowDefinition.of(
+              "ricochet_arrow",
+              RicochetArrowEntity::new,
+              ModArrows::ricochetArrow,
+              ArrowSound.own(ModSounds.RICOCHET_ARROW_BOUNCE.getId())));
 
   public static final RegisteredArrow<EnderPearlArrowEntity> ENDER_PEARL_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
-              "ender_pearl_arrow", EnderPearlArrowEntity::new, ModArrows::enderPearlArrow));
+              "ender_pearl_arrow",
+              EnderPearlArrowEntity::new,
+              ModArrows::enderPearlArrow,
+              ArrowSound.sharedBy(ENDER_TELEPORT, ModSounds.ENDER_TELEPORT.getId())));
 
   public static final RegisteredArrow<RecallArrowEntity> RECALL_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("recall_arrow", RecallArrowEntity::new, ModArrows::recallArrow));
+          ArrowDefinition.of(
+              "recall_arrow",
+              RecallArrowEntity::new,
+              ModArrows::recallArrow,
+              ArrowSound.sharedBy(ENDER_TELEPORT, ModSounds.ENDER_TELEPORT.getId())));
 
   public static final RegisteredArrow<ShockArrowEntity> SHOCK_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("shock_arrow", ShockArrowEntity::new, ModArrows::shockArrow));
+          ArrowDefinition.of(
+              "shock_arrow",
+              ShockArrowEntity::new,
+              ModArrows::shockArrow,
+              ArrowSound.own(ModSounds.SHOCK_ARROW_THUNDER.getId()),
+              ArrowSound.own(ModSounds.SHOCK_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<LifestealArrowEntity> LIFESTEAL_ARROW =
       REGISTRAR.register(
@@ -135,7 +176,13 @@ public final class ModArrows {
 
   public static final RegisteredArrow<FrostArrowEntity> FROST_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("frost_arrow", FrostArrowEntity::new, ModArrows::frostArrow));
+          ArrowDefinition.of(
+              "frost_arrow",
+              FrostArrowEntity::new,
+              ModArrows::frostArrow,
+              ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_CRACK.getId()),
+              ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_SETTLE.getId()),
+              ArrowSound.own(ModSounds.FROST_ARROW_THAW.getId())));
 
   public static final RegisteredArrow<LevitationArrowEntity> LEVITATION_ARROW =
       REGISTRAR.register(
@@ -144,24 +191,43 @@ public final class ModArrows {
 
   public static final RegisteredArrow<TauntArrowEntity> TAUNT_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("taunt_arrow", TauntArrowEntity::new, ModArrows::tauntArrow));
+          ArrowDefinition.of(
+              "taunt_arrow",
+              TauntArrowEntity::new,
+              ModArrows::tauntArrow,
+              ArrowSound.own(ModSounds.TAUNT_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<RepelArrowEntity> REPEL_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("repel_arrow", RepelArrowEntity::new, ModArrows::repelArrow));
+          ArrowDefinition.of(
+              "repel_arrow",
+              RepelArrowEntity::new,
+              ModArrows::repelArrow,
+              ArrowSound.own(ModSounds.REPEL_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<AllegianceArrowEntity> ALLEGIANCE_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
-              "allegiance_arrow", AllegianceArrowEntity::new, ModArrows::allegianceArrow));
+              "allegiance_arrow",
+              AllegianceArrowEntity::new,
+              ModArrows::allegianceArrow,
+              ArrowSound.own(ModSounds.ALLEGIANCE_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<SmokeArrowEntity> SMOKE_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("smoke_arrow", SmokeArrowEntity::new, ModArrows::smokeArrow));
+          ArrowDefinition.of(
+              "smoke_arrow",
+              SmokeArrowEntity::new,
+              ModArrows::smokeArrow,
+              ArrowSound.own(ModSounds.SMOKE_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<DisarmArrowEntity> DISARM_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("disarm_arrow", DisarmArrowEntity::new, ModArrows::disarmArrow));
+          ArrowDefinition.of(
+              "disarm_arrow",
+              DisarmArrowEntity::new,
+              ModArrows::disarmArrow,
+              ArrowSound.own(ModSounds.DISARM_ARROW_IMPACT.getId())));
 
   private ModArrows() {}
 

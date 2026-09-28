@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.wind;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModExplosion;
 import com.grahambartley.notenougharrows.config.UtilityArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import java.util.ArrayList;
@@ -8,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -45,19 +46,16 @@ public final class WindBurstService {
       final Vec3d center,
       @Nullable final Entity source,
       @Nullable final Entity shooter) {
-    world.createExplosion(
+    ModExplosion.create(
+        world,
         source,
-        null,
         new WindExplosionBehavior(shooter),
-        center.getX(),
-        center.getY(),
-        center.getZ(),
+        center,
         WIND_CHARGE_EXPLOSION_POWER,
-        false,
         World.ExplosionSourceType.TRIGGER,
         ParticleTypes.GUST_EMITTER_SMALL,
         ParticleTypes.GUST_EMITTER_LARGE,
-        SoundEvents.ENTITY_WIND_CHARGE_WIND_BURST);
+        ModSounds.WIND_ARROW_BURST);
   }
 
   private static List<Entity> displaceEntities(

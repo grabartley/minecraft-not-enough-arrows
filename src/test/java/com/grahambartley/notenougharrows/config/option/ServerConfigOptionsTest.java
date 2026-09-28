@@ -36,7 +36,8 @@ class ServerConfigOptionsTest {
             "discovery",
             "chaos",
             "social",
-            "fletching"),
+            "fletching",
+            "sound"),
         ServerConfigOptions.sections().stream().map(ConfigSection::id).toList());
   }
 

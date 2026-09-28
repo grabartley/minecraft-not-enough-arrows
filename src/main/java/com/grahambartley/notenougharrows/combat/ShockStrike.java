@@ -1,10 +1,10 @@
 package com.grahambartley.notenougharrows.combat;
 
+import com.grahambartley.notenougharrows.ModEntities;
 import com.grahambartley.notenougharrows.config.ShockArrowConfig;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -85,7 +85,7 @@ public final class ShockStrike {
   }
 
   private static void flash(final ServerWorld world, final Vec3d at) {
-    final LightningEntity bolt = EntityType.LIGHTNING_BOLT.create(world);
+    final LightningEntity bolt = ModEntities.SHOCK_BOLT.create(world);
     if (bolt == null) {
       return;
     }

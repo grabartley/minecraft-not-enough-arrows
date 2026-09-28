@@ -351,7 +351,7 @@ Four of these are worth reading the detail on, because each refuses something a 
 
 | Rule | Behaviour |
 |---|---|
-| The shock bolt and fire | The bolt entity is cosmetic, so it provides the flash and the thunder and nothing else. The jump's damage is applied deliberately, as lightning damage credited to the shooter, which means the arrow starts no fire under any setting and in any weather, and it does not change the weather either |
+| The shock bolt and fire | The bolt entity is cosmetic, so it starts no fire and hurts nothing by itself. It still does what any bolt does to the blocks it lands on: it powers a lightning rod, strips oxidation from copper, and is heard by sculk. The jump's damage is applied deliberately, as lightning damage credited to the shooter, which means the arrow starts no fire under any setting and in any weather, and it does not change the weather either |
 | The shock bolt and the jump | `combat.shock.damage` is what the jump deals, and it is dealt only to the entity jumped to. What the arrow itself struck takes an ordinary arrow hit and nothing more, so a shock arrow gives a bow a second target rather than a bigger number. Exactly one further living thing is reached, the nearest inside the arc reach, and never the shooter. A third is never reached, so a crowd cannot be cleared with one arrow |
 | Lifesteal and the damage actually dealt | The heal is measured from how much health and absorption the target actually lost, not from what the arrow was worth, so armour, resistance and a killing blow on an almost-dead target all reduce the heal honestly. A hit that dealt nothing heals nothing, and a dispensed arrow has no shooter to heal |
 | Lifesteal and the shooter's maximum | It never heals past the shooter's own maximum and never hands out absorption instead of the health it could not give |
@@ -417,11 +417,32 @@ Like every arrow in the mod, each of the seven is craftable at a crafting table 
 
 ## Sounds
 
-The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is registered under in `ModSounds`.
+The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
 
-| Sound | Used for |
-|---|---|
-| `not-enough-arrows:countdown_beep` | The single beep every explosive arrow plays while its fuse burns |
+Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's loudness and pitch spread. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
+
+An arrow declares every sound its effect plays on its `ArrowDefinition`, which covers the impact sound IDENT-7 asks for. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep and the blast (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one. They check what an arrow declares, not what it plays, so a family issue still has to declare every sound it adds.
+
+| Sound | Plays | Used for | Vanilla meaning kept (IDENT-8) |
+|---|---|---|---|
+| `countdown_beep` | Mod asset | The single beep every explosive arrow plays while its fuse burns, shared by the three tiers | Own asset |
+| `smoke_arrow_impact` | `block.fire.extinguish` | A smoke arrow's cloud bursting | Yes: a hiss of smoke |
+| `repel_arrow_impact` | `block.soul_sand.break` | A repel arrow pushing mobs off | Under review: vanilla means soul sand breaking |
+| `taunt_arrow_impact` | `block.note_block.bell` | A taunt arrow calling mobs to it | Yes: a bell that draws attention |
+| `disarm_arrow_impact` | `block.tripwire.detach` | A disarm arrow knocking an item loose | Yes: something coming unhooked |
+| `allegiance_arrow_impact` | `entity.player.levelup` | An allegiance arrow turning a mob | Under review: vanilla means a level gained |
+| `ricochet_arrow_bounce` | `entity.arrow.hit` | A ricochet arrow bouncing off a block | Yes: an arrow striking something |
+| `ender_teleport` | `entity.enderman.teleport` | The ender pearl and recall arrows moving something, shared as one teleport system | Yes: a teleport |
+| `frost_arrow_freeze_crack` | `block.glass.break` | A frost arrow encasing its target | Under review: vanilla means glass breaking |
+| `frost_arrow_freeze_settle` | `block.powder_snow.place` | Snow settling as the freeze lands | Yes: powder snow settling |
+| `frost_arrow_thaw` | `block.powder_snow.break` | The ice around a frozen target giving way | Yes: powder snow breaking |
+| `explosive_arrow_blast` | `entity.generic.explode` | The blast at the end of every explosive tier's fuse | Yes: an explosion |
+| `wind_arrow_burst` | `entity.wind_charge.wind_burst` | A wind arrow's gust | Yes: a wind charge bursting |
+| `shock_arrow_thunder` | `entity.lightning_bolt.thunder` | The thunder of a shock arrow's bolt | Yes: lightning |
+| `shock_arrow_impact` | `entity.lightning_bolt.impact` | The crack where a shock arrow's bolt lands | Yes: lightning striking |
+| `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
+
+This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
 
 The countdown communicates urgency through cadence rather than through different sounds: one short beep is replayed at a shortening interval as detonation approaches, so a player who hears the beeps speeding up knows to move. Keeping it to one asset is what makes that escalation smooth, because the interval is the only thing changing.
 
