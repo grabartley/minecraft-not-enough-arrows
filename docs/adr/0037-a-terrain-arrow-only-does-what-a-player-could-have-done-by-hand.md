@@ -11,9 +11,9 @@ A drill that simply removed its block would mine obsidian from an iron pickaxe r
 
 ## Decision
 
-Each terrain effect is held to what the hand could have done, and asks vanilla rather than a list of its own.
+Each terrain effect is held to what the hand could have done, and asks vanilla rather than a list of its own. A freeze skips any fluid position a creature is in, as vanilla's frost walker does, so it never encases anything.
 
-- **The drill mines as a pickaxe.** It builds the configured tier's real pickaxe stack, asks the block whether that stack can harvest it, and runs the block's own loot table with that stack, so stone gives cobblestone and diamond ore gives a diamond. Eligibility is the gravity arrow's hand-break check, now `HandBreakable`, so a chest, bedrock, and anything with a block entity are refused for one reason in one place. Drops go to the shooter where there is room and fall at the block where there is not (SAFE-11).
+- **The drill mines as a pickaxe.** It builds the configured tier's real pickaxe stack, asks the block whether that stack can harvest it, and runs the block's own loot table with that stack, so stone gives cobblestone and diamond ore gives a diamond. Eligibility is the gravity arrow's hand-break check, now `HandBreakable`, so a chest, bedrock, and anything with a block entity are refused for one reason in one place. Ice is refused too, because a pickaxe leaves water where ice was and the arrow has no hand to do that with. Drops go to the shooter where there is room and fall at the block where there is not (SAFE-11).
 - **Paint follows vanilla's dye recipes, not its block names.** Any wool and any carpet recolour, because vanilla re-dyes both. Undyed glass, glass panes, terracotta and candles take their first colour, because vanilla dyes those once. Nothing else changes, concrete and already stained glass included, and a sheep follows the rules of a dye used on it: alive, unsheared, and not already that colour.
 - **Conversions skip, structures truncate.** Drain and freeze walk a sphere nearest first and skip any position that is unloaded, outside the build limit, or refused by the permission check, carrying on with the rest. Pillar and web are timed structures and keep [ADR 0034](0034-a-timed-structure-leaves-its-marks-in-the-chunk.md)'s rule of stopping at the first refused position. Both are silent, and neither reports where the boundary is.
 
@@ -25,4 +25,4 @@ Players will fire a paint arrow at stained glass or concrete and see nothing hap
 
 A freeze or drain arrow fired across a protection edge acts on the unprotected side and not the other, which can look like a lopsided circle. Stopping the whole sweep at the first refusal would have hidden that, but only by leaking the same edge through which positions did change.
 
-Placing a pillar or web still goes through the timed structure system, so a block mined out of one drops as it always would. A player can therefore mine a pillar's dirt or a web's string back out; that is the structure system's existing rule rather than a new one.
+Pillar and web blocks are ordinary vanilla blocks in a timed structure, so STRUCT-11 applies: mining one out gives its ordinary drop. A player with shears can therefore take more cobweb out of a web patch than the recipe put in. That follows the PRD as written and is flagged for the owner rather than changed here, since it is a structure system rule every structure arrow shares.

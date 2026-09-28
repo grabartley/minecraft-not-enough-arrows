@@ -129,6 +129,14 @@ public final class DrillServiceGameTest implements FabricGameTest {
       templateName = TerrainTestSupport.TEMPLATE,
       batchId = BATCH,
       tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void iceIsLeftStandingRatherThanVanishingWithoutItsWater(TestContext context) {
+    assertRefused(context, Blocks.ICE, IRON);
+  }
+
+  @GameTest(
+      templateName = TerrainTestSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
   public void aDisabledDrillBreaksNothing(TestContext context) {
     assertRefused(context, Blocks.STONE, IRON.withEnabled(false));
   }

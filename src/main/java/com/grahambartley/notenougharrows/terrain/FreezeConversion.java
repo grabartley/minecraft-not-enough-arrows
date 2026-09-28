@@ -5,6 +5,7 @@ import net.minecraft.block.AbstractFireBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;
@@ -30,6 +31,7 @@ public final class FreezeConversion {
 
   public static boolean freezeAt(final ServerWorld world, final BlockPos pos) {
     return frozenFormOf(world.getBlockState(pos))
+        .filter(frozen -> frozen.isAir() || world.canPlace(frozen, pos, ShapeContext.absent()))
         .map(frozen -> world.setBlockState(pos, frozen, Block.NOTIFY_ALL))
         .orElse(false);
   }

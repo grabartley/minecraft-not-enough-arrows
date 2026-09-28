@@ -7,6 +7,7 @@ import com.grahambartley.notenougharrows.world.HandBreakable;
 import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IceBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -32,7 +33,9 @@ public final class DrillService {
     }
     final BlockState state = world.getBlockState(pos);
     final ItemStack tool = DrillTool.forTier(drill.toolTier());
-    if (!HandBreakable.allows(world, pos, state, shooter) || !DrillTool.canHarvest(tool, state)) {
+    if (!HandBreakable.allows(world, pos, state, shooter)
+        || !DrillTool.canHarvest(tool, state)
+        || state.getBlock() instanceof IceBlock) {
       return false;
     }
 

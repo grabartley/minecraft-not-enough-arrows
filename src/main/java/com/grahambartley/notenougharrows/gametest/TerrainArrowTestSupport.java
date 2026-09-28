@@ -12,14 +12,12 @@ final class TerrainArrowTestSupport {
   static final int SETTLED_TICK = 30;
   static final int TICK_LIMIT = 60;
 
+  private static final int A_QUIVER = 8;
+
   private TerrainArrowTestSupport() {}
 
   static ServerPlayerEntity fireFromBow(final TestContext context, final Item arrow) {
-    final ServerPlayerEntity shooter =
-        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    MockPlayerSupport.fireEastFromBow(context, shooter, arrow);
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
-    return shooter;
+    return fireFromBow(context, new ItemStack(arrow, A_QUIVER));
   }
 
   static ServerPlayerEntity fireFromBow(final TestContext context, final ItemStack quiver) {

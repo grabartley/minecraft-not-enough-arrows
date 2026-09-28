@@ -7,6 +7,8 @@ import com.grahambartley.notenougharrows.terrain.FreezeService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.CodEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -58,6 +60,22 @@ public final class FreezeServiceGameTest implements FabricGameTest {
     freeze(context, CENTER, null, RADIUS_ONE);
 
     context.expectBlock(Blocks.STONE, CENTER);
+    context.expectBlock(Blocks.ICE, CENTER.east());
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = TerrainTestSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aFreezeNeverEncasesACreatureInTheWater(TestContext context) {
+    TerrainTestSupport.fill(context, Blocks.WATER.getDefaultState(), CENTER, CENTER.east());
+    final CodEntity cod = context.spawnEntity(EntityType.COD, CENTER);
+    cod.setAiDisabled(true);
+
+    freeze(context, CENTER, null, RADIUS_ONE);
+
+    context.expectBlock(Blocks.WATER, CENTER);
     context.expectBlock(Blocks.ICE, CENTER.east());
     context.complete();
   }

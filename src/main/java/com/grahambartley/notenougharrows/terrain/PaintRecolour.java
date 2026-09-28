@@ -1,8 +1,11 @@
 package com.grahambartley.notenougharrows.terrain;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 public final class PaintRecolour {
@@ -11,23 +14,9 @@ public final class PaintRecolour {
   private static final List<String> UNDYED_FAMILIES =
       List.of("glass", "glass_pane", "terracotta", "candle");
   private static final Set<String> COLOURS =
-      Set.of(
-          "white",
-          "orange",
-          "magenta",
-          "light_blue",
-          "yellow",
-          "lime",
-          "pink",
-          "gray",
-          "light_gray",
-          "cyan",
-          "purple",
-          "blue",
-          "brown",
-          "green",
-          "red",
-          "black");
+      Arrays.stream(DyeColor.values())
+          .map(DyeColor::getName)
+          .collect(Collectors.toUnmodifiableSet());
 
   private PaintRecolour() {}
 

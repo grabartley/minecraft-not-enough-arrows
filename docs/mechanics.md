@@ -295,7 +295,7 @@ Like every arrow in the mod, it is craftable at a crafting table from eight arro
 
 ## Terrain Arrows
 
-Six arrows that change a block at range: break it, raise ground under it, drain it, freeze it, web it, or recolour it. Every one of them is held to what a player standing at the target could have done by hand with the item the arrow was crafted from, and [ADR 0037](adr/0037-a-terrain-arrow-only-does-what-a-player-could-have-done-by-hand.md) covers why.
+Six arrows that change a block at range: break it, raise ground on top of it, drain it, freeze it, web it, or recolour it. Every one of them is held to what a player standing at the target could have done by hand with the item the arrow was crafted from, and [ADR 0037](adr/0037-a-terrain-arrow-only-does-what-a-player-could-have-done-by-hand.md) covers why.
 
 | Arrow | Crafted around | On a block | On a creature | Spent |
 |---|---|---|---|---|
@@ -309,12 +309,12 @@ Six arrows that change a block at range: break it, raise ground under it, drain 
 | Rule | Behaviour |
 |---|---|
 | Protection | Every position is checked with the world's own permission check, which carries spawn protection and the world border. A dispensed arrow has no player behind it and is checked against the world border alone. A refusal is silent |
-| Drill eligibility | The gravity arrow's rule: inside the build limit, solid, breakable by a player, and carrying no block entity. A chest, bedrock and a sign are always left alone |
+| Drill eligibility | The gravity arrow's rule: inside the build limit, solid, breakable by a player, and carrying no block entity. A chest, bedrock and a sign are always left alone, and so is ice, which a pickaxe would leave as water |
 | Drill tier | `terrain.drill.toolTier`, 0 for wood, 1 for stone, 2 for iron by default. A block that pickaxe could not harvest, such as obsidian, is left standing |
 | Drill drops | The block's own loot table run with that pickaxe, so stone gives cobblestone and diamond ore a diamond. Ore experience drops as it would for a player. Drops go into the shooter's inventory and anything that does not fit lands at the block; a dispensed drill drops everything at the block |
-| Pillar | `terrain.pillar.heightBlocks` blocks of dirt, starting on top of the block struck, stopping at the first position that is not open or where a creature stands, so nothing is ever buried. It is a timed structure and sinks away after `terrain.pillar.lifetimeTicks` |
+| Pillar | `terrain.pillar.heightBlocks` blocks of dirt, starting on top of the block struck, stopping at the first position that is not open or where a creature stands, so nothing is ever buried. A side hit on a wall taller than the block struck raises nothing, and the arrow is recovered. It is a timed structure and sinks away after `terrain.pillar.lifetimeTicks` |
 | Drain | A sphere of `terrain.drain.radius` around the impact, nearest first, capped at `terrain.drain.maxBlocks`. Takes water, flowing water, seagrass and kelp, and dries out a block holding water. Never lava. Skips any position it may not touch and carries on |
-| Freeze | A sphere of `terrain.freeze.radius`, nearest first, capped at `terrain.freeze.maxBlocks`. Still water becomes ice, still lava becomes obsidian, and fire goes out. Flowing fluid, a block holding water and every solid block are left alone. Putting out one of the mod's own fire patches ends that part of the patch too |
+| Freeze | A sphere of `terrain.freeze.radius`, nearest first, capped at `terrain.freeze.maxBlocks`. Still water becomes ice, still lava becomes obsidian, and fire goes out. A fluid position a creature is in is skipped, so nothing is ever encased. Flowing fluid, a block holding water and every solid block are left alone. Putting out one of the mod's own fire patches ends that part of the patch too |
 | Web | A sphere of `terrain.web.patchRadius` of cobweb, filling only open space, which clears away after `terrain.web.lifetimeTicks` |
 | Paint | Any wool or carpet takes the arrow's colour. Undyed glass, glass panes, terracotta and candles take their first colour, keeping a candle's count and flame. Everything else, including concrete and glass already stained, is left alone. A sheep is painted as a dye in hand would: alive, unsheared and not already that colour |
 | Radius zero | Means the position struck alone |

@@ -651,7 +651,7 @@ A player wants a block gone, a lake frozen, a wall recoloured, or a doorway bloc
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
 | Drill arrow | An iron pickaxe | Breaks the struck block at a configured tool tier and drops it as items | Yes, if it broke something |
-| Pillar arrow | Dirt | Raises a timed column of dirt beneath the impact, to a configured height | Yes, if it raised anything |
+| Pillar arrow | Dirt | Raises a timed column of dirt on top of the block struck, to a configured height | Yes, if it raised anything |
 | Drain arrow | A sponge | Absorbs fluid in a configured radius, as a sponge does | Yes |
 | Freeze arrow | Blue ice | Turns water to ice, lava to obsidian, and extinguishes fire in a configured radius. Living things are untouched | Yes |
 | Web arrow | A cobweb | Places a timed patch of cobweb at the impact point | Yes |

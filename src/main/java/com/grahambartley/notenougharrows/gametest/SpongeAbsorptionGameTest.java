@@ -62,6 +62,17 @@ public final class SpongeAbsorptionGameTest implements FabricGameTest {
       templateName = TerrainTestSupport.TEMPLATE,
       batchId = BATCH,
       tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void kelpGoesWithTheWater(TestContext context) {
+    context.setBlockState(AT.down(), Blocks.SAND);
+    assertAbsorbed(context, Blocks.KELP.getDefaultState(), true);
+    context.expectBlock(Blocks.AIR, AT);
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = TerrainTestSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
   public void lavaIsNeverSoakedUp(TestContext context) {
     assertAbsorbed(context, Blocks.LAVA.getDefaultState(), false);
     context.expectBlock(Blocks.LAVA, AT);

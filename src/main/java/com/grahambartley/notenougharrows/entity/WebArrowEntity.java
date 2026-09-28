@@ -48,7 +48,10 @@ public class WebArrowEntity extends BaseArrowEntity {
   protected ArrowImpact onArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
     WebService.spin(
-        world, entityHitResult.getEntity().getBlockPos(), shootingPlayer().orElse(null));
+        world,
+        entityHitResult.getEntity().getBlockPos(),
+        shootingPlayer().orElse(null),
+        ServerConfigService.get().terrain().web());
     return ArrowImpact.DEFAULT;
   }
 }
