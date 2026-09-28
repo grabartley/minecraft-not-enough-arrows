@@ -228,5 +228,32 @@
         "type": "event"
       }
     ]
+  },
+  "zipline_arrow_string": {
+    "subtitle": "subtitles.not-enough-arrows.zipline_arrow_string",
+    "sounds": [
+      {
+        "name": "minecraft:block.chain.place",
+        "type": "event"
+      }
+    ]
+  },
+  "updraft_arrow_open": {
+    "subtitle": "subtitles.not-enough-arrows.updraft_arrow_open",
+    "sounds": [
+      {
+        "name": "minecraft:entity.breeze.whirl",
+        "type": "event"
+      }
+    ]
+  },
+  "trampoline_arrow_launch": {
+    "subtitle": "subtitles.not-enough-arrows.trampoline_arrow_launch",
+    "sounds": [
+      {
+        "name": "minecraft:entity.slime.jump",
+        "type": "event"
+      }
+    ]
   }
 }

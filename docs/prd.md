@@ -164,7 +164,7 @@ Radius means different things for different effects, and the difference decides 
 | Grapple range | A straight-line distance from the player to the centre of the struck block | The player at the moment of impact |
 | Rope length | A count of blocks straight down, not a distance | The block beneath the struck block |
 | Vine length | A count of blocks straight up the struck face, not a distance | The struck block |
-| Scaffold height, pillar height | A count of blocks straight up, not a distance | The impact position for a scaffold, the struck block for a pillar |
+| Scaffold height, pillar height | A count of blocks straight up, not a distance | The first solid ground beneath the impact position for a scaffold, the struck block for a pillar |
 | Bridge length | A count of blocks along the horizontal line from the impact point toward the shooter | The impact position |
 | Span separation | A straight-line distance between the two anchors | Anchor to anchor, not from the player |
 | Updraft height | A count of blocks above the impact position, above which the column stops lifting | The impact position |
@@ -610,16 +610,16 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 |---|---|---|---|
 | Zipline arrow | Chain | The first shot sets a pending anchor. A second shot within the pending window strings a rideable span between the two anchors | On the second shot, which consumes the first arrow's anchor |
 | Tow arrow | A grapple arrow plus a fermented spider eye | Drags the struck entity toward the shooter along a ticked pull, over whatever ground lies between them | On anything it strikes |
-| Updraft arrow | A breeze rod | Opens a rising column at the impact point that carries any entity inside it upward for a configured time | Yes |
+| Updraft arrow | A breeze rod | Opens a rising column at the impact point that carries any entity inside it upward for a configured time | Yes, if a column opened |
 | Vine arrow | A vine | Grows a climbable vine column up the struck face, to a configured length | No, it embeds |
-| Trampoline arrow | A slime block | Places a timed pad that launches anything landing on it | Yes |
-| Scaffold arrow | Scaffolding | Raises a timed climbable column at the impact point, to a configured height | Yes |
-| Bridge arrow | Oak planks | Lays a timed one-block walkway from the impact point back toward the shooter, to a configured length | Yes |
+| Trampoline arrow | A slime block | Places a timed pad that launches anything landing on it | Yes, if it placed anything |
+| Scaffold arrow | Scaffolding | Raises a timed climbable column from the ground beneath the impact point, to a configured height | Yes, if it raised anything |
+| Bridge arrow | Oak planks | Lays a timed one-block walkway from the impact point back toward the shooter, to a configured length | Yes, if it laid anything |
 
 | Requirement | Statement |
 |---|---|
 | TRAVEL-1 | Every structure these arrows leave, other than the vine column, is a timed structure, so its expiry, its permission check, and its removal are the shared system's rather than each arrow's. A vine, like a rope, answers for its own support instead of carrying an expiry (§8, Temporary Structures) |
-| TRAVEL-2 | Every vanilla block a structure places comes from the arrow's own recipe, which names the material, so no arrow conjures a block that was not paid for at the crafting table or the station. A structure made of one of the mod's own blocks, which has no item form and cannot be kept, is the exception CRAFT-9 defines |
+| TRAVEL-2 | Every vanilla block a structure places comes from the arrow's own recipe, which names the material, so no arrow conjures a block that was not paid for at the crafting table or the station. A structure made of one of the mod's own blocks, which has no item form and cannot be kept, is the exception CRAFT-9 defines, and the zipline's cable and the trampoline's pad are two ([ADR 0039](adr/0039-a-traversal-structure-worth-more-than-its-recipe-is-built-from-the-mods-own-blocks.md)) |
 | TRAVEL-3 | A zipline's first shot holds a pending anchor per player, at most one, for a configured window. Firing a third zipline arrow replaces the pending anchor rather than queuing it |
 | TRAVEL-4 | A pending zipline anchor that expires, or whose player disconnects or dies, is discarded, and the arrow that set it is not returned. A pending anchor is not a structure and holds no blocks |
 | TRAVEL-5 | A zipline span is refused rather than shortened when either end is not an anchor site, when the two ends exceed the configured maximum separation, or when any position along the span is one the shooter may not build in |
@@ -629,11 +629,11 @@ A player meets terrain a bow can cross and legs cannot: a ravine, a cliff face w
 | TRAVEL-9 | A tow ends when the target reaches the shooter, when the line of travel is obstructed, when its tick budget runs out, when either end dies or disconnects, or when the server stops. No path leaves an entity being pulled |
 | TRAVEL-10 | An updraft column applies upward velocity to entities inside it, never a position change, and it lifts everyone in it rather than only the shooter |
 | TRAVEL-11 | An updraft column is not flight: it has a configured lifetime, a configured height above which it stops lifting, and it grants nothing once the entity leaves it. A player leaving the top of a column falls under vanilla's rules and takes vanilla's fall damage |
-| TRAVEL-12 | A vine segment is held by the block face it is attached to, in the way a vanilla vine is, so each segment answers for itself: the column survives one segment being broken, and a segment removes itself when the face behind it stops being solid. It does not use the rope's support-from-above rule, because a column that grows upward cannot satisfy one |
+| TRAVEL-12 | A vine segment is a vanilla vine and is held as one is: by the block face it is attached to, or by a vine above it on the same face. Each segment answers for itself, so the column survives one segment being broken, and a segment with neither a face nor a vine above to hold it removes itself. It does not use the rope's support-from-above rule, because a column that grows upward cannot satisfy one |
 | TRAVEL-13 | A vine column stops at the first position that is not open air and at the first position the shooter may not build in, so it never clips through a floor and never crosses a protection boundary |
-| TRAVEL-14 | A trampoline launches any entity that lands on it, the shooter included, at a configured strength, and the launch cancels the fall damage of the landing that triggered it |
+| TRAVEL-14 | A trampoline launches any entity that lands on it, the shooter included, at a configured strength, and the launch cancels the fall damage of the landing that triggered it. An entity sneaking onto it lands without being launched, as on slime, and still takes no fall damage |
 | TRAVEL-15 | A bridge is laid from the impact point toward the shooter's position at the moment of impact, one block wide, stopping at the configured length or at the first position it may not use, whichever comes first |
-| TRAVEL-16 | A scaffold column rises from the impact point, stopping at the configured height, at the build limit, or at the first position that is not air or that the shooter may not build in. It is climbable and stood on, where a pillar arrow's column is solid ground raised beneath an impact, so the two read as a ladder and a plinth rather than as one arrow twice (SHAPE-5) |
+| TRAVEL-16 | A scaffold column rises from the first solid ground beneath the impact point, within the configured height of it, so a shot into a cliff face still gives a column that stands. It stops at the configured height, at the build limit, or at the first position that is not air or that the shooter may not build in. It is climbable and stood on, where a pillar arrow's column is solid ground raised beneath an impact, so the two read as a ladder and a plinth rather than as one arrow twice (SHAPE-5) |
 | TRAVEL-17 | Every setting in this use case is read fresh on the impact that uses it, so an operator's change takes effect on the next shot without a restart |
 
 **Not supported:** Swinging or momentum on a zipline. A span between more than two anchors. A span or a structure a player can place by hand or recover as an item. An updraft that grants flight, hovering, or any effect outside its own column. A bridge that chooses its own direction. Towing an entity a recall arrow would refuse.

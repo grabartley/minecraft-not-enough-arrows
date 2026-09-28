@@ -276,11 +276,19 @@ public final class ModArrows {
   public static final RegisteredArrow<WebArrowEntity> WEB_ARROW =
       REGISTRAR.register(ArrowDefinition.of("web_arrow", WebArrowEntity::new, ModArrows::webArrow));
 
+  static {
+    registerLaterFamiliesInOrder();
+  }
+
   private ModArrows() {}
 
   public static void register() {
-    AgricultureArrows.register();
     NotEnoughArrows.LOGGER.info("Registered {} arrow types", REGISTRAR.registrations().size());
+  }
+
+  private static void registerLaterFamiliesInOrder() {
+    AgricultureArrows.register();
+    TraversalArrows.register();
   }
 
   static ArrowRegistrar registrar() {

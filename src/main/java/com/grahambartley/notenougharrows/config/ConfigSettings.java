@@ -144,6 +144,7 @@ public final class ConfigSettings {
       TRAVERSAL_ZIPLINE + ".lifetimeTicks";
   public static final String TRAVERSAL_TOW_RANGE_BLOCKS = TRAVERSAL_TOW + ".rangeBlocks";
   public static final String TRAVERSAL_TOW_MAX_TICKS = TRAVERSAL_TOW + ".maxTicks";
+  public static final String TRAVERSAL_TOW_SPEED = TRAVERSAL_TOW + ".speed";
   public static final String TRAVERSAL_UPDRAFT_HEIGHT_BLOCKS = TRAVERSAL_UPDRAFT + ".heightBlocks";
   public static final String TRAVERSAL_UPDRAFT_LIFETIME_TICKS =
       TRAVERSAL_UPDRAFT + ".lifetimeTicks";

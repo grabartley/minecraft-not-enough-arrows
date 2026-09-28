@@ -1,0 +1,20 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "not-enough-arrows:grapple_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:fermented_spider_eye"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:tow_arrow",
+    "count": 12
+  }
+}

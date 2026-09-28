@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.AgricultureArrows;
 import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.TraversalArrows;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +34,8 @@ public final class HarmlessArrowGameTest implements FabricGameTest {
           ModArrows.GUARD_ARROW,
           ModArrows.GLOW_INK_ARROW,
           ModArrows.WIND_ARROW,
-          ModArrows.FREEZE_ARROW);
+          ModArrows.FREEZE_ARROW,
+          TraversalArrows.TOW_ARROW);
 
   private static final List<RegisteredArrow<?>> HURTFUL =
       List.of(
@@ -48,7 +50,13 @@ public final class HarmlessArrowGameTest implements FabricGameTest {
           AgricultureArrows.HARVEST_ARROW,
           AgricultureArrows.TILL_ARROW,
           AgricultureArrows.SAPLING_ARROW,
-          AgricultureArrows.BEE_ARROW);
+          AgricultureArrows.BEE_ARROW,
+          TraversalArrows.ZIPLINE_ARROW,
+          TraversalArrows.UPDRAFT_ARROW,
+          TraversalArrows.VINE_ARROW,
+          TraversalArrows.TRAMPOLINE_ARROW,
+          TraversalArrows.SCAFFOLD_ARROW,
+          TraversalArrows.BRIDGE_ARROW);
 
   @CustomTestProvider
   public Collection<TestFunction> anEffectArrowLeavesWhatItHitsUnhurt() {

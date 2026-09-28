@@ -42,6 +42,17 @@ The **rope arrow** is the slower, safer version: it hangs a climbable rope benea
 up to 128 blocks of it. Shoot the lip of a cliff and the way back up is already built. Shoot into a
 ravine and you have a way down that does not involve falling.
 
+## Cross what you could not walk
+
+Seven more get you somewhere. Fire a **zipline arrow** into one block and another into a second, and
+a chain cable strings itself between them; grab it and ride to the far end. The **tow arrow** drags
+whatever it hits across the ground to you, over the ravine in between if that is where the ground
+goes. The **updraft arrow** opens a column of rising wind that lifts everyone standing in it, and
+lets them go at the top. The **vine arrow** grows a climbable vine up a wall, the **trampoline
+arrow** puts down a pad that throws you back into the air and takes the sting out of the landing,
+the **scaffold arrow** raises a column of scaffolding to climb, and the **bridge arrow** lays a plank
+walkway from where it lands back to your feet. Everything but the vines clears away after a while.
+
 ## Blow something up, eventually
 
 Explosive arrows do not go off on impact. They stick, they beep, the beeping speeds up, and a ring
@@ -148,11 +159,18 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 🌱 | **Sapling** | Plants its sapling where it lands | Any sapling, one kind each |
 | ✂️ | **Shear** | Shears sheep, mooshrooms, snow golems, bogged, pumpkins, and full hives | Shears |
 | 🐝 | **Bee** | A few bees that go for what you hit, never for you | Honeycomb |
+| ⛓️ | **Zipline** | Two shots string a cable between two blocks. Ride it | Chain |
+| 🪝 | **Tow** | Drags what it hits across the ground to you | Grapple arrows and a fermented spider eye |
+| 🌬️ | **Updraft** | A column of wind that lifts everyone in it | Breeze rod |
+| 🌿 | **Vine** | Grows a climbable vine up the wall it hits | Vine |
+| 🟩 | **Trampoline** | A pad that throws you back up, with no fall damage | Slime block |
+| 🪜 | **Scaffold** | A column of scaffolding to climb, for a while | Scaffolding |
+| 🌉 | **Bridge** | A plank walkway from where it lands back to you, for a while | Oak planks |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
 of those around a fire charge gives you the top tier. Recall is built from ender pearl arrows the
-same way.
+same way, and so is tow from grapple arrows.
 
 ## Cheaper arrows at the fletching table
 
@@ -185,8 +203,8 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`. `traversal`, and `discovery` through `social`, hold the settings for
-arrows that have not landed yet, so they exist ahead of the arrows they will control.
+`fletching`, and `sound`. `discovery` through `social` hold the settings for arrows that have not
+landed yet, so they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -194,7 +212,8 @@ are the ones to turn **down**:
 - **`explosive.damageTerrain` is on.** Explosive arrows break blocks out of the box. Turn it off and
 blasts still throw entities around, they just leave the scenery alone.
 - **`ender.recallAffectsPlayers` is on.** A recall arrow can drag another player, and their boat,
-back to the shooter. Turn it off and only mobs move.
+back to the shooter, and a tow arrow can drag them across the ground. Turn it off and only mobs
+move.
 - **`physics.gravityImpactRadius` is 3**, so a gravity arrow drops a sphere rather than the single
 block it hit. Set it to 0 for one block.
 - **`control.disarm.affectsPlayers` is on.** A disarm arrow can knock an item out of another
@@ -281,6 +300,7 @@ screen are rejected outright, with the accepted range in the error.
 | `traversal.zipline.lifetimeTicks` | 1200 | 0 to 12000 |
 | `traversal.tow.rangeBlocks` | 32 | 1 to 128 |
 | `traversal.tow.maxTicks` | 100 | 1 to 1200 |
+| `traversal.tow.speed` | 0.5 | 0.1 to 1.5 |
 | `traversal.updraft.heightBlocks` | 12 | 1 to 64 |
 | `traversal.updraft.lifetimeTicks` | 200 | 0 to 1200 |
 | `traversal.updraft.strength` | 0.4 | 0.0 to 2.0 |

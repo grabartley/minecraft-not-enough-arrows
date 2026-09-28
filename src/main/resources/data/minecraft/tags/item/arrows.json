@@ -41,6 +41,13 @@
     "not-enough-arrows:till_arrow",
     "not-enough-arrows:sapling_arrow",
     "not-enough-arrows:shear_arrow",
-    "not-enough-arrows:bee_arrow"
+    "not-enough-arrows:bee_arrow",
+    "not-enough-arrows:zipline_arrow",
+    "not-enough-arrows:tow_arrow",
+    "not-enough-arrows:updraft_arrow",
+    "not-enough-arrows:vine_arrow",
+    "not-enough-arrows:trampoline_arrow",
+    "not-enough-arrows:scaffold_arrow",
+    "not-enough-arrows:bridge_arrow"
   ]
 }

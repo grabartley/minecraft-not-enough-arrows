@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.UUID;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +43,20 @@ public final class StructureLedger {
     holders.clear();
     byExpiry.clear();
     return all;
+  }
+
+  public Optional<TimedStructure> find(final UUID id) {
+    return Optional.ofNullable(id == null ? null : structures.get(id));
+  }
+
+  public Optional<TimedStructure> take(final UUID id) {
+    final TimedStructure structure = id == null ? null : structures.remove(id);
+    if (structure == null) {
+      return Optional.empty();
+    }
+    byExpiry.removeIf(queued -> queued.id().equals(id));
+    forgetPositionsOf(structure);
+    return Optional.of(structure);
   }
 
   public boolean release(final BlockPos pos) {

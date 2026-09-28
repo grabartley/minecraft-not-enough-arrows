@@ -144,6 +144,62 @@ class StructureLedgerTest {
     assertTrue(ledger.holds(EARLY_POSITION));
   }
 
+  @Test
+  void findsALiveStructureByItsId() {
+    final TimedStructure structure = structure(10L, EARLY_POSITION);
+    ledger.add(structure);
+
+    assertEquals(structure, ledger.find(structure.id()).orElseThrow());
+  }
+
+  @Test
+  void findsNothingForAnUnknownOrMissingId() {
+    assertTrue(ledger.find(UUID.randomUUID()).isEmpty());
+    assertTrue(ledger.find(null).isEmpty());
+  }
+
+  @Test
+  void findingAStructureSeesAPositionThatWasReleased() {
+    final TimedStructure structure = structure(10L, EARLY_POSITION, LATE_POSITION);
+    ledger.add(structure);
+
+    ledger.release(EARLY_POSITION);
+
+    assertEquals(List.of(LATE_POSITION), ledger.find(structure.id()).orElseThrow().positions());
+  }
+
+  @Test
+  void takingAStructureEarlyForgetsItAndItsPositions() {
+    final TimedStructure structure = structure(10L, EARLY_POSITION);
+    ledger.add(structure);
+
+    assertEquals(structure, ledger.take(structure.id()).orElseThrow());
+    assertTrue(ledger.isEmpty());
+    assertFalse(ledger.holds(EARLY_POSITION));
+    assertTrue(ledger.takeExpired(10L).isEmpty());
+  }
+
+  @Test
+  void takingAStructureLeavesTheOthersToExpire() {
+    final TimedStructure taken = structure(10L, EARLY_POSITION);
+    final TimedStructure kept = structure(20L, LATE_POSITION);
+    ledger.add(taken);
+    ledger.add(kept);
+
+    ledger.take(taken.id());
+
+    assertEquals(List.of(kept), ledger.takeExpired(20L));
+  }
+
+  @Test
+  void takingAnUnknownStructureTakesNothing() {
+    ledger.add(structure(10L, EARLY_POSITION));
+
+    assertTrue(ledger.take(UUID.randomUUID()).isEmpty());
+    assertTrue(ledger.take(null).isEmpty());
+    assertEquals(1, ledger.size());
+  }
+
   private static TimedStructure structure(final long expiryTick, final BlockPos... positions) {
     return new TimedStructure(UUID.randomUUID(), null, List.of(positions), expiryTick);
   }

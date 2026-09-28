@@ -69,6 +69,13 @@ public final class TraversalOptions {
             TowArrowConfig.MAX_TICKS_MAX,
             config -> config.traversal().tow().maxTicks(),
             (config, value) -> tow(config, it -> it.withMaxTicks(value))),
+        new FloatOption<>(
+            ConfigSettings.TRAVERSAL_TOW_SPEED,
+            TowArrowConfig.SPEED_MIN,
+            TowArrowConfig.SPEED_MAX,
+            VELOCITY_STEP,
+            config -> config.traversal().tow().speed(),
+            (config, value) -> tow(config, it -> it.withSpeed(value))),
         new IntOption<>(
             ConfigSettings.TRAVERSAL_UPDRAFT_HEIGHT_BLOCKS,
             UpdraftArrowConfig.HEIGHT_BLOCKS_MIN,

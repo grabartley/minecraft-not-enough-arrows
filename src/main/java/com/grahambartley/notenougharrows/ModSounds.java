@@ -40,6 +40,10 @@ public final class ModSounds {
   public static final SoundEvent SHEAR_ARROW_CARVE = REGISTRAR.declare("shear_arrow_carve");
   public static final SoundEvent SHEAR_ARROW_HIVE = REGISTRAR.declare("shear_arrow_hive");
   public static final SoundEvent BEE_ARROW_RELEASE = REGISTRAR.declare("bee_arrow_release");
+  public static final SoundEvent ZIPLINE_ARROW_STRING = REGISTRAR.declare("zipline_arrow_string");
+  public static final SoundEvent UPDRAFT_ARROW_OPEN = REGISTRAR.declare("updraft_arrow_open");
+  public static final SoundEvent TRAMPOLINE_ARROW_LAUNCH =
+      REGISTRAR.declare("trampoline_arrow_launch");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 

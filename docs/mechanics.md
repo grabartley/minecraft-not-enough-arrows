@@ -59,7 +59,7 @@ A fire patch is a timed structure, so it ends the same way every timed structure
 
 ## Timed Structures
 
-Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar and web arrows use it too; the traversal, discovery, control and chaos arrows will build on the same system. Ropes, vines and redstone charges answer for themselves instead.
+Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar, web, zipline, trampoline, scaffold and bridge arrows use it too; the discovery, control and chaos arrows will build on the same system. Ropes, vines and redstone charges answer for themselves instead.
 
 | Rule | Behaviour |
 |---|---|
@@ -352,6 +352,36 @@ Six arrows that do a farm's chores at range. Each one runs vanilla's own code fo
 
 Every setting is read fresh on impact, so a change takes effect on the next shot. A blossom or harvest arrow that strikes a block centres on the space in front of the face it struck, where a crop or sapling stands, so a radius of zero reaches that space alone and not the block struck. All six sprites are placeholders until the agriculture art is drawn.
 
+## Traversal Arrows
+
+Seven arrows that leave a way across terrain a bow can cross and legs cannot. The grapple already pulls you up and the rope already lets you down, so each of these covers a different direction: along a line, toward you, straight up, up a wall, off the ground, and across a gap.
+
+| Arrow | Crafted around | On a block | On a creature | Spent |
+|---|---|---|---|---|
+| Zipline | A chain | The first shot sets a pending anchor. A second shot within the window strings a cable between the two blocks for a while | Hits like an arrow | On the second shot, together with the first arrow |
+| Tow | A grapple arrow, with a fermented spider eye | Embeds, and is recovered | Drags it across the ground toward you, unhurt | On anything it hits |
+| Updraft | A breeze rod | Opens a rising column of wind in front of the face it struck | Hits like an arrow, and opens the column where the creature stands | Only if a column opened |
+| Vine | A vine | Grows real vines up the face it struck | Hits like an arrow | No, it embeds |
+| Trampoline | A slime block | Puts a three by three bouncing pad down in front of the face it struck, for a while | Hits like an arrow | Only if it placed something |
+| Scaffold | Scaffolding | Raises a timed column of scaffolding from the ground under where it landed | Hits like an arrow | Only if it raised something |
+| Bridge | Oak planks | Lays a timed walkway of planks back toward you, level with the block it struck | Hits like an arrow | Only if it laid something |
+
+| Rule | Behaviour |
+|---|---|
+| Protection | Every position is checked with the world's own permission check, which carries spawn protection and the world border, and a dispensed arrow is checked against the world border alone. A trampoline, scaffold or bridge is cut short at the first position it may not use. A zipline is refused whole instead, because half a zipline is a trap |
+| Pending anchor | A zipline arrow fired by a player into an anchor site sets one pending anchor for that player, which lasts `traversal.zipline.pendingWindowTicks`. A later shot replaces it rather than queuing. It is dropped when the window closes, the block it holds is broken or replaced, the player dies or leaves, or the server stops, and it holds no blocks. The first arrow stays where it landed and can still be picked up, which drops the anchor with it |
+| Span | The second shot strings a line of cable through every block between the two anchors, one face-connected step at a time. It is refused, and becomes the new pending anchor, when either end is not an anchor site, when the ends are more than `traversal.zipline.maxSpanBlocks` apart, when they are adjacent, or when any block along the line is not open air or may not be built in. A strung span lasts `traversal.zipline.lifetimeTicks`. The shooter is told on the action bar when an anchor is set and why a span was refused |
+| Riding | Use the cable to ride it toward whichever end is further from you, hanging just below it. Several players can ride one span, and each ride is its own session. Sneak to let go. The ride carries you by velocity at up to `traversal.zipline.rideSpeed`, clears the server's airborne counter while it does, and ends through one path: arrival, letting go, the span being cut or expiring, making no progress for a second, running out of time, a grapple or tow taking over, death, leaving, or the server stopping. Arrival, a stall and running out of time spare your landing; letting go and a cut span do not |
+| Tow | Moves what a recall arrow moves: anything alive and any vehicle, never a dropped item, an orb, a projectile or a boss, and a player or anything carrying one only where `ender.recallAffectsPlayers` is on. The target must be within `traversal.tow.rangeBlocks` of the shooter. It is pulled out of any seat and dragged across the ground at up to `traversal.tow.speed` blocks a tick, horizontally only, so it falls into what lies between and takes vanilla's fall, fire and collisions. It ends when the target reaches the shooter, stops coming for a second, runs out of `traversal.tow.maxTicks`, when either end dies or leaves, or when the server stops |
+| Updraft | A column three blocks across and `traversal.updraft.heightBlocks` tall, lasting `traversal.updraft.lifetimeTicks`. Everything inside that falls is lifted at `traversal.updraft.strength`, players included, by velocity and never by moving it. Anything that leaves the column is never lifted by it again, so its top cannot be hovered at, and a fall from the top is an ordinary fall. It costs nothing when none is open and only looks at entities inside its own bounds |
+| Vine | Up to `traversal.vine.lengthBlocks` real vines climbing the side face the arrow struck, starting beside the block struck. It stops at the first position that is not open air, where the wall behind runs out, and where the shooter may not build. A top or bottom face grows nothing. The vines are ordinary vanilla vines: they stay, they are climbable, each is held by the wall behind it or by the vine above it, and like any vine they may spread |
+| Trampoline | A pad of the mod's own trampoline block that looks like slime. Anything landing on it is thrown up at `traversal.trampoline.strength`, the shooter included, and the landing does no fall damage. Sneaking stands on it without bouncing, as it does on slime. It skips any position where something stands, so it never buries anything, and melts away after `traversal.trampoline.lifetimeTicks` |
+| Scaffold | Vanilla scaffolding, which is climbable and stood on where a pillar is solid ground. The column starts on the first solid ground below where the arrow landed, up to `traversal.scaffold.heightBlocks` below it, so a shot into a cliff face still gives a ladder that stands, and rises `traversal.scaffold.heightBlocks` blocks, stopping at the first thing in the way. With no ground in reach it raises nothing and the arrow is recovered. It clears away after `traversal.scaffold.lifetimeTicks` without dropping anything |
+| Bridge | Oak planks, level with the block struck, starting beside it and running back toward where the shooter stood when it landed, one block wide and edge to edge so it can be walked. It ends beneath the shooter, at `traversal.bridge.lengthBlocks`, or at the first position that is not open or where something stands, whichever comes first. A dispensed bridge runs back the way the arrow flew. It clears away after `traversal.bridge.lifetimeTicks` |
+| Blocks with no item | The zipline cable and the trampoline are the mod's own blocks, with no item form, no recipe and no drop, and [ADR 0039](adr/0039-a-traversal-structure-worth-more-than-its-recipe-is-built-from-the-mods-own-blocks.md) covers why those two are not vanilla chain and slime. The vines, scaffolding and planks are vanilla, and a plank or scaffold mined out of a live structure drops as it always would |
+
+Every setting is read fresh on impact, so a change takes effect on the next shot; a ride and a tow also read their speed every tick. No pending anchor, ride, tow or column survives a restart: all four live in memory only, and the cable, pads, scaffolding and planks are timed structures, cleared before the world saves. All seven sprites are placeholders until the traversal art is drawn.
+
 ## Ricochet Arrow
 
 The ricochet arrow glances off the surfaces it hits instead of embedding in them, so a shot can be banked around a corner or off a ceiling into somewhere a straight line does not reach. It is the trick-shot arrow, and it is only that if the bounce is predictable enough to aim with, which is what [ADR 0020](adr/0020-a-bounce-is-a-deflection-rather-than-a-landing.md) is about.
@@ -524,6 +554,9 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | `shear_arrow_carve` | `block.pumpkin.carve` | A shear arrow carving a pumpkin | Yes: a pumpkin carved |
 | `shear_arrow_hive` | `block.beehive.shear` | A shear arrow taking honeycomb from a hive | Yes: a hive shorn |
 | `bee_arrow_release` | `block.beehive.exit` | A bee arrow letting its bees out | Yes: bees leaving a hive |
+| `zipline_arrow_string` | `block.chain.place` | A zipline arrow stringing its cable, heard at both ends | Yes: a chain placed |
+| `updraft_arrow_open` | `entity.breeze.whirl` | An updraft arrow opening its column | Yes: a breeze's rising wind |
+| `trampoline_arrow_launch` | `entity.slime.jump` | A trampoline throwing something back into the air | Yes: a slime bouncing |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
 This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
@@ -574,6 +607,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/sapling_arrow_head.png` | The sapling arrow's head, tinted to the sapling it carries, a placeholder |
 | `textures/item/shear_arrow.png` | The shear arrow's item sprite, a placeholder |
 | `textures/item/bee_arrow.png` | The bee arrow's item sprite, a placeholder |
+| `textures/item/zipline_arrow.png` | The zipline arrow's item sprite, a placeholder |
+| `textures/item/tow_arrow.png` | The tow arrow's item sprite, a placeholder |
+| `textures/item/updraft_arrow.png` | The updraft arrow's item sprite, a placeholder |
+| `textures/item/vine_arrow.png` | The vine arrow's item sprite, a placeholder |
+| `textures/item/trampoline_arrow.png` | The trampoline arrow's item sprite, a placeholder |
+| `textures/item/scaffold_arrow.png` | The scaffold arrow's item sprite, a placeholder |
+| `textures/item/bridge_arrow.png` | The bridge arrow's item sprite, a placeholder |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
@@ -611,6 +651,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/sapling_arrow_tint.png` | The sapling arrow's head in flight, tinted to its sapling, a placeholder |
 | `textures/entity/arrow/shear_arrow.png` | The shear arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/bee_arrow.png` | The bee arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/zipline_arrow.png` | The zipline arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/tow_arrow.png` | The tow arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/updraft_arrow.png` | The updraft arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/vine_arrow.png` | The vine arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/trampoline_arrow.png` | The trampoline arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/scaffold_arrow.png` | The scaffold arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/bridge_arrow.png` | The bridge arrow in flight and planted in a block, a placeholder |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
