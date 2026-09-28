@@ -88,6 +88,7 @@
       "com.grahambartley.notenougharrows.gametest.PendingAnchorServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.RideServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.RideBroadcasterGameTest",
+      "com.grahambartley.notenougharrows.gametest.RidePayloadsGameTest",
       "com.grahambartley.notenougharrows.gametest.ZiplineCableBlockGameTest",
       "com.grahambartley.notenougharrows.gametest.TowServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.TowTargetsGameTest",

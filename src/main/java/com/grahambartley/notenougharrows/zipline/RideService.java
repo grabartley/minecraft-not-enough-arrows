@@ -78,7 +78,9 @@ public final class RideService {
       return null;
     }
     final RideSession ended = tracker.remove(riderId);
-    if (ended != null && world.getEntity(riderId) instanceof ServerPlayerEntity rider) {
+    if (ended != null
+        && world.getServer().getPlayerManager().getPlayer(riderId)
+            instanceof ServerPlayerEntity rider) {
       RideBroadcaster.stopped(rider);
       if (ending.ownsTheFall()) {
         rider.onLanding();

@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.gametest;
 import com.grahambartley.notenougharrows.network.RidePayloads.RideS2CPayload;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import com.grahambartley.notenougharrows.zipline.RideBroadcaster;
+import com.grahambartley.notenougharrows.zipline.RideEnding;
 import com.grahambartley.notenougharrows.zipline.RideService;
 import com.grahambartley.notenougharrows.zipline.SpanService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -64,7 +65,7 @@ public final class RideBroadcasterGameTest implements FabricGameTest {
   public void aRiderWhoLetsGoIsAnnouncedToNobodyNewcomingIntoView(TestContext context) {
     final ServerPlayerEntity rider = boardedRider(context);
 
-    RideService.stopRidingEverywhere(rider.getUuid());
+    RideService.end(context.getWorld(), rider.getUuid(), RideEnding.LET_GO);
 
     context.assertTrue(RideBroadcaster.catchUpFor(rider).isEmpty(), "No longer riding");
     context.complete();

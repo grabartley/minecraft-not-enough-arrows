@@ -7,18 +7,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.grahambartley.notenougharrows.grapple.GrapplePull;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class RidePathTest {
   private static final double EPSILON = 1.0E-9;
+  private static final double HAND_TOLERANCE = 0.02;
   private static final Vec3d FROM = new Vec3d(0.5, 80.5, 0.5);
   private static final Vec3d TO = new Vec3d(20.5, 70.5, 0.5);
   private static final double GRAVITY = 0.08;
 
-  @Test
-  void theGripSitsWhereTheRidersRaisedHandsAre() {
-    assertEquals(
-        new Vec3d(1.0, 64.0 + RidePath.GRIP_ABOVE_CENTER, 1.0),
-        RidePath.gripOf(new Vec3d(1.0, 64.0, 1.0)));
+  @ParameterizedTest
+  @CsvSource({"2.0", "2.5"})
+  void theGripSitsWhereVanillaDrawsTheRidersRaisedHands(final double shoulderBelowNeck) {
+    final double neckAboveFeet = 24.0;
+    final double armReach = 10.0;
+    final double overheadLean = 0.2;
+    final double renderScale = 0.9375;
+    final double pixelsPerBlock = 16.0;
+    final double centreAboveFeet = 0.9;
+    final double handAboveNeck = armReach * Math.cos(overheadLean) - shoulderBelowNeck;
+    final double handAboveCentre =
+        (neckAboveFeet + handAboveNeck) / pixelsPerBlock * renderScale - centreAboveFeet;
+
+    final Vec3d grip = RidePath.gripOf(new Vec3d(1.0, 64.0, 1.0));
+
+    assertEquals(64.0 + handAboveCentre, grip.getY(), HAND_TOLERANCE);
   }
 
   @Test
