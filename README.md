@@ -68,6 +68,15 @@ touches anything you could not have changed standing there with the item it was 
 The **glow ink arrow** outlines what you hit through walls, for everyone on the server, so the
 creeper behind the ridge is now a problem everybody can see.
 
+## Tend the farm from where you stand
+
+Six arrows do the farm round for you. The **blossom arrow** bone meals everything around where it
+lands, the **harvest arrow** reaps every ripe crop nearby, replants it, and puts the harvest in your
+inventory, and the **till arrow** hoes a circle of ground into wet farmland. The **sapling arrow**
+comes in one kind per sapling and plants it where it lands. The **shear arrow** shears a sheep, a
+mooshroom, a snow golem, a bogged, a pumpkin, or a full beehive without hurting anything, and the **bee arrow**
+lets loose a few bees that go for whatever you hit and never for you. They leave after a while.
+
 ## Win the fight differently
 
 Nine arrows change a fight without making your bow hit harder. The **shock arrow** calls lightning
@@ -133,6 +142,12 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | ❄️ | **Freeze** | Water to ice, lava to obsidian, fire out. Hurts nothing | Blue ice |
 | 🕸️ | **Web** | A patch of cobweb where it lands, for a while | Cobweb |
 | 🎨 | **Paint** | Recolours wool, carpet, glass, terracotta, candles, and sheep | Any dye, one colour each |
+| 🌼 | **Blossom** | Bone meals everything around where it lands | Bone meal |
+| 🌾 | **Harvest** | Reaps and replants every ripe crop nearby, into your inventory | Iron hoe |
+| 🟤 | **Till** | Turns a circle of grass and dirt into wet farmland | Water bucket |
+| 🌱 | **Sapling** | Plants its sapling where it lands | Any sapling, one kind each |
+| ✂️ | **Shear** | Shears sheep, mooshrooms, snow golems, bogged, pumpkins, and full hives | Shears |
+| 🐝 | **Bee** | A few bees that go for what you hit, never for you | Honeycomb |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
@@ -170,7 +185,7 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`. `traversal` and `agriculture` through `social` hold the settings for
+`fletching`, and `sound`. `traversal`, and `discovery` through `social`, hold the settings for
 arrows that have not landed yet, so they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these

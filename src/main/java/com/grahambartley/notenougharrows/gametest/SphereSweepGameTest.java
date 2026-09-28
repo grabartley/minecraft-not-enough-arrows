@@ -92,6 +92,39 @@ public final class SphereSweepGameTest implements FabricGameTest {
     context.complete();
   }
 
+  @GameTest(
+      templateName = TerrainTestSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aGivenListIsSweptInItsOwnOrderUpToTheCap(TestContext context) {
+    final BlockPos first = center(context).east(2);
+    final BlockPos second = center(context);
+    final BlockPos third = center(context).west();
+
+    final List<BlockPos> changed =
+        SphereSweep.sweep(context.getWorld(), List.of(first, second, third), 2, null, ALWAYS);
+
+    context.assertEquals(changed, List.of(first, second), "Positions changed");
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = TerrainTestSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aPositionPastTheWorldBorderIsNotEditable(TestContext context) {
+    context.assertTrue(
+        SphereSweep.editableBy(context.getWorld(), null).test(center(context)),
+        "Editable inside the border");
+    TerrainTestSupport.withTheBorderElsewhere(
+        context,
+        () ->
+            context.assertFalse(
+                SphereSweep.editableBy(context.getWorld(), null).test(center(context)),
+                "Not editable past the border"));
+    context.complete();
+  }
+
   private static BlockPos center(final TestContext context) {
     return context.getAbsolutePos(TerrainTestSupport.CENTER);
   }

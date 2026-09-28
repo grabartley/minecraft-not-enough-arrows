@@ -687,9 +687,9 @@ A player with a farm, a tree line, or a flock does the round without walking it.
 
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
-| Blossom arrow | Bone meal | Applies bone meal across a configured radius, with everything bone meal does to what it lands on | Yes |
-| Harvest arrow | An iron hoe | Harvests every mature crop in a configured radius and replants it, sending the drops to the shooter | Yes |
-| Till arrow | A water bucket | Tills a configured disc into farmland and hydrates it | Yes |
+| Blossom arrow | Bone meal | Applies bone meal across a configured radius, with everything bone meal does to what it lands on | Yes, if it grew something |
+| Harvest arrow | An iron hoe | Harvests every mature crop in a configured radius and replants it, sending the drops to the shooter | Yes, if it harvested something |
+| Till arrow | A water bucket | Tills a configured disc into farmland and hydrates it | Yes, if it tilled something |
 | Sapling arrow | Any vanilla sapling or propagule | Plants the sapling the arrow carries where it landed | Yes, if it planted |
 | Shear arrow | Shears | Shears what vanilla shears at the impact point, sending the drops to the shooter | Yes, if it sheared |
 | Bee arrow | A honeycomb | Releases a configured number of bees at the impact point, angered at what the arrow struck and never at the shooter | Yes |
@@ -700,7 +700,7 @@ A player with a farm, a tree line, or a flock does the round without walking it.
 | FARM-2 | A harvest arrow's drops are granted to the shooter where there is room and dropped at the crop where there is not. Nothing is destroyed because an inventory was full |
 | FARM-3 | An arrow with no shooter still harvests and shears, and its drops fall at the block rather than being granted to nobody |
 | FARM-4 | A sapling arrow is one arrow carrying a sapling, in the way a paint arrow carries a colour, with one recipe per vanilla sapling and propagule (SHAPE-9) |
-| FARM-5 | A sapling arrow plants only where the sapling itself would have been placeable, and is recovered rather than consumed where it would not |
+| FARM-5 | A sapling arrow plants only where the sapling itself would have been placeable, and never where planting would push water out, which a hand-placed sapling would. It is recovered rather than consumed where it does not plant. A mangrove propagule holds water and may be planted in it |
 | FARM-6 | A shear arrow shears what vanilla's own shears interaction shears, including a sheep, a beehive, a pumpkin, a mooshroom, and a snow golem, and it does what vanilla does in each case rather than inventing a result |
 | FARM-7 | Bees a bee arrow releases are real bees with a configured lifetime, they never target the shooter, and they are removed when that lifetime ends rather than being left in the world |
 | FARM-8 | A bee arrow releases bees at the impact point whether it struck a block or an entity, so it works as a distraction and not only as a hit |

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "not_enough_arrows_sapling_arrow",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:mangrove_propagule"
+    }
+  },
+  "result": {
+    "id": "not-enough-arrows:sapling_arrow",
+    "count": 8,
+    "components": {
+      "not-enough-arrows:arrow_choice": "mangrove"
+    }
+  }
+}

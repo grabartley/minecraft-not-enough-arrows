@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows;
 
+import com.grahambartley.notenougharrows.agriculture.BeeSwarmWarden;
 import com.grahambartley.notenougharrows.anchor.AnchorService;
 import com.grahambartley.notenougharrows.blast.BlastService;
 import com.grahambartley.notenougharrows.command.NotEnoughArrowsCommand;
@@ -52,6 +53,7 @@ public class NotEnoughArrows implements ModInitializer {
     FrostGripService.register();
     DisarmFetchService.register();
     SmokeCloudService.register();
+    BeeSwarmWarden.register();
     NockedArrowBroadcaster.register();
     FletchingStationInteraction.register();
     ServerConfigSyncListener.register();
