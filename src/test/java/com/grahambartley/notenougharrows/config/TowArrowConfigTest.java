@@ -16,13 +16,16 @@ class TowArrowConfigTest {
 
     assertEquals(TowArrowConfig.DEFAULT_RANGE_BLOCKS, defaults.rangeBlocks());
     assertEquals(TowArrowConfig.DEFAULT_MAX_TICKS, defaults.maxTicks());
+    assertEquals(TowArrowConfig.DEFAULT_SPEED, defaults.speed());
   }
 
   @Test
   void defaultsSurviveTheirOwnClamp() {
     final TowArrowConfig defaults = TowArrowConfig.defaults();
 
-    assertEquals(defaults, new TowArrowConfig(defaults.rangeBlocks(), defaults.maxTicks()));
+    assertEquals(
+        defaults,
+        new TowArrowConfig(defaults.rangeBlocks(), defaults.maxTicks(), defaults.speed()));
   }
 
   @ParameterizedTest
@@ -35,6 +38,12 @@ class TowArrowConfigTest {
   @CsvSource({"0, 1", "1, 1", "1200, 1200", "1201, 1200"})
   void clampsMaxTicks(final int given, final int expected) {
     assertEquals(expected, TowArrowConfig.defaults().withMaxTicks(given).maxTicks());
+  }
+
+  @ParameterizedTest
+  @CsvSource({"0.0, 0.1", "0.1, 0.1", "1.5, 1.5", "1.6, 1.5"})
+  void clampsSpeed(final float given, final float expected) {
+    assertEquals(expected, TowArrowConfig.defaults().withSpeed(given).speed());
   }
 
   @Test
@@ -75,7 +84,7 @@ class TowArrowConfigTest {
 
   @Test
   void roundTripsThroughJson() {
-    final TowArrowConfig original = new TowArrowConfig(127, 1199);
+    final TowArrowConfig original = new TowArrowConfig(127, 1199, 1.25f);
 
     assertEquals(original, TowArrowConfig.fromJson(original.toJson()));
   }
@@ -88,13 +97,14 @@ class TowArrowConfigTest {
 
     assertEquals(127, updated.rangeBlocks());
     assertEquals(original.maxTicks(), updated.maxTicks());
+    assertEquals(original.speed(), updated.speed());
   }
 
   @Test
   void everyFieldCanBeChangedOnItsOwn() {
     final TowArrowConfig updated =
-        TowArrowConfig.defaults().withRangeBlocks(127).withMaxTicks(1199);
+        TowArrowConfig.defaults().withRangeBlocks(127).withMaxTicks(1199).withSpeed(1.25f);
 
-    assertEquals(new TowArrowConfig(127, 1199), updated);
+    assertEquals(new TowArrowConfig(127, 1199, 1.25f), updated);
   }
 }

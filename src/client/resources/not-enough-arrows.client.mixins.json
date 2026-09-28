@@ -5,6 +5,7 @@
 	"client": [
 		"ItemRendererMixin",
 		"LightningEntityMixin",
+		"PlayerEntityModelMixin",
 		"SoundSystemMixin"
 	],
 	"injectors": {

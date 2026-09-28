@@ -26,6 +26,7 @@ class TraversalOptionsTest {
             "traversal.zipline.lifetimeTicks",
             "traversal.tow.rangeBlocks",
             "traversal.tow.maxTicks",
+            "traversal.tow.speed",
             "traversal.updraft.heightBlocks",
             "traversal.updraft.lifetimeTicks",
             "traversal.updraft.strength",

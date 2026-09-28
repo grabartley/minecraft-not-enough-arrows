@@ -10,5 +10,7 @@ public final class BlockRenderLayerRegistrar {
 
   public static void registerAll() {
     BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ROPE, RenderLayer.getCutout());
+    BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ZIPLINE_CABLE, RenderLayer.getCutout());
+    BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TRAMPOLINE, RenderLayer.getTranslucent());
   }
 }

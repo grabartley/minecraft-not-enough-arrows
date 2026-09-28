@@ -19,6 +19,7 @@ import com.grahambartley.notenougharrows.structure.StructureChunkMarks;
 import com.grahambartley.notenougharrows.structure.TimedStructure;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import java.util.Optional;
+import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -128,6 +129,40 @@ public final class TimedStructureServiceGameTest implements FabricGameTest {
                 context.complete();
               });
         });
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aLiveStructureCanBeFoundById(TestContext context) {
+    final TimedStructure built = buildLine(context, LONG_LIFETIME_TICKS).orElseThrow();
+
+    context.assertEquals(
+        built,
+        TimedStructureService.find(context.getWorld(), built.id()).orElse(null),
+        "Found structure");
+    context.assertTrue(
+        TimedStructureService.find(context.getWorld(), UUID.randomUUID()).isEmpty(),
+        "An unknown id finds nothing");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void dismantlingAStructureTakesItDownAtOnce(TestContext context) {
+    final TimedStructure built = buildLine(context, LONG_LIFETIME_TICKS).orElseThrow();
+
+    context.assertTrue(
+        TimedStructureService.dismantle(context.getWorld(), built.id()), "Dismantled");
+
+    LINE.forEach(pos -> context.expectBlock(Blocks.AIR, pos));
+    context.assertTrue(
+        TimedStructureService.find(context.getWorld(), built.id()).isEmpty(),
+        "A dismantled structure is forgotten");
+    context.assertFalse(
+        TimedStructureService.holds(context.getWorld(), context.getAbsolutePos(FIRST)),
+        "A dismantled structure holds nothing");
+    context.assertFalse(
+        TimedStructureService.dismantle(context.getWorld(), built.id()),
+        "It cannot be dismantled twice");
+    context.complete();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)

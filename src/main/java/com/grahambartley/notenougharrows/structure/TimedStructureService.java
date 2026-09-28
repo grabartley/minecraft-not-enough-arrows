@@ -67,6 +67,26 @@ public final class TimedStructureService {
     return Optional.of(structure);
   }
 
+  public static Optional<TimedStructure> find(final ServerWorld world, final UUID id) {
+    final StructureLedger ledger = world == null ? null : LEDGERS.get(world.getRegistryKey());
+    return ledger == null ? Optional.empty() : ledger.find(id);
+  }
+
+  public static boolean dismantle(final ServerWorld world, final UUID id) {
+    final StructureLedger ledger = world == null ? null : LEDGERS.get(world.getRegistryKey());
+    if (ledger == null) {
+      return false;
+    }
+    return ledger
+        .take(id)
+        .map(
+            structure -> {
+              StructureRemoval.remove(world, structure, StructureRemoval.loadedIn(world));
+              return true;
+            })
+        .orElse(false);
+  }
+
   public static boolean holds(final ServerWorld world, final BlockPos pos) {
     final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
     return ledger != null && ledger.holds(pos);
