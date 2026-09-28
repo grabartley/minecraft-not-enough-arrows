@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.item;
 
 import com.grahambartley.notenougharrows.arrow.ArrowEntityFactory;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
+import java.util.List;
 import java.util.Objects;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -26,6 +27,14 @@ public class BaseArrowItem extends ArrowItem {
 
   public static boolean isModArrow(final ItemStack stack) {
     return stack.getItem() instanceof BaseArrowItem;
+  }
+
+  public static List<ItemStack> variantsOf(final Item item) {
+    return item instanceof BaseArrowItem arrow ? arrow.variants() : List.of(new ItemStack(item));
+  }
+
+  public List<ItemStack> variants() {
+    return List.of(new ItemStack(this));
   }
 
   @Override

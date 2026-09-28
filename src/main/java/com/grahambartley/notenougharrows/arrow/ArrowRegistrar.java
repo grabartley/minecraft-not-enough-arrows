@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.arrow;
 
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
 import com.grahambartley.notenougharrows.item.BaseArrowItem;
+import com.grahambartley.notenougharrows.item.TintedArrowItem;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +33,21 @@ public final class ArrowRegistrar {
                 .maxTrackingRange(definition.maxTrackingRange())
                 .trackingTickInterval(definition.trackingTickInterval())
                 .build(id.toString()));
-    final BaseArrowItem item =
-        Registry.register(
-            Registries.ITEM, id, new BaseArrowItem(new Item.Settings(), definition.spawnFactory()));
+    final BaseArrowItem item = Registry.register(Registries.ITEM, id, itemFor(definition));
 
     DispenserBlock.registerProjectileBehavior(item);
 
     final RegisteredArrow<E> registration = new RegisteredArrow<>(id, entityType, item);
     registrationsByPath.put(definition.path(), registration);
     return registration;
+  }
+
+  private static BaseArrowItem itemFor(final ArrowDefinition<?> definition) {
+    return definition
+        .palette()
+        .<BaseArrowItem>map(
+            palette -> new TintedArrowItem(new Item.Settings(), definition.spawnFactory(), palette))
+        .orElseGet(() -> new BaseArrowItem(new Item.Settings(), definition.spawnFactory()));
   }
 
   public ArrowCatalog catalog() {

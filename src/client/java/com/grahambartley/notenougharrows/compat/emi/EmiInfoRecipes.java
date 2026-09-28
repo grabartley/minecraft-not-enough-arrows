@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.compat.emi;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.compat.info.InfoEntry;
+import com.grahambartley.notenougharrows.item.BaseArrowItem;
 import dev.emi.emi.api.recipe.EmiInfoRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -45,7 +46,9 @@ public final class EmiInfoRecipes {
       final List<Identifier> itemIds, final List<Text> text, final Identifier id) {
     final List<EmiIngredient> stacks =
         itemIds.stream()
-            .<EmiIngredient>map(itemId -> EmiStack.of(Registries.ITEM.get(itemId)))
+            .map(Registries.ITEM::get)
+            .flatMap(item -> BaseArrowItem.variantsOf(item).stream())
+            .<EmiIngredient>map(EmiStack::of)
             .toList();
     return new EmiInfoRecipe(stacks, text, id);
   }

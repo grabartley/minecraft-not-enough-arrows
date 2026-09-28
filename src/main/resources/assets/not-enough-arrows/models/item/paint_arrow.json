@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "not-enough-arrows:item/paint_arrow_head",
+    "layer1": "not-enough-arrows:item/paint_arrow"
+  }
+}

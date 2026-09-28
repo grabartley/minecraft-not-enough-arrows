@@ -134,7 +134,12 @@
       "com.grahambartley.notenougharrows.gametest.TauntArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.VolleyArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.WindArrowEntityGameTest",
-      "com.grahambartley.notenougharrows.gametest.WindBurstServiceGameTest"
+      "com.grahambartley.notenougharrows.gametest.WindBurstServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.BaseArrowItemGameTest",
+      "com.grahambartley.notenougharrows.gametest.ModDataComponentsGameTest",
+      "com.grahambartley.notenougharrows.gametest.TintedArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.TintedArrowItemGameTest",
+      "com.grahambartley.notenougharrows.gametest.TintedArrowItemsGameTest"
     ]
   },
   "mixins": [

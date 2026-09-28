@@ -30,4 +30,18 @@ class ArrowRendererRegistrarTest {
 
     assertEquals(namespace, texture.getNamespace());
   }
+
+  @ParameterizedTest
+  @CsvSource({
+    "paint_arrow, textures/entity/arrow/paint_arrow_tint.png",
+    "sapling_arrow, textures/entity/arrow/sapling_arrow_tint.png",
+  })
+  void derivesTheTintTexturePathBesideTheArrowTexture(
+      final String path, final String expectedTexturePath) {
+    final Identifier texture =
+        ArrowRendererRegistrar.tintTextureFor(Identifier.of(NotEnoughArrows.MOD_ID, path));
+
+    assertEquals(NotEnoughArrows.MOD_ID, texture.getNamespace());
+    assertEquals(expectedTexturePath, texture.getPath());
+  }
 }

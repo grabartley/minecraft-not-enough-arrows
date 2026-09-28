@@ -1,12 +1,15 @@
 package com.grahambartley.notenougharrows.arrow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.entity.BaseArrowEntity;
+import com.grahambartley.notenougharrows.tint.DyePalette;
+import com.grahambartley.notenougharrows.tint.TintPalette;
 import java.util.List;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
@@ -185,5 +188,51 @@ class ArrowDefinitionTest {
                 ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
                 ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
                 null));
+  }
+
+  @Test
+  void isNotTintedUnlessAsked() {
+    final ArrowDefinition<BaseArrowEntity> definition =
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+
+    assertFalse(definition.isTinted());
+    assertTrue(definition.palette().isEmpty());
+  }
+
+  @Test
+  void carriesThePaletteItIsTintedBy() {
+    final TintPalette palette = DyePalette.create();
+
+    final ArrowDefinition<BaseArrowEntity> definition =
+        ArrowDefinition.of("paint_arrow", ENTITY_FACTORY, SPAWN_FACTORY).tintedBy(palette);
+
+    assertTrue(definition.isTinted());
+    assertSame(palette, definition.palette().orElseThrow());
+  }
+
+  @Test
+  void tintingKeepsEverythingElseAboutTheArrow() {
+    final ArrowSound sound = ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "paint_splat"));
+    final ArrowDefinition<BaseArrowEntity> plain =
+        ArrowDefinition.of("paint_arrow", ENTITY_FACTORY, SPAWN_FACTORY, sound);
+
+    final ArrowDefinition<BaseArrowEntity> tinted = plain.tintedBy(DyePalette.create());
+
+    assertEquals(plain.path(), tinted.path());
+    assertSame(plain.entityFactory(), tinted.entityFactory());
+    assertSame(plain.spawnFactory(), tinted.spawnFactory());
+    assertEquals(plain.width(), tinted.width());
+    assertEquals(plain.height(), tinted.height());
+    assertEquals(plain.maxTrackingRange(), tinted.maxTrackingRange());
+    assertEquals(plain.trackingTickInterval(), tinted.trackingTickInterval());
+    assertEquals(plain.sounds(), tinted.sounds());
+  }
+
+  @Test
+  void rejectsANullPalette() {
+    final ArrowDefinition<BaseArrowEntity> plain =
+        ArrowDefinition.of("paint_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+
+    assertThrows(NullPointerException.class, () -> plain.tintedBy(null));
   }
 }

@@ -30,6 +30,7 @@ public class NotEnoughArrows implements ModInitializer {
 
   @Override
   public void onInitialize() {
+    ModDataComponents.register();
     ModBlocks.register();
     ModArrows.register();
     ModEntities.register();
