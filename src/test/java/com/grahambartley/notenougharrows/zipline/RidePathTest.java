@@ -15,8 +15,10 @@ class RidePathTest {
   private static final double GRAVITY = 0.08;
 
   @Test
-  void theGripSitsJustAboveTheRidersHead() {
-    assertEquals(new Vec3d(1.0, 65.0, 1.0), RidePath.gripOf(new Vec3d(1.0, 64.0, 1.0)));
+  void theGripSitsWhereTheRidersRaisedHandsAre() {
+    assertEquals(
+        new Vec3d(1.0, 64.0 + RidePath.GRIP_ABOVE_CENTER, 1.0),
+        RidePath.gripOf(new Vec3d(1.0, 64.0, 1.0)));
   }
 
   @Test
@@ -93,15 +95,31 @@ class RidePathTest {
   }
 
   @Test
-  void theAimLooksAheadAlongTheSpan() {
-    final Vec3d aim = RidePath.aim(FROM, TO, FROM);
+  void theNearestPointOnTheSpanIsStraightAcrossFromTheGrip() {
+    final Vec3d onLine = FROM.lerp(TO, 0.25);
+    final Vec3d perpendicular = new Vec3d(0.0, 0.0, 2.0);
 
-    assertEquals(RidePath.LOOK_AHEAD_BLOCKS, FROM.distanceTo(aim), EPSILON);
+    assertEquals(onLine, RidePath.nearestOnLine(FROM, TO, onLine.add(perpendicular)));
   }
 
   @Test
-  void theAimNeverPassesTheFarEnd() {
-    assertEquals(TO, RidePath.aim(FROM, TO, FROM.lerp(TO, 0.99)));
+  void aRiderOnTheSpanMovesAlongItOnly() {
+    final Vec3d velocity = RidePath.velocity(FROM, TO, FROM.lerp(TO, 0.3), 0.6, 0.0);
+    final Vec3d direction = TO.subtract(FROM).normalize();
+
+    assertEquals(0.6, velocity.length(), EPSILON);
+    assertEquals(1.0, velocity.normalize().dotProduct(direction), EPSILON);
+  }
+
+  @Test
+  void aRiderFarBelowTheSpanIsPulledUpNoFasterThanTheCatchUpLimit() {
+    final Vec3d onLine = FROM.lerp(TO, 0.5);
+    final Vec3d farBelow = onLine.subtract(0.0, 5.0, 0.0);
+    final Vec3d along = TO.subtract(FROM).normalize().multiply(0.6);
+
+    final Vec3d catchUp = RidePath.velocity(FROM, TO, farBelow, 0.6, 0.0).subtract(along);
+
+    assertEquals(RidePath.CATCH_UP_MAX, catchUp.length(), EPSILON);
   }
 
   @Test

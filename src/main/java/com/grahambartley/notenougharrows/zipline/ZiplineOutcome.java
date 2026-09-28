@@ -1,23 +1,17 @@
 package com.grahambartley.notenougharrows.zipline;
 
-import java.util.Optional;
-
 public enum ZiplineOutcome {
-  NOTHING(false, null),
-  ANCHOR_SET(false, "anchored"),
-  STRUNG(true, "strung"),
-  TOO_FAR(false, "too_far"),
-  TOO_SHORT(false, "too_short"),
-  BLOCKED(false, "blocked");
-
-  private static final String MESSAGE_PREFIX = "message.not-enough-arrows.zipline.";
+  NOTHING(false),
+  ANCHOR_SET(false),
+  STRUNG(true),
+  TOO_FAR(false),
+  TOO_SHORT(false),
+  BLOCKED(false);
 
   private final boolean spendsTheArrow;
-  private final String message;
 
-  ZiplineOutcome(final boolean spendsTheArrow, final String message) {
+  ZiplineOutcome(final boolean spendsTheArrow) {
     this.spendsTheArrow = spendsTheArrow;
-    this.message = message;
   }
 
   public static ZiplineOutcome of(final SpanRefusal refusal) {
@@ -33,9 +27,5 @@ public enum ZiplineOutcome {
 
   public boolean spendsTheArrow() {
     return spendsTheArrow;
-  }
-
-  public Optional<String> messageKey() {
-    return Optional.ofNullable(message).map(suffix -> MESSAGE_PREFIX + suffix);
   }
 }

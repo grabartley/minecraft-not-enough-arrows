@@ -23,6 +23,7 @@ import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import com.grahambartley.notenougharrows.tow.TowService;
 import com.grahambartley.notenougharrows.updraft.UpdraftService;
 import com.grahambartley.notenougharrows.zipline.PendingAnchorService;
+import com.grahambartley.notenougharrows.zipline.RideBroadcaster;
 import com.grahambartley.notenougharrows.zipline.RideService;
 import com.grahambartley.notenougharrows.zipline.SpanService;
 import net.fabricmc.api.ModInitializer;
@@ -55,6 +56,7 @@ public class NotEnoughArrows implements ModInitializer {
     PendingAnchorService.register();
     SpanService.register();
     RideService.register();
+    RideBroadcaster.register();
     TowService.register();
     UpdraftService.register();
     RedstoneChargeService.register();

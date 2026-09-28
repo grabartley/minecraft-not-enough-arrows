@@ -59,6 +59,7 @@ public final class RideService {
                 span.get(),
                 gripOf(rider),
                 ServerConfigService.get().traversal().zipline().rideSpeed()));
+    RideBroadcaster.started(rider);
     return true;
   }
 
@@ -77,11 +78,12 @@ public final class RideService {
       return null;
     }
     final RideSession ended = tracker.remove(riderId);
-    if (ended != null
-        && ending.ownsTheFall()
-        && world.getEntity(riderId) instanceof ServerPlayerEntity rider) {
-      rider.onLanding();
-      GrappleFallGuard.spare(riderId);
+    if (ended != null && world.getEntity(riderId) instanceof ServerPlayerEntity rider) {
+      RideBroadcaster.stopped(rider);
+      if (ending.ownsTheFall()) {
+        rider.onLanding();
+        GrappleFallGuard.spare(riderId);
+      }
     }
     return ended;
   }

@@ -2,11 +2,8 @@ package com.grahambartley.notenougharrows.zipline;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
 
 class ZiplineOutcomeTest {
 
@@ -15,17 +12,6 @@ class ZiplineOutcomeTest {
     for (final ZiplineOutcome outcome : ZiplineOutcome.values()) {
       assertEquals(outcome == ZiplineOutcome.STRUNG, outcome.spendsTheArrow(), outcome.name());
     }
-  }
-
-  @Test
-  void anArrowThatDidNothingSaysNothing() {
-    assertTrue(ZiplineOutcome.NOTHING.messageKey().isEmpty());
-  }
-
-  @ParameterizedTest
-  @EnumSource(value = ZiplineOutcome.class, names = "NOTHING", mode = EnumSource.Mode.EXCLUDE)
-  void everyOtherOutcomeTellsTheShooterUnderTheModsMessageKeys(final ZiplineOutcome outcome) {
-    assertTrue(outcome.messageKey().orElseThrow().startsWith("message.not-enough-arrows.zipline."));
   }
 
   @Test

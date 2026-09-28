@@ -1,7 +1,6 @@
 package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
-import com.grahambartley.notenougharrows.zipline.ZiplineFeedback;
 import com.grahambartley.notenougharrows.zipline.ZiplineOutcome;
 import com.grahambartley.notenougharrows.zipline.ZiplineService;
 import net.minecraft.entity.EntityType;
@@ -35,7 +34,6 @@ public class ZiplineArrowEntity extends BaseArrowEntity {
     final ZiplineOutcome outcome =
         ZiplineService.shoot(
             world, shootingPlayer().orElse(null), blockHitResult.getBlockPos(), getUuid());
-    shootingPlayer().ifPresent(shooter -> ZiplineFeedback.tell(shooter, outcome));
     return outcome.spendsTheArrow() ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
   }
 }

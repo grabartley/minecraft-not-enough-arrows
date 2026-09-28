@@ -4,8 +4,10 @@ import com.grahambartley.notenougharrows.config.ClientConfigHolder;
 import com.grahambartley.notenougharrows.hud.CountdownSync;
 import com.grahambartley.notenougharrows.network.CountdownPayloads.CountdownS2CPayload;
 import com.grahambartley.notenougharrows.network.NockedArrowPayloads.NockedArrowS2CPayload;
+import com.grahambartley.notenougharrows.network.RidePayloads.RideS2CPayload;
 import com.grahambartley.notenougharrows.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
 import com.grahambartley.notenougharrows.render.NockedArrowSync;
+import com.grahambartley.notenougharrows.render.RidingPlayers;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -21,16 +23,19 @@ public final class ModNetworkingClient {
         NockedArrowS2CPayload.ID, ModNetworkingClient::handleNockedArrow);
     ClientPlayNetworking.registerGlobalReceiver(
         CountdownS2CPayload.ID, ModNetworkingClient::handleCountdown);
+    ClientPlayNetworking.registerGlobalReceiver(RideS2CPayload.ID, ModNetworkingClient::handleRide);
     ClientEntityEvents.ENTITY_UNLOAD.register(
         (entity, world) -> {
           NockedArrowSync.forget(entity.getId());
           CountdownSync.forget(entity.getId());
+          RidingPlayers.forget(entity.getId());
         });
     ClientPlayConnectionEvents.DISCONNECT.register(
         (handler, client) -> {
           ClientConfigHolder.clear();
           NockedArrowSync.clear();
           CountdownSync.clear();
+          RidingPlayers.clear();
         });
   }
 
@@ -45,6 +50,11 @@ public final class ModNetworkingClient {
                     payload.delayTicks(),
                     payload.remainingTicks(),
                     payload.kind()));
+  }
+
+  private static void handleRide(
+      final RideS2CPayload payload, final ClientPlayNetworking.Context context) {
+    context.client().execute(() -> RidingPlayers.accept(payload.riderId(), payload.riding()));
   }
 
   private static void handleNockedArrow(
