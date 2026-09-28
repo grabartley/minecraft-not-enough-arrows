@@ -31,10 +31,18 @@ public final class HarmlessArrowGameTest implements FabricGameTest {
           ModArrows.HASTE_ARROW,
           ModArrows.GUARD_ARROW,
           ModArrows.GLOW_INK_ARROW,
-          ModArrows.WIND_ARROW);
+          ModArrows.WIND_ARROW,
+          ModArrows.FREEZE_ARROW);
 
   private static final List<RegisteredArrow<?>> HURTFUL =
-      List.of(ModArrows.HOMING_ARROW, ModArrows.RAILGUN_ARROW, ModArrows.LIFESTEAL_ARROW);
+      List.of(
+          ModArrows.HOMING_ARROW,
+          ModArrows.RAILGUN_ARROW,
+          ModArrows.LIFESTEAL_ARROW,
+          ModArrows.DRILL_ARROW,
+          ModArrows.PILLAR_ARROW,
+          ModArrows.DRAIN_ARROW,
+          ModArrows.WEB_ARROW);
 
   @CustomTestProvider
   public Collection<TestFunction> anEffectArrowLeavesWhatItHitsUnhurt() {

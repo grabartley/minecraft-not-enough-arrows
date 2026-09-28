@@ -30,6 +30,11 @@
     "not-enough-arrows:smoke_arrow",
     "not-enough-arrows:disarm_arrow",
     "not-enough-arrows:allegiance_arrow",
-    "not-enough-arrows:paint_arrow"
+    "not-enough-arrows:paint_arrow",
+    "not-enough-arrows:drill_arrow",
+    "not-enough-arrows:pillar_arrow",
+    "not-enough-arrows:drain_arrow",
+    "not-enough-arrows:freeze_arrow",
+    "not-enough-arrows:web_arrow"
   ]
 }

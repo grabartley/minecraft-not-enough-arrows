@@ -2,8 +2,10 @@ package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
 import java.util.Optional;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ProjectileDeflection;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
@@ -16,6 +18,9 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseArrowEntity extends PersistentProjectileEntity {
+  private static final double GLANCE_SPEED_FACTOR = 0.2;
+  private static final double RESTING_SPEED_SQUARED = 1.0E-7;
+  private static final float DROP_HEIGHT = 0.1f;
 
   protected BaseArrowEntity(
       final EntityType<? extends BaseArrowEntity> entityType, final World world) {
@@ -95,6 +100,18 @@ public abstract class BaseArrowEntity extends PersistentProjectileEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {}
 
   protected void onArrowTick(final ServerWorld world) {}
+
+  protected ArrowImpact glanceOff(final Entity struck) {
+    deflect(ProjectileDeflection.SIMPLE, struck, getOwner(), false);
+    setVelocity(getVelocity().multiply(GLANCE_SPEED_FACTOR));
+    if (getVelocity().lengthSquared() >= RESTING_SPEED_SQUARED) {
+      return ArrowImpact.RETAIN;
+    }
+    if (pickupType == PickupPermission.ALLOWED) {
+      dropStack(asItemStack(), DROP_HEIGHT);
+    }
+    return ArrowImpact.DISCARD;
+  }
 
   @Override
   protected ItemStack getDefaultItemStack() {

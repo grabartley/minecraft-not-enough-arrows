@@ -2,6 +2,8 @@ package com.grahambartley.notenougharrows.gravity;
 
 import com.grahambartley.notenougharrows.config.PhysicsArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
+import com.grahambartley.notenougharrows.world.BlockSphere;
+import com.grahambartley.notenougharrows.world.HandBreakable;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -30,9 +32,9 @@ public final class GravityService {
     }
 
     final List<BlockPos> fallen = new ArrayList<>();
-    for (final BlockPos pos : GravityShape.blocks(center, physics.gravityImpactRadius())) {
+    for (final BlockPos pos : BlockSphere.blocks(center, physics.gravityImpactRadius())) {
       final BlockState state = world.getBlockState(pos);
-      if (FallingBlocks.canFall(world, pos, state, shooter)
+      if (HandBreakable.allows(world, pos, state, shooter)
           && !physics.isExcludedFromGravity(blockIdOf(state))) {
         FallingBlocks.drop(world, pos, state);
         fallen.add(pos);
