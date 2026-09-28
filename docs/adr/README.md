@@ -41,6 +41,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0031](0031-every-way-a-grapple-ends-runs-through-one-path.md) | Every way a grapple ends runs through one path |
 | [0032](0032-the-defaults-ship-the-fun-version.md) | The defaults ship the fun version |
 | [0033](0033-new-family-commands-are-built-from-the-catalog.md) | Family command trees are built from the option catalog |
+| [0034](0034-a-timed-structure-leaves-its-marks-in-the-chunk.md) | A timed structure leaves its marks in the chunk |
 
 ## Writing A New Record
 

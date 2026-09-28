@@ -97,7 +97,7 @@ Out of the first release, deliberately.
 | A team, ally, or friendly-fire system | The haste and guard arrows apply their effect to whatever they strike. Teaching an arrow whose side a target is on means adding a team system, which is a different mod |
 | Homing onto players | Not a setting. A projectile that curves toward a player is aim assistance, and the arrow refuses it outright |
 | Delivering a courier arrow to an offline player | The payload goes where the arrow lands. Holding a stack for somebody who is not connected is a mail system |
-| Persisting timed structures, watchers, clouds, or polymorphs across a restart | All are measured in seconds to a few minutes, all fail benignly by simply being gone, and writing them into the world save costs more than it returns ([ADR 0012](adr/0012-fire-patches-are-server-owned-and-time-boxed.md)) |
+| Persisting timed structures, watchers, clouds, or polymorphs across a restart | All are measured in seconds to a few minutes, all fail benignly by simply being gone, and writing them into the world save costs more than it returns ([ADR 0012](adr/0012-fire-patches-are-server-owned-and-time-boxed.md)). A timed structure leaves only a mark in its chunk, which can clear a leftover block but never resume a structure ([ADR 0034](adr/0034-a-timed-structure-leaves-its-marks-in-the-chunk.md)) |
 | Removing or downgrading any crafting table recipe | The load-bearing rule of the station. See [ADR 0002](adr/0002-crafting-table-always-works.md) |
 
 ---
@@ -1176,7 +1176,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | Rope | Survives, it is a block | Survives, chunks do | Unaffected | Survives |
 | Rope decay check | Survives, scheduled into the chunk | Survives | Unaffected | Survives |
 | Redstone charge | Expires as the chunk reloads | Cleared before the world saves; anything missed expires as its chunk loads | Unaffected | Cleared |
-| Fire patch | Held against the world clock in memory | Lost. Fire lit before a restart reverts to vanilla's own rules for going out | Unaffected | Lost |
+| Fire patch | Expires as the chunk reloads, it is a timed structure | Cleared before the world saves; anything missed expires as its chunk loads | Unaffected | Cleared |
 | Fuse | Holds, resumes when the carrier returns, abandoned if it never does | Lost. A restart mid-countdown defuses rather than detonating | Taken with the carrier immediately | Lost |
 | Ricochet bounce tally | Survives, written into the arrow | Survives | n/a | Survives |
 | Courier payload | Survives, written into the arrow | Survives, arrows are saved with their chunk | Unaffected, it is on the arrow and not on the player | Survives |

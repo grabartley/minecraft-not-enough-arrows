@@ -1,6 +1,6 @@
 # ADR 0012: Fire patches are a server-owned, time-boxed system
 
-- **Status:** Accepted
+- **Status:** Accepted, restart behaviour superseded by [ADR 0034](0034-a-timed-structure-leaves-its-marks-in-the-chunk.md)
 - **Date:** 2026-08-28
 
 ## Context

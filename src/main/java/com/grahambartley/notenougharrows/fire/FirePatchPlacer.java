@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.fire;
 
+import com.grahambartley.notenougharrows.structure.StructureBlock;
 import com.grahambartley.notenougharrows.world.BlockPlacement;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public final class FirePatchPlacer {
 
     final List<BlockPos> placed = new ArrayList<>();
     for (final BlockPos column : columns) {
-      final BlockPos target = surfaceIn(world, column, igniter);
+      final BlockPos target = surfacePosIn(world, column, igniter);
       if (target != null
           && world.setBlockState(
               target, AbstractFireBlock.getState(world, target), Block.NOTIFY_ALL)) {
@@ -54,7 +55,16 @@ public final class FirePatchPlacer {
   }
 
   @Nullable
-  private static BlockPos surfaceIn(
+  public static StructureBlock surfaceIn(
+      final ServerWorld world, final BlockPos column, @Nullable final PlayerEntity igniter) {
+    final BlockPos target = surfacePosIn(world, column, igniter);
+    return target == null
+        ? null
+        : new StructureBlock(target, AbstractFireBlock.getState(world, target));
+  }
+
+  @Nullable
+  private static BlockPos surfacePosIn(
       final ServerWorld world, final BlockPos column, @Nullable final PlayerEntity igniter) {
     for (int offsetY = SEARCH_ABOVE; offsetY >= -SEARCH_BELOW; offsetY--) {
       final BlockPos candidate = column.up(offsetY);
