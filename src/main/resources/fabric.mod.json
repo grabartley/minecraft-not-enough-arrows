@@ -170,9 +170,11 @@
       "com.grahambartley.notenougharrows.gametest.SaplingArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.ShearServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.ShearArrowEntityGameTest",
-      "com.grahambartley.notenougharrows.gametest.BeeSwarmServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeeSwarmReleaseGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeeSwarmWardenGameTest",
       "com.grahambartley.notenougharrows.gametest.BeeArrowEntityGameTest",
-      "com.grahambartley.notenougharrows.gametest.SpawnedDropsGameTest"
+      "com.grahambartley.notenougharrows.gametest.SpawnedDropsGameTest",
+      "com.grahambartley.notenougharrows.gametest.AgricultureArrowsGameTest"
     ]
   },
   "mixins": [

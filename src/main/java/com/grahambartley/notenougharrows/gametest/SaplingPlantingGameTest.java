@@ -3,7 +3,9 @@ package com.grahambartley.notenougharrows.gametest;
 import com.grahambartley.notenougharrows.agriculture.SaplingPlanting;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.block.PropaguleBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -83,6 +85,21 @@ public final class SaplingPlantingGameTest implements FabricGameTest {
         ABOVE,
         state -> state.isOf(Blocks.MANGROVE_PROPAGULE) && state.get(Properties.WATERLOGGED),
         () -> "The propagule should hold the water it was planted in");
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = TerrainTestSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aPropaguleIsNotPlantedIntoFlowingWaterItCouldNotHold(TestContext context) {
+    context.setBlockState(GROUND, Blocks.MUD);
+    final BlockState flowing = Blocks.WATER.getDefaultState().with(FluidBlock.LEVEL, 3);
+    context.setBlockState(ABOVE, flowing);
+
+    context.assertFalse(
+        plantOnTop(context, Items.MANGROVE_PROPAGULE), "A propagule only holds still water");
+    context.expectBlock(Blocks.WATER, ABOVE);
     context.complete();
   }
 

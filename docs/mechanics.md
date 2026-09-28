@@ -328,7 +328,7 @@ All six sprites are placeholders, the paint arrow's included, until the terrain 
 
 ## Agriculture Arrows
 
-Six arrows that do a farm's chores at range. Each one runs the same vanilla code as the item it was crafted from, so it bone meals, hoes, plants and shears exactly as that item would, and [ADR 0038](adr/0038-an-agriculture-arrow-runs-vanillas-own-item-behaviour.md) covers why.
+Six arrows that do a farm's chores at range. Each one runs vanilla's own code for the item it was crafted from wherever vanilla exposes it, and follows vanilla's rules where it does not, so it bone meals, hoes, plants and shears exactly as that item would, and [ADR 0038](adr/0038-an-agriculture-arrow-runs-vanillas-own-item-behaviour.md) covers why.
 
 | Arrow | Crafted around | On a block | On a creature | Spent |
 |---|---|---|---|---|
@@ -350,7 +350,7 @@ Six arrows that do a farm's chores at range. Each one runs the same vanilla code
 | Drops | Harvest and shear drops go into the shooter's inventory, and anything that does not fit stays on the ground where vanilla put it. A dispensed arrow leaves everything on the ground. A creative player with a full inventory loses the overflow, as vanilla's own pickup does |
 | Bees | `agriculture.bee.count` real bees, released at the impact point. They go for a creature the arrow struck, and a shot into the ground releases them with nothing to go for. They never sting the shooter, and one that turns on the shooter is sent back after its target. They cannot enter a hive or breed, and each is removed `agriculture.bee.lifetimeTicks` after it was released, including when its chunk comes back after it should have gone |
 
-Every setting is read fresh on impact, so a change takes effect on the next shot. All six sprites are placeholders until the agriculture art is drawn.
+Every setting is read fresh on impact, so a change takes effect on the next shot. A blossom or harvest arrow that strikes a block centres on the space in front of the face it struck, where a crop or sapling stands, so a radius of zero reaches that space alone and not the block struck. All six sprites are placeholders until the agriculture art is drawn.
 
 ## Ricochet Arrow
 

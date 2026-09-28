@@ -17,7 +17,6 @@ import net.minecraft.entity.Shearable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -59,7 +58,11 @@ public final class ShearService {
     }
     if (state.isOf(Blocks.PUMPKIN)) {
       final Direction carved = CarvingFace.carved(face, facingShooter);
-      collect(world, new Box(pos).expand(DROP_REACH), () -> carve(world, pos, carved), shooter);
+      collect(
+          world,
+          new Box(pos).expand(DROP_REACH),
+          () -> carve(world, pos, carved, shooter),
+          shooter);
       return true;
     }
     return false;
@@ -84,9 +87,7 @@ public final class ShearService {
   }
 
   private static boolean isFullHive(final BlockState state) {
-    return state.isIn(BlockTags.BEEHIVES)
-        && state.getBlock() instanceof BeehiveBlock
-        && state.contains(BeehiveBlock.HONEY_LEVEL)
+    return state.getBlock() instanceof BeehiveBlock
         && state.get(BeehiveBlock.HONEY_LEVEL) >= FULL_HIVE;
   }
 
@@ -107,7 +108,11 @@ public final class ShearService {
     world.emitGameEvent(shooter, GameEvent.SHEAR, pos);
   }
 
-  private static void carve(final ServerWorld world, final BlockPos pos, final Direction facing) {
+  private static void carve(
+      final ServerWorld world,
+      final BlockPos pos,
+      final Direction facing,
+      @Nullable final PlayerEntity shooter) {
     ModSoundPlayer.play(
         world, Vec3d.ofCenter(pos), ModSounds.SHEAR_ARROW_CARVE, SoundCategory.BLOCKS, 1.0f, 1.0f);
     world.setBlockState(
@@ -126,7 +131,7 @@ public final class ShearService {
         SEED_PUSH,
         SEED_PUSH * facing.getOffsetZ() + world.random.nextDouble() * SEED_JITTER);
     world.spawnEntity(seeds);
-    world.emitGameEvent(null, GameEvent.SHEAR, pos);
+    world.emitGameEvent(shooter, GameEvent.SHEAR, pos);
   }
 
   private static void collect(

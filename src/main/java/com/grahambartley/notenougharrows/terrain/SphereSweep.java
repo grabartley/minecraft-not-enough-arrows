@@ -27,22 +27,40 @@ public final class SphereSweep {
       final int maxBlocks,
       @Nullable final PlayerEntity shooter,
       final PositionEffect effect) {
-    if (world == null || center == null || effect == null || maxBlocks <= 0) {
+    if (center == null) {
       return List.of();
     }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    return sweep(world, BlockSphere.blocks(center, radius), maxBlocks, shooter, effect);
+  }
+
+  public static List<BlockPos> sweep(
+      final ServerWorld world,
+      final List<BlockPos> positions,
+      final int maxBlocks,
+      @Nullable final PlayerEntity shooter,
+      final PositionEffect effect) {
+    if (world == null || positions == null || effect == null || maxBlocks <= 0) {
+      return List.of();
+    }
+    final Predicate<BlockPos> editable = editableBy(world, shooter);
     final List<BlockPos> changed = new ArrayList<>();
-    for (final BlockPos pos : BlockSphere.blocks(center, radius)) {
+    for (final BlockPos pos : positions) {
       if (changed.size() >= maxBlocks) {
         break;
       }
-      if (isLoaded.test(pos)
-          && world.isInBuildLimit(pos)
-          && BlockEditPermission.allows(world, pos, shooter)
-          && effect.applyAt(world, pos)) {
+      if (editable.test(pos) && effect.applyAt(world, pos)) {
         changed.add(pos);
       }
     }
     return List.copyOf(changed);
+  }
+
+  public static Predicate<BlockPos> editableBy(
+      final ServerWorld world, @Nullable final PlayerEntity shooter) {
+    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    return pos ->
+        isLoaded.test(pos)
+            && world.isInBuildLimit(pos)
+            && BlockEditPermission.allows(world, pos, shooter);
   }
 }

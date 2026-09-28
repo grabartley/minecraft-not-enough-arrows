@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.ModSounds;
-import com.grahambartley.notenougharrows.agriculture.BeeSwarmService;
+import com.grahambartley.notenougharrows.agriculture.BeeSwarmRelease;
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
 import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import net.minecraft.entity.Entity;
@@ -52,7 +52,7 @@ public class BeeArrowEntity extends BaseArrowEntity {
   }
 
   private void release(final ServerWorld world, final Vec3d at, @Nullable final Entity struck) {
-    if (!BeeSwarmService.release(world, at, shooter().orElse(null), struck).isEmpty()) {
+    if (!BeeSwarmRelease.release(world, at, shooter().orElse(null), struck).isEmpty()) {
       ModSoundPlayer.playFrom(this, ModSounds.BEE_ARROW_RELEASE, IMPACT_VOLUME, IMPACT_PITCH);
     }
   }

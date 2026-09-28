@@ -74,7 +74,7 @@ Six arrows do the farm round for you. The **blossom arrow** bone meals everythin
 lands, the **harvest arrow** reaps every ripe crop nearby, replants it, and puts the harvest in your
 inventory, and the **till arrow** hoes a circle of ground into wet farmland. The **sapling arrow**
 comes in one kind per sapling and plants it where it lands. The **shear arrow** shears a sheep, a
-mooshroom, a snow golem, a pumpkin, or a full beehive without hurting anything, and the **bee arrow**
+mooshroom, a snow golem, a bogged, a pumpkin, or a full beehive without hurting anything, and the **bee arrow**
 lets loose a few bees that go for whatever you hit and never for you. They leave after a while.
 
 ## Win the fight differently
@@ -146,7 +146,7 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 🌾 | **Harvest** | Reaps and replants every ripe crop nearby, into your inventory | Iron hoe |
 | 🟤 | **Till** | Turns a circle of grass and dirt into wet farmland | Water bucket |
 | 🌱 | **Sapling** | Plants its sapling where it lands | Any sapling, one kind each |
-| ✂️ | **Shear** | Shears sheep, mooshrooms, snow golems, pumpkins, and full hives | Shears |
+| ✂️ | **Shear** | Shears sheep, mooshrooms, snow golems, bogged, pumpkins, and full hives | Shears |
 | 🐝 | **Bee** | A few bees that go for what you hit, never for you | Honeycomb |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight

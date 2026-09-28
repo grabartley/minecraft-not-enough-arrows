@@ -2,13 +2,10 @@ package com.grahambartley.notenougharrows.agriculture;
 
 import com.grahambartley.notenougharrows.config.TillArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
+import com.grahambartley.notenougharrows.terrain.SphereSweep;
 import com.grahambartley.notenougharrows.world.BlockDisc;
-import com.grahambartley.notenougharrows.world.BlockEditPermission;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -40,17 +37,12 @@ public final class TillService {
     if (world == null || center == null || till == null) {
       return List.of();
     }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
-    final List<BlockPos> tilled = new ArrayList<>();
-    for (final BlockPos pos : BlockDisc.blocks(center, till.radius())) {
-      if (isLoaded.test(pos)
-          && world.isInBuildLimit(pos)
-          && BlockEditPermission.allows(world, pos, shooter)
-          && tillAt(world, pos, shooter)) {
-        tilled.add(pos);
-      }
-    }
-    return List.copyOf(tilled);
+    return SphereSweep.sweep(
+        world,
+        BlockDisc.blocks(center, till.radius()),
+        Integer.MAX_VALUE,
+        shooter,
+        (target, pos) -> tillAt(target, pos, shooter));
   }
 
   private static boolean tillAt(

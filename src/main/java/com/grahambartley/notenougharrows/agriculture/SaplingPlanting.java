@@ -1,8 +1,9 @@
 package com.grahambartley.notenougharrows.agriculture;
 
 import com.grahambartley.notenougharrows.world.BlockEditPermission;
-import net.minecraft.block.Waterloggable;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
@@ -36,7 +37,11 @@ public final class SaplingPlanting {
 
   private static boolean wouldDisplaceFluid(
       final ServerWorld world, final ItemPlacementContext placement, final BlockItem sapling) {
-    return !world.getFluidState(placement.getBlockPos()).isEmpty()
-        && !(sapling.getBlock() instanceof Waterloggable);
+    final FluidState there = world.getFluidState(placement.getBlockPos());
+    if (there.isEmpty()) {
+      return false;
+    }
+    final BlockState planted = sapling.getBlock().getPlacementState(placement);
+    return planted == null || !planted.getFluidState().equals(there);
   }
 }

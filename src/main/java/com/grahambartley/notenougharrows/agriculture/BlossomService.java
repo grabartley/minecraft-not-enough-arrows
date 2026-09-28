@@ -2,12 +2,10 @@ package com.grahambartley.notenougharrows.agriculture;
 
 import com.grahambartley.notenougharrows.config.BlossomArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
-import com.grahambartley.notenougharrows.world.BlockEditPermission;
+import com.grahambartley.notenougharrows.terrain.SphereSweep;
 import com.grahambartley.notenougharrows.world.BlockSphere;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Fertilizable;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,12 +36,9 @@ public final class BlossomService {
     if (world == null || center == null || blossom == null) {
       return List.of();
     }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
     final List<BlockPos> fertilizable =
         BlockSphere.blocks(center, blossom.radius()).stream()
-            .filter(isLoaded)
-            .filter(world::isInBuildLimit)
-            .filter(pos -> BlockEditPermission.allows(world, pos, shooter))
+            .filter(SphereSweep.editableBy(world, shooter))
             .filter(pos -> isFertilizable(world, pos))
             .toList();
     final List<BlockPos> bloomed = new ArrayList<>();
