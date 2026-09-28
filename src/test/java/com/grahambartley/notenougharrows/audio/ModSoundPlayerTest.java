@@ -33,7 +33,9 @@ class ModSoundPlayerTest {
   private static final List<Path> ALLOWED =
       List.of(
           Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModSoundPlayer.java"),
-          Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModExplosion.java"));
+          Path.of("src/main/java/com/grahambartley/notenougharrows/audio/ModExplosion.java"),
+          Path.of(
+              "src/client/java/com/grahambartley/notenougharrows/mixin/client/LightningEntityMixin.java"));
   private static final Pattern BYPASS =
       Pattern.compile(
           "\\.playSound(FromEntity|ToPlayer|AtBlockCenter)?\\s*\\(|(?<![.\\w])playSound\\s*\\("

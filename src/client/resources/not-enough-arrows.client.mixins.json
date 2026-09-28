@@ -4,6 +4,7 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"ItemRendererMixin",
+		"LightningEntityMixin",
 		"SoundSystemMixin"
 	],
 	"injectors": {

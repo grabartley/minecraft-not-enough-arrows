@@ -134,7 +134,12 @@ public final class ModArrows {
 
   public static final RegisteredArrow<ShockArrowEntity> SHOCK_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("shock_arrow", ShockArrowEntity::new, ModArrows::shockArrow));
+          ArrowDefinition.of(
+              "shock_arrow",
+              ShockArrowEntity::new,
+              ModArrows::shockArrow,
+              ArrowSound.own(ModSounds.SHOCK_ARROW_THUNDER.getId()),
+              ArrowSound.own(ModSounds.SHOCK_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<LifestealArrowEntity> LIFESTEAL_ARROW =
       REGISTRAR.register(

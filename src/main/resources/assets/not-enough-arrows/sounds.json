@@ -120,5 +120,23 @@
         "type": "event"
       }
     ]
+  },
+  "shock_arrow_thunder": {
+    "subtitle": "subtitles.entity.lightning_bolt.thunder",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.thunder",
+        "type": "event"
+      }
+    ]
+  },
+  "shock_arrow_impact": {
+    "subtitle": "subtitles.entity.lightning_bolt.impact",
+    "sounds": [
+      {
+        "name": "minecraft:entity.lightning_bolt.impact",
+        "type": "event"
+      }
+    ]
   }
 }

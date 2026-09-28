@@ -28,6 +28,8 @@ public final class ModSounds {
   public static final SoundEvent FROST_ARROW_THAW = REGISTRAR.declare("frost_arrow_thaw");
   public static final SoundEvent EXPLOSIVE_ARROW_BLAST = REGISTRAR.declare("explosive_arrow_blast");
   public static final SoundEvent WIND_ARROW_BURST = REGISTRAR.declare("wind_arrow_burst");
+  public static final SoundEvent SHOCK_ARROW_THUNDER = REGISTRAR.declare("shock_arrow_thunder");
+  public static final SoundEvent SHOCK_ARROW_IMPACT = REGISTRAR.declare("shock_arrow_impact");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 

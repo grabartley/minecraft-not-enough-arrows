@@ -32,6 +32,7 @@ public class NotEnoughArrows implements ModInitializer {
   public void onInitialize() {
     ModBlocks.register();
     ModArrows.register();
+    ModEntities.register();
     ModItemGroups.register();
     ModRecipes.register();
     ModScreenHandlers.register();
