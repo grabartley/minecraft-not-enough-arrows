@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import net.minecraft.util.Identifier;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -43,5 +44,21 @@ class ModSoundVolumeTest {
   @CsvSource({"0.0, 0.0", "0.5, 0.5", "1.0, 1.0"})
   void leavesAnotherModsSoundsAlone(final float server, final float client) {
     assertEquals(0.7f, ModSoundVolume.adjust(OTHER_MOD_SOUND, 0.7f, server, client));
+  }
+
+  @ParameterizedTest(name = "volume {0} plays as {1}")
+  @CsvSource({"10000.0, 1.0", "4.0, 1.0", "1.0, 1.0", "0.4, 0.4"})
+  void capsAModSoundAtFullVolumeSoItsSlidersAndFadeStillApply(
+      final float volume, final float played) {
+    assertEquals(
+        played,
+        ModSoundVolume.cap(Identifier.of(NotEnoughArrows.MOD_ID, "shock_arrow_thunder"), volume));
+  }
+
+  @Test
+  void leavesAVanillaSoundsVolumeAlone() {
+    assertEquals(
+        10000.0f,
+        ModSoundVolume.cap(Identifier.ofVanilla("entity.lightning_bolt.thunder"), 10000.0f));
   }
 }

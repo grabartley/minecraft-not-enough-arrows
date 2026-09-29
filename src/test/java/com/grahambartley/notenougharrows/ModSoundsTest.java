@@ -187,7 +187,7 @@ class ModSoundsTest {
     final List<String> mismatched = new ArrayList<>();
     for (final SoundEvent event : ModSounds.declaredEvents()) {
       final String path = event.getId().getPath();
-      if (!json.getAsJsonObject(path).has("subtitle")) {
+      if (playsAnInterfaceSound(json.getAsJsonObject(path))) {
         continue;
       }
       final float reach = event.getDistanceToTravel(1.0f);

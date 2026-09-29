@@ -29,6 +29,17 @@ public class SoundSystemMixin {
   }
 
   @ModifyExpressionValue(
+      method = {
+        "play(Lnet/minecraft/client/sound/SoundInstance;)V",
+        "getAdjustedVolume(Lnet/minecraft/client/sound/SoundInstance;)F"
+      },
+      at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sound/SoundInstance;getVolume()F"))
+  private float notEnoughArrows$capModSound(
+      final float volume, @Local(argsOnly = true) final SoundInstance sound) {
+    return ModSoundVolume.cap(sound.getId(), volume);
+  }
+
+  @ModifyExpressionValue(
       method = "play(Lnet/minecraft/client/sound/SoundInstance;)V",
       at =
           @At(

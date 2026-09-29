@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.chaos;
 
+import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.tint.TintChoice;
 import java.util.Optional;
@@ -13,8 +14,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 
 public final class PartyShow {
-  public static final float DISC_VOLUME = 4.0f;
-  public static final float DISC_PITCH = 1.0f;
+  private static final float DISC_PITCH = 1.0f;
 
   private static final int SPARKS = 60;
   private static final int NOTES = 12;
@@ -53,9 +53,9 @@ public final class PartyShow {
     ModSoundPlayer.play(
         world,
         at,
-        song.get().value().soundEvent().value(),
+        ModSounds.PARTY_DISCS.getOrDefault(disc.key(), song.get().value().soundEvent().value()),
         SoundCategory.RECORDS,
-        DISC_VOLUME,
+        1.0f,
         DISC_PITCH);
     return true;
   }

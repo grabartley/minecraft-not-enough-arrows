@@ -691,6 +691,215 @@
       }
     ]
   },
+  "party_arrow_13": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/13",
+        "volume": 0.225,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_cat": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/cat",
+        "volume": 0.27,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_blocks": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/blocks",
+        "volume": 0.428,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_chirp": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/chirp",
+        "volume": 0.31,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_far": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/far",
+        "volume": 0.461,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_mall": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/mall",
+        "volume": 0.461,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_mellohi": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/mellohi",
+        "volume": 0.292,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_stal": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/stal",
+        "volume": 0.338,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_strad": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/strad",
+        "volume": 0.356,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_ward": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/ward",
+        "volume": 0.413,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_11": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/11",
+        "volume": 0.313,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_wait": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/wait",
+        "volume": 0.565,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_otherside": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/otherside",
+        "volume": 0.248,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_5": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/5",
+        "volume": 0.235,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_pigstep": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/pigstep",
+        "volume": 0.265,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_relic": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/relic",
+        "volume": 0.278,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_creator": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/creator",
+        "volume": 0.37,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_creator_music_box": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/creator_music_box",
+        "volume": 0.538,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_precipice": {
+    "subtitle": "subtitles.not-enough-arrows.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/precipice",
+        "volume": 0.402,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
   "fletching_station_select": {
     "sounds": [
       {

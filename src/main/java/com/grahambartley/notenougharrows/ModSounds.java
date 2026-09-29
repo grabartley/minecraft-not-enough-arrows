@@ -1,7 +1,10 @@
 package com.grahambartley.notenougharrows;
 
 import com.grahambartley.notenougharrows.audio.SoundRegistrar;
+import com.grahambartley.notenougharrows.chaos.DiscPalette;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
@@ -68,6 +71,12 @@ public final class ModSounds {
   public static final SoundEvent MAGNET_ARROW_PULL = REGISTRAR.declare("magnet_arrow_pull");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
+
+  public static final Map<String, SoundEvent> PARTY_DISCS =
+      DiscPalette.songs().stream()
+          .collect(
+              Collectors.toUnmodifiableMap(
+                  song -> song, song -> REGISTRAR.declare("party_arrow_" + song)));
 
   private ModSounds() {}
 
