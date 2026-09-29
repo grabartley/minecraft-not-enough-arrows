@@ -7,6 +7,8 @@ import com.grahambartley.notenougharrows.gametest.MobRoster.Mob;
 import java.util.Collection;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.WardenEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -19,6 +21,7 @@ import net.minecraft.test.TestFunction;
 public final class TauntArrowMobsGameTest implements FabricGameTest {
   private static final int FIRST_LOOK = 20;
   private static final int SECOND_LOOK = 60;
+  private static final int UNHARMABLE = 4;
   private static final int AFTER_THE_TAUNT =
       MobArena.SETTLED + TargetingArrowConfig.DEFAULT_TAUNT_DURATION_TICKS + FIRST_LOOK;
 
@@ -36,6 +39,8 @@ public final class TauntArrowMobsGameTest implements FabricGameTest {
     final WardenEntity attacker =
         (WardenEntity) MobArena.thinking(context, warden, MobArena.NEAR_STAND);
     final CowEntity struck = MobArena.cow(context, MobArena.DECOY_STAND);
+    struck.addStatusEffect(
+        new StatusEffectInstance(StatusEffects.RESISTANCE, AFTER_THE_TAUNT, UNHARMABLE));
     for (int provoking = 2; provoking < MobArena.SETTLED; provoking++) {
       context.runAtTick(provoking, () -> MobAggression.aim(attacker, player));
     }
