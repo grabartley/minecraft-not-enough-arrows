@@ -44,6 +44,12 @@ public final class ModSounds {
   public static final SoundEvent UPDRAFT_ARROW_OPEN = REGISTRAR.declare("updraft_arrow_open");
   public static final SoundEvent TRAMPOLINE_ARROW_LAUNCH =
       REGISTRAR.declare("trampoline_arrow_launch");
+  public static final SoundEvent BEACON_ARROW_RAISE = REGISTRAR.declare("beacon_arrow_raise");
+  public static final SoundEvent PROSPECTOR_ARROW_PULSE =
+      REGISTRAR.declare("prospector_arrow_pulse");
+  public static final SoundEvent SONAR_ARROW_PULSE = REGISTRAR.declare("sonar_arrow_pulse");
+  public static final SoundEvent TRIPWIRE_ARROW_SET = REGISTRAR.declare("tripwire_arrow_set");
+  public static final SoundEvent TRIPWIRE_ARROW_ALERT = REGISTRAR.declare("tripwire_arrow_alert");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 

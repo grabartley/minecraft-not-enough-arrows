@@ -255,5 +255,50 @@
         "type": "event"
       }
     ]
+  },
+  "beacon_arrow_raise": {
+    "subtitle": "subtitles.not-enough-arrows.beacon_arrow_raise",
+    "sounds": [
+      {
+        "name": "minecraft:block.beacon.activate",
+        "type": "event"
+      }
+    ]
+  },
+  "prospector_arrow_pulse": {
+    "subtitle": "subtitles.not-enough-arrows.prospector_arrow_pulse",
+    "sounds": [
+      {
+        "name": "minecraft:block.amethyst_block.resonate",
+        "type": "event"
+      }
+    ]
+  },
+  "sonar_arrow_pulse": {
+    "subtitle": "subtitles.not-enough-arrows.sonar_arrow_pulse",
+    "sounds": [
+      {
+        "name": "minecraft:entity.warden.sonic_charge",
+        "type": "event"
+      }
+    ]
+  },
+  "tripwire_arrow_set": {
+    "subtitle": "subtitles.not-enough-arrows.tripwire_arrow_set",
+    "sounds": [
+      {
+        "name": "minecraft:block.tripwire.attach",
+        "type": "event"
+      }
+    ]
+  },
+  "tripwire_arrow_alert": {
+    "subtitle": "subtitles.not-enough-arrows.tripwire_arrow_alert",
+    "sounds": [
+      {
+        "name": "minecraft:block.sculk_sensor.clicking",
+        "type": "event"
+      }
+    ]
   }
 }

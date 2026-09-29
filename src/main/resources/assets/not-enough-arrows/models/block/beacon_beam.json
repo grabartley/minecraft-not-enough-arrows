@@ -1,0 +1,32 @@
+{
+  "ambientocclusion": false,
+  "textures": {
+    "particle": "not-enough-arrows:block/beacon_beam",
+    "beam": "not-enough-arrows:block/beacon_beam",
+    "glow": "not-enough-arrows:block/beacon_beam_glow"
+  },
+  "elements": [
+    {
+      "from": [6.4, 0, 6.4],
+      "to": [9.6, 16, 9.6],
+      "shade": false,
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#beam"},
+        "east": {"uv": [0, 0, 16, 16], "texture": "#beam"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#beam"},
+        "west": {"uv": [0, 0, 16, 16], "texture": "#beam"}
+      }
+    },
+    {
+      "from": [5.5, 0, 5.5],
+      "to": [10.5, 16, 10.5],
+      "shade": false,
+      "faces": {
+        "north": {"uv": [0, 0, 16, 16], "texture": "#glow"},
+        "east": {"uv": [0, 0, 16, 16], "texture": "#glow"},
+        "south": {"uv": [0, 0, 16, 16], "texture": "#glow"},
+        "west": {"uv": [0, 0, 16, 16], "texture": "#glow"}
+      }
+    }
+  ]
+}

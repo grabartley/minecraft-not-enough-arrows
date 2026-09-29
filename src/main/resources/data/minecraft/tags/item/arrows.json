@@ -48,6 +48,12 @@
     "not-enough-arrows:vine_arrow",
     "not-enough-arrows:trampoline_arrow",
     "not-enough-arrows:scaffold_arrow",
-    "not-enough-arrows:bridge_arrow"
+    "not-enough-arrows:bridge_arrow",
+    "not-enough-arrows:torch_arrow",
+    "not-enough-arrows:beacon_arrow",
+    "not-enough-arrows:prospector_arrow",
+    "not-enough-arrows:sonar_arrow",
+    "not-enough-arrows:tracer_arrow",
+    "not-enough-arrows:tripwire_arrow"
   ]
 }

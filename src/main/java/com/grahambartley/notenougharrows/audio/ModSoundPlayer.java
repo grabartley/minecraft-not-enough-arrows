@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.audio;
 
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
@@ -43,6 +44,22 @@ public final class ModSoundPlayer {
       return;
     }
     play(world, source.getPos(), sound, source.getSoundCategory(), volume, pitch);
+  }
+
+  public static void playTo(
+      final ServerPlayerEntity listener,
+      final SoundEvent sound,
+      final float volume,
+      final float pitch) {
+    play(
+        (position, event, channel, loudness, tone) ->
+            listener.playSoundToPlayer(event, channel, loudness, tone),
+        ServerConfigService.get().sound().volume(),
+        listener.getPos(),
+        sound,
+        SoundCategory.PLAYERS,
+        volume,
+        pitch);
   }
 
   static void play(

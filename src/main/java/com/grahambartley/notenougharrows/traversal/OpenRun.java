@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.traversal;
 
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -16,7 +16,7 @@ public final class OpenRun {
 
   public static List<BlockPos> leading(
       final ServerWorld world, final List<BlockPos> candidates, final BlockState material) {
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     final List<BlockPos> open = new ArrayList<>();
     for (final BlockPos pos : candidates) {
       if (!isOpen(world, pos, material, isLoaded)) {

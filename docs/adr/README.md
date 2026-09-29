@@ -48,6 +48,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0038](0038-an-agriculture-arrow-runs-vanillas-own-item-behaviour.md) | An agriculture arrow runs vanilla's own item behaviour |
 | [0039](0039-a-traversal-structure-worth-more-than-its-recipe-is-built-from-the-mods-own-blocks.md) | A traversal structure worth more than its recipe is built from the mod's own blocks |
 | [0040](0040-a-vanilla-client-is-sent-no-recipe-of-this-mod.md) | A vanilla client is sent no recipe of this mod |
+| [0041](0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) | Reveals are drawn by the client from what the server found once |
 
 ## Writing A New Record
 

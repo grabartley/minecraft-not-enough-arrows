@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows;
 
+import com.grahambartley.notenougharrows.block.BeaconBeamBlock;
 import com.grahambartley.notenougharrows.block.RedstoneChargeBlock;
 import com.grahambartley.notenougharrows.block.RopeBlock;
 import com.grahambartley.notenougharrows.block.TrampolineBlock;
@@ -16,6 +17,8 @@ public final class ModBlocks {
       Identifier.of(NotEnoughArrows.MOD_ID, "zipline_cable");
   public static final Identifier TRAMPOLINE_ID =
       Identifier.of(NotEnoughArrows.MOD_ID, "trampoline");
+  public static final Identifier BEACON_BEAM_ID =
+      Identifier.of(NotEnoughArrows.MOD_ID, "beacon_beam");
 
   public static final RopeBlock ROPE =
       Registry.register(Registries.BLOCK, ROPE_ID, new RopeBlock(RopeBlock.settings()));
@@ -31,15 +34,19 @@ public final class ModBlocks {
   public static final TrampolineBlock TRAMPOLINE =
       Registry.register(
           Registries.BLOCK, TRAMPOLINE_ID, new TrampolineBlock(TrampolineBlock.settings()));
+  public static final BeaconBeamBlock BEACON_BEAM =
+      Registry.register(
+          Registries.BLOCK, BEACON_BEAM_ID, new BeaconBeamBlock(BeaconBeamBlock.settings()));
 
   private ModBlocks() {}
 
   public static void register() {
     NotEnoughArrows.LOGGER.info(
-        "Registered blocks {}, {}, {} and {}",
+        "Registered blocks {}, {}, {}, {} and {}",
         ROPE_ID,
         REDSTONE_CHARGE_ID,
         ZIPLINE_CABLE_ID,
-        TRAMPOLINE_ID);
+        TRAMPOLINE_ID,
+        BEACON_BEAM_ID);
   }
 }

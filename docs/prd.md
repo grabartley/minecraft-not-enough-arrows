@@ -721,25 +721,25 @@ A player needs to know something about a place before they go into it: whether i
 
 | Arrow | Centre ingredient | What impact does | Spent |
 |---|---|---|---|
-| Torch arrow | A torch | Places a torch on the struck face | Yes |
-| Beacon arrow | Glowstone | Plants a timed beam at the impact point, visible at distance to every player | Yes |
+| Torch arrow | A torch | Places a torch on the struck face | Yes, if it placed a torch |
+| Beacon arrow | Glowstone | Plants a timed beam at the impact point, visible at distance to every player | Yes, if a beam rose |
 | Prospector arrow | An amethyst shard | Outlines ore blocks within a configured radius, through terrain, for a configured time | Yes |
 | Sonar arrow | An echo shard | Outlines every living entity within a configured radius, through terrain, for a configured time | Yes |
 | Tracer arrow | A glow ink arrow plus gunpowder | Draws its own flight path in the world and leaves it drawn for a configured time | Yes |
-| Tripwire arrow | A sculk sensor | Leaves a watcher at the impact point that tells the shooter when something crosses it | Yes |
+| Tripwire arrow | A sculk sensor | Leaves a watcher in the open space in front of the struck face that tells the shooter when something crosses it | Yes, if it set a watcher |
 
 | Requirement | Statement |
 |---|---|
-| REVEAL-1 | A torch is placed only where the shooter could have placed one by hand, on a face that accepts one, and never inside a fluid. Where it may not be placed the arrow embeds and is recovered |
-| REVEAL-2 | A beacon beam is a timed structure with no collision, no item form, and no light level of its own, so it marks a place without changing it (§8, Temporary Structures) |
-| REVEAL-3 | A beacon is distinguishable from another beacon by more than its colour, because colour alone is not a distinction a player can rely on (A11Y-1) |
+| REVEAL-1 | A torch is placed only where the shooter could have placed one by hand, on a face that accepts one, and never inside a fluid. A ceiling accepts none, as it accepts no hand-placed torch, and a shooter who may not build by hand, such as one in adventure mode, places none. Where it may not be placed the arrow embeds and is recovered |
+| REVEAL-2 | A beacon beam is a timed structure with no collision, no item form, and no light level of its own, so it marks a place without changing it (§8, Temporary Structures). It rises only through air, so it never replaces a plant, snow, or a fluid, and stops at the first block above it |
+| REVEAL-3 | A beacon arrow's beam is drawn like vanilla's own beacon beam, so it reads as a beacon at a glance. It is told apart from a vanilla beam by more than its colour: it rises from an impact point with no beacon block beneath it, it is narrower, and it clears away after its lifetime (A11Y-1) |
 | REVEAL-4 | A reveal pulse, which is what the prospector and sonar arrows fire, resolves once at impact rather than continuously. It scans a bounded volume, once, and applies an outline with a duration. It never re-scans and never follows the player |
 | REVEAL-5 | A reveal pulse's radius and duration are server settings with configured maxima, so an operator can cap what it exposes and a duration of zero reveals nothing |
 | REVEAL-6 | The prospector arrow's set of revealed blocks is an operator-editable list, so a server decides what counts as worth revealing rather than the mod deciding for it |
 | REVEAL-7 | The sonar arrow reveals what it did not hit. Its outline is applied by the server to the entities it found, is visible to every player who can see those entities, and is the same status effect the glow ink arrow applies, so its countdown and syncing are vanilla's (GLOW-1) |
 | REVEAL-8 | A tracer arrow's path is drawn from the positions the arrow actually occupied, server-side, so what players see is where the arrow went rather than a client's guess at it |
 | REVEAL-9 | A watcher, which is what the tripwire arrow leaves, is server-owned, invisible, has no collision and no item form, carries an expiry, and reports at most once per configured interval so a busy corridor cannot flood its owner |
-| REVEAL-10 | A watcher reports to the player who fired it and to nobody else. A watcher with no shooter reports to nobody and expires quietly |
+| REVEAL-10 | A watcher reports to the player who fired it and to nobody else, and its owner crossing it does not trip it. A watcher with no shooter reports to nobody and expires quietly |
 | REVEAL-11 | A watcher's report names a direction and a rough distance rather than exact coordinates, because a watcher is an alarm and not a tracking device |
 | REVEAL-12 | No effect in this use case depends on particles to be read, because particles are culled at reduced particle settings (A11Y-2) |
 
@@ -1215,7 +1215,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | A11Y-4 | The countdown ring is scalable by the player |
 | A11Y-5 | Every interface renders correctly at GUI scales 1 through 4 |
 | A11Y-6 | Every player-facing string resolves through the language file, so the mod is translatable |
-| A11Y-7 | A beacon beam, a cloud, and a reveal outline are each distinguishable by more than colour. A beam's identity is carried by its shape as well as its hue, and an outline is a silhouette rather than a tint |
+| A11Y-7 | A beacon beam, a cloud, and a reveal outline are each distinguishable by more than colour. A beam's identity is carried by where it stands and how long it lasts as well as its hue (REVEAL-3), and an outline is a silhouette rather than a tint |
 | A11Y-8 | A watcher's report is text rather than a sound alone, so it is readable by a player who cannot hear it |
 
 ### Compatibility

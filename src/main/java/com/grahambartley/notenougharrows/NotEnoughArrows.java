@@ -17,6 +17,7 @@ import com.grahambartley.notenougharrows.grapple.GrappleService;
 import com.grahambartley.notenougharrows.network.ModNetworking;
 import com.grahambartley.notenougharrows.nock.NockedArrowBroadcaster;
 import com.grahambartley.notenougharrows.redstone.RedstoneChargeService;
+import com.grahambartley.notenougharrows.reveal.WatcherService;
 import com.grahambartley.notenougharrows.server.ServerConfigSyncListener;
 import com.grahambartley.notenougharrows.server.ServerConfigUpdateReceiver;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
@@ -66,6 +67,7 @@ public class NotEnoughArrows implements ModInitializer {
     DisarmFetchService.register();
     SmokeCloudService.register();
     BeeSwarmWarden.register();
+    WatcherService.register();
     NockedArrowBroadcaster.register();
     FletchingStationInteraction.register();
     ServerConfigSyncListener.register();

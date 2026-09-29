@@ -289,6 +289,7 @@ public final class ModArrows {
   private static void registerLaterFamiliesInOrder() {
     AgricultureArrows.register();
     TraversalArrows.register();
+    DiscoveryArrows.register();
   }
 
   static ArrowRegistrar registrar() {

@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.structure;
 
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class StaleMarkSweep {
     if (stale == null) {
       return 0;
     }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     int cleared = 0;
     for (final StructureMark mark : stale) {
       if (isLoaded.test(mark.pos())

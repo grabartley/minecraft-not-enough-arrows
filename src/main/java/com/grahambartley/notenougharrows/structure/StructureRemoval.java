@@ -7,7 +7,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 public final class StructureRemoval {
@@ -36,14 +35,5 @@ public final class StructureRemoval {
       return false;
     }
     return world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
-  }
-
-  public static Predicate<BlockPos> loadedIn(final ServerWorld world) {
-    return pos ->
-        world
-            .getChunkManager()
-            .isChunkLoaded(
-                ChunkSectionPos.getSectionCoord(pos.getX()),
-                ChunkSectionPos.getSectionCoord(pos.getZ()));
   }
 }

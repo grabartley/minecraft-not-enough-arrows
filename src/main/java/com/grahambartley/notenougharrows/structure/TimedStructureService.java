@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.structure;
 
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +82,7 @@ public final class TimedStructureService {
         .take(id)
         .map(
             structure -> {
-              StructureRemoval.remove(world, structure, StructureRemoval.loadedIn(world));
+              StructureRemoval.remove(world, structure, LoadedGround.in(world));
               return true;
             })
         .orElse(false);
@@ -109,7 +110,7 @@ public final class TimedStructureService {
     if (ledger == null) {
       return;
     }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     ledger.takeAll().forEach(structure -> StructureRemoval.remove(world, structure, isLoaded));
   }
 
@@ -139,7 +140,7 @@ public final class TimedStructureService {
 
   private static void tick(final ServerWorld world) {
     STALE.clearIn(world);
-    expireIn(world, world.getTime(), StructureRemoval.loadedIn(world));
+    expireIn(world, world.getTime(), LoadedGround.in(world));
   }
 
   private static void clearEverything(final MinecraftServer server) {

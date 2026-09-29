@@ -1,10 +1,10 @@
 package com.grahambartley.notenougharrows.zipline;
 
 import com.grahambartley.notenougharrows.anchor.AnchorSite;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import com.grahambartley.notenougharrows.world.BlockEditPermission;
 import com.grahambartley.notenougharrows.world.BlockPlacement;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -35,7 +35,7 @@ public final class SpanSurvey {
     if (cable.isEmpty()) {
       return Optional.of(SpanRefusal.TOO_SHORT);
     }
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     for (final BlockPos pos : cable) {
       if (!isLoaded.test(pos)
           || !BlockEditPermission.allows(world, pos, shooter)
