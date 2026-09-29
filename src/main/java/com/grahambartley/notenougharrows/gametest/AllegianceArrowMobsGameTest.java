@@ -22,7 +22,7 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
   private static final double CLOSED_IN = 4.0;
   private static final int FINAL_STRETCH = 100;
   private static final Set<EntityType<?>> FOLLOWS_AWAITING_A_FIX =
-      Set.of(EntityType.SPIDER, EntityType.GHAST, EntityType.WITHER);
+      Set.of(EntityType.SPIDER, EntityType.CAVE_SPIDER, EntityType.GHAST, EntityType.WITHER);
   private static final Set<EntityType<?>> DEFENDS_AWAITING_A_FIX = Set.of(EntityType.EVOKER);
   private static final AllegianceArrowConfig LASTS_THE_WHOLE_TEST =
       new AllegianceArrowConfig(MobArena.SLOW_LIMIT, AllegianceArrowConfig.DEFAULT_DEFEND_RADIUS);
