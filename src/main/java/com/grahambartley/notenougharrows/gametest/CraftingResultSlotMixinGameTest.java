@@ -57,6 +57,26 @@ public final class CraftingResultSlotMixinGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
+  public void loadingABucketLeavesNoEmptyBucketBehind(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final CraftingScreenHandler table = openTable(context, player);
+    table.getSlot(FIRST_GRID_SLOT).setStack(SocialTestSupport.emptyCourier());
+    table.getSlot(SECOND_GRID_SLOT).setStack(new ItemStack(Items.WATER_BUCKET));
+
+    table.onSlotClick(RESULT, 0, SlotActionType.PICKUP, player);
+
+    context.assertTrue(
+        CourierPayloads.payloadOf(table.getCursorStack()).orElseThrow().isOf(Items.WATER_BUCKET),
+        "The arrow carries the full bucket");
+    context.assertTrue(
+        table.getSlot(SECOND_GRID_SLOT).getStack().isEmpty(),
+        "and no empty bucket is left in the grid, held "
+            + table.getSlot(SECOND_GRID_SLOT).getStack());
+    context.assertEquals(0, player.getInventory().count(Items.BUCKET), "Empty buckets handed over");
+    context.complete();
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void loadingFromAStackOfArrowsLoadsOnlyOne(TestContext context) {
     final ServerPlayerEntity player = player(context);
     final CraftingScreenHandler table = openTable(context, player);

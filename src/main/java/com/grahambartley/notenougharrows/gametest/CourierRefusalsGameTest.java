@@ -4,6 +4,9 @@ import com.grahambartley.notenougharrows.config.CourierArrowConfig;
 import com.grahambartley.notenougharrows.social.CourierRefusals;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.BundleContentsComponent;
+import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.test.GameTest;
@@ -74,6 +77,41 @@ public final class CourierRefusalsGameTest implements FabricGameTest {
         0,
         CourierRefusals.loadableCount(SocialTestSupport.emptyCourier(), config),
         "A refused stack loads nothing");
+    context.complete();
+  }
+
+  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void refusesAShulkerBoxWithACourierArrowInside(TestContext context) {
+    final ItemStack box = new ItemStack(Items.SHULKER_BOX);
+    box.set(
+        DataComponentTypes.CONTAINER,
+        ContainerComponent.fromStacks(
+            List.of(new ItemStack(Items.DIAMOND), SocialTestSupport.loadedCourier())));
+
+    context.assertTrue(CourierRefusals.refusesToCarry(box, DEFAULTS), "Couriers must never nest");
+    context.complete();
+  }
+
+  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void refusesABundleWithACourierArrowInside(TestContext context) {
+    final ItemStack bundle = new ItemStack(Items.BUNDLE);
+    bundle.set(
+        DataComponentTypes.BUNDLE_CONTENTS,
+        new BundleContentsComponent(List.of(SocialTestSupport.emptyCourier())));
+
+    context.assertTrue(
+        CourierRefusals.refusesToCarry(bundle, DEFAULTS), "Couriers must never nest");
+    context.complete();
+  }
+
+  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void carriesAShulkerBoxOfOrdinaryItems(TestContext context) {
+    final ItemStack box = new ItemStack(Items.SHULKER_BOX);
+    box.set(
+        DataComponentTypes.CONTAINER,
+        ContainerComponent.fromStacks(List.of(new ItemStack(Items.DIAMOND, 64))));
+
+    context.assertFalse(CourierRefusals.refusesToCarry(box, DEFAULTS), "A shulker box of diamonds");
     context.complete();
   }
 }

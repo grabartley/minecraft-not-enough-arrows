@@ -251,7 +251,7 @@
       "com.grahambartley.notenougharrows.gametest.CourierPayloadGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierPayloadsGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierRefusalsGameTest",
-      "com.grahambartley.notenougharrows.gametest.CourierDeliveryGameTest",
+      "com.grahambartley.notenougharrows.gametest.StackHandoverGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierArrowItemGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierLoadingRecipeGameTest",
@@ -265,7 +265,8 @@
       "com.grahambartley.notenougharrows.gametest.SnowGolemMeltGameTest",
       "com.grahambartley.notenougharrows.gametest.SnowGolemArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.MagnetPullGameTest",
-      "com.grahambartley.notenougharrows.gametest.MagnetArrowEntityGameTest"
+      "com.grahambartley.notenougharrows.gametest.MagnetArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.PersistentProjectileEntityDeliveryMixinGameTest"
     ]
   },
   "mixins": [

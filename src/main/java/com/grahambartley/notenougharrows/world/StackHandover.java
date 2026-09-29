@@ -1,4 +1,4 @@
-package com.grahambartley.notenougharrows.social;
+package com.grahambartley.notenougharrows.world;
 
 import java.util.Objects;
 import net.minecraft.entity.ItemEntity;
@@ -8,10 +8,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 
-public final class CourierDelivery {
+public final class StackHandover {
   private static final int NO_SLOT = -1;
 
-  private CourierDelivery() {}
+  private StackHandover() {}
 
   public static void handTo(final PlayerEntity recipient, final ItemStack stack) {
     Objects.requireNonNull(recipient, "recipient");

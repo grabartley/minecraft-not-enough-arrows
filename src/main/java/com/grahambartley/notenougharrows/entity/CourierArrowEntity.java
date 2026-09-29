@@ -6,13 +6,14 @@ import com.grahambartley.notenougharrows.arrow.FaceClearance;
 import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.config.CourierArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
-import com.grahambartley.notenougharrows.social.CourierDelivery;
 import com.grahambartley.notenougharrows.social.CourierPayloads;
 import com.grahambartley.notenougharrows.social.CourierRefusals;
+import com.grahambartley.notenougharrows.world.StackHandover;
 import java.util.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
@@ -41,7 +42,7 @@ public class CourierArrowEntity extends BaseArrowEntity {
     super(entityType, world, x, y, z, stack, weapon);
   }
 
-  public static boolean reachesEveryPlayer(final Object projectile) {
+  public static boolean reachesEveryPlayer(final PersistentProjectileEntity projectile) {
     return projectile instanceof CourierArrowEntity courier && courier.isLoaded();
   }
 
@@ -96,9 +97,9 @@ public class CourierArrowEntity extends BaseArrowEntity {
       return;
     }
     if (struck instanceof PlayerEntity recipient && recipient.isAlive()) {
-      CourierDelivery.handTo(recipient, payload);
+      StackHandover.handTo(recipient, payload);
     } else {
-      CourierDelivery.drop(world, at, payload);
+      StackHandover.drop(world, at, payload);
     }
     ModSoundPlayer.play(
         world,
@@ -113,7 +114,7 @@ public class CourierArrowEntity extends BaseArrowEntity {
     if (getY() < world.getBottomY()) {
       returnToShooter(world, payload, getPos());
     } else {
-      CourierDelivery.drop(world, getPos(), payload);
+      StackHandover.drop(world, getPos(), payload);
     }
   }
 
@@ -121,9 +122,9 @@ public class CourierArrowEntity extends BaseArrowEntity {
     final Optional<PlayerEntity> shooter =
         shootingPlayer().filter(player -> player.isAlive() && player.getWorld() == world);
     if (shooter.isPresent()) {
-      CourierDelivery.handTo(shooter.get(), stack);
+      StackHandover.handTo(shooter.get(), stack);
     } else {
-      CourierDelivery.drop(world, at, stack);
+      StackHandover.drop(world, at, stack);
     }
   }
 

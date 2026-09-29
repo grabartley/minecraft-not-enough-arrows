@@ -11,6 +11,7 @@ import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.recipe.input.CraftingRecipeInput;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class CourierLoadingRecipe extends SpecialCraftingRecipe {
@@ -42,6 +43,11 @@ public class CourierLoadingRecipe extends SpecialCraftingRecipe {
     return CourierPayloads.isCourier(stack)
         ? ONE_ARROW
         : CourierRefusals.loadableCount(stack, config());
+  }
+
+  @Override
+  public DefaultedList<ItemStack> getRemainder(final CraftingRecipeInput input) {
+    return DefaultedList.ofSize(input.getSize(), ItemStack.EMPTY);
   }
 
   @Override

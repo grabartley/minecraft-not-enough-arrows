@@ -20,6 +20,7 @@ public abstract class PersistentProjectileEntityDeliveryMixin {
                   "Lnet/minecraft/entity/player/PlayerEntity;shouldDamagePlayer(Lnet/minecraft/entity/player/PlayerEntity;)Z"))
   private boolean notEnoughArrows$deliverToAPlayerEvenWithoutPvp(
       final PlayerEntity shooter, final PlayerEntity struck, final Operation<Boolean> original) {
-    return CourierArrowEntity.reachesEveryPlayer((Object) this) || original.call(shooter, struck);
+    return CourierArrowEntity.reachesEveryPlayer((PersistentProjectileEntity) (Object) this)
+        || original.call(shooter, struck);
   }
 }

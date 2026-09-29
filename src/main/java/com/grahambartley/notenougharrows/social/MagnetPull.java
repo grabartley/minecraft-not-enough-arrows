@@ -40,7 +40,7 @@ public final class MagnetPull {
       final Vec3d impact,
       @Nullable final LivingEntity shooter,
       final int radius) {
-    if (world == null || impact == null || shooter == null || radius <= 0) {
+    if (shooter == null || radius <= 0) {
       return List.of();
     }
     final List<Entity> caught =
