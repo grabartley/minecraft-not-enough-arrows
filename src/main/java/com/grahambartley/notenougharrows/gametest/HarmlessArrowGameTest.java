@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.AgricultureArrows;
+import com.grahambartley.notenougharrows.ChaosArrows;
 import com.grahambartley.notenougharrows.DiscoveryArrows;
 import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.TraversalArrows;
@@ -36,7 +37,11 @@ public final class HarmlessArrowGameTest implements FabricGameTest {
           ModArrows.GLOW_INK_ARROW,
           ModArrows.WIND_ARROW,
           ModArrows.FREEZE_ARROW,
-          TraversalArrows.TOW_ARROW);
+          TraversalArrows.TOW_ARROW,
+          ChaosArrows.PARTY_ARROW,
+          ChaosArrows.CHICKEN_ARROW,
+          ChaosArrows.PUFFER_ARROW,
+          ChaosArrows.STINK_ARROW);
 
   private static final List<RegisteredArrow<?>> HURTFUL =
       List.of(

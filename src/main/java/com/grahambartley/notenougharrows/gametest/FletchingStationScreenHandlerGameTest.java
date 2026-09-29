@@ -1,7 +1,10 @@
 package com.grahambartley.notenougharrows.gametest;
 
+import com.grahambartley.notenougharrows.SocialArrows;
 import com.grahambartley.notenougharrows.fletching.FletchingStationScreenHandler;
 import com.grahambartley.notenougharrows.fletching.FletchingStationSlots;
+import com.grahambartley.notenougharrows.social.CourierPayloads;
+import com.grahambartley.notenougharrows.social.CourierStationRecipes;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
@@ -17,6 +20,7 @@ import net.minecraft.test.TestContext;
 
 public final class FletchingStationScreenHandlerGameTest implements FabricGameTest {
   private static final String BATCH = "fletching-station";
+  private static final String COURIER_BATCH = "fletching-station-courier";
   private static final int TOO_FEW_ARROWS = FletchingTestSupport.ARROWS_CONSUMED - 1;
   private static final int A_SPARE_ARROW = 1;
   private static final int ROOM_FOR_HALF_A_CRAFT = 60;
@@ -327,6 +331,71 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
 
   private static ServerPlayerEntity player(final TestContext context) {
     return MockPlayerSupport.playerAt(context, FletchingStationSupport.TABLE.east());
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = COURIER_BATCH, tickLimit = 20)
+  public void theStationLoadsACourierArrowWithTheWholeStack(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station.getSlot(0).setStack(SocialTestSupport.emptyCourier().copyWithCount(3));
+    station.getSlot(1).setStack(new ItemStack(Items.DIAMOND, 40));
+
+    station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
+
+    context.assertEquals(
+        40,
+        CourierPayloads.payloadOf(station.getCursorStack()).orElseThrow().getCount(),
+        "Diamonds loaded at the station");
+    context.assertEquals(1, station.getCursorStack().getCount(), "Loaded arrows taken");
+    context.assertTrue(station.getSlot(1).getStack().isEmpty(), "No diamond left behind");
+    context.assertEquals(2, station.getSlot(0).getStack().getCount(), "Empty arrows left");
+    context.complete();
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = COURIER_BATCH, tickLimit = 20)
+  public void theStationUnloadsACourierArrowAndHandsBackTheEmptyArrow(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station.getSlot(4).setStack(SocialTestSupport.loadedCourier());
+
+    station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
+
+    context.assertEquals(
+        SocialTestSupport.PAYLOAD_COUNT,
+        station.getCursorStack().getCount(),
+        "Diamonds taken out at the station");
+    context.assertEquals(
+        1,
+        FletchingStationSupport.countInInputs(station, SocialArrows.COURIER_ARROW.item()),
+        "The empty arrow comes back into the station");
+    context.assertTrue(
+        CourierPayloads.isEmptyCourier(station.getSlot(4).getStack()), "and it is empty");
+    context.complete();
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = COURIER_BATCH, tickLimit = 20)
+  public void unloadingAStackOfLoadedArrowsKeepsOfferingTheNextOne(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station.getSlot(4).setStack(SocialTestSupport.loadedCourier().copyWithCount(2));
+
+    station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
+
+    context.assertEquals(
+        SocialTestSupport.PAYLOAD_COUNT, station.getCursorStack().getCount(), "Diamonds taken out");
+    context.assertTrue(
+        CourierPayloads.isLoaded(station.getSlot(4).getStack())
+            && station.getSlot(4).getStack().getCount() == 1,
+        "The other loaded arrow stays where it was");
+    context.assertEquals(
+        1,
+        FletchingStationSupport.countHeld(player, SocialArrows.COURIER_ARROW.item()),
+        "The emptied arrow goes to the player while its slot is still full");
+    context.assertEquals(
+        CourierStationRecipes.UNLOAD_ID,
+        station.getAvailableRecipes().get(0).id(),
+        "and the next loaded arrow is offered straight away");
+    context.complete();
   }
 
   private static FletchingStationScreenHandler station(final TestContext context) {

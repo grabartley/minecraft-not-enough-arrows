@@ -24,6 +24,14 @@ public record CourierArrowConfig(int maxPayload, List<String> undeliverable) {
     return new CourierArrowConfig(DEFAULT_MAX_PAYLOAD, DEFAULT_UNDELIVERABLE);
   }
 
+  public boolean isUndeliverable(final String itemId) {
+    return ConfigValues.containsIdentifier(undeliverable, itemId);
+  }
+
+  public boolean exceedsPayload(final int count) {
+    return count > maxPayload;
+  }
+
   public static CourierArrowConfig fromJson(final JsonObject root) {
     final CourierArrowConfig defaults = defaults();
     return new CourierArrowConfig(

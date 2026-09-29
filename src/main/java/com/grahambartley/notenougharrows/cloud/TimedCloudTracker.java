@@ -1,12 +1,12 @@
-package com.grahambartley.notenougharrows.control;
+package com.grahambartley.notenougharrows.cloud;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SmokeCloudTracker {
-  private final List<SmokeCloud> clouds = new ArrayList<>();
+public final class TimedCloudTracker {
+  private final List<TimedCloud> clouds = new ArrayList<>();
 
-  public void add(final SmokeCloud cloud) {
+  public void add(final TimedCloud cloud) {
     clouds.add(cloud);
   }
 
@@ -14,7 +14,7 @@ public final class SmokeCloudTracker {
     clouds.removeIf(cloud -> cloud.hasExpired(tick));
   }
 
-  public List<SmokeCloud> live() {
+  public List<TimedCloud> live() {
     return List.copyOf(clouds);
   }
 

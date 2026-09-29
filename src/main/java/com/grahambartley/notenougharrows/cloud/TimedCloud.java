@@ -1,12 +1,12 @@
-package com.grahambartley.notenougharrows.control;
+package com.grahambartley.notenougharrows.cloud;
 
 import java.util.Objects;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-public record SmokeCloud(Vec3d center, double radius, long expiryTick) {
+public record TimedCloud(Vec3d center, double radius, long expiryTick) {
 
-  public SmokeCloud {
+  public TimedCloud {
     Objects.requireNonNull(center, "center");
     radius = Math.max(0.0, radius);
   }

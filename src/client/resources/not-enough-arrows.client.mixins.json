@@ -6,7 +6,8 @@
 		"ItemRendererMixin",
 		"LightningEntityMixin",
 		"PlayerEntityModelMixin",
-		"SoundSystemMixin"
+		"SoundSystemMixin",
+		"EntityRenderDispatcherMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

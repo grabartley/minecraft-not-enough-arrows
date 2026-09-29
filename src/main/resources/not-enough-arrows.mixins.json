@@ -8,7 +8,14 @@
 		"BatEntityFlightMixin",
 		"SlimeRandomLookGoalMixin",
 		"WorldChunkStructureMixin",
-		"ServerCommonNetworkHandlerMixin"
+		"ServerCommonNetworkHandlerMixin",
+		"MobEntityDisguiseMixin",
+		"SlimeEntityDisguiseMixin",
+		"LivingEntityKnockbackMixin",
+		"CreeperEntityDisguiseMixin",
+		"CraftingResultSlotMixin",
+		"CrafterBlockMixin",
+		"PersistentProjectileEntityDeliveryMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

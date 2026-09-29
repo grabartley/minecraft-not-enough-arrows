@@ -5,6 +5,9 @@ import com.grahambartley.notenougharrows.ModScreenHandlers;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipe;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipeInput;
 import com.grahambartley.notenougharrows.recipe.FletchingWithdrawal;
+import com.grahambartley.notenougharrows.server.ServerConfigService;
+import com.grahambartley.notenougharrows.social.CourierStationRecipes;
+import com.grahambartley.notenougharrows.world.StackHandover;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Blocks;
@@ -26,6 +29,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
 
   private final ScreenHandlerContext context;
   private final World world;
+  private final PlayerEntity player;
   private final CraftingResultInventory result = new CraftingResultInventory();
   private final SimpleInventory input = new SimpleInventory(FletchingStationSlots.INPUT_COUNT);
   private final Property selectedRecipe = Property.create();
@@ -42,6 +46,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     super(ModScreenHandlers.FLETCHING_STATION, syncId);
     this.context = context;
     this.world = playerInventory.player.getWorld();
+    this.player = playerInventory.player;
     this.selectedRecipe.set(NO_SELECTION);
     this.input.addListener(changed -> onInputChanged());
 
@@ -203,11 +208,17 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
 
   private void updateAvailableRecipes() {
     final Identifier previous = selectedRecipeId();
-    availableRecipes =
-        input.isEmpty()
-            ? List.of()
-            : world.getRecipeManager().getAllMatches(ModRecipes.FLETCHING, recipeInput(), world);
+    availableRecipes = input.isEmpty() ? List.of() : matchingRecipes(recipeInput());
     selectedRecipe.set(reselect(previous));
+  }
+
+  private List<RecipeEntry<FletchingRecipe>> matchingRecipes(final FletchingRecipeInput inputs) {
+    final List<RecipeEntry<FletchingRecipe>> matches =
+        new ArrayList<>(
+            world.getRecipeManager().getAllMatches(ModRecipes.FLETCHING, inputs, world));
+    matches.addAll(
+        CourierStationRecipes.matching(inputs, ServerConfigService.get().social().courier()));
+    return List.copyOf(matches);
   }
 
   private int reselect(final Identifier previous) {
@@ -252,11 +263,23 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     if (entry == null) {
       return;
     }
-    final List<FletchingWithdrawal> plan = FletchingWithdrawal.plan(entry.value(), recipeInput());
+    final FletchingRecipeInput inputs = recipeInput();
+    final List<FletchingWithdrawal> plan = FletchingWithdrawal.plan(entry.value(), inputs);
     if (plan.isEmpty()) {
       return;
     }
+    final List<ItemStack> handedBack = CourierStationRecipes.handedBack(entry, inputs);
     withdraw(plan);
+    final int emptiedSlot = plan.get(0).slot();
+    handedBack.forEach(stack -> handBack(emptiedSlot, stack));
+  }
+
+  private void handBack(final int preferredSlot, final ItemStack stack) {
+    if (input.getStack(preferredSlot).isEmpty()) {
+      input.setStack(preferredSlot, stack);
+    } else {
+      StackHandover.handTo(player, stack);
+    }
   }
 
   private void withdraw(final List<FletchingWithdrawal> plan) {
