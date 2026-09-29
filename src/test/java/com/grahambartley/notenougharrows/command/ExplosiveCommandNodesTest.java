@@ -42,7 +42,7 @@ class ExplosiveCommandNodesTest {
     "notenougharrows config explosive firepatchradius 9,               false",
     "notenougharrows config explosive firepatchdurationticks 6000,     true",
     "notenougharrows config explosive firepatchdurationticks 6001,     false",
-    "notenougharrows config explosive beepvolume 2.0,                  true",
+    "notenougharrows config explosive beepvolume 1.0,                  true",
     "notenougharrows config explosive incendiary burnradius 0,        true",
     "notenougharrows config explosive incendiary burnradius 8,        true",
     "notenougharrows config explosive incendiary burnradius 9,        false",
@@ -51,7 +51,7 @@ class ExplosiveCommandNodesTest {
     "notenougharrows config explosive incendiary igniteseconds 61,    false",
     "notenougharrows config explosive incendiary ignitesblocks true,  true",
     "notenougharrows config explosive incendiary ignitesblocks maybe, false",
-    "notenougharrows config explosive beepvolume 2.1,                  false",
+    "notenougharrows config explosive beepvolume 1.1,                  false",
   })
   void eachOptionAcceptsOnlyValuesInsideItsConfiguredBounds(String command, boolean accepted) {
     assertEquals(accepted, CommandParsing.accepts(dispatcher, operator, command));

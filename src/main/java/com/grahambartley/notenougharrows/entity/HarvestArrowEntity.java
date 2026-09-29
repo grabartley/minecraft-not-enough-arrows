@@ -50,7 +50,7 @@ public class HarvestArrowEntity extends BaseArrowEntity {
     if (HarvestService.harvest(world, center, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.HARVEST_ARROW_REAP);
+    ModSoundPlayer.playFrom(this, ModSounds.HARVEST_ARROW_REAP);
     return true;
   }
 }

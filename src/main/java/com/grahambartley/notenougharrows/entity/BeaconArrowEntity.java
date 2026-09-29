@@ -53,7 +53,7 @@ public class BeaconArrowEntity extends BaseArrowEntity {
       return false;
     }
     raised = true;
-    ModSoundPlayer.playLanding(this, ModSounds.BEACON_ARROW_RAISE);
+    ModSoundPlayer.playFrom(this, ModSounds.BEACON_ARROW_RAISE);
     return true;
   }
 }

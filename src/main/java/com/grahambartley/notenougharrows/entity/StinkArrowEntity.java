@@ -62,7 +62,7 @@ public class StinkArrowEntity extends BaseArrowEntity {
     if (!StinkCloudService.open(world, at, config())) {
       return false;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.STINK_ARROW_RELEASE);
+    ModSoundPlayer.playFrom(this, ModSounds.STINK_ARROW_RELEASE);
     return true;
   }
 

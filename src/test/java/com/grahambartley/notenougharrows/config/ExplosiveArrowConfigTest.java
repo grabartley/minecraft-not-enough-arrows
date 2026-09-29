@@ -82,7 +82,7 @@ class ExplosiveArrowConfigTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"-1.0, 0.0", "1.0, 1.0", "2.0, 2.0", "5.0, 2.0"})
+  @CsvSource({"-1.0, 0.0", "0.5, 0.5", "1.0, 1.0", "2.0, 1.0"})
   void clampsBeepVolume(final float given, final float expected) {
     final ExplosiveArrowConfig defaults = ExplosiveArrowConfig.defaults();
     final ExplosiveArrowConfig config =

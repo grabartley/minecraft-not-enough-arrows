@@ -40,7 +40,7 @@ public class AllegianceArrowEntity extends BaseArrowEntity {
         ControlHoldService.enlist(
             world, mob, shooter().orElse(null), ServerConfigService.get().control().allegiance());
     if (enlisted) {
-      ModSoundPlayer.playLanding(this, ModSounds.ALLEGIANCE_ARROW_IMPACT);
+      ModSoundPlayer.playFrom(this, ModSounds.ALLEGIANCE_ARROW_IMPACT);
     }
   }
 

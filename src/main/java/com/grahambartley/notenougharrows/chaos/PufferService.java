@@ -53,7 +53,7 @@ public final class PufferService {
     for (final UUID expired : ledger.removeExpired(world.getTime())) {
       if (world.getEntity(expired) instanceof LivingEntity target
           && PufferInflation.deflate(target)) {
-        ModSoundPlayer.playLanding(target, ModSounds.PUFFER_ARROW_DEFLATE);
+        ModSoundPlayer.playFrom(target, ModSounds.PUFFER_ARROW_DEFLATE);
       }
     }
   }

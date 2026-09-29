@@ -58,11 +58,6 @@ public class MagnetArrowEntity extends BaseArrowEntity {
       return;
     }
     ModSoundPlayer.play(
-        world,
-        impact,
-        ModSounds.MAGNET_ARROW_PULL,
-        getSoundCategory(),
-        ModSoundPlayer.LANDING_VOLUME,
-        PULL_PITCH);
+        world, impact, ModSounds.MAGNET_ARROW_PULL, getSoundCategory(), 1.0f, PULL_PITCH);
   }
 }

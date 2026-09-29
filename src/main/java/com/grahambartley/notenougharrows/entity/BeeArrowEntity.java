@@ -51,7 +51,7 @@ public class BeeArrowEntity extends BaseArrowEntity {
 
   private void release(final ServerWorld world, final Vec3d at, @Nullable final Entity struck) {
     if (!BeeSwarmRelease.release(world, at, shooter().orElse(null), struck).isEmpty()) {
-      ModSoundPlayer.playLanding(this, ModSounds.BEE_ARROW_RELEASE);
+      ModSoundPlayer.playFrom(this, ModSounds.BEE_ARROW_RELEASE);
     }
   }
 }

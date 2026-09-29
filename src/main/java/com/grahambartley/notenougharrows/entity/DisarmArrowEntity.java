@@ -45,7 +45,7 @@ public class DisarmArrowEntity extends BaseArrowEntity {
         shooter().map(Entity::getPos).orElse(null),
         disarm.affectsPlayers(),
         disarm.throwDistance())) {
-      ModSoundPlayer.playLanding(this, ModSounds.DISARM_ARROW_IMPACT);
+      ModSoundPlayer.playFrom(this, ModSounds.DISARM_ARROW_IMPACT);
     }
   }
 

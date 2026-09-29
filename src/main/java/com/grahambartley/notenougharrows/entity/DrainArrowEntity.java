@@ -57,7 +57,7 @@ public class DrainArrowEntity extends BaseArrowEntity {
   private void drainAround(
       final ServerWorld world, final BlockPos center, final DrainArrowConfig drain) {
     if (!DrainService.drain(world, center, shootingPlayer().orElse(null), drain).isEmpty()) {
-      ModSoundPlayer.playLanding(this, ModSounds.DRAIN_ARROW_ABSORB);
+      ModSoundPlayer.playFrom(this, ModSounds.DRAIN_ARROW_ABSORB);
     }
   }
 }

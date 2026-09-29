@@ -40,7 +40,7 @@ public class PufferArrowEntity extends BaseArrowEntity {
     }
     if (entityHitResult.getEntity() instanceof LivingEntity struck
         && PufferService.inflate(world, struck, config())) {
-      ModSoundPlayer.playLanding(struck, ModSounds.PUFFER_ARROW_INFLATE);
+      ModSoundPlayer.playFrom(struck, ModSounds.PUFFER_ARROW_INFLATE);
       return ArrowImpact.DISCARD;
     }
     return glanceOff(entityHitResult.getEntity());

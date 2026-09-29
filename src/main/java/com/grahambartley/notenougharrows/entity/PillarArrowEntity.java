@@ -36,7 +36,7 @@ public class PillarArrowEntity extends BaseArrowEntity {
         .isEmpty()) {
       return ArrowImpact.DEFAULT;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.PILLAR_ARROW_RISE);
+    ModSoundPlayer.playFrom(this, ModSounds.PILLAR_ARROW_RISE);
     return ArrowImpact.DISCARD;
   }
 }

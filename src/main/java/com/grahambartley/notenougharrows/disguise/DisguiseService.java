@@ -108,7 +108,7 @@ public final class DisguiseService {
         entity.getHeight() / 2.0,
         entity.getWidth() / 2.0,
         0.02);
-    ModSoundPlayer.playLanding(entity, ModSounds.POLYMORPH_ARROW_RESTORE);
+    ModSoundPlayer.playFrom(entity, ModSounds.POLYMORPH_ARROW_RESTORE);
   }
 
   private static ExpiringLedger<Identifier> ledgerFor(final ServerWorld world) {

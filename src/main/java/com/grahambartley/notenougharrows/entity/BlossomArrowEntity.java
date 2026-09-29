@@ -50,7 +50,7 @@ public class BlossomArrowEntity extends BaseArrowEntity {
     if (BlossomService.bloom(world, center, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.BLOSSOM_ARROW_BLOOM);
+    ModSoundPlayer.playFrom(this, ModSounds.BLOSSOM_ARROW_BLOOM);
     return true;
   }
 }

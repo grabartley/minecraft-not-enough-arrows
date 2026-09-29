@@ -63,12 +63,6 @@ public final class FrostEffects {
       final LivingEntity target,
       final SoundEvent event,
       final float pitch) {
-    ModSoundPlayer.play(
-        world,
-        target.getPos(),
-        event,
-        target.getSoundCategory(),
-        ModSoundPlayer.LANDING_VOLUME,
-        pitch);
+    ModSoundPlayer.play(world, target.getPos(), event, target.getSoundCategory(), 1.0f, pitch);
   }
 }

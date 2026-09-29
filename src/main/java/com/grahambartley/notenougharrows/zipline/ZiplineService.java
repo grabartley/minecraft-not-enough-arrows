@@ -65,12 +65,7 @@ public final class ZiplineService {
   private static void announce(final ServerWorld world, final Span span) {
     for (final Vec3d end : List.of(span.firstEnd(), span.lastEnd())) {
       ModSoundPlayer.play(
-          world,
-          end,
-          ModSounds.ZIPLINE_ARROW_STRING,
-          SoundCategory.BLOCKS,
-          ModSoundPlayer.LANDING_VOLUME,
-          STRING_PITCH);
+          world, end, ModSounds.ZIPLINE_ARROW_STRING, SoundCategory.BLOCKS, 1.0f, STRING_PITCH);
     }
   }
 

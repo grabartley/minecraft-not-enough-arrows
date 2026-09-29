@@ -60,4 +60,8 @@ public final class SoundRegistrar {
   public List<Identifier> ids() {
     return List.copyOf(declared.keySet());
   }
+
+  public List<SoundEvent> events() {
+    return List.copyOf(declared.values());
+  }
 }

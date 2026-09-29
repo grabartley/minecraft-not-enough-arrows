@@ -62,7 +62,7 @@ public class FreezeArrowEntity extends BaseArrowEntity {
   private void freezeAround(
       final ServerWorld world, final BlockPos center, final FreezeArrowConfig freeze) {
     if (!FreezeService.freeze(world, center, shootingPlayer().orElse(null), freeze).isEmpty()) {
-      ModSoundPlayer.playLanding(this, ModSounds.FREEZE_ARROW_FREEZE);
+      ModSoundPlayer.playFrom(this, ModSounds.FREEZE_ARROW_FREEZE);
     }
   }
 }

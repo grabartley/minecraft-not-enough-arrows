@@ -40,7 +40,7 @@ public class TripwireArrowEntity extends BaseArrowEntity {
         .isEmpty()) {
       return ArrowImpact.DEFAULT;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.TRIPWIRE_ARROW_SET);
+    ModSoundPlayer.playFrom(this, ModSounds.TRIPWIRE_ARROW_SET);
     return ArrowImpact.DISCARD;
   }
 }

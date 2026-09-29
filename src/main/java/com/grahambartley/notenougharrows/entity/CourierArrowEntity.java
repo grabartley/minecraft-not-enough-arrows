@@ -106,12 +106,7 @@ public class CourierArrowEntity extends BaseArrowEntity {
       StackHandover.drop(world, at, payload);
     }
     ModSoundPlayer.play(
-        world,
-        at,
-        ModSounds.COURIER_ARROW_DELIVER,
-        getSoundCategory(),
-        ModSoundPlayer.LANDING_VOLUME,
-        DELIVER_PITCH);
+        world, at, ModSounds.COURIER_ARROW_DELIVER, getSoundCategory(), 1.0f, DELIVER_PITCH);
   }
 
   private void releaseWhereDestroyed(final ServerWorld world, final ItemStack payload) {

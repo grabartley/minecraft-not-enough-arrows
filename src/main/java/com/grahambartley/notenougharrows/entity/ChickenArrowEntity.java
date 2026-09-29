@@ -66,12 +66,7 @@ public class ChickenArrowEntity extends BaseArrowEntity {
       return false;
     }
     ModSoundPlayer.play(
-        world,
-        at,
-        ModSounds.CHICKEN_ARROW_HATCH,
-        getSoundCategory(),
-        ModSoundPlayer.LANDING_VOLUME,
-        HATCH_PITCH);
+        world, at, ModSounds.CHICKEN_ARROW_HATCH, getSoundCategory(), 1.0f, HATCH_PITCH);
     return true;
   }
 

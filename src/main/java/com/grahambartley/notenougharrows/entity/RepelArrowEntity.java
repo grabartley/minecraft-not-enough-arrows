@@ -37,7 +37,7 @@ public class RepelArrowEntity extends AreaControlArrowEntity {
         == 0) {
       return false;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.REPEL_ARROW_IMPACT);
+    ModSoundPlayer.playFrom(this, ModSounds.REPEL_ARROW_IMPACT);
     return true;
   }
 }

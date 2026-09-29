@@ -97,12 +97,7 @@ public final class ShearService {
       final BlockState state,
       @Nullable final PlayerEntity shooter) {
     ModSoundPlayer.play(
-        world,
-        Vec3d.ofCenter(pos),
-        ModSounds.SHEAR_ARROW_HIVE,
-        SoundCategory.BLOCKS,
-        ModSoundPlayer.LANDING_VOLUME,
-        1.0f);
+        world, Vec3d.ofCenter(pos), ModSounds.SHEAR_ARROW_HIVE, SoundCategory.BLOCKS, 1.0f, 1.0f);
     collect(
         world,
         new Box(pos).expand(DROP_REACH),
@@ -119,12 +114,7 @@ public final class ShearService {
       final Direction facing,
       @Nullable final PlayerEntity shooter) {
     ModSoundPlayer.play(
-        world,
-        Vec3d.ofCenter(pos),
-        ModSounds.SHEAR_ARROW_CARVE,
-        SoundCategory.BLOCKS,
-        ModSoundPlayer.LANDING_VOLUME,
-        1.0f);
+        world, Vec3d.ofCenter(pos), ModSounds.SHEAR_ARROW_CARVE, SoundCategory.BLOCKS, 1.0f, 1.0f);
     world.setBlockState(
         pos,
         Blocks.CARVED_PUMPKIN.getDefaultState().with(CarvedPumpkinBlock.FACING, facing),

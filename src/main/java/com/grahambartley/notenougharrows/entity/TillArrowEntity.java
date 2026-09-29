@@ -50,7 +50,7 @@ public class TillArrowEntity extends BaseArrowEntity {
     if (TillService.till(world, center, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.TILL_ARROW_TILL);
+    ModSoundPlayer.playFrom(this, ModSounds.TILL_ARROW_TILL);
     return true;
   }
 }

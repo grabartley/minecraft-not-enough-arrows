@@ -61,6 +61,6 @@ public class ProspectorArrowEntity extends BaseArrowEntity {
         prospector.durationTicks(),
         RevealedBlocks.of(prospector.blocks()),
         getOwner());
-    ModSoundPlayer.playLanding(this, ModSounds.PROSPECTOR_ARROW_PULSE);
+    ModSoundPlayer.playFrom(this, ModSounds.PROSPECTOR_ARROW_PULSE);
   }
 }

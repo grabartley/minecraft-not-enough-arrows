@@ -35,7 +35,7 @@ public class DrillArrowEntity extends BaseArrowEntity {
     if (!DrillService.bore(world, blockHitResult.getBlockPos(), shootingPlayer().orElse(null))) {
       return ArrowImpact.DEFAULT;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.DRILL_ARROW_BORE);
+    ModSoundPlayer.playFrom(this, ModSounds.DRILL_ARROW_BORE);
     return ArrowImpact.DISCARD;
   }
 }

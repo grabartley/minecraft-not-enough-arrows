@@ -54,6 +54,6 @@ public class SonarArrowEntity extends BaseArrowEntity {
     }
     final SonarArrowConfig sonar = ServerConfigService.get().discovery().sonar();
     EntityRevealPulse.fire(world, center, sonar.radius(), sonar.durationTicks(), this, getOwner());
-    ModSoundPlayer.playLanding(this, ModSounds.SONAR_ARROW_PULSE);
+    ModSoundPlayer.playFrom(this, ModSounds.SONAR_ARROW_PULSE);
   }
 }

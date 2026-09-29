@@ -97,7 +97,7 @@ public final class SnowGolemMelt {
         MELT_SPREAD,
         MELT_SPREAD,
         MELT_SPEED);
-    ModSoundPlayer.playLanding(golem, ModSounds.SNOW_GOLEM_ARROW_MELT);
+    ModSoundPlayer.playFrom(golem, ModSounds.SNOW_GOLEM_ARROW_MELT);
     golem.discard();
   }
 }

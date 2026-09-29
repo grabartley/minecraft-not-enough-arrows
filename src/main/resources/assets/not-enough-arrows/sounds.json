@@ -11,34 +11,46 @@
   "smoke_arrow_impact": {
     "subtitle": "subtitles.not-enough-arrows.smoke_arrow_impact",
     "sounds": [
-      "not-enough-arrows:smoke_arrow_impact"
+      {
+        "name": "not-enough-arrows:smoke_arrow_impact",
+        "attenuation_distance": 48
+      }
     ]
   },
   "repel_arrow_impact": {
     "subtitle": "subtitles.not-enough-arrows.repel_arrow_impact",
     "sounds": [
-      "not-enough-arrows:repel_arrow_impact"
+      {
+        "name": "not-enough-arrows:repel_arrow_impact",
+        "attenuation_distance": 48
+      }
     ]
   },
   "taunt_arrow_impact": {
     "subtitle": "subtitles.block.note_block.note",
     "sounds": [
       {
-        "name": "minecraft:block.note_block.bell",
-        "type": "event"
+        "name": "minecraft:note/bell",
+        "attenuation_distance": 48
       }
     ]
   },
   "disarm_arrow_impact": {
     "subtitle": "subtitles.not-enough-arrows.disarm_arrow_impact",
     "sounds": [
-      "not-enough-arrows:disarm_arrow_impact"
+      {
+        "name": "not-enough-arrows:disarm_arrow_impact",
+        "attenuation_distance": 48
+      }
     ]
   },
   "allegiance_arrow_impact": {
     "subtitle": "subtitles.not-enough-arrows.allegiance_arrow_impact",
     "sounds": [
-      "not-enough-arrows:allegiance_arrow_impact"
+      {
+        "name": "not-enough-arrows:allegiance_arrow_impact",
+        "attenuation_distance": 48
+      }
     ]
   },
   "ricochet_arrow_bounce": {
@@ -62,15 +74,42 @@
   "frost_arrow_freeze_crack": {
     "subtitle": "subtitles.not-enough-arrows.frost_arrow_freeze_crack",
     "sounds": [
-      "not-enough-arrows:frost_arrow_freeze_crack"
+      {
+        "name": "not-enough-arrows:frost_arrow_freeze_crack",
+        "attenuation_distance": 48
+      }
     ]
   },
   "frost_arrow_freeze_settle": {
     "subtitle": "subtitles.block.generic.place",
     "sounds": [
       {
-        "name": "minecraft:block.powder_snow.place",
-        "type": "event"
+        "name": "minecraft:block/powder_snow/break1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break4",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break5",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break6",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break7",
+        "attenuation_distance": 48
       }
     ]
   },
@@ -78,8 +117,32 @@
     "subtitle": "subtitles.block.generic.break",
     "sounds": [
       {
-        "name": "minecraft:block.powder_snow.break",
-        "type": "event"
+        "name": "minecraft:block/powder_snow/break1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break4",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break5",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break6",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break7",
+        "attenuation_distance": 48
       }
     ]
   },
@@ -105,50 +168,156 @@
     "subtitle": "subtitles.block.generic.break",
     "sounds": [
       {
-        "name": "minecraft:block.stone.break",
-        "type": "event"
+        "name": "minecraft:dig/stone1",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/stone2",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/stone3",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/stone4",
+        "volume": 0.65,
+        "attenuation_distance": 48
       }
     ]
   },
   "pillar_arrow_rise": {
     "subtitle": "subtitles.not-enough-arrows.pillar_arrow_rise",
     "sounds": [
-      "not-enough-arrows:pillar_arrow_rise"
+      {
+        "name": "not-enough-arrows:pillar_arrow_rise",
+        "attenuation_distance": 48
+      }
     ]
   },
   "drain_arrow_absorb": {
     "subtitle": "subtitles.not-enough-arrows.drain_arrow_absorb",
     "sounds": [
-      "not-enough-arrows:drain_arrow_absorb"
+      {
+        "name": "not-enough-arrows:drain_arrow_absorb",
+        "attenuation_distance": 48
+      }
     ]
   },
   "freeze_arrow_freeze": {
     "subtitle": "subtitles.not-enough-arrows.freeze_arrow_freeze",
     "sounds": [
-      "not-enough-arrows:freeze_arrow_freeze"
+      {
+        "name": "not-enough-arrows:freeze_arrow_freeze",
+        "attenuation_distance": 48
+      }
     ]
   },
   "blossom_arrow_bloom": {
     "subtitle": "subtitles.item.bone_meal.use",
     "sounds": [
       {
-        "name": "minecraft:item.bone_meal.use",
-        "type": "event"
+        "name": "minecraft:item/bonemeal/bonemeal1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal1",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal1",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal2",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal2",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal3",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal3",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal4",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal4",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal4",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal5",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal5",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal5",
+        "pitch": 1.1,
+        "attenuation_distance": 48
       }
     ]
   },
   "harvest_arrow_reap": {
     "subtitle": "subtitles.not-enough-arrows.harvest_arrow_reap",
     "sounds": [
-      "not-enough-arrows:harvest_arrow_reap"
+      {
+        "name": "not-enough-arrows:harvest_arrow_reap",
+        "attenuation_distance": 48
+      }
     ]
   },
   "till_arrow_till": {
     "subtitle": "subtitles.item.hoe.till",
     "sounds": [
       {
-        "name": "minecraft:item.hoe.till",
-        "type": "event"
+        "name": "minecraft:item/hoe/till1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/hoe/till2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/hoe/till3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/hoe/till4",
+        "attenuation_distance": 48
       }
     ]
   },
@@ -156,8 +325,14 @@
     "subtitle": "subtitles.block.pumpkin.carve",
     "sounds": [
       {
-        "name": "minecraft:block.pumpkin.carve",
-        "type": "event"
+        "name": "minecraft:block/pumpkin/carve1",
+        "volume": 0.593,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/pumpkin/carve2",
+        "volume": 0.593,
+        "attenuation_distance": 48
       }
     ]
   },
@@ -165,8 +340,21 @@
     "subtitle": "subtitles.block.beehive.shear",
     "sounds": [
       {
-        "name": "minecraft:block.beehive.shear",
-        "type": "event"
+        "name": "minecraft:block/beehive/shear",
+        "volume": 0.67,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/shear",
+        "volume": 0.67,
+        "pitch": 0.8,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/shear",
+        "volume": 0.67,
+        "pitch": 0.9,
+        "attenuation_distance": 48
       }
     ]
   },
@@ -174,8 +362,21 @@
     "subtitle": "subtitles.block.beehive.exit",
     "sounds": [
       {
-        "name": "minecraft:block.beehive.exit",
-        "type": "event"
+        "name": "minecraft:block/beehive/exit",
+        "volume": 0.68,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/exit",
+        "volume": 0.68,
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/exit",
+        "volume": 0.68,
+        "pitch": 1.1,
+        "attenuation_distance": 48
       }
     ]
   },
@@ -197,13 +398,19 @@
   "zipline_arrow_string": {
     "subtitle": "subtitles.not-enough-arrows.zipline_arrow_string",
     "sounds": [
-      "not-enough-arrows:zipline_arrow_string"
+      {
+        "name": "not-enough-arrows:zipline_arrow_string",
+        "attenuation_distance": 48
+      }
     ]
   },
   "updraft_arrow_open": {
     "subtitle": "subtitles.not-enough-arrows.updraft_arrow_open",
     "sounds": [
-      "not-enough-arrows:updraft_arrow_open"
+      {
+        "name": "not-enough-arrows:updraft_arrow_open",
+        "attenuation_distance": 48
+      }
     ]
   },
   "trampoline_arrow_launch": {
@@ -218,27 +425,37 @@
   "beacon_arrow_raise": {
     "subtitle": "subtitles.not-enough-arrows.beacon_arrow_raise",
     "sounds": [
-      "not-enough-arrows:beacon_arrow_raise"
+      {
+        "name": "not-enough-arrows:beacon_arrow_raise",
+        "attenuation_distance": 48
+      }
     ]
   },
   "prospector_arrow_pulse": {
     "subtitle": "subtitles.not-enough-arrows.prospector_arrow_pulse",
     "sounds": [
-      "not-enough-arrows:prospector_arrow_pulse"
+      {
+        "name": "not-enough-arrows:prospector_arrow_pulse",
+        "attenuation_distance": 48
+      }
     ]
   },
   "sonar_arrow_pulse": {
     "subtitle": "subtitles.not-enough-arrows.sonar_arrow_pulse",
     "sounds": [
-      "not-enough-arrows:sonar_arrow_pulse"
+      {
+        "name": "not-enough-arrows:sonar_arrow_pulse",
+        "attenuation_distance": 48
+      }
     ]
   },
   "tripwire_arrow_set": {
     "subtitle": "subtitles.not-enough-arrows.tripwire_arrow_set",
     "sounds": [
       {
-        "name": "minecraft:block.tripwire.attach",
-        "type": "event"
+        "name": "minecraft:random/click",
+        "volume": 0.493,
+        "attenuation_distance": 48
       }
     ]
   },
@@ -252,30 +469,43 @@
     "subtitle": "subtitles.not-enough-arrows.chicken_arrow_hatch",
     "sounds": [
       {
-        "name": "minecraft:entity.chicken.egg",
-        "type": "event"
+        "name": "minecraft:mob/chicken/plop",
+        "volume": 0.652,
+        "attenuation_distance": 48
       }
     ]
   },
   "puffer_arrow_inflate": {
     "subtitle": "subtitles.not-enough-arrows.puffer_arrow_inflate",
     "sounds": [
-      "not-enough-arrows:puffer_arrow_inflate"
+      {
+        "name": "not-enough-arrows:puffer_arrow_inflate",
+        "attenuation_distance": 48
+      }
     ]
   },
   "puffer_arrow_deflate": {
     "subtitle": "subtitles.not-enough-arrows.puffer_arrow_deflate",
     "sounds": [
       {
-        "name": "minecraft:entity.puffer_fish.blow_out",
-        "type": "event"
+        "name": "minecraft:entity/pufferfish/blow_out1",
+        "volume": 0.564,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:entity/pufferfish/blow_out2",
+        "volume": 0.564,
+        "attenuation_distance": 48
       }
     ]
   },
   "stink_arrow_release": {
     "subtitle": "subtitles.not-enough-arrows.stink_arrow_release",
     "sounds": [
-      "not-enough-arrows:stink_arrow_release"
+      {
+        "name": "not-enough-arrows:stink_arrow_release",
+        "attenuation_distance": 48
+      }
     ]
   },
   "boomerang_arrow_return": {
@@ -287,46 +517,76 @@
   "polymorph_arrow_change": {
     "subtitle": "subtitles.not-enough-arrows.polymorph_arrow_change",
     "sounds": [
-      "not-enough-arrows:polymorph_arrow_change"
+      {
+        "name": "not-enough-arrows:polymorph_arrow_change",
+        "attenuation_distance": 48
+      }
     ]
   },
   "polymorph_arrow_restore": {
     "subtitle": "subtitles.not-enough-arrows.polymorph_arrow_restore",
     "sounds": [
-      "not-enough-arrows:polymorph_arrow_restore"
+      {
+        "name": "not-enough-arrows:polymorph_arrow_restore",
+        "attenuation_distance": 48
+      }
     ]
   },
   "courier_arrow_deliver": {
     "subtitle": "subtitles.not-enough-arrows.courier_arrow_deliver",
     "sounds": [
-      "not-enough-arrows:courier_arrow_deliver"
+      {
+        "name": "not-enough-arrows:courier_arrow_deliver",
+        "attenuation_distance": 48
+      }
     ]
   },
   "snow_golem_arrow_melt": {
     "subtitle": "subtitles.not-enough-arrows.snow_golem_arrow_melt",
     "sounds": [
       {
-        "name": "minecraft:block.snow.break",
-        "type": "event"
+        "name": "minecraft:dig/snow1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/snow2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/snow3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/snow4",
+        "attenuation_distance": 48
       }
     ]
   },
   "magnet_arrow_pull": {
     "subtitle": "subtitles.not-enough-arrows.magnet_arrow_pull",
     "sounds": [
-      "not-enough-arrows:magnet_arrow_pull"
+      {
+        "name": "not-enough-arrows:magnet_arrow_pull",
+        "attenuation_distance": 48
+      }
     ]
   },
   "lifesteal_arrow_drain": {
     "subtitle": "subtitles.not-enough-arrows.lifesteal_arrow_drain",
     "sounds": [
-      "not-enough-arrows:lifesteal_arrow_drain"
+      {
+        "name": "not-enough-arrows:lifesteal_arrow_drain",
+        "attenuation_distance": 48
+      }
     ]
   },
   "milk_arrow_wash": {
     "subtitle": "subtitles.not-enough-arrows.milk_arrow_wash",
     "sounds": [
-      "not-enough-arrows:milk_arrow_wash"
+      {
+        "name": "not-enough-arrows:milk_arrow_wash",
+        "attenuation_distance": 48
+      }
     ]
   },
   "volley_arrow_split": {

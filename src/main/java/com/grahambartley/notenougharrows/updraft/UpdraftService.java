@@ -55,12 +55,7 @@ public final class UpdraftService {
                     updraft.strength(),
                     world.getTime() + updraft.lifetimeTicks())));
     ModSoundPlayer.play(
-        world,
-        base,
-        ModSounds.UPDRAFT_ARROW_OPEN,
-        SoundCategory.NEUTRAL,
-        ModSoundPlayer.LANDING_VOLUME,
-        OPEN_PITCH);
+        world, base, ModSounds.UPDRAFT_ARROW_OPEN, SoundCategory.NEUTRAL, 1.0f, OPEN_PITCH);
     return true;
   }
 

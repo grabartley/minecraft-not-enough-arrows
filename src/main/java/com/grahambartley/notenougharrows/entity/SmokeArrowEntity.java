@@ -36,7 +36,7 @@ public class SmokeArrowEntity extends AreaControlArrowEntity {
     if (!SmokeCloudService.open(world, center, ServerConfigService.get().control().smoke())) {
       return false;
     }
-    ModSoundPlayer.playLanding(this, ModSounds.SMOKE_ARROW_IMPACT);
+    ModSoundPlayer.playFrom(this, ModSounds.SMOKE_ARROW_IMPACT);
     return true;
   }
 }

@@ -125,17 +125,4 @@ class ModSoundPlayerTest {
       throw new UncheckedIOException(e);
     }
   }
-
-  @Test
-  void aLandingSoundCarriesTheLandingRangeByVanillasOwnRule() {
-    assertEquals(
-        (float) ModSoundPlayer.LANDING_RANGE_BLOCKS,
-        SOUND.getDistanceToTravel(ModSoundPlayer.LANDING_VOLUME));
-  }
-
-  @Test
-  void aLandingSoundCarriesFurtherThanAnOrdinaryOne() {
-    assertTrue(
-        SOUND.getDistanceToTravel(ModSoundPlayer.LANDING_VOLUME) > SOUND.getDistanceToTravel(1.0f));
-  }
 }
