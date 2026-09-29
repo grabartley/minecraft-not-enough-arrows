@@ -12,5 +12,6 @@ public final class BlockRenderLayerRegistrar {
     BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ROPE, RenderLayer.getCutout());
     BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ZIPLINE_CABLE, RenderLayer.getCutout());
     BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TRAMPOLINE, RenderLayer.getTranslucent());
+    BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.BEACON_BEAM, RenderLayer.getTranslucent());
   }
 }
