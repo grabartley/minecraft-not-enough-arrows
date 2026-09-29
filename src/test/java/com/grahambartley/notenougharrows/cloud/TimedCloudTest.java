@@ -1,4 +1,4 @@
-package com.grahambartley.notenougharrows.control;
+package com.grahambartley.notenougharrows.cloud;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
 
-class SmokeCloudTest {
+class TimedCloudTest {
 
   private static final Vec3d CENTRE = new Vec3d(0.0, 64.0, 0.0);
 
   @Test
   void expiresOnItsExpiryTick() {
-    final SmokeCloud cloud = new SmokeCloud(CENTRE, 3.0, 100L);
+    final TimedCloud cloud = new TimedCloud(CENTRE, 3.0, 100L);
 
     assertFalse(cloud.hasExpired(99L));
     assertTrue(cloud.hasExpired(100L));
@@ -22,7 +22,7 @@ class SmokeCloudTest {
 
   @Test
   void holdsWhatIsInsideItsRadius() {
-    final SmokeCloud cloud = new SmokeCloud(CENTRE, 3.0, 100L);
+    final TimedCloud cloud = new TimedCloud(CENTRE, 3.0, 100L);
 
     assertTrue(cloud.contains(CENTRE));
     assertTrue(cloud.contains(new Vec3d(2.9, 64.0, 0.0)));
@@ -30,12 +30,12 @@ class SmokeCloudTest {
 
   @Test
   void holdsWhatSitsExactlyOnItsEdge() {
-    assertTrue(new SmokeCloud(CENTRE, 3.0, 100L).contains(new Vec3d(3.0, 64.0, 0.0)));
+    assertTrue(new TimedCloud(CENTRE, 3.0, 100L).contains(new Vec3d(3.0, 64.0, 0.0)));
   }
 
   @Test
   void leavesWhatIsOutsideItsRadiusAlone() {
-    final SmokeCloud cloud = new SmokeCloud(CENTRE, 3.0, 100L);
+    final TimedCloud cloud = new TimedCloud(CENTRE, 3.0, 100L);
 
     assertFalse(cloud.contains(new Vec3d(3.1, 64.0, 0.0)));
     assertFalse(cloud.contains(new Vec3d(0.0, 68.0, 0.0)));
@@ -43,16 +43,16 @@ class SmokeCloudTest {
 
   @Test
   void holdsNothingWhenAskedAboutNowhere() {
-    assertFalse(new SmokeCloud(CENTRE, 3.0, 100L).contains(null));
+    assertFalse(new TimedCloud(CENTRE, 3.0, 100L).contains(null));
   }
 
   @Test
   void clampsANegativeRadiusToNothing() {
-    assertEquals(0.0, new SmokeCloud(CENTRE, -5.0, 100L).radius());
+    assertEquals(0.0, new TimedCloud(CENTRE, -5.0, 100L).radius());
   }
 
   @Test
   void refusesACloudWithNoCentre() {
-    assertThrows(NullPointerException.class, () -> new SmokeCloud(null, 3.0, 100L));
+    assertThrows(NullPointerException.class, () -> new TimedCloud(null, 3.0, 100L));
   }
 }

@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "not_enough_arrows_party_arrow",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:music_disc_strad"
+    }
+  },
+  "result": {
+    "id": "not-enough-arrows:party_arrow",
+    "count": 8,
+    "components": {
+      "not-enough-arrows:arrow_choice": "strad"
+    }
+  }
+}

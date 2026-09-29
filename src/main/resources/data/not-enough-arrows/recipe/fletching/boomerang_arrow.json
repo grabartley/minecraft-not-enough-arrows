@@ -1,0 +1,20 @@
+{
+  "type": "not-enough-arrows:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:chorus_fruit"
+      }
+    }
+  ],
+  "result": {
+    "id": "not-enough-arrows:boomerang_arrow",
+    "count": 12
+  }
+}

@@ -300,5 +300,68 @@
         "type": "event"
       }
     ]
+  },
+  "chicken_arrow_hatch": {
+    "subtitle": "subtitles.not-enough-arrows.chicken_arrow_hatch",
+    "sounds": [
+      {
+        "name": "minecraft:entity.chicken.egg",
+        "type": "event"
+      }
+    ]
+  },
+  "puffer_arrow_inflate": {
+    "subtitle": "subtitles.not-enough-arrows.puffer_arrow_inflate",
+    "sounds": [
+      {
+        "name": "minecraft:entity.puffer_fish.blow_up",
+        "type": "event"
+      }
+    ]
+  },
+  "puffer_arrow_deflate": {
+    "subtitle": "subtitles.not-enough-arrows.puffer_arrow_deflate",
+    "sounds": [
+      {
+        "name": "minecraft:entity.puffer_fish.blow_out",
+        "type": "event"
+      }
+    ]
+  },
+  "stink_arrow_release": {
+    "subtitle": "subtitles.not-enough-arrows.stink_arrow_release",
+    "sounds": [
+      {
+        "name": "minecraft:entity.panda.sneeze",
+        "type": "event"
+      }
+    ]
+  },
+  "boomerang_arrow_return": {
+    "subtitle": "subtitles.not-enough-arrows.boomerang_arrow_return",
+    "sounds": [
+      {
+        "name": "minecraft:item.trident.return",
+        "type": "event"
+      }
+    ]
+  },
+  "polymorph_arrow_change": {
+    "subtitle": "subtitles.not-enough-arrows.polymorph_arrow_change",
+    "sounds": [
+      {
+        "name": "minecraft:entity.evoker.prepare_wololo",
+        "type": "event"
+      }
+    ]
+  },
+  "polymorph_arrow_restore": {
+    "subtitle": "subtitles.not-enough-arrows.polymorph_arrow_restore",
+    "sounds": [
+      {
+        "name": "minecraft:block.sculk_catalyst.bloom",
+        "type": "event"
+      }
+    ]
   }
 }

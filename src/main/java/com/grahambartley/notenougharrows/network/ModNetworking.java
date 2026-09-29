@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.network;
 
 import com.grahambartley.notenougharrows.network.CountdownPayloads.CountdownS2CPayload;
+import com.grahambartley.notenougharrows.network.DisguisePayloads.DisguiseS2CPayload;
 import com.grahambartley.notenougharrows.network.NockedArrowPayloads.NockedArrowS2CPayload;
 import com.grahambartley.notenougharrows.network.RevealPayloads.BlockOutlineS2CPayload;
 import com.grahambartley.notenougharrows.network.RevealPayloads.TracerPathS2CPayload;
@@ -21,6 +22,7 @@ public final class ModNetworking {
     PayloadTypeRegistry.playS2C().register(RideS2CPayload.ID, RideS2CPayload.CODEC);
     PayloadTypeRegistry.playS2C().register(BlockOutlineS2CPayload.ID, BlockOutlineS2CPayload.CODEC);
     PayloadTypeRegistry.playS2C().register(TracerPathS2CPayload.ID, TracerPathS2CPayload.CODEC);
+    PayloadTypeRegistry.playS2C().register(DisguiseS2CPayload.ID, DisguiseS2CPayload.CODEC);
     PayloadTypeRegistry.playC2S()
         .register(UpdateServerConfigC2SPayload.ID, UpdateServerConfigC2SPayload.CODEC);
   }
