@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.compat.info;
 
 import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
+import com.grahambartley.notenougharrows.item.InfoKeys;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;

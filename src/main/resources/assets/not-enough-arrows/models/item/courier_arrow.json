@@ -2,5 +2,13 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "not-enough-arrows:item/courier_arrow"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "not-enough-arrows:loaded": 1
+      },
+      "model": "not-enough-arrows:item/courier_arrow_loaded"
+    }
+  ]
 }

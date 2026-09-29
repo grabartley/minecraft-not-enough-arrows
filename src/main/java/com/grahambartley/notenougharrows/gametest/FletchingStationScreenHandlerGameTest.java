@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
+import com.grahambartley.notenougharrows.AgricultureArrows;
+import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.SocialArrows;
 import com.grahambartley.notenougharrows.fletching.FletchingStationScreenHandler;
 import com.grahambartley.notenougharrows.fletching.FletchingStationSlots;
@@ -8,6 +10,7 @@ import com.grahambartley.notenougharrows.social.CourierStationRecipes;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
@@ -21,6 +24,7 @@ import net.minecraft.test.TestContext;
 public final class FletchingStationScreenHandlerGameTest implements FabricGameTest {
   private static final String BATCH = "fletching-station";
   private static final String COURIER_BATCH = "fletching-station-courier";
+  private static final String CONTAINER_BATCH = "fletching-station-containers";
   private static final int TOO_FEW_ARROWS = FletchingTestSupport.ARROWS_CONSUMED - 1;
   private static final int A_SPARE_ARROW = 1;
   private static final int ROOM_FOR_HALF_A_CRAFT = 60;
@@ -326,6 +330,94 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
         0,
         FletchingStationSupport.countInInputs(station, Items.TNT),
         "Tnt left after picking up one craft");
+    context.complete();
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = CONTAINER_BATCH, tickLimit = 20)
+  public void aMilkArrowHandsBackTheEmptyBucket(TestContext context) {
+    assertTheBucketComesBack(context, Items.MILK_BUCKET, ModArrows.MILK_ARROW.item());
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = CONTAINER_BATCH, tickLimit = 20)
+  public void aTillArrowHandsBackTheEmptyBucket(TestContext context) {
+    assertTheBucketComesBack(context, Items.WATER_BUCKET, AgricultureArrows.TILL_ARROW.item());
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = CONTAINER_BATCH, tickLimit = 20)
+  public void anIngredientWithNoContainerLeavesItsSlotEmpty(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station
+        .getSlot(0)
+        .setStack(new ItemStack(Items.ARROW, FletchingTestSupport.SHIPPED_BASE_ARROWS));
+    station.getSlot(1).setStack(new ItemStack(Items.IRON_PICKAXE));
+
+    station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
+
+    context.assertTrue(
+        station.getCursorStack().isOf(ModArrows.DRILL_ARROW.item()),
+        "Eight arrows and an iron pickaxe should make drill arrows, but made "
+            + station.getCursorStack());
+    context.assertTrue(
+        station.getSlot(0).getStack().isEmpty() && station.getSlot(1).getStack().isEmpty(),
+        "A recipe whose inputs leave no container should empty the station");
+    context.complete();
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = COURIER_BATCH, tickLimit = 20)
+  public void loadingACourierArrowWithABucketHandsNoEmptyBucketBack(TestContext context) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station.getSlot(0).setStack(SocialTestSupport.emptyCourier());
+    station.getSlot(1).setStack(new ItemStack(Items.WATER_BUCKET));
+
+    station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
+
+    context.assertTrue(
+        CourierPayloads.payloadOf(station.getCursorStack()).orElseThrow().isOf(Items.WATER_BUCKET),
+        "The courier arrow carries the full bucket");
+    context.assertEquals(
+        0,
+        FletchingStationSupport.countInInputs(station, Items.BUCKET)
+            + FletchingStationSupport.countHeld(player, Items.BUCKET),
+        "Empty buckets a courier load hands back, which would duplicate the carried one");
+    context.complete();
+  }
+
+  private static void assertTheBucketComesBack(
+      final TestContext context, final Item filledBucket, final Item arrow) {
+    final ServerPlayerEntity player = player(context);
+    final FletchingStationScreenHandler station = station(context, player);
+    station
+        .getSlot(0)
+        .setStack(new ItemStack(Items.ARROW, FletchingTestSupport.SHIPPED_BASE_ARROWS));
+    station.getSlot(1).setStack(new ItemStack(filledBucket));
+
+    station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
+
+    context.assertTrue(
+        station.getCursorStack().isOf(arrow)
+            && station.getCursorStack().getCount() == FletchingTestSupport.SHIPPED_STATION_YIELD,
+        "Taking the station result should give "
+            + FletchingTestSupport.SHIPPED_STATION_YIELD
+            + " "
+            + arrow
+            + " but gave "
+            + station.getCursorStack());
+    context.assertTrue(
+        station.getSlot(1).getStack().isOf(Items.BUCKET)
+            && station.getSlot(1).getStack().getCount() == 1,
+        "The emptied "
+            + filledBucket
+            + " should come back into its slot as one empty bucket, but the slot holds "
+            + station.getSlot(1).getStack());
+    context.assertEquals(
+        0,
+        FletchingStationSupport.countInInputs(station, filledBucket),
+        "Filled buckets left after the craft");
+    context.assertTrue(
+        FletchingStationSupport.result(station).isEmpty(),
+        "An empty bucket is not an ingredient, so the station should offer nothing more");
     context.complete();
   }
 

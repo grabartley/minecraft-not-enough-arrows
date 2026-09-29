@@ -268,13 +268,25 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     if (plan.isEmpty()) {
       return;
     }
+    final List<ItemStack> containers =
+        CourierStationRecipes.owns(entry.id()) ? List.of() : containersLeftBy(plan);
     final List<ItemStack> handedBack = CourierStationRecipes.handedBack(entry, inputs);
     withdraw(plan);
+    for (int index = 0; index < containers.size(); index++) {
+      handBack(plan.get(index).slot(), containers.get(index));
+    }
     final int emptiedSlot = plan.get(0).slot();
     handedBack.forEach(stack -> handBack(emptiedSlot, stack));
   }
 
+  private List<ItemStack> containersLeftBy(final List<FletchingWithdrawal> plan) {
+    return plan.stream().map(draw -> draw.containerLeftBy(input.getStack(draw.slot()))).toList();
+  }
+
   private void handBack(final int preferredSlot, final ItemStack stack) {
+    if (stack.isEmpty()) {
+      return;
+    }
     if (input.getStack(preferredSlot).isEmpty()) {
       input.setStack(preferredSlot, stack);
     } else {

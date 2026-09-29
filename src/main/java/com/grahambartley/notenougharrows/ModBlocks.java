@@ -1,10 +1,13 @@
 package com.grahambartley.notenougharrows;
 
 import com.grahambartley.notenougharrows.block.BeaconBeamBlock;
+import com.grahambartley.notenougharrows.block.BlockLifetime;
 import com.grahambartley.notenougharrows.block.RedstoneChargeBlock;
 import com.grahambartley.notenougharrows.block.RopeBlock;
 import com.grahambartley.notenougharrows.block.TrampolineBlock;
 import com.grahambartley.notenougharrows.block.ZiplineCableBlock;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
@@ -38,7 +41,23 @@ public final class ModBlocks {
       Registry.register(
           Registries.BLOCK, BEACON_BEAM_ID, new BeaconBeamBlock(BeaconBeamBlock.settings()));
 
+  private static final Map<Identifier, Set<BlockLifetime>> LIFETIMES =
+      Map.of(
+          ROPE_ID, Set.of(BlockLifetime.FALLS_WITHOUT_SUPPORT),
+          REDSTONE_CHARGE_ID, Set.of(BlockLifetime.EXPIRES),
+          ZIPLINE_CABLE_ID, Set.of(BlockLifetime.EXPIRES),
+          TRAMPOLINE_ID, Set.of(BlockLifetime.EXPIRES),
+          BEACON_BEAM_ID, Set.of(BlockLifetime.EXPIRES));
+
   private ModBlocks() {}
+
+  public static Set<Identifier> declaredIds() {
+    return LIFETIMES.keySet();
+  }
+
+  public static Set<BlockLifetime> lifetimesOf(final Identifier blockId) {
+    return LIFETIMES.getOrDefault(blockId, Set.of());
+  }
 
   public static void register() {
     NotEnoughArrows.LOGGER.info(

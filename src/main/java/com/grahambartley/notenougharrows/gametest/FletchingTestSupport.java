@@ -22,6 +22,8 @@ final class FletchingTestSupport {
   static final int ARROWS_CONSUMED = 4;
   static final int TNT_CONSUMED = 1;
   static final int ARROWS_PRODUCED = 8;
+  static final int SHIPPED_BASE_ARROWS = 8;
+  static final int SHIPPED_STATION_YIELD = 12;
 
   private FletchingTestSupport() {}
 

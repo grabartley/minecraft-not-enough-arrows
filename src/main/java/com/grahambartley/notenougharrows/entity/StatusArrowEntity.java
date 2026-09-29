@@ -31,6 +31,10 @@ public abstract class StatusArrowEntity extends BaseArrowEntity {
 
   protected abstract RegistryEntry<StatusEffect> effect();
 
+  public RegistryEntry<StatusEffect> appliedEffect() {
+    return effect();
+  }
+
   protected abstract int durationTicks(StatusArrowConfig status);
 
   @Override

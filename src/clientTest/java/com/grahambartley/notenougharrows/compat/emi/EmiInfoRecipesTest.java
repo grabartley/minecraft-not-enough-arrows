@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.compat.info.InfoEntry;
-import com.grahambartley.notenougharrows.compat.info.InfoKeys;
+import com.grahambartley.notenougharrows.item.InfoKeys;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import java.util.ArrayList;
 import java.util.List;

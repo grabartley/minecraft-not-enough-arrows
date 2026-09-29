@@ -231,4 +231,51 @@ class ArrowDefinitionTest {
         NullPointerException.class,
         () -> ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, null));
   }
+
+  @Test
+  void appliesNoEffectUnlessDeclared() {
+    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).effects().isEmpty());
+    assertTrue(
+        ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, DyePalette.create())
+            .effects()
+            .isEmpty());
+  }
+
+  @Test
+  void carriesTheEffectsItIsDeclaredToApply() {
+    final ArrowEffect glowing =
+        new ArrowEffect(Identifier.ofVanilla("glowing"), ArrowEffect.Delivery.STRUCK_TARGET);
+
+    final ArrowDefinition<BaseArrowEntity> definition =
+        ArrowDefinition.of("glow_ink_arrow", ENTITY_FACTORY, SPAWN_FACTORY).applying(glowing);
+
+    assertEquals(List.of(glowing), definition.effects());
+  }
+
+  @Test
+  void keepsEverythingElseWhenDeclaringEffects() {
+    final ArrowSound sound = ArrowSound.own(Identifier.of(NotEnoughArrows.MOD_ID, "puff"));
+    final ArrowDefinition<TintedArrowEntity> plain =
+        ArrowDefinition.tinted(
+            "paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, DyePalette.create(), sound);
+
+    final ArrowDefinition<TintedArrowEntity> declared =
+        plain.applying(new ArrowEffect(Identifier.ofVanilla("nausea"), ArrowEffect.Delivery.AREA));
+
+    assertEquals(plain.path(), declared.path());
+    assertSame(plain.entityFactory(), declared.entityFactory());
+    assertSame(plain.spawnFactory(), declared.spawnFactory());
+    assertEquals(plain.sounds(), declared.sounds());
+    assertEquals(plain.palette(), declared.palette());
+    assertEquals(plain.trackingTickInterval(), declared.trackingTickInterval());
+  }
+
+  @Test
+  void rejectsANullEffectList() {
+    assertThrows(
+        NullPointerException.class,
+        () ->
+            ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY)
+                .applying((ArrowEffect[]) null));
+  }
 }

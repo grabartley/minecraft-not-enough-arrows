@@ -7,6 +7,7 @@ import com.grahambartley.notenougharrows.hud.CountdownSync;
 import com.grahambartley.notenougharrows.network.ModNetworkingClient;
 import com.grahambartley.notenougharrows.render.ArrowRendererRegistrar;
 import com.grahambartley.notenougharrows.render.BlockRenderLayerRegistrar;
+import com.grahambartley.notenougharrows.render.CourierArrowPredicates;
 import com.grahambartley.notenougharrows.render.TintedArrowColors;
 import com.grahambartley.notenougharrows.reveal.BlockOutlineRenderer;
 import com.grahambartley.notenougharrows.reveal.RevealSync;
@@ -23,6 +24,7 @@ public class NotEnoughArrowsClient implements ClientModInitializer {
     ClientStateService.load();
     ArrowRendererRegistrar.registerAll();
     TintedArrowColors.registerAll();
+    CourierArrowPredicates.register();
     EntityRendererRegistry.register(ModEntities.SHOCK_BOLT, LightningEntityRenderer::new);
     BlockRenderLayerRegistrar.registerAll();
     CountdownSync.register();

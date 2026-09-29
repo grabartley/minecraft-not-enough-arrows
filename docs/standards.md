@@ -45,6 +45,7 @@ The canonical implementations are **Loot Lock** and **Dogs Unleashed**. Follow t
 - Any new behavioural code ships with unit tests in the same pull request. Documentation-only and configuration-only changes are exempt.
 - Gametests cover behaviour that only exists in a running world: block interactions, networking, persistence across reload, and anything involving more than one player.
 - Anything that moves items or grants rewards gets a test asserting **conservation**: the total in the world before equals the total after. Absence of an exception is not evidence of correctness.
+- A rule that holds the whole set of arrows together is an **audit**: a pure class in `arrow/` or `block/` that takes plain facts and names every offender, unit-tested against a planted violation of each rule, and run over the live registry by a gametest of the same name. The audits cover firing (`ArrowTagAudit`), sounds (`ArrowSoundAudit`, REL-19), effects against vanilla's tipped arrows and each other (`ArrowEffectAudit`, REL-13), recipe centres (`ArrowRecipeAudit`, REL-14), blocks (`BlockAudit`, REL-15), sprites and flight textures (`ArrowTextureAudit`, REL-18) and names and descriptions (`ArrowTextAudit`, REL-20). An arrow that applies a status effect declares it with `ArrowDefinition.applying`, and a block declares how it ends in `ModBlocks`, because an audit can only check what is written down. Every live audit also checks it actually saw the thing it audits, so it cannot pass on nothing.
 
 ## Compatibility
 

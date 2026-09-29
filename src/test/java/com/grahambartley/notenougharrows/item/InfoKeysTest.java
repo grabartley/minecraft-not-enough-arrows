@@ -1,4 +1,4 @@
-package com.grahambartley.notenougharrows.compat.info;
+package com.grahambartley.notenougharrows.item;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;

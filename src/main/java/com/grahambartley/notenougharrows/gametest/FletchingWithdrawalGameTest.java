@@ -78,4 +78,42 @@ public final class FletchingWithdrawalGameTest implements FabricGameTest {
         "Inputs no recipe matches should plan no withdrawal at all");
     context.complete();
   }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void drawingAFilledBucketLeavesAnEmptyBucket(TestContext context) {
+    final ItemStack left =
+        new FletchingWithdrawal(0, 1).containerLeftBy(new ItemStack(Items.MILK_BUCKET));
+
+    context.assertTrue(
+        left.isOf(Items.BUCKET) && left.getCount() == 1,
+        "A drawn milk bucket should leave one empty bucket, but left " + left);
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void drawingSeveralContainersLeavesOneEmptyContainerEach(TestContext context) {
+    final ItemStack left =
+        new FletchingWithdrawal(0, 3).containerLeftBy(new ItemStack(Items.HONEY_BOTTLE, 5));
+
+    context.assertTrue(
+        left.isOf(Items.GLASS_BOTTLE) && left.getCount() == 3,
+        "Three drawn honey bottles should leave three glass bottles, but left " + left);
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void drawingAnItemWithNoContainerLeavesNothing(TestContext context) {
+    context.assertTrue(
+        new FletchingWithdrawal(0, 8).containerLeftBy(new ItemStack(Items.ARROW, 8)).isEmpty(),
+        "A drawn arrow leaves no container");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void drawingFromAnEmptySlotLeavesNothing(TestContext context) {
+    context.assertTrue(
+        new FletchingWithdrawal(0, 1).containerLeftBy(ItemStack.EMPTY).isEmpty(),
+        "An empty slot leaves no container");
+    context.complete();
+  }
 }
