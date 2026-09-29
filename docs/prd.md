@@ -732,7 +732,7 @@ A player needs to know something about a place before they go into it: whether i
 |---|---|
 | REVEAL-1 | A torch is placed only where the shooter could have placed one by hand, on a face that accepts one, and never inside a fluid. A ceiling accepts none, as it accepts no hand-placed torch, and a shooter who may not build by hand, such as one in adventure mode, places none. Where it may not be placed the arrow embeds and is recovered |
 | REVEAL-2 | A beacon beam is a timed structure with no collision, no item form, and no light level of its own, so it marks a place without changing it (§8, Temporary Structures). It rises only through air, so it never replaces a plant, snow, or a fluid, and stops at the first block above it |
-| REVEAL-3 | A beacon is distinguishable from another beacon by more than its colour, because colour alone is not a distinction a player can rely on (A11Y-1) |
+| REVEAL-3 | A beacon arrow's beam is drawn like vanilla's own beacon beam, so it reads as a beacon at a glance. It is told apart from a vanilla beam by more than its colour: it rises from an impact point with no beacon block beneath it, it is narrower, and it clears away after its lifetime (A11Y-1) |
 | REVEAL-4 | A reveal pulse, which is what the prospector and sonar arrows fire, resolves once at impact rather than continuously. It scans a bounded volume, once, and applies an outline with a duration. It never re-scans and never follows the player |
 | REVEAL-5 | A reveal pulse's radius and duration are server settings with configured maxima, so an operator can cap what it exposes and a duration of zero reveals nothing |
 | REVEAL-6 | The prospector arrow's set of revealed blocks is an operator-editable list, so a server decides what counts as worth revealing rather than the mod deciding for it |
@@ -1215,7 +1215,7 @@ Four ways a world can interrupt something, and what each thing does about it.
 | A11Y-4 | The countdown ring is scalable by the player |
 | A11Y-5 | Every interface renders correctly at GUI scales 1 through 4 |
 | A11Y-6 | Every player-facing string resolves through the language file, so the mod is translatable |
-| A11Y-7 | A beacon beam, a cloud, and a reveal outline are each distinguishable by more than colour. A beam's identity is carried by its shape as well as its hue, and an outline is a silhouette rather than a tint |
+| A11Y-7 | A beacon beam, a cloud, and a reveal outline are each distinguishable by more than colour. A beam's identity is carried by where it stands and how long it lasts as well as its hue (REVEAL-3), and an outline is a silhouette rather than a tint |
 | A11Y-8 | A watcher's report is text rather than a sound alone, so it is readable by a player who cannot hear it |
 
 ### Compatibility
