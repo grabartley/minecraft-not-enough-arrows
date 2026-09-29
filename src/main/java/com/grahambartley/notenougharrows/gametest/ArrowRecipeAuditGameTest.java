@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Ingredient;
@@ -29,7 +30,6 @@ public final class ArrowRecipeAuditGameTest implements FabricGameTest {
   private static final String BATCH = "release-audit-recipes";
   private static final int GRID = 3;
   private static final int CENTRE = 4;
-  private static final int RING_SIZE = 8;
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
   public void noTwoCraftingTableRecipesShareACentreOverOneBase(TestContext context) {
@@ -87,8 +87,15 @@ public final class ArrowRecipeAuditGameTest implements FabricGameTest {
       return Optional.empty();
     }
     final List<Ingredient> grid = shaped.getIngredients();
-    return Optional.of(
-        new ArrowRecipe(entry.id(), result, items(grid.get(0)), items(grid.get(CENTRE))));
+    final Set<Identifier> base = items(grid.get(0));
+    final boolean uniformRing =
+        IntStream.range(0, grid.size())
+            .filter(cell -> cell != CENTRE)
+            .allMatch(cell -> items(grid.get(cell)).equals(base));
+    if (!uniformRing) {
+      return Optional.empty();
+    }
+    return Optional.of(new ArrowRecipe(entry.id(), result, base, items(grid.get(CENTRE))));
   }
 
   private static List<ArrowRecipe> stationRecipes(final TestContext context) {
@@ -104,9 +111,13 @@ public final class ArrowRecipeAuditGameTest implements FabricGameTest {
       return Optional.empty();
     }
     final Optional<FletchingIngredient> base =
-        inputs.stream().filter(input -> input.count() == RING_SIZE).findFirst();
+        inputs.stream()
+            .filter(input -> input.count() == FletchingTestSupport.SHIPPED_BASE_ARROWS)
+            .findFirst();
     final Optional<FletchingIngredient> centre =
-        inputs.stream().filter(input -> input.count() != RING_SIZE).findFirst();
+        inputs.stream()
+            .filter(input -> input.count() != FletchingTestSupport.SHIPPED_BASE_ARROWS)
+            .findFirst();
     if (base.isEmpty() || centre.isEmpty()) {
       return Optional.empty();
     }

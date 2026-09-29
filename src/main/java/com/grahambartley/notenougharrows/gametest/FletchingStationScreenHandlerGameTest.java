@@ -25,8 +25,6 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   private static final String BATCH = "fletching-station";
   private static final String COURIER_BATCH = "fletching-station-courier";
   private static final String CONTAINER_BATCH = "fletching-station-containers";
-  private static final int SHIPPED_ARROWS_CONSUMED = 8;
-  private static final int SHIPPED_ARROWS_PRODUCED = 12;
   private static final int TOO_FEW_ARROWS = FletchingTestSupport.ARROWS_CONSUMED - 1;
   private static final int A_SPARE_ARROW = 1;
   private static final int ROOM_FOR_HALF_A_CRAFT = 60;
@@ -349,7 +347,9 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   public void anIngredientWithNoContainerLeavesItsSlotEmpty(TestContext context) {
     final ServerPlayerEntity player = player(context);
     final FletchingStationScreenHandler station = station(context, player);
-    station.getSlot(0).setStack(new ItemStack(Items.ARROW, SHIPPED_ARROWS_CONSUMED));
+    station
+        .getSlot(0)
+        .setStack(new ItemStack(Items.ARROW, FletchingTestSupport.SHIPPED_BASE_ARROWS));
     station.getSlot(1).setStack(new ItemStack(Items.IRON_PICKAXE));
 
     station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
@@ -388,16 +388,18 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
       final TestContext context, final Item filledBucket, final Item arrow) {
     final ServerPlayerEntity player = player(context);
     final FletchingStationScreenHandler station = station(context, player);
-    station.getSlot(0).setStack(new ItemStack(Items.ARROW, SHIPPED_ARROWS_CONSUMED));
+    station
+        .getSlot(0)
+        .setStack(new ItemStack(Items.ARROW, FletchingTestSupport.SHIPPED_BASE_ARROWS));
     station.getSlot(1).setStack(new ItemStack(filledBucket));
 
     station.onSlotClick(FletchingStationSlots.RESULT_SLOT, 0, SlotActionType.PICKUP, player);
 
     context.assertTrue(
         station.getCursorStack().isOf(arrow)
-            && station.getCursorStack().getCount() == SHIPPED_ARROWS_PRODUCED,
+            && station.getCursorStack().getCount() == FletchingTestSupport.SHIPPED_STATION_YIELD,
         "Taking the station result should give "
-            + SHIPPED_ARROWS_PRODUCED
+            + FletchingTestSupport.SHIPPED_STATION_YIELD
             + " "
             + arrow
             + " but gave "

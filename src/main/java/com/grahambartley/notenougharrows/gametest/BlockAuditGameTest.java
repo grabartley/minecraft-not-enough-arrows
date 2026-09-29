@@ -5,6 +5,8 @@ import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.block.BlockAudit;
 import com.grahambartley.notenougharrows.block.BlockAudit.BlockFacts;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -18,13 +20,6 @@ import net.minecraft.util.math.BlockPos;
 public final class BlockAuditGameTest implements FabricGameTest {
   private static final String BATCH = "release-audit-blocks";
   private static final BlockPos OPEN_AIR = new BlockPos(0, 0, 0);
-  private static final List<Identifier> BLOCKS_THE_MOD_SHIPS =
-      List.of(
-          ModBlocks.ROPE_ID,
-          ModBlocks.REDSTONE_CHARGE_ID,
-          ModBlocks.ZIPLINE_CABLE_ID,
-          ModBlocks.TRAMPOLINE_ID,
-          ModBlocks.BEACON_BEAM_ID);
 
   @GameTest(
       templateName = FabricGameTest.EMPTY_STRUCTURE,
@@ -43,13 +38,16 @@ public final class BlockAuditGameTest implements FabricGameTest {
       batchId = BATCH,
       tickLimit = 10,
       skyAccess = true)
-  public void theAuditSeesEveryBlockTheModRegisters(TestContext context) {
-    final List<Identifier> inspected =
-        modBlockFacts(context).stream().map(BlockFacts::block).toList();
+  public void everyBlockTheModRegistersDeclaresHowItEnds(TestContext context) {
+    final Set<Identifier> inspected =
+        modBlockFacts(context).stream().map(BlockFacts::block).collect(Collectors.toSet());
 
     context.assertTrue(
-        inspected.containsAll(BLOCKS_THE_MOD_SHIPS),
-        "The REL-15 audit should inspect every block the mod ships, but saw " + inspected);
+        !inspected.isEmpty() && inspected.equals(ModBlocks.declaredIds()),
+        "The REL-15 audit inspected "
+            + inspected
+            + " but ModBlocks declares lifetimes for "
+            + ModBlocks.declaredIds());
     context.complete();
   }
 

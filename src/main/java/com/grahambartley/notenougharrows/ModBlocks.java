@@ -51,6 +51,10 @@ public final class ModBlocks {
 
   private ModBlocks() {}
 
+  public static Set<Identifier> declaredIds() {
+    return LIFETIMES.keySet();
+  }
+
   public static Set<BlockLifetime> lifetimesOf(final Identifier blockId) {
     return LIFETIMES.getOrDefault(blockId, Set.of());
   }

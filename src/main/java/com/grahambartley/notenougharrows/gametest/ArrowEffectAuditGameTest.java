@@ -62,7 +62,7 @@ public final class ArrowEffectAuditGameTest implements FabricGameTest {
     for (final RegisteredArrow<?> arrow : ModArrows.registered()) {
       final Entity entity = arrow.entityType().create(context.getWorld());
       if (entity instanceof StatusArrowEntity status) {
-        final ArrowEffect applied = ArrowEffect.onStruckTarget(status.effect());
+        final ArrowEffect applied = ArrowEffect.onStruckTarget(status.appliedEffect());
         context.assertTrue(
             declared.get(arrow.id()).contains(applied),
             arrow.id() + " applies " + applied + " but declares " + declared.get(arrow.id()));

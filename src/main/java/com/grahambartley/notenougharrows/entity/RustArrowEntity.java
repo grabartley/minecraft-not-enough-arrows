@@ -27,7 +27,7 @@ public class RustArrowEntity extends StatusArrowEntity {
   }
 
   @Override
-  public RegistryEntry<StatusEffect> effect() {
+  protected RegistryEntry<StatusEffect> effect() {
     return StatusEffects.MINING_FATIGUE;
   }
 

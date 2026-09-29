@@ -28,7 +28,7 @@ public class GuardArrowEntity extends StatusArrowEntity {
   }
 
   @Override
-  public RegistryEntry<StatusEffect> effect() {
+  protected RegistryEntry<StatusEffect> effect() {
     return StatusEffects.ABSORPTION;
   }
 
