@@ -29,7 +29,7 @@ public final class StackHandoverGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void dropsWhatDoesNotFitAtTheRecipientsFeet(TestContext context) {
     final ServerPlayerEntity recipient = recipient(context);
-    SocialTestSupport.fillInventory(recipient);
+    AgricultureTestSupport.fillInventory(recipient);
     recipient.getInventory().setStack(0, new ItemStack(Items.DIAMOND, 50));
 
     StackHandover.handTo(recipient, new ItemStack(Items.DIAMOND, 40));
@@ -43,7 +43,7 @@ public final class StackHandoverGameTest implements FabricGameTest {
   public void aFullCreativeRecipientLosesNothing(TestContext context) {
     final ServerPlayerEntity recipient = recipient(context);
     recipient.changeGameMode(GameMode.CREATIVE);
-    SocialTestSupport.fillInventory(recipient);
+    AgricultureTestSupport.fillInventory(recipient);
 
     StackHandover.handTo(recipient, new ItemStack(Items.DIAMOND, 40));
 
@@ -57,7 +57,7 @@ public final class StackHandoverGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void grantingReturnsWhatDidNotFit(TestContext context) {
     final ServerPlayerEntity recipient = recipient(context);
-    SocialTestSupport.fillInventory(recipient);
+    AgricultureTestSupport.fillInventory(recipient);
     recipient.getInventory().setStack(0, new ItemStack(Items.DIAMOND, 60));
 
     final ItemStack left =

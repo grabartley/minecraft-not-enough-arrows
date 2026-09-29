@@ -69,13 +69,18 @@ public class CourierArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitEntity(
       final ServerWorld world, final EntityHitResult entityHitResult) {
+    final Entity struck = entityHitResult.getEntity();
     final Optional<ItemStack> payload = takePayload();
     if (payload.isEmpty()) {
-      return ArrowImpact.DEFAULT;
+      return glanceOff(struck);
     }
-    final Entity struck = entityHitResult.getEntity();
     deliver(world, payload.get(), struck, struck.getPos());
     return ArrowImpact.DISCARD;
+  }
+
+  @Override
+  protected boolean hurtsWhatItHits() {
+    return false;
   }
 
   @Override
@@ -111,8 +116,9 @@ public class CourierArrowEntity extends BaseArrowEntity {
   }
 
   private void releaseWhereDestroyed(final ServerWorld world, final ItemStack payload) {
-    if (getY() < world.getBottomY()) {
-      returnToShooter(world, payload, getPos());
+    final Optional<PlayerEntity> shooter = shootingPlayer().filter(PlayerEntity::isAlive);
+    if (getY() < world.getBottomY() && shooter.isPresent()) {
+      StackHandover.handTo(shooter.get(), payload);
     } else {
       StackHandover.drop(world, getPos(), payload);
     }

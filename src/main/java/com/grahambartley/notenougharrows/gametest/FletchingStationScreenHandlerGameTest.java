@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.SocialArrows;
 import com.grahambartley.notenougharrows.fletching.FletchingStationScreenHandler;
 import com.grahambartley.notenougharrows.fletching.FletchingStationSlots;
 import com.grahambartley.notenougharrows.social.CourierPayloads;
+import com.grahambartley.notenougharrows.social.CourierStationRecipes;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
@@ -373,7 +374,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   }
 
   @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = COURIER_BATCH, tickLimit = 20)
-  public void unloadingOneOfTwoLoadedArrowsKeepsTheOtherLoaded(TestContext context) {
+  public void unloadingAStackOfLoadedArrowsKeepsOfferingTheNextOne(TestContext context) {
     final ServerPlayerEntity player = player(context);
     final FletchingStationScreenHandler station = station(context, player);
     station.getSlot(4).setStack(SocialTestSupport.loadedCourier().copyWithCount(2));
@@ -387,9 +388,13 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
             && station.getSlot(4).getStack().getCount() == 1,
         "The other loaded arrow stays where it was");
     context.assertEquals(
-        2,
-        FletchingStationSupport.countInInputs(station, SocialArrows.COURIER_ARROW.item()),
-        "The emptied arrow sits beside it");
+        1,
+        FletchingStationSupport.countHeld(player, SocialArrows.COURIER_ARROW.item()),
+        "The emptied arrow goes to the player while its slot is still full");
+    context.assertEquals(
+        CourierStationRecipes.UNLOAD_ID,
+        station.getAvailableRecipes().get(0).id(),
+        "and the next loaded arrow is offered straight away");
     context.complete();
   }
 

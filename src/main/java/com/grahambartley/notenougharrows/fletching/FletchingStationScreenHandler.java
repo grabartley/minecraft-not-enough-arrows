@@ -7,6 +7,7 @@ import com.grahambartley.notenougharrows.recipe.FletchingRecipeInput;
 import com.grahambartley.notenougharrows.recipe.FletchingWithdrawal;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import com.grahambartley.notenougharrows.social.CourierStationRecipes;
+import com.grahambartley.notenougharrows.world.StackHandover;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.Blocks;
@@ -28,6 +29,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
 
   private final ScreenHandlerContext context;
   private final World world;
+  private final PlayerEntity player;
   private final CraftingResultInventory result = new CraftingResultInventory();
   private final SimpleInventory input = new SimpleInventory(FletchingStationSlots.INPUT_COUNT);
   private final Property selectedRecipe = Property.create();
@@ -44,6 +46,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     super(ModScreenHandlers.FLETCHING_STATION, syncId);
     this.context = context;
     this.world = playerInventory.player.getWorld();
+    this.player = playerInventory.player;
     this.selectedRecipe.set(NO_SELECTION);
     this.input.addListener(changed -> onInputChanged());
 
@@ -275,7 +278,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     if (input.getStack(preferredSlot).isEmpty()) {
       input.setStack(preferredSlot, stack);
     } else {
-      input.addStack(stack);
+      StackHandover.handTo(player, stack);
     }
   }
 

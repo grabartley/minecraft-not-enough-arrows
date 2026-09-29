@@ -8,11 +8,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class SnowGolemArrowEntity extends BaseArrowEntity {
+  private static final int GOLEM_HEIGHT_IN_BLOCKS = 2;
 
   public SnowGolemArrowEntity(
       final EntityType<? extends SnowGolemArrowEntity> entityType, final World world) {
@@ -33,8 +35,9 @@ public class SnowGolemArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
+    final int reach = blockHitResult.getSide() == Direction.DOWN ? GOLEM_HEIGHT_IN_BLOCKS : 1;
     final Vec3d inFront =
-        Vec3d.ofBottomCenter(blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
+        Vec3d.ofBottomCenter(blockHitResult.getBlockPos().offset(blockHitResult.getSide(), reach));
     return buildAt(world, inFront) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
   }
 

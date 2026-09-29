@@ -42,6 +42,17 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  public void aFullCreativeShooterHasItDroppedAtTheirFeetRatherThanDeleted(TestContext context) {
+    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER);
+    shooter.changeGameMode(net.minecraft.world.GameMode.CREATIVE);
+    AgricultureTestSupport.fillInventory(shooter);
+
+    context.assertEquals(Outcome.DROPPED_AT_FEET, resolve(context, shooter, true), "Outcome");
+    context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.complete();
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aShooterThatCannotHoldItemsHasItDroppedAtTheirFeet(TestContext context) {
     final ZombieEntity shooter = context.spawnMob(EntityType.ZOMBIE, SHOOTER);
 

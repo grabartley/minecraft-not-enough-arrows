@@ -15,12 +15,14 @@ import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public final class SnowGolemArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "snow-golem-arrow";
   private static final String SHORT_LIFETIME_BATCH = "snow-golem-arrow-short-lifetime";
   private static final int SHORT_LIFETIME = 20;
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
+  private static final BlockPos CEILING = new BlockPos(8, 8, 8);
 
   @BeforeBatch(batchId = SHORT_LIFETIME_BATCH)
   public void shortenTheLifetimeBeforeBatch(ServerWorld world) {
@@ -86,6 +88,33 @@ public final class SnowGolemArrowEntityGameTest implements FabricGameTest {
         () -> {
           context.assertEquals(1, golems(context).size(), "Golems built");
           context.assertEquals(health, cow.getHealth(), "The cow's health");
+          context.complete();
+        });
+  }
+
+  @GameTest(
+      templateName = MobArena.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = SocialTestSupport.TICK_LIMIT)
+  public void anArrowThatHitsACeilingBuildsTheGolemBeneathIt(TestContext context) {
+    context.setBlockState(CEILING, Blocks.STONE);
+    final Vec3d start = context.getAbsolute(Vec3d.ofCenter(CEILING.down(4)));
+    final SnowGolemArrowEntity arrow =
+        new SnowGolemArrowEntity(
+            SocialArrows.SNOW_GOLEM_ARROW.entityType(),
+            context.getWorld(),
+            start.x,
+            start.y,
+            start.z,
+            new ItemStack(SocialArrows.SNOW_GOLEM_ARROW.item()),
+            null);
+    arrow.setVelocity(0.0, 1.5, 0.0);
+    context.getWorld().spawnEntity(arrow);
+
+    context.runAtTick(
+        SocialTestSupport.SETTLED_TICK,
+        () -> {
+          context.assertEquals(1, golems(context).size(), "Golems built under the ceiling");
           context.complete();
         });
   }

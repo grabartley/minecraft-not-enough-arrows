@@ -53,12 +53,6 @@ final class SocialTestSupport {
     return shooter;
   }
 
-  static void fillInventory(final PlayerEntity player) {
-    for (int slot = 0; slot < player.getInventory().size(); slot++) {
-      player.getInventory().setStack(slot, new ItemStack(Items.COBBLESTONE, 64));
-    }
-  }
-
   static int accountedFor(
       final TestContext context, final Item item, final List<? extends PlayerEntity> players) {
     final Box around = context.getTestBox().expand(NEARBY);
