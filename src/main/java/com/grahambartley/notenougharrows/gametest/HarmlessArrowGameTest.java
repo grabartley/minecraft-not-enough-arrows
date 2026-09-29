@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.AgricultureArrows;
+import com.grahambartley.notenougharrows.DiscoveryArrows;
 import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.TraversalArrows;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
@@ -56,7 +57,13 @@ public final class HarmlessArrowGameTest implements FabricGameTest {
           TraversalArrows.VINE_ARROW,
           TraversalArrows.TRAMPOLINE_ARROW,
           TraversalArrows.SCAFFOLD_ARROW,
-          TraversalArrows.BRIDGE_ARROW);
+          TraversalArrows.BRIDGE_ARROW,
+          DiscoveryArrows.TORCH_ARROW,
+          DiscoveryArrows.BEACON_ARROW,
+          DiscoveryArrows.PROSPECTOR_ARROW,
+          DiscoveryArrows.SONAR_ARROW,
+          DiscoveryArrows.TRACER_ARROW,
+          DiscoveryArrows.TRIPWIRE_ARROW);
 
   @CustomTestProvider
   public Collection<TestFunction> anEffectArrowLeavesWhatItHitsUnhurt() {

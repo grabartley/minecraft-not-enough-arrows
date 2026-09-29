@@ -4,10 +4,13 @@ import com.grahambartley.notenougharrows.config.ClientConfigHolder;
 import com.grahambartley.notenougharrows.hud.CountdownSync;
 import com.grahambartley.notenougharrows.network.CountdownPayloads.CountdownS2CPayload;
 import com.grahambartley.notenougharrows.network.NockedArrowPayloads.NockedArrowS2CPayload;
+import com.grahambartley.notenougharrows.network.RevealPayloads.BlockOutlineS2CPayload;
+import com.grahambartley.notenougharrows.network.RevealPayloads.TracerPathS2CPayload;
 import com.grahambartley.notenougharrows.network.RidePayloads.RideS2CPayload;
 import com.grahambartley.notenougharrows.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
 import com.grahambartley.notenougharrows.render.NockedArrowSync;
 import com.grahambartley.notenougharrows.render.RidingPlayers;
+import com.grahambartley.notenougharrows.reveal.RevealSync;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -24,6 +27,10 @@ public final class ModNetworkingClient {
     ClientPlayNetworking.registerGlobalReceiver(
         CountdownS2CPayload.ID, ModNetworkingClient::handleCountdown);
     ClientPlayNetworking.registerGlobalReceiver(RideS2CPayload.ID, ModNetworkingClient::handleRide);
+    ClientPlayNetworking.registerGlobalReceiver(
+        BlockOutlineS2CPayload.ID, ModNetworkingClient::handleBlockOutline);
+    ClientPlayNetworking.registerGlobalReceiver(
+        TracerPathS2CPayload.ID, ModNetworkingClient::handleTracerPath);
     ClientEntityEvents.ENTITY_UNLOAD.register(
         (entity, world) -> {
           NockedArrowSync.forget(entity.getId());
@@ -36,6 +43,7 @@ public final class ModNetworkingClient {
           NockedArrowSync.clear();
           CountdownSync.clear();
           RidingPlayers.clear();
+          RevealSync.clear();
         });
   }
 
@@ -55,6 +63,20 @@ public final class ModNetworkingClient {
   private static void handleRide(
       final RideS2CPayload payload, final ClientPlayNetworking.Context context) {
     context.client().execute(() -> RidingPlayers.accept(payload.riderId(), payload.riding()));
+  }
+
+  private static void handleBlockOutline(
+      final BlockOutlineS2CPayload payload, final ClientPlayNetworking.Context context) {
+    context
+        .client()
+        .execute(() -> RevealSync.acceptOutline(payload.blocks(), payload.durationTicks()));
+  }
+
+  private static void handleTracerPath(
+      final TracerPathS2CPayload payload, final ClientPlayNetworking.Context context) {
+    context
+        .client()
+        .execute(() -> RevealSync.acceptPath(payload.points(), payload.lifetimeTicks()));
   }
 
   private static void handleNockedArrow(

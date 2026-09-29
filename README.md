@@ -1,6 +1,6 @@
 <h1 align="center">Not Enough Arrows</h1>
 
-<p align="center"><b>Twenty-nine new arrows for Minecraft 1.21.1 on Fabric.</b><br>
+<p align="center"><b>Fifty-four new arrows for Minecraft 1.21.1 on Fabric.</b><br>
 Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then teleport into it.</p>
 
 <p align="center">
@@ -52,6 +52,15 @@ lets them go at the top. The **vine arrow** grows a climbable vine up a wall, th
 arrow** puts down a pad that throws you back into the air and takes the sting out of the landing,
 the **scaffold arrow** raises a column of scaffolding to climb, and the **bridge arrow** lays a plank
 walkway from where it lands back to your feet. Everything but the vines clears away after a while.
+
+## See what is out there
+
+Six more tell you what you are walking into. The **torch arrow** lights the far wall before you get
+there, the **beacon arrow** raises a glowing beam anyone can see from a distance, and the **tracer
+arrow** draws the line it flew so everyone can see where the shot went. The **prospector arrow**
+outlines the ore in the rock around where it lands, the **sonar arrow** makes everything alive
+around it glow through the walls, and the **tripwire arrow** leaves an invisible wire that tells
+you, and only you, when something walks through it and roughly where.
 
 ## Blow something up, eventually
 
@@ -166,11 +175,17 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 🟩 | **Trampoline** | A pad that throws you back up, with no fall damage | Slime block |
 | 🪜 | **Scaffold** | A column of scaffolding to climb, for a while | Scaffolding |
 | 🌉 | **Bridge** | A plank walkway from where it lands back to you, for a while | Oak planks |
+| 🔥 | **Torch** | Places a torch where it lands, wherever you could have by hand | Torch |
+| 🗼 | **Beacon** | A glowing beam straight up, seen from afar, for a while | Glowstone |
+| 💎 | **Prospector** | Outlines the ore around where it lands, through the rock | Amethyst shard |
+| 📡 | **Sonar** | Everything alive around where it lands glows through walls | Echo shard |
+| 〰️ | **Tracer** | Draws the path it flew, for everyone to see | Glow ink arrows and gunpowder |
+| 🕸️ | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
 of those around a fire charge gives you the top tier. Recall is built from ender pearl arrows the
-same way, and so is tow from grapple arrows.
+same way, so is tow from grapple arrows, and so is tracer from glow ink arrows.
 
 ## Cheaper arrows at the fletching table
 
@@ -203,8 +218,8 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`. `discovery` through `social` hold the settings for arrows that have not
-landed yet, so they exist ahead of the arrows they will control.
+`fletching`, and `sound`. `chaos` and `social` hold the settings for arrows that have not landed
+yet, so they exist ahead of the arrows they will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
@@ -218,6 +233,8 @@ move.
 block it hit. Set it to 0 for one block.
 - **`control.disarm.affectsPlayers` is on.** A disarm arrow can knock an item out of another
 player's hand. Turn it off and only mobs are disarmed.
+- **`discovery.sonar.durationTicks` is 200.** A sonar arrow outlines other players through walls,
+for everyone, just as it outlines mobs. Set it to 0 and a sonar arrow reveals nothing.
 
 None of that gets past spawn protection or the world border. A gravity arrow asks the world for
 permission block by block, fire patches are time-boxed and server-owned, and a teleport that would

@@ -202,7 +202,26 @@
       "com.grahambartley.notenougharrows.gametest.BeeSwarmWardenGameTest",
       "com.grahambartley.notenougharrows.gametest.BeeArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.SpawnedDropsGameTest",
-      "com.grahambartley.notenougharrows.gametest.AgricultureArrowsGameTest"
+      "com.grahambartley.notenougharrows.gametest.AgricultureArrowsGameTest",
+      "com.grahambartley.notenougharrows.gametest.DiscoveryArrowsGameTest",
+      "com.grahambartley.notenougharrows.gametest.TorchPlacementGameTest",
+      "com.grahambartley.notenougharrows.gametest.TorchArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeaconServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeaconBeamBlockGameTest",
+      "com.grahambartley.notenougharrows.gametest.BeaconArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.RevealedBlocksGameTest",
+      "com.grahambartley.notenougharrows.gametest.BlockRevealPulseGameTest",
+      "com.grahambartley.notenougharrows.gametest.EntityRevealPulseGameTest",
+      "com.grahambartley.notenougharrows.gametest.RevealPayloadsGameTest",
+      "com.grahambartley.notenougharrows.gametest.RevealAudienceGameTest",
+      "com.grahambartley.notenougharrows.gametest.WatcherServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.WatcherReportGameTest",
+      "com.grahambartley.notenougharrows.gametest.TripwireServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.TripwireArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.TracerServiceGameTest",
+      "com.grahambartley.notenougharrows.gametest.TracerArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.ProspectorArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.SonarArrowEntityGameTest"
     ]
   },
   "mixins": [

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "not_enough_arrows_arrows",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "not-enough-arrows:glow_ink_arrow"
+    },
+    "C": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "id": "not-enough-arrows:tracer_arrow",
+    "count": 8
+  }
+}
