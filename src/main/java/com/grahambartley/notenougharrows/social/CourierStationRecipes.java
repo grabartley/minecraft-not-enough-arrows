@@ -31,16 +31,8 @@ public final class CourierStationRecipes {
     if (occupied.size() == 1 && CourierPayloads.isLoaded(occupied.get(0))) {
       return List.of(unloading(occupied.get(0)));
     }
-    if (occupied.size() == 2) {
-      final ItemStack first = occupied.get(0);
-      final ItemStack arrow = CourierPayloads.isEmptyCourier(first) ? first : occupied.get(1);
-      final ItemStack payload = arrow == first ? occupied.get(1) : first;
-      final int loadable = CourierRefusals.loadableCount(payload, config);
-      if (CourierPayloads.isEmptyCourier(arrow) && loadable > 0) {
-        return List.of(loading(arrow, payload, loadable));
-      }
-    }
-    return List.of();
+    return CourierLoad.of(input.stacks(), config).map(CourierStationRecipes::loading).stream()
+        .toList();
   }
 
   public static List<ItemStack> handedBack(
@@ -64,15 +56,15 @@ public final class CourierStationRecipes {
             CourierPayloads.payloadOf(loaded).orElseThrow()));
   }
 
-  private static RecipeEntry<FletchingRecipe> loading(
-      final ItemStack arrow, final ItemStack payload, final int loadable) {
+  private static RecipeEntry<FletchingRecipe> loading(final CourierLoad load) {
     return new RecipeEntry<>(
         LOAD_ID,
         new FletchingRecipe(
             NO_GROUP,
             List.of(
-                new FletchingIngredient(Ingredient.ofItems(arrow.getItem()), ONE_ARROW),
-                new FletchingIngredient(Ingredient.ofItems(payload.getItem()), loadable)),
-            CourierPayloads.loaded(arrow, payload.copyWithCount(loadable))));
+                new FletchingIngredient(Ingredient.ofItems(load.arrow().getItem()), ONE_ARROW),
+                new FletchingIngredient(
+                    Ingredient.ofItems(load.payload().getItem()), load.count())),
+            load.loaded()));
   }
 }

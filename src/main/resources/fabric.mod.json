@@ -250,6 +250,7 @@
       "com.grahambartley.notenougharrows.gametest.SocialArrowsGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierPayloadGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierPayloadsGameTest",
+      "com.grahambartley.notenougharrows.gametest.CourierLoadGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierRefusalsGameTest",
       "com.grahambartley.notenougharrows.gametest.StackHandoverGameTest",
       "com.grahambartley.notenougharrows.gametest.CourierArrowItemGameTest",

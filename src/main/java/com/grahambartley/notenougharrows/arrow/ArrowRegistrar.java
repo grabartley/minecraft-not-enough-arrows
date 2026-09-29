@@ -22,7 +22,8 @@ public final class ArrowRegistrar {
 
   public <E extends BaseArrowEntity> RegisteredArrow<E> register(
       final ArrowDefinition<E> definition) {
-    return register(definition, (settings, spawnFactory) -> itemFor(definition, settings));
+    return register(
+        definition, (settings, spawnFactory) -> itemFor(definition, settings, spawnFactory));
   }
 
   public <E extends BaseArrowEntity> RegisteredArrow<E> register(
@@ -53,12 +54,13 @@ public final class ArrowRegistrar {
   }
 
   private static BaseArrowItem itemFor(
-      final ArrowDefinition<?> definition, final Item.Settings settings) {
+      final ArrowDefinition<?> definition,
+      final Item.Settings settings,
+      final ArrowEntityFactory spawnFactory) {
     return definition
         .palette()
-        .<BaseArrowItem>map(
-            palette -> new TintedArrowItem(settings, definition.spawnFactory(), palette))
-        .orElseGet(() -> new BaseArrowItem(settings, definition.spawnFactory()));
+        .<BaseArrowItem>map(palette -> new TintedArrowItem(settings, spawnFactory, palette))
+        .orElseGet(() -> new BaseArrowItem(settings, spawnFactory));
   }
 
   public ArrowCatalog catalog() {

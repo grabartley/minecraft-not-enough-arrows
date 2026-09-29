@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -137,5 +138,26 @@ class ConfigValuesTest {
 
   private static JsonObject object(final String json) {
     return JsonParser.parseString(json).getAsJsonObject();
+  }
+
+  @Test
+  void findsAnIdentifierRegardlessOfCaseOrPadding() {
+    assertTrue(ConfigValues.containsIdentifier(List.of("minecraft:stone"), "  Minecraft:STONE "));
+  }
+
+  @Test
+  void findsAVanillaIdentifierListedWithoutItsNamespace() {
+    assertTrue(ConfigValues.containsIdentifier(List.of("stone"), "minecraft:stone"));
+  }
+
+  @Test
+  void doesNotStripAModdedNamespace() {
+    assertFalse(ConfigValues.containsIdentifier(List.of("stone"), "not-enough-arrows:stone"));
+  }
+
+  @Test
+  void findsNothingForAnUnlistedOrNullIdentifier() {
+    assertFalse(ConfigValues.containsIdentifier(List.of("minecraft:stone"), "minecraft:dirt"));
+    assertFalse(ConfigValues.containsIdentifier(List.of("minecraft:stone"), null));
   }
 }

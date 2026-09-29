@@ -93,7 +93,7 @@ public class CourierArrowEntity extends BaseArrowEntity {
       final Vec3d at) {
     final CourierArrowConfig config = ServerConfigService.get().social().courier();
     if (CourierRefusals.refusesToDeliver(payload, config)) {
-      returnToShooter(world, CourierPayloads.loaded(getDefaultItemStack(), payload), at);
+      returnToShooter(world, CourierPayloads.loaded(getItemStack(), payload), at);
       return;
     }
     if (struck instanceof PlayerEntity recipient && recipient.isAlive()) {

@@ -142,8 +142,8 @@ stack to load it, craft it on its own to take the stack back out, and the toolti
 carrying. A player it hits gets the stack, a full inventory finds it at their feet, and anywhere
 else it lands where the arrow does. It never hurts anyone, and it reaches a friend even with PvP off.
 
-The **snow golem arrow** builds an ordinary snow golem where it lands, which melts away after a
-while. The **magnet arrow** pulls the loose items and experience orbs around where it lands back
+The **snow golem arrow** builds a snow golem where it lands, without its pumpkin, which melts
+away after a while. The **magnet arrow** pulls the loose items and experience orbs around where it lands back
 toward you, where you pick them up the ordinary way.
 
 ## The full set

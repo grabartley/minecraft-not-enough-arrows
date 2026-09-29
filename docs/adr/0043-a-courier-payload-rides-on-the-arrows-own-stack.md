@@ -17,7 +17,7 @@ A fourth surprise is in the projectile itself. Vanilla throws away an arrow's hi
 
 **The payload is the mod's own data component, `not-enough-arrows:courier_payload`, on the courier arrow's item stack.** It travels into the entity with the stack, is saved with the entity's chunk, and comes back out of it. The entity takes the payload off its stack before it acts on it, on every path, so whatever happens next cannot see it twice. Its `remove` override releases a payload still aboard when the arrow is destroyed or discarded for any reason, and leaves it alone when the arrow is only unloaded or changes dimension, because those save or copy the stack.
 
-A payload may not hold a courier arrow anywhere inside it, in a shulker box or a bundle, so couriers and containers can never nest without end.
+A payload may not hold a courier arrow anywhere inside it, in a shulker box, a bundle or a charged crossbow, so couriers and containers can never nest without end.
 
 Loading takes the whole stack. A mixin on the crafting result slot asks the loading recipe how many to take from the payload slot instead of one, so taking a loaded arrow leaves nothing behind, and it hands back no recipe remainder, so a loaded bucket leaves no empty bucket in the grid. The crafter is not offered the loading recipe at all, since it has no such hook and would load a stack while spending one item; it may still unload, which takes one arrow and hands back the rest exactly. The station builds its load and unload offers from what is in its grid, because its recipes are counted already.
 

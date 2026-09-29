@@ -25,11 +25,13 @@ public final class SnowGolemBuildGameTest implements FabricGameTest {
   private static final int NOTICE_TICKS = 100;
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
-  public void buildsAnOrdinarySnowGolemWithItsPumpkin(TestContext context) {
+  public void buildsAnOrdinarySnowGolemWithNoPumpkinToShearOff(TestContext context) {
     final SnowGolemEntity golem = build(context).orElseThrow();
 
     context.assertTrue(golem.isAlive(), "The golem should stand");
-    context.assertTrue(golem.hasPumpkin(), "with its pumpkin, as a built golem has");
+    context.assertFalse(
+        golem.isShearable(),
+        "with no pumpkin, so a twelve-arrow craft cannot shear back twelve pumpkins");
     context.assertFalse(golem.isPersistent(), "and nothing protecting it from despawn rules");
     context.complete();
   }

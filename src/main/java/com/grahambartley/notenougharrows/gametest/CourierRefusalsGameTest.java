@@ -6,6 +6,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BundleContentsComponent;
+import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -113,5 +114,36 @@ public final class CourierRefusalsGameTest implements FabricGameTest {
 
     context.assertFalse(CourierRefusals.refusesToCarry(box, DEFAULTS), "A shulker box of diamonds");
     context.complete();
+  }
+
+  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void refusesACrossbowChargedWithACourierArrow(TestContext context) {
+    final ItemStack crossbow = chargedWithACourier();
+    final ItemStack box = new ItemStack(Items.SHULKER_BOX);
+    box.set(DataComponentTypes.CONTAINER, ContainerComponent.fromStacks(List.of(crossbow)));
+
+    context.assertTrue(CourierRefusals.refusesToCarry(crossbow, DEFAULTS), "A charged crossbow");
+    context.assertTrue(
+        CourierRefusals.refusesToCarry(box, DEFAULTS), "A shulker box holding that crossbow");
+    context.complete();
+  }
+
+  @GameTest(templateName = EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void carriesACrossbowChargedWithAPlainArrow(TestContext context) {
+    final ItemStack crossbow = new ItemStack(Items.CROSSBOW);
+    crossbow.set(
+        DataComponentTypes.CHARGED_PROJECTILES,
+        ChargedProjectilesComponent.of(new ItemStack(Items.ARROW)));
+
+    context.assertFalse(CourierRefusals.refusesToCarry(crossbow, DEFAULTS), "A loaded crossbow");
+    context.complete();
+  }
+
+  private static ItemStack chargedWithACourier() {
+    final ItemStack crossbow = new ItemStack(Items.CROSSBOW);
+    crossbow.set(
+        DataComponentTypes.CHARGED_PROJECTILES,
+        ChargedProjectilesComponent.of(SocialTestSupport.loadedCourier()));
+    return crossbow;
   }
 }

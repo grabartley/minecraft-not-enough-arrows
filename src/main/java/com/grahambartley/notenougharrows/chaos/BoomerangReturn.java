@@ -33,13 +33,14 @@ public final class BoomerangReturn {
       StackHandover.drop(world, whereItIs, returning);
       return Outcome.DROPPED_WHERE_IT_FELL;
     }
-    if (shooter instanceof PlayerEntity player) {
-      player.getInventory().insertStack(returning);
-      if (returning.isEmpty()) {
-        return Outcome.GRANTED;
-      }
+    final ItemStack left =
+        shooter instanceof PlayerEntity player
+            ? StackHandover.grant(player.getInventory(), returning)
+            : returning;
+    if (left.isEmpty()) {
+      return Outcome.GRANTED;
     }
-    StackHandover.drop(world, shooter.getPos(), returning);
+    StackHandover.drop(world, shooter.getPos(), left);
     return Outcome.DROPPED_AT_FEET;
   }
 

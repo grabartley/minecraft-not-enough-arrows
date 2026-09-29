@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.config.CourierArrowConfig;
 import java.util.Objects;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.BundleContentsComponent;
+import net.minecraft.component.type.ChargedProjectilesComponent;
 import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -29,7 +30,12 @@ public final class CourierRefusals {
       return true;
     }
     final BundleContentsComponent bundle = stack.get(DataComponentTypes.BUNDLE_CONTENTS);
-    return bundle != null && bundle.stream().anyMatch(CourierRefusals::holdsACourierArrow);
+    if (bundle != null && bundle.stream().anyMatch(CourierRefusals::holdsACourierArrow)) {
+      return true;
+    }
+    final ChargedProjectilesComponent charged = stack.get(DataComponentTypes.CHARGED_PROJECTILES);
+    return charged != null
+        && charged.getProjectiles().stream().anyMatch(CourierRefusals::holdsACourierArrow);
   }
 
   public static boolean refusesToDeliver(final ItemStack payload, final CourierArrowConfig config) {

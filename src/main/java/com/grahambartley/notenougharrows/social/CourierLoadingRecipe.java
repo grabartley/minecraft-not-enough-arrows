@@ -3,8 +3,6 @@ package com.grahambartley.notenougharrows.social;
 import com.grahambartley.notenougharrows.ModRecipes;
 import com.grahambartley.notenougharrows.config.CourierArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
-import java.util.List;
-import java.util.Optional;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialCraftingRecipe;
@@ -15,7 +13,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
 public class CourierLoadingRecipe extends SpecialCraftingRecipe {
-  private static final int LOADING_STACKS = 2;
   private static final int ONE_ARROW = 1;
 
   public CourierLoadingRecipe(final CraftingRecipeCategory category) {
@@ -24,18 +21,14 @@ public class CourierLoadingRecipe extends SpecialCraftingRecipe {
 
   @Override
   public boolean matches(final CraftingRecipeInput input, final World world) {
-    return loading(input).isPresent();
+    return CourierLoad.of(input.getStacks(), config()).isPresent();
   }
 
   @Override
   public ItemStack craft(
       final CraftingRecipeInput input, final RegistryWrapper.WrapperLookup registries) {
-    return loading(input)
-        .map(
-            loading ->
-                CourierPayloads.loaded(
-                    loading.arrow(),
-                    loading.payload().copyWithCount(consumedFrom(loading.payload()))))
+    return CourierLoad.of(input.getStacks(), config())
+        .map(CourierLoad::loaded)
         .orElse(ItemStack.EMPTY);
   }
 
@@ -52,7 +45,7 @@ public class CourierLoadingRecipe extends SpecialCraftingRecipe {
 
   @Override
   public boolean fits(final int width, final int height) {
-    return width * height >= LOADING_STACKS;
+    return width * height >= 2;
   }
 
   @Override
@@ -60,25 +53,7 @@ public class CourierLoadingRecipe extends SpecialCraftingRecipe {
     return ModRecipes.COURIER_LOADING_SERIALIZER;
   }
 
-  private Optional<Loading> loading(final CraftingRecipeInput input) {
-    final List<ItemStack> stacks = input.getStacks().stream().filter(it -> !it.isEmpty()).toList();
-    if (stacks.size() != LOADING_STACKS) {
-      return Optional.empty();
-    }
-    final ItemStack first = stacks.get(0);
-    final ItemStack second = stacks.get(1);
-    final ItemStack arrow = CourierPayloads.isEmptyCourier(first) ? first : second;
-    final ItemStack payload = arrow == first ? second : first;
-    if (!CourierPayloads.isEmptyCourier(arrow)
-        || CourierRefusals.refusesToCarry(payload, config())) {
-      return Optional.empty();
-    }
-    return Optional.of(new Loading(arrow, payload));
-  }
-
   private static CourierArrowConfig config() {
     return ServerConfigService.get().social().courier();
   }
-
-  private record Loading(ItemStack arrow, ItemStack payload) {}
 }

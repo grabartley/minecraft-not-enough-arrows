@@ -31,6 +31,7 @@ public final class SnowGolemBuild {
       return Optional.empty();
     }
     golem.refreshPositionAndAngles(at.x, at.y, at.z, world.random.nextFloat() * 360f, 0f);
+    golem.setHasPumpkin(false);
     SnowGolemMelt.schedule(golem, world.getTime() + lifetimeTicks);
     return world.spawnEntity(golem) ? Optional.of(golem) : Optional.empty();
   }
