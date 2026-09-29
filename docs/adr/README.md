@@ -50,6 +50,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0040](0040-a-vanilla-client-is-sent-no-recipe-of-this-mod.md) | A vanilla client is sent no recipe of this mod |
 | [0041](0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) | Reveals are drawn by the client from what the server found once |
 | [0042](0042-a-disguise-is-drawn-rather-than-swapped.md) | A disguise is drawn rather than swapped |
+| [0043](0043-a-courier-payload-rides-on-the-arrows-own-stack.md) | A courier payload rides on the arrow's own stack |
 
 ## Writing A New Record
 

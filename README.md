@@ -1,6 +1,6 @@
 <h1 align="center">Not Enough Arrows</h1>
 
-<p align="center"><b>Sixty new arrows for Minecraft 1.21.1 on Fabric.</b><br>
+<p align="center"><b>Sixty-three new arrows for Minecraft 1.21.1 on Fabric.</b><br>
 Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then teleport into it.</p>
 
 <p align="center">
@@ -135,6 +135,17 @@ The **stink arrow** leaves a cloud that makes players queasy and that mobs refus
 arrow** turns a hostile mob into a farm animal for a while; it wanders about, cannot hurt anyone,
 and changes back exactly as it was. It never touches players, villagers, pets or bosses.
 
+## Do something for someone else
+
+The **courier arrow** carries one stack to whoever you hit. Craft an empty courier arrow with a
+stack to load it, craft it on its own to take the stack back out, and the tooltip says what it is
+carrying. A player it hits gets the stack, a full inventory finds it at their feet, and anywhere
+else it lands where the arrow does. It never hurts anyone, and it reaches a friend even with PvP off.
+
+The **snow golem arrow** builds a snow golem where it lands, without its pumpkin, which melts
+away after a while. The **magnet arrow** pulls the loose items and experience orbs around where it lands back
+toward you, where you pick them up the ordinary way.
+
 ## The full set
 
 | | Arrow | What it does | Craft it from |
@@ -199,6 +210,9 @@ and changes back exactly as it was. It never touches players, villagers, pets or
 | 🤢 | **Stink** | A cloud that makes players sick and mobs keep out of | Rotten flesh |
 | 🪃 | **Boomerang** | Hits, then flies back to your inventory | Chorus fruit |
 | 🐑 | **Polymorph** | Turns a hostile mob into a farm animal for a while | Sculk catalyst |
+| 📦 | **Courier** | Carries one stack to the player or place it hits | Ender chest |
+| ⛄ | **Snow golem** | Builds a snow golem that melts after a while | Carved pumpkin |
+| 🧲 | **Magnet** | Pulls loose items and orbs back to you | Iron block |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
@@ -236,8 +250,7 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`. `social` holds the settings for arrows that have not landed yet, so it
-exists ahead of the arrows it will control.
+`fletching`, and `sound`.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:

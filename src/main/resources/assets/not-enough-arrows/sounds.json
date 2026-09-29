@@ -363,5 +363,32 @@
         "type": "event"
       }
     ]
+  },
+  "courier_arrow_deliver": {
+    "subtitle": "subtitles.not-enough-arrows.courier_arrow_deliver",
+    "sounds": [
+      {
+        "name": "minecraft:block.ender_chest.close",
+        "type": "event"
+      }
+    ]
+  },
+  "snow_golem_arrow_melt": {
+    "subtitle": "subtitles.not-enough-arrows.snow_golem_arrow_melt",
+    "sounds": [
+      {
+        "name": "minecraft:block.snow.break",
+        "type": "event"
+      }
+    ]
+  },
+  "magnet_arrow_pull": {
+    "subtitle": "subtitles.not-enough-arrows.magnet_arrow_pull",
+    "sounds": [
+      {
+        "name": "minecraft:item.lodestone_compass.lock",
+        "type": "event"
+      }
+    ]
   }
 }

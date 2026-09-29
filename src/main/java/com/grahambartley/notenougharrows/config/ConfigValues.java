@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ConfigValues {
+  private static final String VANILLA_NAMESPACE = "minecraft:";
   public static final int MAX_IDENTIFIER_LENGTH = 64;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigValues.class);
@@ -137,6 +138,16 @@ public final class ConfigValues {
       normalized.add(trimmed);
     }
     return List.copyOf(normalized);
+  }
+
+  public static boolean containsIdentifier(final List<String> identifiers, final String queried) {
+    if (queried == null) {
+      return false;
+    }
+    final String normalized = queried.trim().toLowerCase(Locale.ROOT);
+    return identifiers.contains(normalized)
+        || (normalized.startsWith(VANILLA_NAMESPACE)
+            && identifiers.contains(normalized.substring(VANILLA_NAMESPACE.length())));
   }
 
   public static JsonArray toJsonArray(final List<String> values) {

@@ -1,6 +1,6 @@
 package com.grahambartley.notenougharrows.chaos;
 
-import net.minecraft.entity.ItemEntity;
+import com.grahambartley.notenougharrows.world.StackHandover;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -30,16 +30,17 @@ public final class BoomerangReturn {
     }
     final ItemStack returning = arrow.copy();
     if (!isHome(world, shooter)) {
-      drop(world, whereItIs, returning);
+      StackHandover.drop(world, whereItIs, returning);
       return Outcome.DROPPED_WHERE_IT_FELL;
     }
-    if (shooter instanceof PlayerEntity player) {
-      player.getInventory().insertStack(returning);
-      if (returning.isEmpty()) {
-        return Outcome.GRANTED;
-      }
+    final ItemStack left =
+        shooter instanceof PlayerEntity player
+            ? StackHandover.grant(player.getInventory(), returning)
+            : returning;
+    if (left.isEmpty()) {
+      return Outcome.GRANTED;
     }
-    drop(world, shooter.getPos(), returning);
+    StackHandover.drop(world, shooter.getPos(), left);
     return Outcome.DROPPED_AT_FEET;
   }
 
@@ -48,11 +49,5 @@ public final class BoomerangReturn {
         && shooter.isAlive()
         && !shooter.isRemoved()
         && shooter.getWorld() == world;
-  }
-
-  private static void drop(final ServerWorld world, final Vec3d at, final ItemStack stack) {
-    final ItemEntity dropped = new ItemEntity(world, at.x, at.y, at.z, stack, 0.0, 0.0, 0.0);
-    dropped.setToDefaultPickupDelay();
-    world.spawnEntity(dropped);
   }
 }

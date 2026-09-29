@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -21,6 +22,14 @@ public final class ArrowRegistrar {
 
   public <E extends BaseArrowEntity> RegisteredArrow<E> register(
       final ArrowDefinition<E> definition) {
+    return register(
+        definition, (settings, spawnFactory) -> itemFor(definition, settings, spawnFactory));
+  }
+
+  public <E extends BaseArrowEntity> RegisteredArrow<E> register(
+      final ArrowDefinition<E> definition,
+      final BiFunction<Item.Settings, ArrowEntityFactory, BaseArrowItem> itemFactory) {
+    Objects.requireNonNull(itemFactory, "itemFactory");
     catalog.add(definition);
 
     final Identifier id = definition.id();
@@ -33,7 +42,9 @@ public final class ArrowRegistrar {
                 .maxTrackingRange(definition.maxTrackingRange())
                 .trackingTickInterval(definition.trackingTickInterval())
                 .build(id.toString()));
-    final BaseArrowItem item = Registry.register(Registries.ITEM, id, itemFor(definition));
+    final BaseArrowItem item =
+        Registry.register(
+            Registries.ITEM, id, itemFactory.apply(new Item.Settings(), definition.spawnFactory()));
 
     DispenserBlock.registerProjectileBehavior(item);
 
@@ -42,12 +53,14 @@ public final class ArrowRegistrar {
     return registration;
   }
 
-  private static BaseArrowItem itemFor(final ArrowDefinition<?> definition) {
+  private static BaseArrowItem itemFor(
+      final ArrowDefinition<?> definition,
+      final Item.Settings settings,
+      final ArrowEntityFactory spawnFactory) {
     return definition
         .palette()
-        .<BaseArrowItem>map(
-            palette -> new TintedArrowItem(new Item.Settings(), definition.spawnFactory(), palette))
-        .orElseGet(() -> new BaseArrowItem(new Item.Settings(), definition.spawnFactory()));
+        .<BaseArrowItem>map(palette -> new TintedArrowItem(settings, spawnFactory, palette))
+        .orElseGet(() -> new BaseArrowItem(settings, spawnFactory));
   }
 
   public ArrowCatalog catalog() {

@@ -291,6 +291,7 @@ public final class ModArrows {
     TraversalArrows.register();
     DiscoveryArrows.register();
     ChaosArrows.register();
+    SocialArrows.register();
   }
 
   static ArrowRegistrar registrar() {

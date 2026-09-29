@@ -1,6 +1,8 @@
 package com.grahambartley.notenougharrows.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -9,6 +11,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class CourierArrowConfigTest {
 
@@ -118,5 +121,41 @@ class CourierArrowConfigTest {
             .withUndeliverable(List.of("minecraft:stone"));
 
     assertEquals(new CourierArrowConfig(63, List.of("minecraft:stone")), updated);
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"minecraft:diamond", "Minecraft:Diamond", "  MINECRAFT:DIAMOND  "})
+  void refusesAnUndeliverableItemRegardlessOfCaseOrPadding(final String queried) {
+    assertTrue(undeliverable("minecraft:diamond").isUndeliverable(queried));
+  }
+
+  @Test
+  void refusesAVanillaItemListedWithoutItsNamespace() {
+    assertTrue(undeliverable("diamond").isUndeliverable("minecraft:diamond"));
+  }
+
+  @Test
+  void doesNotRefuseAModdedItemSharingAVanillaItemsPath() {
+    assertFalse(undeliverable("diamond").isUndeliverable("not-enough-arrows:diamond"));
+  }
+
+  @Test
+  void doesNotRefuseAnItemThatIsNotListed() {
+    assertFalse(undeliverable("minecraft:diamond").isUndeliverable("minecraft:emerald"));
+  }
+
+  @Test
+  void treatsANullItemAsDeliverable() {
+    assertFalse(undeliverable("minecraft:diamond").isUndeliverable(null));
+  }
+
+  @ParameterizedTest
+  @CsvSource({"16, 15, false", "16, 16, false", "16, 17, true"})
+  void exceedsThePayloadOnlyAboveTheCap(final int cap, final int count, final boolean exceeds) {
+    assertEquals(exceeds, CourierArrowConfig.defaults().withMaxPayload(cap).exceedsPayload(count));
+  }
+
+  private static CourierArrowConfig undeliverable(final String entry) {
+    return CourierArrowConfig.defaults().withUndeliverable(List.of(entry));
   }
 }

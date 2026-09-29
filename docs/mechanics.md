@@ -437,6 +437,28 @@ Six arrows that exist for the fun of it. Each has its own switch under `chaos`, 
 
 Every setting is read fresh on impact. The chicken, puffer, stink, boomerang and polymorph arrows play their own sounds, listed under Sounds; the party arrow plays its disc. All six item and in-flight sprites are placeholders, the paint arrow's drawing with a recoloured head, until the chaos art is drawn. [ADR 0042](adr/0042-a-disguise-is-drawn-rather-than-swapped.md) covers why a disguise is drawn by the client rather than a swap of one mob for another.
 
+## Social Arrows
+
+Three arrows aimed at someone or something other than what the shooter is holding. Their settings live under `social` and are read fresh on impact (TOGETHER-12).
+
+| Arrow | Crafted around | On a block | On a creature | Spent |
+|---|---|---|---|---|
+| Courier | An ender chest | Drops its payload in front of the face it struck | Hands its payload to a struck player, or drops it at any other creature's feet, without hurting either | Yes, when loaded. An empty courier arrow hurts nothing either: it embeds in a block, or glances off a creature, to be picked back up |
+| Snow golem | A carved pumpkin | Builds a snow golem in the space in front of the face it struck, or beneath a ceiling it struck | Builds the golem where it struck, without hurting it | Only if a golem was built |
+| Magnet | An iron block | Pulls loose items and experience orbs within `social.magnet.radius` toward the shooter | The same, around where it struck, without hurting or moving the creature | Yes |
+
+| Rule | Behaviour |
+|---|---|
+| Loading | A courier arrow is crafted empty. An empty courier arrow and one stack, at a crafting table or the station, make one loaded arrow carrying the whole stack, up to `social.courier.maxPayload`; anything over the cap stays where it was. A stack of empty arrows loads one at a time. The payload is a data component on the arrow's stack, so it is shown in the tooltip, a loaded arrow glints, and identical loaded arrows stack (TOGETHER-6, CRAFT-10). A crafter never loads one, because it takes a single item per slot and would duplicate the rest. [ADR 0043](adr/0043-a-courier-payload-rides-on-the-arrows-own-stack.md) covers why |
+| Unloading | A loaded arrow on its own gives back its stack and one empty arrow. At a crafting table the empty arrow stays in its slot, or goes to the player's inventory while other loaded arrows still fill that slot. A crafter ejects it beside the payload. The station puts it back in the slot the loaded arrow left, or hands it to the player while that slot is still full, so a stack of loaded arrows can be unloaded one after another |
+| Refusals | A courier arrow will not carry another courier arrow, loaded or empty, nor a shulker box, bundle or charged crossbow with a courier arrow anywhere inside it, so payloads can never nest without end, nor anything in `social.courier.undeliverable` (TOGETHER-4). The list is checked again on impact, along with the cap, so a payload made undeliverable after loading is not delivered: the arrow, still loaded, goes back to the shooter's inventory or their feet, or drops where it struck if there is no shooter |
+| Delivery | A struck player gets as much of the stack as fits and the rest at their feet, never part of it lost, including a creative player whose inventory vanilla would otherwise let swallow it (TOGETHER-5). A loaded courier arrow reaches a player even when the server has PvP off or the two are teammates without friendly fire, because it does no damage |
+| Every other path | Dropped where the arrow was when it despawned, was killed, or was discarded. A payload lost to the void goes back to its shooter, even one in another dimension, or falls with no shooter to return it to. A chunk unload or a restart mid-flight keeps the payload aboard, because it is saved with the arrow. A copy fired by multishot, which spends no arrow, carries nothing, so only one of three arrows delivers; a creative shooter's arrows all carry theirs (TOGETHER-2, TOGETHER-3, SAFE-9) |
+| Snow golem | An ordinary vanilla snow golem, owned by nobody, built without its pumpkin so a twelve-arrow craft cannot be sheared back into twelve pumpkins. It fights and dies as any snow golem does. It melts after `social.snowGolem.lifetimeTicks`: its melting time is saved on the golem, so one that was unloaded past its time melts as soon as it loads, and a golem built by hand never melts. It is refused, and the arrow embeds to be picked back up, where a player could not build one: beyond the world border, outside the build limit, without two blocks of room, for a shooter in adventure mode, and inside spawn protection for anyone the server would not let build there (TOGETHER-7, TOGETHER-8) |
+| Magnet | Moves item entities and experience orbs only, never a creature, a vehicle or an arrow (TOGETHER-9). It sets their speed toward the shooter each tick for up to five seconds and stops each one dead when it arrives, so the shooter picks it up under vanilla's rules and a full inventory leaves it at their feet rather than flying past (TOGETHER-10). A pull is held in memory only, so a restart leaves pulled items where they were. A dispensed magnet arrow, with no shooter, pulls nothing (TOGETHER-11) |
+
+The courier, snow golem and magnet arrows play their own sounds, listed under Sounds. All three item and in-flight sprites are placeholders, the chicken arrow's drawing with a recoloured head, until the social art is drawn; the loaded courier arrow is told apart by its glint until then.
+
 ## Ricochet Arrow
 
 The ricochet arrow glances off the surfaces it hits instead of embedding in them, so a shot can be banked around a corner or off a ceiling into somewhere a straight line does not reach. It is the trick-shot arrow, and it is only that if the bounce is predictable enough to aim with, which is what [ADR 0020](adr/0020-a-bounce-is-a-deflection-rather-than-a-landing.md) is about.
@@ -624,6 +646,9 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | `boomerang_arrow_return` | `item.trident.return` | A boomerang arrow arriving home | Yes: a thrown weapon coming back |
 | `polymorph_arrow_change` | `entity.evoker.prepare_wololo` | A polymorph arrow changing a mob | Yes: an evoker's spell that changes a creature |
 | `polymorph_arrow_restore` | `block.sculk_catalyst.bloom` | A disguised mob changing back when its time is up | Under review: vanilla means a sculk catalyst blooming |
+| `courier_arrow_deliver` | `block.ender_chest.close` | A courier arrow handing over or dropping its payload | Yes: an ender chest closing on what it carried |
+| `snow_golem_arrow_melt` | `block.snow.break` | A snow golem melting when its time is up | Yes: snow breaking |
+| `magnet_arrow_pull` | `item.lodestone_compass.lock` | A magnet arrow catching loose items | Under review: vanilla means a compass locking to a lodestone |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
 This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
@@ -694,6 +719,9 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/stink_arrow.png` | The stink arrow's item sprite, a placeholder |
 | `textures/item/boomerang_arrow.png` | The boomerang arrow's item sprite, a placeholder |
 | `textures/item/polymorph_arrow.png` | The polymorph arrow's item sprite, a placeholder |
+| `textures/item/courier_arrow.png` | The courier arrow's item sprite, a placeholder |
+| `textures/item/snow_golem_arrow.png` | The snow golem arrow's item sprite, a placeholder |
+| `textures/item/magnet_arrow.png` | The magnet arrow's item sprite, a placeholder |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/block/beacon_beam.png` | The core of the beam a beacon arrow raises, animated to scroll upward |
 | `textures/block/beacon_beam_glow.png` | The fainter glow around that core, animated the same way |
@@ -753,6 +781,9 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/stink_arrow.png` | The stink arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/boomerang_arrow.png` | The boomerang arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/polymorph_arrow.png` | The polymorph arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/courier_arrow.png` | The courier arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/snow_golem_arrow.png` | The snow golem arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/magnet_arrow.png` | The magnet arrow in flight and planted in a block, a placeholder |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
@@ -912,6 +943,7 @@ The station is the screen handler behind the fletching table interface: nine inp
 | Taking the result | The withdrawal from every input slot is planned in full before a single stack is touched, so an interrupted take can neither duplicate nor destroy items. Once the inputs are gone the result is recomputed, which is why two takes against one set of inputs yield one result. Shift-clicking repeats while the inputs allow it, and any part of a result the player has no room for drops at their feet |
 | Shift-clicking | Moves stacks between the station and the inventory, falling back from hotbar to main inventory and back the way a crafting table does when the grid is full |
 | Closing the screen | Every item left in an input slot goes back to the player, or drops at their feet if the inventory is full. Nothing is destroyed |
+| Courier arrows | An empty courier arrow and one stack are offered as a load, and a loaded arrow on its own as an unload, built from what is in the grid rather than from a recipe file. Loading withdraws one arrow and the whole stack up to the cap. A bucket or bottle rides along full, with no empty container left behind. Unloading hands the empty arrow back into the slot the loaded one left, or to the player while other loaded arrows still fill it |
 
 `fletching.stationEnabled` controls whether the station is reachable at all, so a server that wants the vanilla fletching table to keep doing nothing can have it. Crafting table recipes are untouched either way, per [ADR 0002](adr/0002-crafting-table-always-works.md).
 
