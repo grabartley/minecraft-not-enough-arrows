@@ -21,21 +21,23 @@ import net.minecraft.util.math.BlockPos;
 final class DiscoveryTestSupport {
   static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   static final String ARENA = "not-enough-arrows:open_arena";
-
-  private DiscoveryTestSupport() {}
-
   static final int PIERCING_LANE_Z = 8;
-  static final BlockPos PIERCING_SHOOTER = new BlockPos(2, 3, PIERCING_LANE_Z);
-  static final BlockPos PIERCED = new BlockPos(6, 3, PIERCING_LANE_Z);
+  static final int PIERCING_FLOOR_Y = 3;
+  static final BlockPos PIERCING_SHOOTER = new BlockPos(2, PIERCING_FLOOR_Y, PIERCING_LANE_Z);
+  static final BlockPos PIERCED = new BlockPos(6, PIERCING_FLOOR_Y, PIERCING_LANE_Z);
   static final int PIERCING_WALL_X = 20;
 
+  private static final int PIERCING_WALL_HEIGHT = 3;
   private static final float EASTWARD_YAW = 270.0f;
   private static final float LEVEL_PITCH = 0.0f;
   private static final float BOW_SPEED = 3.0f;
 
+  private DiscoveryTestSupport() {}
+
   static ZombieEntity piercingRange(final TestContext context) {
-    for (int up = 0; up < 3; up++) {
-      context.setBlockState(new BlockPos(PIERCING_WALL_X, 3 + up, PIERCING_LANE_Z), Blocks.STONE);
+    for (int up = 0; up < PIERCING_WALL_HEIGHT; up++) {
+      context.setBlockState(
+          new BlockPos(PIERCING_WALL_X, PIERCING_FLOOR_Y + up, PIERCING_LANE_Z), Blocks.STONE);
     }
     final ZombieEntity zombie = context.spawnEntity(EntityType.ZOMBIE, PIERCED);
     zombie.setAiDisabled(true);

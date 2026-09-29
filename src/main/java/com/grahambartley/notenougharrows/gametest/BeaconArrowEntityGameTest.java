@@ -5,6 +5,7 @@ import com.grahambartley.notenougharrows.ModBlocks;
 import com.grahambartley.notenougharrows.config.ServerConfigHolder;
 import com.grahambartley.notenougharrows.entity.BeaconArrowEntity;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
+import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -63,15 +64,21 @@ public final class BeaconArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               furthest[0] > wall - 2,
               "The arrow should have pierced the zombie and reached the wall");
-          final long beams =
+          final List<BlockPos> bases =
               BlockPos.stream(context.getTestBox())
                   .filter(pos -> context.getWorld().getBlockState(pos).isOf(ModBlocks.BEACON_BEAM))
                   .filter(
                       pos ->
-                          context.getWorld().getBlockState(pos.down()).isOf(ModBlocks.BEACON_BEAM)
-                              == false)
-                  .count();
-          context.assertEquals(1L, beams, "Beams raised by one piercing arrow");
+                          !context.getWorld().getBlockState(pos.down()).isOf(ModBlocks.BEACON_BEAM))
+                  .map(BlockPos::toImmutable)
+                  .toList();
+          context.assertEquals(1, bases.size(), "Beams raised by one piercing arrow");
+          context.assertTrue(
+              Math.abs(
+                      bases.getFirst().getX()
+                          - context.getAbsolutePos(DiscoveryTestSupport.PIERCED).getX())
+                  <= 1,
+              "The one beam rose where the arrow hit the zombie, not at the wall: " + bases);
           context.assertTrue(arrow.isRemoved(), "A beacon arrow that raised its beam is spent");
           context.complete();
         });
