@@ -739,13 +739,15 @@ Server settings are edited on a draft and sent to the server when the screen clo
 | Multiplayer, not an operator | Read-only, with the reason shown under the title | Editable |
 | Title screen, no world joined | Read-only, showing defaults | Editable |
 
-The server checks operator permission again when the update arrives, so a client that ignores the read-only state changes nothing. A refused update is answered with a fresh sync, which puts the client's view back on the server's values.
+The server checks operator permission again when the update arrives, so a client that ignores the read-only state changes nothing. A refused update is answered with a fresh sync, which puts the client's view back on the server's values. An update the server cannot decode, or one missing any settings family, is refused the same way, with its own message, rather than being read as a request for defaults.
 
 ## Fletching Recipes
 
 The fletching table station has its own recipe type, `not-enough-arrows:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
 
 Station recipes stay out of the vanilla recipe book. The book only understands the recipe types vanilla ships, and a modded type reaching it produces a warning naming this mod once per recipe on every world join. The station is not the crafting table and its recipes were never craftable from the book, so they are declared as ignored by it, which is both the honest description and the thing that keeps a clean join log clean. Both recipe viewers read the recipes directly and are unaffected, and the crafting table route is untouched.
+
+A client without this mod is sent the recipe sync with every recipe of this mod left out, station and crafting table alike, because each one names a serializer or an item that client has no index for. [ADR 0040](adr/0040-a-vanilla-client-is-sent-no-recipe-of-this-mod.md) covers why.
 
 A recipe is an unordered list of ingredients, each with the count it demands, and one result carrying its own count:
 

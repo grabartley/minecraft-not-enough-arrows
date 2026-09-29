@@ -84,6 +84,7 @@
   "config.not-enough-arrows.update.applied": "Not Enough Arrows server settings updated",
   "config.not-enough-arrows.update.rejected": "Only operators can change Not Enough Arrows server settings",
   "config.not-enough-arrows.update.failed": "Not Enough Arrows could not write the server config, no changes were saved",
+  "config.not-enough-arrows.update.malformed": "Not Enough Arrows could not read that settings update, no changes were saved",
   "config.not-enough-arrows.section.explosive": "Explosive Arrows",
   "config.not-enough-arrows.section.explosive.description": "Fuses, blast power, and the fires a blast leaves behind.",
   "config.not-enough-arrows.section.grapple": "Grapple and Rope Arrows",
