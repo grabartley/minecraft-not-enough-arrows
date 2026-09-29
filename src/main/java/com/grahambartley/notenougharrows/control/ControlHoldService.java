@@ -151,6 +151,7 @@ public final class ControlHoldService {
     TRACKERS.clear();
     CORNERED.clear();
     BatFlight.forgetAll();
+    SlimeSteering.forgetAll();
   }
 
   private static void tick(final ServerWorld world) {
@@ -205,11 +206,11 @@ public final class ControlHoldService {
                 || MobSteering.hasWanderedOffCourse(mob, fleeDestination(mob, hold))
             ? steer(mob, hold.anchor(), hold.steering())
             : MobSteering.isUnderway(mob);
-    if (hasSomewhereToRun) {
+    if (MobSteering.isCornered(hasSomewhereToRun, MobSteering.canPlanFromHere(mob))) {
+      CORNERED.add(mob.getUuid());
+    } else {
       CORNERED.remove(mob.getUuid());
       MobAggression.aim(mob, null);
-    } else {
-      CORNERED.add(mob.getUuid());
     }
   }
 

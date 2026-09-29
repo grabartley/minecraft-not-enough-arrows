@@ -1,5 +1,8 @@
 package com.grahambartley.notenougharrows.control;
 
+import net.minecraft.entity.ai.brain.MemoryModuleState;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
+import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -33,6 +36,7 @@ public final class MobSteering {
     rouse(mob);
     if (mob instanceof SlimeEntity slime
         && slime.getMoveControl() instanceof SlimeEntity.SlimeMoveControl hop) {
+      SlimeSteering.steer(slime.getUuid(), slime.getWorld().getTime());
       hop.look(yawToward(slime.getPos(), destination), true);
       hop.move(speed);
       return true;
@@ -60,6 +64,7 @@ public final class MobSteering {
     }
     if (mob.getNavigation()
         .startMovingTo(destination.x, destination.y, destination.z, paceFor(mob, speed))) {
+      walkTheBrainTo(mob, destination, speed);
       keepPace(mob, speed);
       return true;
     }
@@ -76,12 +81,29 @@ public final class MobSteering {
         || mob.getNavigation() instanceof SwimNavigation;
   }
 
+  public static boolean isCornered(final boolean foundAWayOut, final boolean canPlanFromHere) {
+    return !foundAWayOut && canPlanFromHere;
+  }
+
+  public static boolean canPlanFromHere(final MobEntity mob) {
+    return mob.isAiDisabled()
+        || mob.isOnGround()
+        || mob.isTouchingWater()
+        || mob.isInLava()
+        || mob.hasVehicle()
+        || steersItself(mob)
+        || movesThroughOpenSpace(mob);
+  }
+
   public static boolean isUnderway(final MobEntity mob) {
     return steersItself(mob) || !mob.getNavigation().isIdle();
   }
 
   public static void halt(final MobEntity mob) {
     mob.getNavigation().stop();
+    if (plansItsOwnWalks(mob)) {
+      mob.getBrain().forget(MemoryModuleType.WALK_TARGET);
+    }
     if (mob instanceof EnderDragonEntity dragon
         && dragon.getPhaseManager().getCurrent().getType() != PhaseType.HOVER) {
       dragon.getPhaseManager().setPhase(PhaseType.HOVER);
@@ -140,6 +162,19 @@ public final class MobSteering {
       open = next;
     }
     return open;
+  }
+
+  private static void walkTheBrainTo(
+      final MobEntity mob, final Vec3d destination, final double speed) {
+    if (plansItsOwnWalks(mob)) {
+      mob.getBrain()
+          .remember(MemoryModuleType.WALK_TARGET, new WalkTarget(destination, (float) speed, 0));
+    }
+  }
+
+  private static boolean plansItsOwnWalks(final MobEntity mob) {
+    return mob.getBrain()
+        .isMemoryInState(MemoryModuleType.WALK_TARGET, MemoryModuleState.REGISTERED);
   }
 
   public static boolean fliesAtRandom(final MobEntity mob) {

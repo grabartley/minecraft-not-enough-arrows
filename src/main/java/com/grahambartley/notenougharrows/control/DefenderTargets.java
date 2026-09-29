@@ -37,7 +37,9 @@ public final class DefenderTargets {
 
     final LivingEntity current = defender.getTarget();
     if (isFoe(current, defended, defender, radius)
-        && (threatens(current, defended) || threatens(current, defender))) {
+        && (threatens(current, defended)
+            || threatens(current, defender)
+            || current.getAttacker() == defender)) {
       return Optional.of(current);
     }
 
