@@ -104,36 +104,18 @@ class SoundRegistrarTest {
     assertThrows(NullPointerException.class, () -> new SoundRegistrar().registerInto(null));
   }
 
-  @Test
-  void aSoundDeclaredWithAReachTravelsThatFarAtAnyVolume() {
-    final SoundEvent beep = new SoundRegistrar().declareReaching("countdown_beep", 48.0f);
-
-    assertEquals(48.0f, beep.getDistanceToTravel(0.5f));
-    assertEquals(48.0f, beep.getDistanceToTravel(2.0f));
-  }
-
-  @Test
-  void aSoundDeclaredWithoutAReachTravelsByVolume() {
+  @ParameterizedTest(name = "volume {0}")
+  @ValueSource(floats = {0.1f, 0.5f, 1.0f, 2.0f, 4.0f})
+  void everyDeclaredSoundReachesTheSameDistanceAtAnyVolume(final float volume) {
     final SoundEvent smoke = new SoundRegistrar().declare("smoke_arrow_impact");
 
-    assertEquals(16.0f, smoke.getDistanceToTravel(1.0f));
-    assertEquals(32.0f, smoke.getDistanceToTravel(2.0f));
-  }
-
-  @ParameterizedTest
-  @ValueSource(floats = {0.0f, -16.0f, Float.NaN})
-  void refusesAReachThatIsNotPositive(final float blocks) {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new SoundRegistrar().declareReaching("countdown_beep", blocks));
+    assertEquals(SoundRegistrar.REACH_BLOCKS, smoke.getDistanceToTravel(volume));
   }
 
   @Test
-  void aSoundDeclaredWithAReachStillCannotBeDeclaredTwice() {
-    final SoundRegistrar registrar = new SoundRegistrar();
-    registrar.declare("countdown_beep");
+  void theSharedReachCarriesFurtherThanVanillasDefault() {
+    final SoundEvent vanilla = SoundEvent.of(Identifier.ofVanilla("entity.arrow.hit"));
 
-    assertThrows(
-        IllegalArgumentException.class, () -> registrar.declareReaching("countdown_beep", 48.0f));
+    assertTrue(SoundRegistrar.REACH_BLOCKS > vanilla.getDistanceToTravel(1.0f));
   }
 }

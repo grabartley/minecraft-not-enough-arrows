@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.grahambartley.notenougharrows.config.ExplosiveArrowConfig;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,8 +41,6 @@ class ModSoundsTest {
           "stink_arrow_release", "minecraft:entity.panda.sneeze",
           "polymorph_arrow_restore", "minecraft:block.sculk_catalyst.bloom",
           "magnet_arrow_pull", "minecraft:item.lodestone_compass.lock");
-  private static final float QUIET = 0.5f;
-  private static final float LOUD = 2.0f;
   private static final String COUNTDOWN_BEEP = "countdown_beep";
   private static final String WATCHER_CHIRP = "tripwire_arrow_alert";
   private static final int LOUDNESS_WINDOW = 2205;
@@ -185,64 +182,23 @@ class ModSoundsTest {
   }
 
   @Test
-  void theCountdownBeepReachesTheLandingRangeAtEveryBeepVolume() {
-    assertEquals(
-        ModSounds.LANDING_RANGE_BLOCKS,
-        ModSounds.COUNTDOWN_BEEP.getDistanceToTravel(ExplosiveArrowConfig.BEEP_VOLUME_MIN),
-        "reach at the quietest beep");
-    assertEquals(
-        ModSounds.LANDING_RANGE_BLOCKS,
-        ModSounds.COUNTDOWN_BEEP.getDistanceToTravel(ExplosiveArrowConfig.BEEP_VOLUME_MAX),
-        "reach at the loudest beep");
-  }
-
-  @Test
-  void theBeepVolumeNeverStretchesTheBeepsFadePastItsReach() throws IOException {
-    final float fade =
-        clientFade(
-            ExplosiveArrowConfig.BEEP_VOLUME_MAX,
-            attenuationsOf(soundsJson(), "countdown_beep").get(0));
-
-    assertTrue(
-        fade <= ModSounds.COUNTDOWN_BEEP.getDistanceToTravel(ExplosiveArrowConfig.BEEP_VOLUME_MAX),
-        "The client would fade the loudest beep over " + fade + " blocks, past where it is sent");
-  }
-
-  @Test
-  void everySoundWithAFixedReachFadesOutExactlyAtItsReach() throws IOException {
+  void everySoundInTheWorldFadesOutExactlyWhereTheServerStopsSendingIt() throws IOException {
     final JsonObject json = soundsJson();
     final List<String> mismatched = new ArrayList<>();
     for (final SoundEvent event : ModSounds.declaredEvents()) {
-      if (!hasFixedReach(event)) {
+      final String path = event.getId().getPath();
+      if (!json.getAsJsonObject(path).has("subtitle")) {
         continue;
       }
       final float reach = event.getDistanceToTravel(1.0f);
-      final List<Integer> fades = attenuationsOf(json, event.getId().getPath());
+      final List<Integer> fades = attenuationsOf(json, path);
       if (fades.isEmpty() || fades.stream().anyMatch(fade -> clientFade(1.0f, fade) != reach)) {
-        mismatched.add(event.getId().getPath());
+        mismatched.add(path);
       }
     }
 
     assertTrue(
-        mismatched.isEmpty(),
-        "Sounds with a fixed reach whose every file does not fade out at that reach: "
-            + mismatched);
-  }
-
-  @Test
-  void onlySoundsWithAFixedReachFadeBeyondVanillasDefault() throws IOException {
-    final JsonObject json = soundsJson();
-    final List<String> unreachable =
-        ModSounds.declaredEvents().stream()
-            .filter(event -> !hasFixedReach(event))
-            .map(event -> event.getId().getPath())
-            .filter(
-                path -> uncheckedAttenuationsOf(json, path).stream().anyMatch(fade -> fade != null))
-            .toList();
-
-    assertTrue(
-        unreachable.isEmpty(),
-        "Sounds that fade further than the server sends them: " + unreachable);
+        mismatched.isEmpty(), "Sounds whose files do not fade out at their reach: " + mismatched);
   }
 
   @Test
@@ -264,28 +220,21 @@ class ModSoundsTest {
     assertTrue(boosted.isEmpty(), "Sounds boosted above full volume: " + boosted);
   }
 
-  private static boolean hasFixedReach(final SoundEvent event) {
-    return event.getDistanceToTravel(QUIET) == event.getDistanceToTravel(LOUD);
-  }
-
   private static float clientFade(final float volume, final int attenuationDistance) {
     return Math.max(volume, 1.0f) * attenuationDistance;
   }
 
   private static List<Integer> attenuationsOf(final JsonObject json, final String path) {
-    final List<Integer> fades = uncheckedAttenuationsOf(json, path);
-    return fades.contains(null) ? List.of() : fades.stream().map(Integer.class::cast).toList();
-  }
-
-  private static List<Integer> uncheckedAttenuationsOf(final JsonObject json, final String path) {
     final List<Integer> fades = new ArrayList<>();
     for (final var sound : json.getAsJsonObject(path).getAsJsonArray("sounds").asList()) {
       final boolean fileWithDistance =
           sound.isJsonObject()
               && !sound.getAsJsonObject().has("type")
               && sound.getAsJsonObject().has("attenuation_distance");
-      fades.add(
-          fileWithDistance ? sound.getAsJsonObject().get("attenuation_distance").getAsInt() : null);
+      if (!fileWithDistance) {
+        return List.of();
+      }
+      fades.add(sound.getAsJsonObject().get("attenuation_distance").getAsInt());
     }
     return fades;
   }

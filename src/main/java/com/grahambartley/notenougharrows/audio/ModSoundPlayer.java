@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.audio;
 
+import com.grahambartley.notenougharrows.NotEnoughArrows;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -77,7 +78,8 @@ public final class ModSoundPlayer {
     if (serverVolume <= 0.0f || volume <= 0.0f) {
       return;
     }
-    sink.play(at, sound, category, volume, pitch);
+    final boolean modSound = sound.getId().getNamespace().equals(NotEnoughArrows.MOD_ID);
+    sink.play(at, sound, category, modSound ? Math.min(volume, 1.0f) : volume, pitch);
   }
 
   @FunctionalInterface

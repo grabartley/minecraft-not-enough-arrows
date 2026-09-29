@@ -10,6 +10,10 @@ public final class ShockBoltSounds {
 
   private ShockBoltSounds() {}
 
+  public static float loudness(final boolean shockBolt, final float volume) {
+    return shockBolt ? Math.min(volume, 1.0f) : volume;
+  }
+
   public static SoundEvent voice(final boolean shockBolt, final SoundEvent sound) {
     if (!shockBolt) {
       return sound;

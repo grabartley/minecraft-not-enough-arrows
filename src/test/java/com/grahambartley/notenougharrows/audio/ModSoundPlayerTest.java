@@ -47,13 +47,28 @@ class ModSoundPlayerTest {
       (at, sound, category, volume, pitch) ->
           sent.add(new Sent(at, sound, category, volume, pitch));
 
-  @ParameterizedTest(name = "volume {0} at server volume {1}")
-  @CsvSource({"1.0, 1.0", "1.0, 0.5", "0.8, 0.05", "4.0, 0.25", "2.0, 1.0"})
-  void sendsTheVolumeUntouchedSoTheSoundKeepsItsVanillaRange(
-      final float volume, final float serverVolume) {
+  @ParameterizedTest(name = "volume {0} at server volume {1} is sent as {2}")
+  @CsvSource({
+    "1.0, 1.0, 1.0",
+    "1.0, 0.5, 1.0",
+    "0.8, 0.05, 0.8",
+    "4.0, 0.25, 1.0",
+    "2.0, 1.0, 1.0"
+  })
+  void sendsAModSoundAtNoMoreThanFullVolumeSoEverySliderStillTurnsItDown(
+      final float volume, final float serverVolume, final float sentVolume) {
     ModSoundPlayer.play(sink, serverVolume, AT, SOUND, SoundCategory.NEUTRAL, volume, 1.2f);
 
-    assertEquals(List.of(new Sent(AT, SOUND, SoundCategory.NEUTRAL, volume, 1.2f)), sent);
+    assertEquals(List.of(new Sent(AT, SOUND, SoundCategory.NEUTRAL, sentVolume, 1.2f)), sent);
+  }
+
+  @Test
+  void sendsAVanillaSoundAboveFullVolumeUntouchedSoAJukeboxSongKeepsItsReach() {
+    final SoundEvent song = SoundEvent.of(Identifier.ofVanilla("music_disc.cat"));
+
+    ModSoundPlayer.play(sink, 1.0f, AT, song, SoundCategory.RECORDS, 4.0f, 1.0f);
+
+    assertEquals(List.of(new Sent(AT, song, SoundCategory.RECORDS, 4.0f, 1.0f)), sent);
   }
 
   @Test

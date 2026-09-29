@@ -21,7 +21,22 @@ public abstract class LightningEntityMixin {
                   "Lnet/minecraft/world/World;playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZ)V"),
       index = 3)
   private SoundEvent notEnoughArrows$voiceShockBolt(final SoundEvent sound) {
-    return ShockBoltSounds.voice(
-        ((Entity) (Object) this).getType() == ModEntities.SHOCK_BOLT, sound);
+    return ShockBoltSounds.voice(isShockBolt(), sound);
+  }
+
+  @ModifyArg(
+      method = "tick()V",
+      at =
+          @At(
+              value = "INVOKE",
+              target =
+                  "Lnet/minecraft/world/World;playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZ)V"),
+      index = 5)
+  private float notEnoughArrows$quietShockBolt(final float volume) {
+    return ShockBoltSounds.loudness(isShockBolt(), volume);
+  }
+
+  private boolean isShockBolt() {
+    return ((Entity) (Object) this).getType() == ModEntities.SHOCK_BOLT;
   }
 }
