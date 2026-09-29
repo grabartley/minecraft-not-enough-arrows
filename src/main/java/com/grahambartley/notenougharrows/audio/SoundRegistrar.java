@@ -11,6 +11,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 
 public final class SoundRegistrar {
+  public static final float REACH_BLOCKS = 48.0f;
   private static final Pattern VALID_PATH = Pattern.compile("[a-z0-9_]+");
 
   private final Map<Identifier, SoundEvent> declared = new LinkedHashMap<>();
@@ -31,7 +32,7 @@ public final class SoundRegistrar {
     if (declared.containsKey(id)) {
       throw new IllegalArgumentException("Sound '" + id + "' is already declared");
     }
-    final SoundEvent event = SoundEvent.of(id);
+    final SoundEvent event = SoundEvent.of(id, REACH_BLOCKS);
     declared.put(id, event);
     return event;
   }
@@ -47,5 +48,9 @@ public final class SoundRegistrar {
 
   public List<Identifier> ids() {
     return List.copyOf(declared.keySet());
+  }
+
+  public List<SoundEvent> events() {
+    return List.copyOf(declared.values());
   }
 }

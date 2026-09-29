@@ -17,8 +17,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
 public final class PufferService {
-  private static final float DEFLATE_VOLUME = 1.0f;
-  private static final float DEFLATE_PITCH = 1.0f;
 
   private static final Map<RegistryKey<World>, ExpiringLedger<Boolean>> LEDGERS = new HashMap<>();
 
@@ -55,8 +53,7 @@ public final class PufferService {
     for (final UUID expired : ledger.removeExpired(world.getTime())) {
       if (world.getEntity(expired) instanceof LivingEntity target
           && PufferInflation.deflate(target)) {
-        ModSoundPlayer.playFrom(
-            target, ModSounds.PUFFER_ARROW_DEFLATE, DEFLATE_VOLUME, DEFLATE_PITCH);
+        ModSoundPlayer.playFrom(target, ModSounds.PUFFER_ARROW_DEFLATE);
       }
     }
   }

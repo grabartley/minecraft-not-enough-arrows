@@ -103,4 +103,19 @@ class SoundRegistrarTest {
   void rejectsANullRegistry() {
     assertThrows(NullPointerException.class, () -> new SoundRegistrar().registerInto(null));
   }
+
+  @ParameterizedTest(name = "volume {0}")
+  @ValueSource(floats = {0.1f, 0.5f, 1.0f, 2.0f, 4.0f})
+  void everyDeclaredSoundReachesTheSameDistanceAtAnyVolume(final float volume) {
+    final SoundEvent smoke = new SoundRegistrar().declare("smoke_arrow_impact");
+
+    assertEquals(SoundRegistrar.REACH_BLOCKS, smoke.getDistanceToTravel(volume));
+  }
+
+  @Test
+  void theSharedReachCarriesFurtherThanVanillasDefault() {
+    final SoundEvent vanilla = SoundEvent.of(Identifier.ofVanilla("entity.arrow.hit"));
+
+    assertTrue(SoundRegistrar.REACH_BLOCKS > vanilla.getDistanceToTravel(1.0f));
+  }
 }

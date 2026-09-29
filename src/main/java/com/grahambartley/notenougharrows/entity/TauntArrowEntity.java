@@ -13,8 +13,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class TauntArrowEntity extends AreaControlArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
-  private static final float IMPACT_PITCH = 1.0f;
 
   public TauntArrowEntity(
       final EntityType<? extends TauntArrowEntity> entityType, final World world) {
@@ -44,7 +42,7 @@ public class TauntArrowEntity extends AreaControlArrowEntity {
         == 0) {
       return false;
     }
-    ModSoundPlayer.playFrom(this, ModSounds.TAUNT_ARROW_IMPACT, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(this, ModSounds.TAUNT_ARROW_IMPACT);
     return true;
   }
 }

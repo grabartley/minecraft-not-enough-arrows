@@ -23,7 +23,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class CourierArrowEntity extends BaseArrowEntity {
-  private static final float DELIVER_VOLUME = 1.0f;
   private static final float DELIVER_PITCH = 1.0f;
 
   public CourierArrowEntity(
@@ -107,12 +106,7 @@ public class CourierArrowEntity extends BaseArrowEntity {
       StackHandover.drop(world, at, payload);
     }
     ModSoundPlayer.play(
-        world,
-        at,
-        ModSounds.COURIER_ARROW_DELIVER,
-        getSoundCategory(),
-        DELIVER_VOLUME,
-        DELIVER_PITCH);
+        world, at, ModSounds.COURIER_ARROW_DELIVER, getSoundCategory(), 1.0f, DELIVER_PITCH);
   }
 
   private void releaseWhereDestroyed(final ServerWorld world, final ItemStack payload) {

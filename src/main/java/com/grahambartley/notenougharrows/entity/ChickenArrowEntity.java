@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class ChickenArrowEntity extends BaseArrowEntity {
-  private static final float HATCH_VOLUME = 1.0f;
   private static final float HATCH_PITCH = 1.2f;
 
   public ChickenArrowEntity(
@@ -67,7 +66,7 @@ public class ChickenArrowEntity extends BaseArrowEntity {
       return false;
     }
     ModSoundPlayer.play(
-        world, at, ModSounds.CHICKEN_ARROW_HATCH, getSoundCategory(), HATCH_VOLUME, HATCH_PITCH);
+        world, at, ModSounds.CHICKEN_ARROW_HATCH, getSoundCategory(), 1.0f, HATCH_PITCH);
     return true;
   }
 

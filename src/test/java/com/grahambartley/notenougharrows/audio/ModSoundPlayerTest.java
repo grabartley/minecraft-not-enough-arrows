@@ -49,7 +49,7 @@ class ModSoundPlayerTest {
 
   @ParameterizedTest(name = "volume {0} at server volume {1}")
   @CsvSource({"1.0, 1.0", "1.0, 0.5", "0.8, 0.05", "4.0, 0.25", "2.0, 1.0"})
-  void sendsTheVolumeUntouchedSoTheSoundKeepsItsVanillaRange(
+  void sendsTheVolumeUntouchedSoTheClientDecidesHowLoudItPlays(
       final float volume, final float serverVolume) {
     ModSoundPlayer.play(sink, serverVolume, AT, SOUND, SoundCategory.NEUTRAL, volume, 1.2f);
 

@@ -20,6 +20,10 @@ public final class ModSoundVolume {
     return adjusted * bounded(serverVolume) * bounded(clientVolume);
   }
 
+  public static float cap(final Identifier soundId, final float volume) {
+    return NotEnoughArrows.MOD_ID.equals(soundId.getNamespace()) ? Math.min(volume, 1.0f) : volume;
+  }
+
   private static float bounded(final float volume) {
     return ConfigValues.clampFloat(volume, SoundConfig.VOLUME_MIN, SoundConfig.VOLUME_MAX);
   }

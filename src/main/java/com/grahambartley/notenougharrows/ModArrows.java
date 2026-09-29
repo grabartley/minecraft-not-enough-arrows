@@ -155,7 +155,10 @@ public final class ModArrows {
   public static final RegisteredArrow<LifestealArrowEntity> LIFESTEAL_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
-              "lifesteal_arrow", LifestealArrowEntity::new, ModArrows::lifestealArrow));
+              "lifesteal_arrow",
+              LifestealArrowEntity::new,
+              ModArrows::lifestealArrow,
+              ArrowSound.own(ModSounds.LIFESTEAL_ARROW_DRAIN.getId())));
 
   public static final RegisteredArrow<RustArrowEntity> RUST_ARROW =
       REGISTRAR.register(
@@ -165,7 +168,11 @@ public final class ModArrows {
 
   public static final RegisteredArrow<MilkArrowEntity> MILK_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("milk_arrow", MilkArrowEntity::new, ModArrows::milkArrow));
+          ArrowDefinition.of(
+              "milk_arrow",
+              MilkArrowEntity::new,
+              ModArrows::milkArrow,
+              ArrowSound.own(ModSounds.MILK_ARROW_WASH.getId())));
 
   public static final RegisteredArrow<HasteArrowEntity> HASTE_ARROW =
       REGISTRAR.register(
@@ -185,7 +192,11 @@ public final class ModArrows {
 
   public static final RegisteredArrow<VolleyArrowEntity> VOLLEY_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("volley_arrow", VolleyArrowEntity::new, ModArrows::volleyArrow));
+          ArrowDefinition.of(
+              "volley_arrow",
+              VolleyArrowEntity::new,
+              ModArrows::volleyArrow,
+              ArrowSound.own(ModSounds.VOLLEY_ARROW_SPLIT.getId())));
 
   public static final RegisteredArrow<RailgunArrowEntity> RAILGUN_ARROW =
       REGISTRAR.register(

@@ -18,7 +18,7 @@ public record ExplosiveArrowConfig(
   public static final int FIRE_PATCH_DURATION_TICKS_MIN = 0;
   public static final int FIRE_PATCH_DURATION_TICKS_MAX = 6000;
   public static final float BEEP_VOLUME_MIN = 0.0f;
-  public static final float BEEP_VOLUME_MAX = 2.0f;
+  public static final float BEEP_VOLUME_MAX = 1.0f;
 
   public static final ExplosiveTierConfig DEFAULT_GUNPOWDER = new ExplosiveTierConfig(80, 4.0f);
   public static final ExplosiveTierConfig DEFAULT_TNT = new ExplosiveTierConfig(70, 6.0f);

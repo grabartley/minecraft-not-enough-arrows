@@ -20,7 +20,7 @@ class NotEnoughArrowsCommandTest {
   private static final List<String> OPERATOR_COMMANDS =
       List.of(
           "config reset",
-          "config explosive beepvolume 1.5",
+          "config explosive beepvolume 0.5",
           "config grapple maxrangeblocks 64",
           "config utility redstonesignalstrength 7",
           "config physics ricochetbouncecount 2",

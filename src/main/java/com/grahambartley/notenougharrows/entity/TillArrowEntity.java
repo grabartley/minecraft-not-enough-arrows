@@ -14,8 +14,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class TillArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
-  private static final float IMPACT_PITCH = 1.0f;
 
   public TillArrowEntity(
       final EntityType<? extends TillArrowEntity> entityType, final World world) {
@@ -52,7 +50,7 @@ public class TillArrowEntity extends BaseArrowEntity {
     if (TillService.till(world, center, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }
-    ModSoundPlayer.playFrom(this, ModSounds.TILL_ARROW_TILL, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(this, ModSounds.TILL_ARROW_TILL);
     return true;
   }
 }

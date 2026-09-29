@@ -290,7 +290,7 @@ screen are rejected outright, with the accepted range in the error.
 | `explosive.damageEntities` | on | on or off |
 | `explosive.firePatchRadius` | 2 | 0 to 8 |
 | `explosive.firePatchDurationTicks` | 200 | 0 to 6000 |
-| `explosive.beepVolume` | 1.0 | 0.0 to 2.0 |
+| `explosive.beepVolume` | 1.0 | 0.0 to 1.0 |
 | `explosive.incendiary.burnRadius` | 3 | 0 to 8 |
 | `explosive.incendiary.igniteSeconds` | 5 | 0 to 60 |
 | `explosive.incendiary.ignitesBlocks` | on | on or off |

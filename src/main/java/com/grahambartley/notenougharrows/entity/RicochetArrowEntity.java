@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class RicochetArrowEntity extends BaseArrowEntity {
   private static final String BOUNCES_KEY = "Bounces";
-  private static final float BOUNCE_VOLUME = 0.6f;
+  private static final float BOUNCE_VOLUME = 1.0f;
   private static final float BOUNCE_PITCH = 1.4f;
 
   private int bounces;

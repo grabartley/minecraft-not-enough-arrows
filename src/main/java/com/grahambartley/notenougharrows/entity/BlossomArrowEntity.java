@@ -14,8 +14,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class BlossomArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
-  private static final float IMPACT_PITCH = 1.0f;
 
   public BlossomArrowEntity(
       final EntityType<? extends BlossomArrowEntity> entityType, final World world) {
@@ -52,7 +50,7 @@ public class BlossomArrowEntity extends BaseArrowEntity {
     if (BlossomService.bloom(world, center, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }
-    ModSoundPlayer.playFrom(this, ModSounds.BLOSSOM_ARROW_BLOOM, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(this, ModSounds.BLOSSOM_ARROW_BLOOM);
     return true;
   }
 }

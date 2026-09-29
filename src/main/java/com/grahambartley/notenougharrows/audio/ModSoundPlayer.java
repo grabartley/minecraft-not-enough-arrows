@@ -38,6 +38,10 @@ public final class ModSoundPlayer {
         pitch);
   }
 
+  public static void playFrom(final Entity source, final SoundEvent sound) {
+    playFrom(source, sound, 1.0f, 1.0f);
+  }
+
   public static void playFrom(
       final Entity source, final SoundEvent sound, final float volume, final float pitch) {
     if (source.isSilent() || !(source.getWorld() instanceof ServerWorld world)) {

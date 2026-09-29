@@ -13,11 +13,11 @@ Several arrows already play vanilla sounds whose identifiers belong to Minecraft
 
 ## Decision
 
-The mod's category is its namespace. Every sound the mod plays is declared in `ModSounds` under a `not-enough-arrows:` identifier. Where the sound is a vanilla one, its `sounds.json` entry is an alias that plays the vanilla event and keeps the vanilla subtitle.
+The mod's category is its namespace. Every sound the mod plays is declared in `ModSounds` under a `not-enough-arrows:` identifier. Where the sound is a vanilla one, its `sounds.json` entry is an alias that plays the vanilla sound's files and keeps the vanilla subtitle. The party arrow's records are aliased the same way, one per disc.
 
 Two settings scale those sounds and nothing else. `sound.volume` is a server setting an operator controls, and it reaches every client with the rest of the synced server config. `client.modSoundVolume` is each player's own. Each client multiplies a mod sound's loudness by both, in `SoundSystem`, after vanilla has clamped the sound's loudness to its 0 to 1 range.
 
-Scaling happens on the client, after the clamp, because a sound's volume on the wire is also its range. An explosion is sent at volume 4, which vanilla reads as full loudness out to 64 blocks. Scaling that 4 down on the server would shorten how far the explosion is heard and leave it as loud as ever for everyone inside the new range. Scaling after the clamp turns the loudness down and leaves the range alone. The server still decides whether a sound exists: at a `sound.volume` of 0, `ModSoundPlayer` sends nothing.
+Scaling happens on the client, after the clamp, so turning the mod down never changes how far a sound is heard. Every mod sound is declared with the same fixed 48-block reach, fades out at that reach through its `sounds.json` files, and is capped at volume 1 on the client before the clamp. Above 1, vanilla would clamp volume times the category slider to 1, so the sliders would stop working, and the client would fade the sound past where the server stops sending it. A vanilla-backed sound lists vanilla's own files rather than the event, because Minecraft ignores a fade distance on an event reference, and loud vanilla files are turned down so none is louder than the countdown beep. The server still decides whether a sound exists: at a `sound.volume` of 0, `ModSoundPlayer` sends nothing.
 
 Sounds keep whichever vanilla category they already used, so the vanilla sliders still apply on top. The fletching station's menu click is played on the client for the clicking player alone.
 

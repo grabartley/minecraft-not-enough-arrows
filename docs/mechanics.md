@@ -84,7 +84,7 @@ Explosive arrows do not detonate on impact. Once one comes to rest its fuse star
 | What carries a fuse | Whatever the arrow came to rest in. An arrow embedded in a block carries its own fuse; an arrow that hit a mob hands the fuse to that mob, so the charge travels with it and goes off wherever it ends up |
 | How long it burns | `explosive.<tier>.delayTicks`, read per tier, so gunpowder, TNT and fire charge arrows each keep their own timing |
 | Detonating on contact | A tier delay of zero signals detonation the moment the arrow lands, with no countdown at all. Supported, and not the default for any tier |
-| Beep cadence | Derived from how much of the delay is left. The gap between beeps only ever shortens, so the countdown reads as accelerating without any interface element. `explosive.beepVolume` sets how loud it is, and zero mutes it without stopping the fuse |
+| Beep cadence | Derived from how much of the delay is left. The gap between beeps only ever shortens, so the countdown reads as accelerating without any interface element. `explosive.beepVolume` sets how loud it is, from zero to one, and zero mutes it without stopping the fuse. It reaches 48 blocks at any volume, like every mod sound, so no other sound can drown it at any distance |
 | Losing the carrier | A carrier that dies, and a player who disconnects, take their fuse with them. Nothing detonates |
 | Unloaded chunks | A fuse whose carrier is not loaded holds where it is rather than burning down, and resumes when the carrier comes back. A carrier that never returns has its fuse dropped after a minute |
 
@@ -426,7 +426,7 @@ Six arrows that exist for the fun of it. Each has its own switch under `chaos`, 
 
 | Rule | Behaviour |
 |---|---|
-| Party | The disc's own song, looked up through vanilla's jukebox song registry, played once at the impact at jukebox loudness, so everyone within about 64 blocks hears it and it ends on its own. It plays in the Jukebox/Note Blocks category, so the player's own record slider is what turns it down, and `sound.volume` at zero silences it along with the mod's other sounds. It places no jukebox, spawns no firework rocket, changes no block and leaves nothing behind: the show is particles and one sound |
+| Party | The disc's own song, played once at the impact through the mod's own alias for that disc, so it follows every mod sound's rule: heard 48 blocks out, no louder than the countdown beep, and turned down by `sound.volume` and `client.modSoundVolume`. It ends on its own, and it plays in the Jukebox/Note Blocks category, so the player's record slider turns it down too. It places no jukebox, spawns no firework rocket, changes no block and leaves nothing behind: the show is particles and one sound |
 | Chicken | An ordinary vanilla chicken, adult and ready to breed, with nothing of the mod attached to it: it persists, it can be killed or bred, and the mod never looks at it again. It arrives with no speed and no fall distance, and vanilla makes chickens immune to fall damage, so it takes none from the flight. It is refused, and the arrow embeds to be picked back up, beyond the world border, outside the build limit, inside anything solid, for a shooter in adventure mode, and inside spawn protection for anyone the server would not let build there. A chicken has no lifetime; what caps them is that every one costs a crafted arrow (PERF-13) |
 | Puffer | A temporary change to the creature's scale attribute, doubling its size so an ordinary mob no longer fits through a one-block gap, and doubling the knockback it takes while inflated. Before it grows, the mod checks the space the bigger body would fill. A creature with no room to double grows only to the largest of 1.75, 1.5 or 1.25 times that fits, and one with no room to grow at all is not inflated and the arrow glances off, so it can never be crushed or suffocated in a space it was already standing in. A second hit on an inflated creature extends the time rather than growing it again. The change reverts when its time is up, the moment the creature unloads or changes dimension, and on every restart, because a temporary attribute change is never saved |
 | Stink cloud | A sphere of three blocks, kept only in memory like the smoke cloud. Players inside, but not spectators, get nausea. Mobs will not path into it: any mob whose planned route crosses the cloud has that route cancelled, and any mob already inside is stopped and pushed back out, which also covers flyers that steer without a route. It blocks nothing, places no block, hurts nothing, and is gone when its lifetime ends or the server stops. Anyone arriving while it hangs sees it, because it is drawn with server particles |
@@ -549,6 +549,8 @@ Four of these are worth reading the detail on, because each refuses something a 
 
 Every setting above is read fresh at the moment it is used, whether that is on firing, in flight, or on impact, so changing one mid-flight changes what the arrow already in the air does next.
 
+The lifesteal, milk and volley arrows play their own sounds, listed under Sounds. Lifesteal plays only when its hit drew blood for a shooter, milk only when it struck a creature, and volley once as it splits.
+
 Like every arrow in the mod, each of the nine is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
 ## Control Arrows
@@ -600,58 +602,70 @@ Like every arrow in the mod, each of the seven is craftable at a crafting table 
 
 The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
 
-Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's loudness and pitch spread. The party arrow is the one exception to the namespace below: it plays a vanilla music disc's own song, in the record category, so the player's record slider rather than the mod's volume decides how loud it is. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
+Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's pitch spread and the mod's shared loudness. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
 
 An arrow declares every sound its effect plays on its `ArrowDefinition`, which covers the impact sound IDENT-7 asks for. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep and the blast (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one. They check what an arrow declares, not what it plays, so a family issue still has to declare every sound it adds.
 
 | Sound | Plays | Used for | Vanilla meaning kept (IDENT-8) |
 |---|---|---|---|
 | `countdown_beep` | Mod asset | The single beep every explosive arrow plays while its fuse burns, shared by the three tiers | Own asset |
-| `smoke_arrow_impact` | `block.fire.extinguish` | A smoke arrow's cloud bursting | Yes: a hiss of smoke |
-| `repel_arrow_impact` | `block.soul_sand.break` | A repel arrow pushing mobs off | Under review: vanilla means soul sand breaking |
-| `taunt_arrow_impact` | `block.note_block.bell` | A taunt arrow calling mobs to it | Yes: a bell that draws attention |
-| `disarm_arrow_impact` | `block.tripwire.detach` | A disarm arrow knocking an item loose | Yes: something coming unhooked |
-| `allegiance_arrow_impact` | `entity.player.levelup` | An allegiance arrow turning a mob | Under review: vanilla means a level gained |
-| `ricochet_arrow_bounce` | `entity.arrow.hit` | A ricochet arrow bouncing off a block | Yes: an arrow striking something |
-| `ender_teleport` | `entity.enderman.teleport` | The ender pearl and recall arrows moving something, shared as one teleport system | Yes: a teleport |
-| `frost_arrow_freeze_crack` | `block.glass.break` | A frost arrow encasing its target | Under review: vanilla means glass breaking |
-| `frost_arrow_freeze_settle` | `block.powder_snow.place` | Snow settling as the freeze lands | Yes: powder snow settling |
-| `frost_arrow_thaw` | `block.powder_snow.break` | The ice around a frozen target giving way | Yes: powder snow breaking |
-| `explosive_arrow_blast` | `entity.generic.explode` | The blast at the end of every explosive tier's fuse | Yes: an explosion |
-| `wind_arrow_burst` | `entity.wind_charge.wind_burst` | A wind arrow's gust | Yes: a wind charge bursting |
-| `shock_arrow_thunder` | `entity.lightning_bolt.thunder` | The thunder of a shock arrow's bolt | Yes: lightning |
-| `shock_arrow_impact` | `entity.lightning_bolt.impact` | The crack where a shock arrow's bolt lands | Yes: lightning striking |
-| `drill_arrow_bore` | `block.grindstone.use` | A drill arrow breaking its block | Under review: vanilla means a grindstone in use |
-| `pillar_arrow_rise` | `block.piston.extend` | A pillar arrow raising its column | Yes: something pushed up out of place |
-| `drain_arrow_absorb` | `block.sponge.absorb` | A drain arrow soaking up water | Yes: a sponge absorbing |
-| `freeze_arrow_freeze` | `block.glass.place` | A freeze arrow setting fluid solid | Yes: ice is placed with glass's sounds |
-| `blossom_arrow_bloom` | `item.bone_meal.use` | A blossom arrow bone mealing | Yes: bone meal used |
-| `harvest_arrow_reap` | `block.crop.break` | A harvest arrow reaping its crops | Yes: a crop broken |
-| `till_arrow_till` | `item.hoe.till` | A till arrow turning ground to farmland | Yes: a hoe tilling |
-| `shear_arrow_carve` | `block.pumpkin.carve` | A shear arrow carving a pumpkin | Yes: a pumpkin carved |
-| `shear_arrow_hive` | `block.beehive.shear` | A shear arrow taking honeycomb from a hive | Yes: a hive shorn |
-| `bee_arrow_release` | `block.beehive.exit` | A bee arrow letting its bees out | Yes: bees leaving a hive |
-| `zipline_arrow_string` | `block.chain.place` | A zipline arrow stringing its cable, heard at both ends | Yes: a chain placed |
-| `updraft_arrow_open` | `entity.breeze.whirl` | An updraft arrow opening its column | Yes: a breeze's rising wind |
-| `trampoline_arrow_launch` | `entity.slime.jump` | A trampoline throwing something back into the air | Yes: a slime bouncing |
-| `beacon_arrow_raise` | `block.beacon.activate` | A beacon arrow's beam rising | Yes: a beacon coming on |
-| `prospector_arrow_pulse` | `block.amethyst_block.resonate` | A prospector arrow's pulse ringing out through the rock | Yes: amethyst resonating |
-| `sonar_arrow_pulse` | `entity.warden.sonic_charge` | A sonar arrow's pulse sweeping the area | Under review: vanilla means a warden charging its attack |
-| `tripwire_arrow_set` | `block.tripwire.attach` | A tripwire arrow setting its watcher | Yes: a tripwire hooked up |
-| `tripwire_arrow_alert` | `block.sculk_sensor.clicking` | A watcher reporting, heard only by its owner | Yes: a sculk sensor noticing something |
-| `chicken_arrow_hatch` | `entity.chicken.egg` | A chicken arrow's chicken arriving | Yes: a chicken and its egg |
-| `puffer_arrow_inflate` | `entity.puffer_fish.blow_up` | A puffer arrow inflating what it struck | Yes: a pufferfish puffing up |
-| `puffer_arrow_deflate` | `entity.puffer_fish.blow_out` | An inflated creature shrinking back | Yes: a pufferfish deflating |
-| `stink_arrow_release` | `entity.panda.sneeze` | A stink arrow's cloud bursting | Under review: vanilla means a panda sneezing |
-| `boomerang_arrow_return` | `item.trident.return` | A boomerang arrow arriving home | Yes: a thrown weapon coming back |
-| `polymorph_arrow_change` | `entity.evoker.prepare_wololo` | A polymorph arrow changing a mob | Yes: an evoker's spell that changes a creature |
-| `polymorph_arrow_restore` | `block.sculk_catalyst.bloom` | A disguised mob changing back when its time is up | Under review: vanilla means a sculk catalyst blooming |
-| `courier_arrow_deliver` | `block.ender_chest.close` | A courier arrow handing over or dropping its payload | Yes: an ender chest closing on what it carried |
-| `snow_golem_arrow_melt` | `block.snow.break` | A snow golem melting when its time is up | Yes: snow breaking |
-| `magnet_arrow_pull` | `item.lodestone_compass.lock` | A magnet arrow catching loose items | Under review: vanilla means a compass locking to a lodestone |
+| `smoke_arrow_impact` | Mod asset | A soft whump and a hiss as a smoke arrow's cloud bursts | Own asset |
+| `repel_arrow_impact` | Mod asset | A low shove of air as a repel arrow pushes mobs off | Own asset |
+| `taunt_arrow_impact` | `block.note_block.bell`'s files | A taunt arrow calling mobs to it | Yes: a bell that draws attention |
+| `disarm_arrow_impact` | Mod asset | A metal knock and a clatter as a disarm arrow knocks an item loose | Own asset |
+| `allegiance_arrow_impact` | Mod asset | A rising run of plucked notes as an allegiance arrow turns a mob | Own asset |
+| `ricochet_arrow_bounce` | `entity.arrow.hit`'s files, turned down | A ricochet arrow bouncing off a block | Yes: an arrow striking something |
+| `ender_teleport` | `entity.enderman.teleport`'s files, turned down | The ender pearl and recall arrows moving something, shared as one teleport system | Yes: a teleport |
+| `frost_arrow_freeze_crack` | Mod asset | A thin, glassy snap as a frost arrow encases its target, higher and shorter than the freeze arrow's crack | Own asset |
+| `frost_arrow_freeze_settle` | `block.powder_snow.place`'s files | Snow settling as the freeze lands | Yes: powder snow settling |
+| `frost_arrow_thaw` | `block.powder_snow.break`'s files | The ice around a frozen target giving way | Yes: powder snow breaking |
+| `explosive_arrow_blast` | `entity.generic.explode`'s files, turned down | The blast at the end of every explosive tier's fuse | Yes: an explosion |
+| `wind_arrow_burst` | `entity.wind_charge.wind_burst`'s files, turned down | A wind arrow's gust | Yes: a wind charge bursting |
+| `shock_arrow_thunder` | Mod asset | A short thunder crack for a shock arrow's bolt, briefer than vanilla's strike so it is not mistaken for weather | Own asset |
+| `shock_arrow_impact` | `entity.lightning_bolt.impact`'s files, turned down | The crack where a shock arrow's bolt lands | Yes: lightning striking |
+| `lifesteal_arrow_drain` | Mod asset | A wet, falling note as a lifesteal arrow draws blood from a shooter's target | Own asset |
+| `milk_arrow_wash` | Mod asset | A clean wipe and rinse as a milk arrow washes a creature's effects away | Own asset |
+| `volley_arrow_split` | Mod asset | Several arrows leaving at once as a volley arrow splits | Own asset |
+| `drill_arrow_bore` | `block.stone.break`'s files, turned down | A drill arrow breaking its block | Yes: a block broken |
+| `pillar_arrow_rise` | Mod asset | Earth grinding upward as a pillar arrow raises its column | Own asset |
+| `drain_arrow_absorb` | Mod asset | Water swirling and gulping away as a drain arrow empties it | Own asset |
+| `freeze_arrow_freeze` | Mod asset | A deep crack spreading into crackle as a freeze arrow sets fluid solid | Own asset |
+| `blossom_arrow_bloom` | `item.bone_meal.use`'s files | A blossom arrow bone mealing | Yes: bone meal used |
+| `harvest_arrow_reap` | Mod asset | A quick sweep and gather as a harvest arrow reaps its crops | Own asset |
+| `till_arrow_till` | `item.hoe.till`'s files | A till arrow turning ground to farmland | Yes: a hoe tilling |
+| `shear_arrow_carve` | `block.pumpkin.carve`'s files, turned down | A shear arrow carving a pumpkin | Yes: a pumpkin carved |
+| `shear_arrow_hive` | `block.beehive.shear`'s files, turned down | A shear arrow taking honeycomb from a hive | Yes: a hive shorn |
+| `bee_arrow_release` | `block.beehive.exit`'s files, turned down | A bee arrow letting its bees out | Yes: bees leaving a hive |
+| `zipline_arrow_string` | Mod asset | A metal line pulled taut as a zipline arrow strings its cable, heard at both ends | Own asset |
+| `updraft_arrow_open` | Mod asset | A long rush of rising air as an updraft arrow opens its column | Own asset |
+| `trampoline_arrow_launch` | `entity.slime.jump`'s files, turned down | A trampoline throwing something back into the air | Yes: a slime bouncing |
+| `beacon_arrow_raise` | Mod asset | A low thud and a rising chord as a beacon arrow's beam goes up | Own asset |
+| `prospector_arrow_pulse` | Mod asset | A glassy, many-toned ping as a prospector arrow's pulse rings through the rock | Own asset |
+| `sonar_arrow_pulse` | Mod asset | A pure sonar ping with two fading echoes as a sonar arrow's pulse sweeps the area | Own asset |
+| `tripwire_arrow_set` | `block.tripwire.attach`'s files, turned down | A tripwire arrow setting its watcher | Yes: a tripwire hooked up |
+| `tripwire_arrow_alert` | Mod asset | Two quick rising chirps as a watcher reports, heard only by its owner and quieter than the other sounds so it does not startle in a cave | Own asset |
+| `chicken_arrow_hatch` | `entity.chicken.egg`'s files, turned down | A chicken arrow's chicken arriving | Yes: a chicken and its egg |
+| `puffer_arrow_inflate` | Mod asset | A comic, rising squeak as a puffer arrow inflates what it struck | Own asset |
+| `puffer_arrow_deflate` | `entity.puffer_fish.blow_out`'s files, turned down | An inflated creature shrinking back | Yes: a pufferfish deflating |
+| `stink_arrow_release` | Mod asset | A wet, spluttering burst as a stink arrow's cloud goes off | Own asset |
+| `boomerang_arrow_return` | Mod asset | A whirring whoosh that grows as a boomerang arrow comes home | Own asset |
+| `polymorph_arrow_change` | Mod asset | A rising note with a sparkle as a polymorph arrow changes a mob | Own asset |
+| `polymorph_arrow_restore` | Mod asset | The same note falling as a disguised mob changes back when its time is up | Own asset |
+| `courier_arrow_deliver` | Mod asset | Two rising chime notes as a courier arrow hands over or drops its payload | Own asset |
+| `snow_golem_arrow_melt` | `block.snow.break`'s files | A snow golem melting when its time is up | Yes: snow breaking |
+| `magnet_arrow_pull` | Mod asset | A rising magnetic hum as a magnet arrow catches loose items | Own asset |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
-This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
+This table is the reviewed list IDENT-8 asks for. A vanilla sound stays only where it already means what the arrow does; everything else is a mod asset, and `ModSoundsTest` fails if a sound the review flagged ever goes back to the vanilla sound it borrowed, if two sounds play the same asset, if an asset is shipped that nothing plays, or if an asset decodes louder than the countdown beep.
+
+Every mod sound follows one rule, so the mod's own sliders, `sound.volume` and `client.modSoundVolume`, turn all of them down the same way:
+
+- **One reach.** `SoundRegistrar` declares every sound with the same fixed reach of 48 blocks, so the server sends it that far whatever volume it is played at. That is three times vanilla's usual 16, so a player can hear an arrow's effect resolve out of sight (IDENT-7).
+- **One fade.** Every world sound's files in `sounds.json` carry an `attenuation_distance` of 48, so the client fades it out exactly where the server stops sending it.
+- **Never above full volume.** The client's `SoundSystemMixin` caps every `not-enough-arrows:` sound at volume one, whoever started it, the server or the client. Above one, the client would clamp volume times the category slider to one, so the sliders would stop turning the sound down, and the fade would stretch past the reach. `explosive.beepVolume` runs from zero to one for the same reason.
+- **One loudness.** Every sound is mastered at or below the countdown beep. The mod's own assets are made that way, with the watcher's chirp the quietest of them so it does not startle in a cave. A sound backed by vanilla lists vanilla's own sound files rather than the event, because Minecraft ignores `attenuation_distance` on an event reference. Where a vanilla file is louder than the beep, its entry turns it down with a `volume` below one, and that includes explosions, wind bursts, lightning and the party arrow's records. Each trim is the vanilla file's volume scaled so its loudest 50 milliseconds and its loudest sample sit at 95 percent of the beep's.
+
+Because every sound shares the beep's reach, fade and loudness ceiling, no sound can drown the beep at any distance (A11Y-3). `ModSoundsTest` fails if any world sound fades anywhere but its reach, if an entry boosts a sound above full volume, or if a mod asset decodes louder than the beep. The fletching station's menu click is the one exception: it is an interface sound with no position, heard only by the player clicking.
 
 The countdown communicates urgency through cadence rather than through different sounds: one short beep is replayed at a shortening interval as detonation approaches, so a player who hears the beeps speeding up knows to move. Keeping it to one asset is what makes that escalation smooth, because the interval is the only thing changing.
 

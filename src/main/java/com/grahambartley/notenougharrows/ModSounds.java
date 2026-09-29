@@ -1,7 +1,10 @@
 package com.grahambartley.notenougharrows;
 
 import com.grahambartley.notenougharrows.audio.SoundRegistrar;
+import com.grahambartley.notenougharrows.chaos.DiscPalette;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
@@ -30,6 +33,9 @@ public final class ModSounds {
   public static final SoundEvent WIND_ARROW_BURST = REGISTRAR.declare("wind_arrow_burst");
   public static final SoundEvent SHOCK_ARROW_THUNDER = REGISTRAR.declare("shock_arrow_thunder");
   public static final SoundEvent SHOCK_ARROW_IMPACT = REGISTRAR.declare("shock_arrow_impact");
+  public static final SoundEvent LIFESTEAL_ARROW_DRAIN = REGISTRAR.declare("lifesteal_arrow_drain");
+  public static final SoundEvent MILK_ARROW_WASH = REGISTRAR.declare("milk_arrow_wash");
+  public static final SoundEvent VOLLEY_ARROW_SPLIT = REGISTRAR.declare("volley_arrow_split");
   public static final SoundEvent DRILL_ARROW_BORE = REGISTRAR.declare("drill_arrow_bore");
   public static final SoundEvent PILLAR_ARROW_RISE = REGISTRAR.declare("pillar_arrow_rise");
   public static final SoundEvent DRAIN_ARROW_ABSORB = REGISTRAR.declare("drain_arrow_absorb");
@@ -66,10 +72,20 @@ public final class ModSounds {
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 
+  public static final Map<String, SoundEvent> PARTY_DISCS =
+      DiscPalette.songs().stream()
+          .collect(
+              Collectors.toUnmodifiableMap(
+                  song -> song, song -> REGISTRAR.declare("party_arrow_" + song)));
+
   private ModSounds() {}
 
   public static List<Identifier> declared() {
     return REGISTRAR.ids();
+  }
+
+  public static List<SoundEvent> declaredEvents() {
+    return REGISTRAR.events();
   }
 
   public static void register() {

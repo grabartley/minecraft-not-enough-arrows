@@ -20,8 +20,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public final class DisguiseService {
-  public static final float CUE_VOLUME = 1.0f;
-  public static final float CUE_PITCH = 1.0f;
 
   private static final int RESTORE_PUFFS = 12;
   private static final Map<RegistryKey<World>, ExpiringLedger<Identifier>> LEDGERS =
@@ -110,7 +108,7 @@ public final class DisguiseService {
         entity.getHeight() / 2.0,
         entity.getWidth() / 2.0,
         0.02);
-    ModSoundPlayer.playFrom(entity, ModSounds.POLYMORPH_ARROW_RESTORE, CUE_VOLUME, CUE_PITCH);
+    ModSoundPlayer.playFrom(entity, ModSounds.POLYMORPH_ARROW_RESTORE);
   }
 
   private static ExpiringLedger<Identifier> ledgerFor(final ServerWorld world) {

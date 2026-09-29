@@ -18,7 +18,6 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class ZiplineService {
-  private static final float STRING_VOLUME = 1.0f;
   private static final float STRING_PITCH = 1.0f;
 
   private ZiplineService() {}
@@ -66,12 +65,7 @@ public final class ZiplineService {
   private static void announce(final ServerWorld world, final Span span) {
     for (final Vec3d end : List.of(span.firstEnd(), span.lastEnd())) {
       ModSoundPlayer.play(
-          world,
-          end,
-          ModSounds.ZIPLINE_ARROW_STRING,
-          SoundCategory.BLOCKS,
-          STRING_VOLUME,
-          STRING_PITCH);
+          world, end, ModSounds.ZIPLINE_ARROW_STRING, SoundCategory.BLOCKS, 1.0f, STRING_PITCH);
     }
   }
 

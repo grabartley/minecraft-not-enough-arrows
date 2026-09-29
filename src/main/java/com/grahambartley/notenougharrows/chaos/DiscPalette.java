@@ -35,6 +35,10 @@ public final class DiscPalette {
 
   private DiscPalette() {}
 
+  public static List<String> songs() {
+    return CHOICES.stream().map(TintChoice::key).toList();
+  }
+
   public static TintPalette create() {
     return new TintPalette(CHOICES, FALLBACK_KEY);
   }

@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.ModSounds;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -90,6 +91,40 @@ public final class LifestealArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               target.getHealth() < before,
               "A dispensed lifesteal arrow should still hurt a target");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aHitThatDrawsBloodPlaysTheDrainOnce(TestContext context) {
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final HeardSounds heard = HeardSounds.by(context, shooter);
+    MockPlayerSupport.fireEastStraight(context, shooter, ModArrows.LIFESTEAL_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.assertEquals(
+              heard.count(ModSounds.LIFESTEAL_ARROW_DRAIN), 1L, "lifesteal drains heard");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aDispensedArrowDrainsForNobodyAndPlaysNoDrain(TestContext context) {
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final HeardSounds heard =
+        HeardSounds.by(
+            context, MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND));
+    FiringRangeSupport.dispenseEast(context, DISPENSER_STAND, ModArrows.LIFESTEAL_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.assertEquals(
+              heard.count(ModSounds.LIFESTEAL_ARROW_DRAIN), 0L, "lifesteal drains heard");
           context.complete();
         });
   }

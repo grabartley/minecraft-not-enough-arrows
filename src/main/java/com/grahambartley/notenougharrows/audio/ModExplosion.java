@@ -14,8 +14,6 @@ import net.minecraft.world.explosion.ExplosionBehavior;
 import org.jetbrains.annotations.Nullable;
 
 public final class ModExplosion {
-  public static final float VOLUME = 4.0f;
-
   private ModExplosion() {}
 
   public static void create(
@@ -41,7 +39,7 @@ public final class ModExplosion {
         particle,
         emitterParticle,
         Registries.SOUND_EVENT.getEntry(SoundEvents.INTENTIONALLY_EMPTY));
-    ModSoundPlayer.play(world, at, sound, SoundCategory.BLOCKS, VOLUME, pitch(world.getRandom()));
+    ModSoundPlayer.play(world, at, sound, SoundCategory.BLOCKS, 1.0f, pitch(world.getRandom()));
   }
 
   static float pitch(final Random random) {
