@@ -81,10 +81,6 @@ public final class MobSteering {
         || mob.getNavigation() instanceof SwimNavigation;
   }
 
-  public static boolean isCornered(final boolean foundAWayOut, final boolean canPlanFromHere) {
-    return !foundAWayOut && canPlanFromHere;
-  }
-
   public static boolean canPlanFromHere(final MobEntity mob) {
     return mob.isAiDisabled()
         || mob.isOnGround()

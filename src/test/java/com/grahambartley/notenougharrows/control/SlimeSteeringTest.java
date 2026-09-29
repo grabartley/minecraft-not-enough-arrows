@@ -43,6 +43,13 @@ class SlimeSteeringTest {
   }
 
   @Test
+  void aReleasedSlimeIsNoLongerSteered() {
+    SlimeSteering.steer(slime, STEERED_AT);
+    SlimeSteering.release(slime);
+    assertFalse(SlimeSteering.isSteered(slime, STEERED_AT));
+  }
+
+  @Test
   void forgettingEverythingReleasesEverySlime() {
     SlimeSteering.steer(slime, STEERED_AT);
     SlimeSteering.forgetAll();

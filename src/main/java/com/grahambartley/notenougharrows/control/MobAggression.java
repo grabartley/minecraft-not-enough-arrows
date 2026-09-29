@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.control;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.brain.Brain;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
@@ -40,6 +41,12 @@ public final class MobAggression {
     }
     if (previous != target) {
       dropAttacksOn(mob);
+    }
+  }
+
+  public static void forgive(final MobEntity mob, final Entity subject) {
+    if (mob instanceof WardenEntity warden) {
+      warden.removeSuspect(subject);
     }
   }
 

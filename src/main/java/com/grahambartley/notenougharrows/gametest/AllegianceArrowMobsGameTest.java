@@ -23,6 +23,7 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
   private static final int FINAL_STRETCH = 100;
   private static final Set<EntityType<?>> FOLLOWS_AWAITING_A_FIX =
       Set.of(EntityType.SPIDER, EntityType.GHAST, EntityType.WITHER);
+  private static final Set<EntityType<?>> DEFENDS_AWAITING_A_FIX = Set.of(EntityType.EVOKER);
   private static final AllegianceArrowConfig LASTS_THE_WHOLE_TEST =
       new AllegianceArrowConfig(MobArena.SLOW_LIMIT, AllegianceArrowConfig.DEFAULT_DEFEND_RADIUS);
 
@@ -31,7 +32,7 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
     return MobArena.perMob(
         "allegiance",
         "defends",
-        mob -> mob.fights() && mob.type() != EntityType.EVOKER,
+        mob -> mob.fights() && !DEFENDS_AWAITING_A_FIX.contains(mob.type()),
         MobArena.LONG_LIMIT,
         AllegianceArrowMobsGameTest::defends);
   }

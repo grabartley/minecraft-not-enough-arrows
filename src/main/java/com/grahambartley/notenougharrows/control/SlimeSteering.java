@@ -27,6 +27,10 @@ public final class SlimeSteering {
     return true;
   }
 
+  public static void release(final UUID slime) {
+    STEERED_AT.remove(slime);
+  }
+
   public static void forgetAll() {
     STEERED_AT.clear();
   }
