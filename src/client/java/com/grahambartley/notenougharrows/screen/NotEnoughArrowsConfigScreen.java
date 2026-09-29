@@ -34,8 +34,8 @@ public final class NotEnoughArrowsConfigScreen extends Screen {
   private final ServerConfigAccess access;
   private final ConfigDraft<NotEnoughArrowsConfig> serverDraft;
   private final ConfigDraft<ClientState> clientDraft;
-  private final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
 
+  private ThreePartsLayoutWidget layout;
   private ConfigOptionListWidget list;
 
   public NotEnoughArrowsConfigScreen(
@@ -60,6 +60,7 @@ public final class NotEnoughArrowsConfigScreen extends Screen {
 
   @Override
   protected void init() {
+    layout = new ThreePartsLayoutWidget(this);
     layout.setHeaderHeight(access.editable() ? HEADER_HEIGHT : NOTICE_HEADER_HEIGHT);
     layout.addHeader(buildHeader());
 
