@@ -29,7 +29,7 @@ public abstract class StatusArrowEntity extends BaseArrowEntity {
     super(entityType, world, x, y, z, stack, weapon);
   }
 
-  protected abstract RegistryEntry<StatusEffect> effect();
+  public abstract RegistryEntry<StatusEffect> effect();
 
   protected abstract int durationTicks(StatusArrowConfig status);
 

@@ -35,6 +35,10 @@ public final class CourierStationRecipes {
         .toList();
   }
 
+  public static boolean owns(final Identifier recipeId) {
+    return LOAD_ID.equals(recipeId) || UNLOAD_ID.equals(recipeId);
+  }
+
   public static List<ItemStack> handedBack(
       final RecipeEntry<FletchingRecipe> taken, final FletchingRecipeInput input) {
     if (!UNLOAD_ID.equals(taken.id())) {

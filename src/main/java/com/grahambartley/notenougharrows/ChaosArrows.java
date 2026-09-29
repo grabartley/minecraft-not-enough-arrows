@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows;
 
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
+import com.grahambartley.notenougharrows.arrow.ArrowEffect;
 import com.grahambartley.notenougharrows.arrow.ArrowSound;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import com.grahambartley.notenougharrows.chaos.DiscPalette;
@@ -11,6 +12,7 @@ import com.grahambartley.notenougharrows.entity.PolymorphArrowEntity;
 import com.grahambartley.notenougharrows.entity.PufferArrowEntity;
 import com.grahambartley.notenougharrows.entity.StinkArrowEntity;
 import java.util.List;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -49,11 +51,12 @@ public final class ChaosArrows {
   public static final RegisteredArrow<StinkArrowEntity> STINK_ARROW =
       ModArrows.registrar()
           .register(
-              ArrowDefinition.of(
-                  "stink_arrow",
-                  StinkArrowEntity::new,
-                  ChaosArrows::stinkArrow,
-                  ArrowSound.own(ModSounds.STINK_ARROW_RELEASE.getId())));
+              ArrowDefinition.<StinkArrowEntity>of(
+                      "stink_arrow",
+                      StinkArrowEntity::new,
+                      ChaosArrows::stinkArrow,
+                      ArrowSound.own(ModSounds.STINK_ARROW_RELEASE.getId()))
+                  .applying(ArrowEffect.overArea(StatusEffects.NAUSEA)));
 
   public static final RegisteredArrow<BoomerangArrowEntity> BOOMERANG_ARROW =
       ModArrows.registrar()

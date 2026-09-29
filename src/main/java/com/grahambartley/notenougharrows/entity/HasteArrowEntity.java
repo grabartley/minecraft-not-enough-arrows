@@ -28,7 +28,7 @@ public class HasteArrowEntity extends StatusArrowEntity {
   }
 
   @Override
-  protected RegistryEntry<StatusEffect> effect() {
+  public RegistryEntry<StatusEffect> effect() {
     return StatusEffects.HASTE;
   }
 

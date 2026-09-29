@@ -267,7 +267,12 @@
       "com.grahambartley.notenougharrows.gametest.SnowGolemArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.MagnetPullGameTest",
       "com.grahambartley.notenougharrows.gametest.MagnetArrowEntityGameTest",
-      "com.grahambartley.notenougharrows.gametest.PersistentProjectileEntityDeliveryMixinGameTest"
+      "com.grahambartley.notenougharrows.gametest.PersistentProjectileEntityDeliveryMixinGameTest",
+      "com.grahambartley.notenougharrows.gametest.ArrowEffectAuditGameTest",
+      "com.grahambartley.notenougharrows.gametest.ArrowRecipeAuditGameTest",
+      "com.grahambartley.notenougharrows.gametest.BlockAuditGameTest",
+      "com.grahambartley.notenougharrows.gametest.ArrowTextureAuditGameTest",
+      "com.grahambartley.notenougharrows.gametest.ArrowTextAuditGameTest"
     ]
   },
   "mixins": [

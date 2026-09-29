@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows;
 
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
+import com.grahambartley.notenougharrows.arrow.ArrowEffect;
 import com.grahambartley.notenougharrows.arrow.ArrowSound;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import com.grahambartley.notenougharrows.entity.BeaconArrowEntity;
@@ -9,6 +10,7 @@ import com.grahambartley.notenougharrows.entity.SonarArrowEntity;
 import com.grahambartley.notenougharrows.entity.TorchArrowEntity;
 import com.grahambartley.notenougharrows.entity.TracerArrowEntity;
 import com.grahambartley.notenougharrows.entity.TripwireArrowEntity;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -42,11 +44,12 @@ public final class DiscoveryArrows {
   public static final RegisteredArrow<SonarArrowEntity> SONAR_ARROW =
       ModArrows.registrar()
           .register(
-              ArrowDefinition.of(
-                  "sonar_arrow",
-                  SonarArrowEntity::new,
-                  DiscoveryArrows::sonarArrow,
-                  ArrowSound.own(ModSounds.SONAR_ARROW_PULSE.getId())));
+              ArrowDefinition.<SonarArrowEntity>of(
+                      "sonar_arrow",
+                      SonarArrowEntity::new,
+                      DiscoveryArrows::sonarArrow,
+                      ArrowSound.own(ModSounds.SONAR_ARROW_PULSE.getId()))
+                  .applying(ArrowEffect.overArea(StatusEffects.GLOWING)));
 
   public static final RegisteredArrow<TracerArrowEntity> TRACER_ARROW =
       ModArrows.registrar()

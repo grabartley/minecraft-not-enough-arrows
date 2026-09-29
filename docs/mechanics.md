@@ -37,11 +37,11 @@ A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one 
 | Firing and recovery | The choice rides on the arrow's item stack, so it survives being fired, recovered and fired again, a chunk unloading, and a server restart |
 | Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow, oak for the sapling arrow and cat for the party arrow. The unrecognised value is kept rather than overwritten |
 
-The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow. What it paints is under Terrain Arrows below. Its sprite is a placeholder until the terrain art is drawn. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
+The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow. What it paints is under Terrain Arrows below. Its sprite is one drawing of a dipped brush whose tuft takes the dye's colour. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
 
-The sapling arrow offers one choice per member of vanilla's `minecraft:saplings` tag: oak, spruce, birch, jungle, acacia, dark oak, cherry, the mangrove propagule, azalea and flowering azalea. Its name reads *Oak Sapling Arrow*, *Mangrove Sapling Arrow* and so on, and its head is tinted a leaf colour for each. What it plants is under Agriculture Arrows below, and its sprite is a placeholder until the agriculture art is drawn.
+The sapling arrow offers one choice per member of vanilla's `minecraft:saplings` tag: oak, spruce, birch, jungle, acacia, dark oak, cherry, the mangrove propagule, azalea and flowering azalea. Its name reads *Oak Sapling Arrow*, *Mangrove Sapling Arrow* and so on, and its head is tinted a leaf colour for each. What it plants is under Agriculture Arrows below. Its sprite is one drawing of a two-leaf sprout whose leaves take the sapling's colour.
 
-The party arrow offers one choice per vanilla music disc, nineteen in all, keyed by the disc's song: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, otherside, 5, pigstep, relic, creator, creator (music box) and precipice. Its name reads *Pigstep Party Arrow*, *13 Party Arrow* and so on, and its head is tinted a colour for each disc. What it does is under Chaos Arrows below, and its sprite is a placeholder until the chaos art is drawn.
+The party arrow offers one choice per vanilla music disc, nineteen in all, keyed by the disc's song: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, otherside, 5, pigstep, relic, creator, creator (music box) and precipice. Its name reads *Pigstep Party Arrow*, *13 Party Arrow* and so on, and its head is tinted a colour for each disc. What it does is under Chaos Arrows below. Its sprite is one drawing of a record with gold sparks whose disc takes the song's colour.
 
 ## Fire Patches
 
@@ -326,7 +326,7 @@ Six arrows that change a block at range: break it, raise ground on top of it, dr
 
 Every setting is read fresh on impact, so a change takes effect on the next shot. What a terrain arrow changed is never put back, apart from the pillar and web, which are timed.
 
-All six sprites are placeholders, the paint arrow's included, until the terrain art is drawn.
+Each arrow has its own item sprite and flight texture, drawn from its recipe's material: an iron pickaxe, a dirt column, a sponge, a faceted ice gem, a cobweb tangle and a paint brush.
 
 ## Agriculture Arrows
 
@@ -352,7 +352,7 @@ Six arrows that do a farm's chores at range. Each one runs vanilla's own code fo
 | Drops | Harvest and shear drops go into the shooter's inventory, and anything that does not fit stays on the ground where vanilla put it. A dispensed arrow leaves everything on the ground. A creative player with a full inventory loses the overflow, as vanilla's own pickup does |
 | Bees | `agriculture.bee.count` real bees, released at the impact point. They go for a creature the arrow struck, and a shot into the ground releases them with nothing to go for. They never sting the shooter, and one that turns on the shooter is sent back after its target. They cannot enter a hive or breed, and each is removed `agriculture.bee.lifetimeTicks` after it was released, including when its chunk comes back after it should have gone |
 
-Every setting is read fresh on impact, so a change takes effect on the next shot. A blossom or harvest arrow that strikes a block centres on the space in front of the face it struck, where a crop or sapling stands, so a radius of zero reaches that space alone and not the block struck. All six sprites are placeholders until the agriculture art is drawn.
+Every setting is read fresh on impact, so a change takes effect on the next shot. A blossom or harvest arrow that strikes a block centres on the space in front of the face it struck, where a crop or sapling stands, so a radius of zero reaches that space alone and not the block struck. Each arrow has its own item sprite and flight texture, drawn from its recipe's material: a bone meal blossom, an iron hoe, a watered furrow, a sprout, open shears and a bee.
 
 ## Traversal Arrows
 
@@ -382,7 +382,7 @@ Seven arrows that leave a way across terrain a bow can cross and legs cannot. Th
 | Bridge | Oak planks, level with the block struck, starting beside it and running back toward where the shooter stood when it landed, one block wide and edge to edge so it can be walked. It ends beneath the shooter, at `traversal.bridge.lengthBlocks`, or at the first position that is not open or where something stands, whichever comes first. A dispensed bridge runs back the way the arrow flew. It clears away after `traversal.bridge.lifetimeTicks` |
 | Blocks with no item | The zipline cable and the trampoline are the mod's own blocks, with no item form, no recipe and no drop, and [ADR 0039](adr/0039-a-traversal-structure-worth-more-than-its-recipe-is-built-from-the-mods-own-blocks.md) covers why those two are not vanilla chain and slime. The vines, scaffolding and planks are vanilla, and a plank or scaffold mined out of a live structure drops as it always would |
 
-Every setting is read fresh on impact, so a change takes effect on the next shot; a ride and a tow also read their speed every tick. No pending anchor, ride, tow or column survives a restart: all four live in memory only, and the cable, pads, scaffolding and planks are timed structures, cleared before the world saves. All seven sprites are placeholders until the traversal art is drawn.
+Every setting is read fresh on impact, so a change takes effect on the next shot; a ride and a tow also read their speed every tick. No pending anchor, ride, tow or column survives a restart: all four live in memory only, and the cable, pads, scaffolding and planks are timed structures, cleared before the world saves. Each arrow has its own item sprite and flight texture, drawn from its recipe's material: a chain link, the grapple's hook turned over, rising breeze chevrons, a climbing vine, a slime cube, a bamboo scaffold frame and a plank laid across the shaft.
 
 ## Discovery Arrows
 
@@ -409,7 +409,7 @@ Six arrows that tell you what is somewhere you cannot see: whether it is lit, wh
 | Watcher report | When a living thing that is not its owner stands in the watcher, the owner, and nobody else, gets a chat message naming what crossed, a distance rounded to ten blocks, and one of eight compass directions, from the owner to the watcher, plus a quiet sculk click only they hear. It never gives coordinates, and an owner in another dimension is told only that it happened. A watcher reports at most once per `discovery.tripwire.reportIntervalTicks`, however busy the corridor. A dispensed tripwire arrow has no owner, so its watcher reports to nobody and expires quietly |
 | Particles | Nothing here is drawn with particles, so everything still reads on the Minimal particle setting |
 
-Every setting is read fresh on impact, and a watcher keeps the interval it was set with. The beacon, prospector and sonar arrows play their own sounds, and the tripwire arrow plays one when set and another when it reports, listed under Sounds. The torch plays vanilla's torch placement sound. All six item and in-flight sprites are placeholders, the paint arrow's drawing with a recoloured head, until the discovery art is drawn. [ADR 0041](adr/0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) covers why the pulses, the path and the watcher work the way they do.
+Every setting is read fresh on impact, and a watcher keeps the interval it was set with. The beacon, prospector and sonar arrows play their own sounds, and the tripwire arrow plays one when set and another when it reports, listed under Sounds. The torch plays vanilla's torch placement sound. Each arrow has its own item sprite and flight texture, drawn from its recipe's material: a lit torch, a glowstone block with a rising beam, an amethyst cluster, an echo shard with sonar arcs, the glow ink head with a gunpowder trail, and a sculk sensor. [ADR 0041](adr/0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) covers why the pulses, the path and the watcher work the way they do.
 
 ## Chaos Arrows
 
@@ -435,7 +435,7 @@ Six arrows that exist for the fun of it. Each has its own switch under `chaos`, 
 | Polymorph | Only a hostile mob. A player, a villager or wandering trader, anything with an owner, and the wither, the ender dragon and the warden are never changed, and this is not a setting: the arrow glances off them and does nothing. A disguised mob keeps being itself on the server. Its AI is paused and replaced by an animal's aimless wandering, so it cannot attack, shoot, explode or hurt by touch, and it makes no ambient sound. A lit creeper holds its fuse until the disguise ends, and a drawn bow is lowered. Everything else about it, its health, equipment, name and target, is simply left alone, so it is all still there when it changes back, and damage it takes while disguised stays taken |
 | Disguise | The server keeps a record of each disguised mob, in memory only, and tells every client with the mod which harmless form to draw in its place: a sheep, pig, chicken, rabbit or cow, picked at random. A player who comes into range later is told on arrival (SIDE-12). The client draws that animal where the mob stands, moving, turning and flashing red as the mob does, and a client told anything other than one of those five forms draws the mob as it is. The disguise ends on expiry, when the mob dies, when it unloads or changes dimension, and when the server stops. Nothing about it is ever saved, so a restart always leaves an ordinary mob (PERSIST-4), and because the mob itself is never replaced no path can duplicate or lose one (SAFE-12). A player without the mod sees the mob as it really is |
 
-Every setting is read fresh on impact. The chicken, puffer, stink, boomerang and polymorph arrows play their own sounds, listed under Sounds; the party arrow plays its disc. All six item and in-flight sprites are placeholders, the paint arrow's drawing with a recoloured head, until the chaos art is drawn. [ADR 0042](adr/0042-a-disguise-is-drawn-rather-than-swapped.md) covers why a disguise is drawn by the client rather than a swap of one mob for another.
+Every setting is read fresh on impact. The chicken, puffer, stink, boomerang and polymorph arrows play their own sounds, listed under Sounds; the party arrow plays its disc. Each arrow has its own item sprite and flight texture: a hen's head, a spiked pufferfish, a rotten lump with an odour line, a chorus-purple return path, and a head half sculk and half pig. [ADR 0042](adr/0042-a-disguise-is-drawn-rather-than-swapped.md) covers why a disguise is drawn by the client rather than a swap of one mob for another.
 
 ## Social Arrows
 
@@ -457,7 +457,7 @@ Three arrows aimed at someone or something other than what the shooter is holdin
 | Snow golem | An ordinary vanilla snow golem, owned by nobody, built without its pumpkin so a twelve-arrow craft cannot be sheared back into twelve pumpkins. It fights and dies as any snow golem does. It melts after `social.snowGolem.lifetimeTicks`: its melting time is saved on the golem, so one that was unloaded past its time melts as soon as it loads, and a golem built by hand never melts. It is refused, and the arrow embeds to be picked back up, where a player could not build one: beyond the world border, outside the build limit, without two blocks of room, for a shooter in adventure mode, and inside spawn protection for anyone the server would not let build there (TOGETHER-7, TOGETHER-8) |
 | Magnet | Moves item entities and experience orbs only, never a creature, a vehicle or an arrow (TOGETHER-9). It sets their speed toward the shooter each tick for up to five seconds and stops each one dead when it arrives, so the shooter picks it up under vanilla's rules and a full inventory leaves it at their feet rather than flying past (TOGETHER-10). A pull is held in memory only, so a restart leaves pulled items where they were. A dispensed magnet arrow, with no shooter, pulls nothing (TOGETHER-11) |
 
-The courier, snow golem and magnet arrows play their own sounds, listed under Sounds. All three item and in-flight sprites are placeholders, the chicken arrow's drawing with a recoloured head, until the social art is drawn; the loaded courier arrow is told apart by its glint until then.
+The courier, snow golem and magnet arrows play their own sounds, listed under Sounds. Each arrow has its own item sprite and flight texture: an ender chest, a carved pumpkin on a snowball, and a horseshoe magnet. A loaded courier arrow swaps to a second sprite with a tied bundle on the chest's lid, chosen by the `not-enough-arrows:loaded` item model predicate, so a player can see it is carrying something before they fire it.
 
 ## Ricochet Arrow
 
@@ -687,41 +687,42 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/railgun_arrow.png` | The railgun arrow's item sprite |
 | `textures/item/paint_arrow.png` | The paint arrow's item sprite, left untinted |
 | `textures/item/paint_arrow_head.png` | The paint arrow's head, tinted to the dye it carries |
-| `textures/item/drill_arrow.png` | The drill arrow's item sprite, a placeholder |
-| `textures/item/pillar_arrow.png` | The pillar arrow's item sprite, a placeholder |
-| `textures/item/drain_arrow.png` | The drain arrow's item sprite, a placeholder |
-| `textures/item/freeze_arrow.png` | The freeze arrow's item sprite, a placeholder |
-| `textures/item/web_arrow.png` | The web arrow's item sprite, a placeholder |
-| `textures/item/blossom_arrow.png` | The blossom arrow's item sprite, a placeholder |
-| `textures/item/harvest_arrow.png` | The harvest arrow's item sprite, a placeholder |
-| `textures/item/till_arrow.png` | The till arrow's item sprite, a placeholder |
-| `textures/item/sapling_arrow.png` | The sapling arrow's item sprite, left untinted, a placeholder |
-| `textures/item/sapling_arrow_head.png` | The sapling arrow's head, tinted to the sapling it carries, a placeholder |
-| `textures/item/shear_arrow.png` | The shear arrow's item sprite, a placeholder |
-| `textures/item/bee_arrow.png` | The bee arrow's item sprite, a placeholder |
-| `textures/item/zipline_arrow.png` | The zipline arrow's item sprite, a placeholder |
-| `textures/item/tow_arrow.png` | The tow arrow's item sprite, a placeholder |
-| `textures/item/updraft_arrow.png` | The updraft arrow's item sprite, a placeholder |
-| `textures/item/vine_arrow.png` | The vine arrow's item sprite, a placeholder |
-| `textures/item/trampoline_arrow.png` | The trampoline arrow's item sprite, a placeholder |
-| `textures/item/scaffold_arrow.png` | The scaffold arrow's item sprite, a placeholder |
-| `textures/item/bridge_arrow.png` | The bridge arrow's item sprite, a placeholder |
-| `textures/item/torch_arrow.png` | The torch arrow's item sprite, a placeholder |
-| `textures/item/beacon_arrow.png` | The beacon arrow's item sprite, a placeholder |
-| `textures/item/prospector_arrow.png` | The prospector arrow's item sprite, a placeholder |
-| `textures/item/sonar_arrow.png` | The sonar arrow's item sprite, a placeholder |
-| `textures/item/tracer_arrow.png` | The tracer arrow's item sprite, a placeholder |
-| `textures/item/tripwire_arrow.png` | The tripwire arrow's item sprite, a placeholder |
-| `textures/item/party_arrow.png` | The party arrow's item sprite, left untinted, a placeholder |
-| `textures/item/party_arrow_head.png` | The party arrow's head, tinted to the disc it carries, a placeholder |
-| `textures/item/chicken_arrow.png` | The chicken arrow's item sprite, a placeholder |
-| `textures/item/puffer_arrow.png` | The puffer arrow's item sprite, a placeholder |
-| `textures/item/stink_arrow.png` | The stink arrow's item sprite, a placeholder |
-| `textures/item/boomerang_arrow.png` | The boomerang arrow's item sprite, a placeholder |
-| `textures/item/polymorph_arrow.png` | The polymorph arrow's item sprite, a placeholder |
-| `textures/item/courier_arrow.png` | The courier arrow's item sprite, a placeholder |
-| `textures/item/snow_golem_arrow.png` | The snow golem arrow's item sprite, a placeholder |
-| `textures/item/magnet_arrow.png` | The magnet arrow's item sprite, a placeholder |
+| `textures/item/drill_arrow.png` | The drill arrow's item sprite |
+| `textures/item/pillar_arrow.png` | The pillar arrow's item sprite |
+| `textures/item/drain_arrow.png` | The drain arrow's item sprite |
+| `textures/item/freeze_arrow.png` | The freeze arrow's item sprite |
+| `textures/item/web_arrow.png` | The web arrow's item sprite |
+| `textures/item/blossom_arrow.png` | The blossom arrow's item sprite |
+| `textures/item/harvest_arrow.png` | The harvest arrow's item sprite |
+| `textures/item/till_arrow.png` | The till arrow's item sprite |
+| `textures/item/sapling_arrow.png` | The sapling arrow's item sprite, left untinted |
+| `textures/item/sapling_arrow_head.png` | The sapling arrow's head, tinted to the sapling it carries |
+| `textures/item/shear_arrow.png` | The shear arrow's item sprite |
+| `textures/item/bee_arrow.png` | The bee arrow's item sprite |
+| `textures/item/zipline_arrow.png` | The zipline arrow's item sprite |
+| `textures/item/tow_arrow.png` | The tow arrow's item sprite |
+| `textures/item/updraft_arrow.png` | The updraft arrow's item sprite |
+| `textures/item/vine_arrow.png` | The vine arrow's item sprite |
+| `textures/item/trampoline_arrow.png` | The trampoline arrow's item sprite |
+| `textures/item/scaffold_arrow.png` | The scaffold arrow's item sprite |
+| `textures/item/bridge_arrow.png` | The bridge arrow's item sprite |
+| `textures/item/torch_arrow.png` | The torch arrow's item sprite |
+| `textures/item/beacon_arrow.png` | The beacon arrow's item sprite |
+| `textures/item/prospector_arrow.png` | The prospector arrow's item sprite |
+| `textures/item/sonar_arrow.png` | The sonar arrow's item sprite |
+| `textures/item/tracer_arrow.png` | The tracer arrow's item sprite |
+| `textures/item/tripwire_arrow.png` | The tripwire arrow's item sprite |
+| `textures/item/party_arrow.png` | The party arrow's item sprite, left untinted |
+| `textures/item/party_arrow_head.png` | The party arrow's head, tinted to the disc it carries |
+| `textures/item/chicken_arrow.png` | The chicken arrow's item sprite |
+| `textures/item/puffer_arrow.png` | The puffer arrow's item sprite |
+| `textures/item/stink_arrow.png` | The stink arrow's item sprite |
+| `textures/item/boomerang_arrow.png` | The boomerang arrow's item sprite |
+| `textures/item/polymorph_arrow.png` | The polymorph arrow's item sprite |
+| `textures/item/courier_arrow.png` | The courier arrow's item sprite |
+| `textures/item/courier_arrow_loaded.png` | The courier arrow's item sprite while it carries a stack |
+| `textures/item/snow_golem_arrow.png` | The snow golem arrow's item sprite |
+| `textures/item/magnet_arrow.png` | The magnet arrow's item sprite |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/block/beacon_beam.png` | The core of the beam a beacon arrow raises, animated to scroll upward |
 | `textures/block/beacon_beam_glow.png` | The fainter glow around that core, animated the same way |
@@ -749,41 +750,41 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
 | `textures/entity/arrow/paint_arrow.png` | The paint arrow in flight and planted in a block, left untinted |
 | `textures/entity/arrow/paint_arrow_tint.png` | The paint arrow's head in flight, drawn over the arrow and tinted to its dye |
-| `textures/entity/arrow/drill_arrow.png` | The drill arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/pillar_arrow.png` | The pillar arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/drain_arrow.png` | The drain arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/freeze_arrow.png` | The freeze arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/web_arrow.png` | The web arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/blossom_arrow.png` | The blossom arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/harvest_arrow.png` | The harvest arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/till_arrow.png` | The till arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/sapling_arrow.png` | The sapling arrow in flight and planted in a block, left untinted, a placeholder |
-| `textures/entity/arrow/sapling_arrow_tint.png` | The sapling arrow's head in flight, tinted to its sapling, a placeholder |
-| `textures/entity/arrow/shear_arrow.png` | The shear arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/bee_arrow.png` | The bee arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/zipline_arrow.png` | The zipline arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/tow_arrow.png` | The tow arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/updraft_arrow.png` | The updraft arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/vine_arrow.png` | The vine arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/trampoline_arrow.png` | The trampoline arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/scaffold_arrow.png` | The scaffold arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/bridge_arrow.png` | The bridge arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/torch_arrow.png` | The torch arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/beacon_arrow.png` | The beacon arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/prospector_arrow.png` | The prospector arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/sonar_arrow.png` | The sonar arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/tracer_arrow.png` | The tracer arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/tripwire_arrow.png` | The tripwire arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/party_arrow.png` | The party arrow in flight and planted in a block, left untinted, a placeholder |
-| `textures/entity/arrow/party_arrow_tint.png` | The party arrow's head in flight, tinted to its disc, a placeholder |
-| `textures/entity/arrow/chicken_arrow.png` | The chicken arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/puffer_arrow.png` | The puffer arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/stink_arrow.png` | The stink arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/boomerang_arrow.png` | The boomerang arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/polymorph_arrow.png` | The polymorph arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/courier_arrow.png` | The courier arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/snow_golem_arrow.png` | The snow golem arrow in flight and planted in a block, a placeholder |
-| `textures/entity/arrow/magnet_arrow.png` | The magnet arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/drill_arrow.png` | The drill arrow in flight and planted in a block |
+| `textures/entity/arrow/pillar_arrow.png` | The pillar arrow in flight and planted in a block |
+| `textures/entity/arrow/drain_arrow.png` | The drain arrow in flight and planted in a block |
+| `textures/entity/arrow/freeze_arrow.png` | The freeze arrow in flight and planted in a block |
+| `textures/entity/arrow/web_arrow.png` | The web arrow in flight and planted in a block |
+| `textures/entity/arrow/blossom_arrow.png` | The blossom arrow in flight and planted in a block |
+| `textures/entity/arrow/harvest_arrow.png` | The harvest arrow in flight and planted in a block |
+| `textures/entity/arrow/till_arrow.png` | The till arrow in flight and planted in a block |
+| `textures/entity/arrow/sapling_arrow.png` | The sapling arrow in flight and planted in a block, left untinted |
+| `textures/entity/arrow/sapling_arrow_tint.png` | The sapling arrow's head in flight, tinted to its sapling |
+| `textures/entity/arrow/shear_arrow.png` | The shear arrow in flight and planted in a block |
+| `textures/entity/arrow/bee_arrow.png` | The bee arrow in flight and planted in a block |
+| `textures/entity/arrow/zipline_arrow.png` | The zipline arrow in flight and planted in a block |
+| `textures/entity/arrow/tow_arrow.png` | The tow arrow in flight and planted in a block |
+| `textures/entity/arrow/updraft_arrow.png` | The updraft arrow in flight and planted in a block |
+| `textures/entity/arrow/vine_arrow.png` | The vine arrow in flight and planted in a block |
+| `textures/entity/arrow/trampoline_arrow.png` | The trampoline arrow in flight and planted in a block |
+| `textures/entity/arrow/scaffold_arrow.png` | The scaffold arrow in flight and planted in a block |
+| `textures/entity/arrow/bridge_arrow.png` | The bridge arrow in flight and planted in a block |
+| `textures/entity/arrow/torch_arrow.png` | The torch arrow in flight and planted in a block |
+| `textures/entity/arrow/beacon_arrow.png` | The beacon arrow in flight and planted in a block |
+| `textures/entity/arrow/prospector_arrow.png` | The prospector arrow in flight and planted in a block |
+| `textures/entity/arrow/sonar_arrow.png` | The sonar arrow in flight and planted in a block |
+| `textures/entity/arrow/tracer_arrow.png` | The tracer arrow in flight and planted in a block |
+| `textures/entity/arrow/tripwire_arrow.png` | The tripwire arrow in flight and planted in a block |
+| `textures/entity/arrow/party_arrow.png` | The party arrow in flight and planted in a block, left untinted |
+| `textures/entity/arrow/party_arrow_tint.png` | The party arrow's head in flight, tinted to its disc |
+| `textures/entity/arrow/chicken_arrow.png` | The chicken arrow in flight and planted in a block |
+| `textures/entity/arrow/puffer_arrow.png` | The puffer arrow in flight and planted in a block |
+| `textures/entity/arrow/stink_arrow.png` | The stink arrow in flight and planted in a block |
+| `textures/entity/arrow/boomerang_arrow.png` | The boomerang arrow in flight and planted in a block |
+| `textures/entity/arrow/polymorph_arrow.png` | The polymorph arrow in flight and planted in a block |
+| `textures/entity/arrow/courier_arrow.png` | The courier arrow in flight and planted in a block |
+| `textures/entity/arrow/snow_golem_arrow.png` | The snow golem arrow in flight and planted in a block |
+| `textures/entity/arrow/magnet_arrow.png` | The magnet arrow in flight and planted in a block |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.
@@ -941,6 +942,7 @@ The station is the screen handler behind the fletching table interface: nine inp
 | Who decides the result | The server. It matches the inputs against the registered recipe type and syncs the result stack, so what a player takes is only ever what the server produced. A client derives the same list from its own synced copy of the recipes to render, exactly as vanilla's stonecutter does |
 | Selecting a recipe | Validated against the server's own list of matching recipes. A selection outside that list is refused and changes nothing |
 | Taking the result | The withdrawal from every input slot is planned in full before a single stack is touched, so an interrupted take can neither duplicate nor destroy items. Once the inputs are gone the result is recomputed, which is why two takes against one set of inputs yield one result. Shift-clicking repeats while the inputs allow it, and any part of a result the player has no room for drops at their feet |
+| Containers | An ingredient that leaves a container behind at a crafting table leaves the same one at the station, back in the slot it was drawn from: the milk arrow's milk bucket and the till arrow's water bucket each return one empty bucket. The station follows vanilla's own recipe remainders, so the frost arrow's powder snow bucket, which vanilla gives no remainder, is consumed at both routes until [issue 201](https://github.com/grabartley/minecraft-not-enough-arrows/issues/201) fixes it. An empty bucket is not an ingredient, so it stops the next match rather than being eaten by one |
 | Shift-clicking | Moves stacks between the station and the inventory, falling back from hotbar to main inventory and back the way a crafting table does when the grid is full |
 | Closing the screen | Every item left in an input slot goes back to the player, or drops at their feet if the inventory is full. Nothing is destroyed |
 | Courier arrows | An empty courier arrow and one stack are offered as a load, and a loaded arrow on its own as an unload, built from what is in the grid rather than from a recipe file. Loading withdraws one arrow and the whole stack up to the cap. A bucket or bottle rides along full, with no empty container left behind. Unloading hands the empty arrow back into the slot the loaded one left, or to the player while other loaded arrows still fill it |

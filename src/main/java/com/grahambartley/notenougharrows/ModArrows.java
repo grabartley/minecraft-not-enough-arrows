@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows;
 
 import com.grahambartley.notenougharrows.arrow.ArrowCatalog;
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
+import com.grahambartley.notenougharrows.arrow.ArrowEffect;
 import com.grahambartley.notenougharrows.arrow.ArrowRegistrar;
 import com.grahambartley.notenougharrows.arrow.ArrowSound;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
@@ -42,6 +43,7 @@ import com.grahambartley.notenougharrows.entity.WebArrowEntity;
 import com.grahambartley.notenougharrows.entity.WindArrowEntity;
 import com.grahambartley.notenougharrows.tint.DyePalette;
 import java.util.List;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -65,7 +67,9 @@ public final class ModArrows {
 
   public static final RegisteredArrow<GlowInkArrowEntity> GLOW_INK_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("glow_ink_arrow", GlowInkArrowEntity::new, ModArrows::glowInkArrow));
+          ArrowDefinition.<GlowInkArrowEntity>of(
+                  "glow_ink_arrow", GlowInkArrowEntity::new, ModArrows::glowInkArrow)
+              .applying(ArrowEffect.onStruckTarget(StatusEffects.GLOWING)));
 
   public static final RegisteredArrow<RedstoneArrowEntity> REDSTONE_ARROW =
       REGISTRAR.register(
@@ -155,7 +159,9 @@ public final class ModArrows {
 
   public static final RegisteredArrow<RustArrowEntity> RUST_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("rust_arrow", RustArrowEntity::new, ModArrows::rustArrow));
+          ArrowDefinition.<RustArrowEntity>of(
+                  "rust_arrow", RustArrowEntity::new, ModArrows::rustArrow)
+              .applying(ArrowEffect.onStruckTarget(StatusEffects.MINING_FATIGUE)));
 
   public static final RegisteredArrow<MilkArrowEntity> MILK_ARROW =
       REGISTRAR.register(
@@ -163,11 +169,15 @@ public final class ModArrows {
 
   public static final RegisteredArrow<HasteArrowEntity> HASTE_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("haste_arrow", HasteArrowEntity::new, ModArrows::hasteArrow));
+          ArrowDefinition.<HasteArrowEntity>of(
+                  "haste_arrow", HasteArrowEntity::new, ModArrows::hasteArrow)
+              .applying(ArrowEffect.onStruckTarget(StatusEffects.HASTE)));
 
   public static final RegisteredArrow<GuardArrowEntity> GUARD_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("guard_arrow", GuardArrowEntity::new, ModArrows::guardArrow));
+          ArrowDefinition.<GuardArrowEntity>of(
+                  "guard_arrow", GuardArrowEntity::new, ModArrows::guardArrow)
+              .applying(ArrowEffect.onStruckTarget(StatusEffects.ABSORPTION)));
 
   public static final RegisteredArrow<HomingArrowEntity> HOMING_ARROW =
       REGISTRAR.register(
@@ -193,8 +203,9 @@ public final class ModArrows {
 
   public static final RegisteredArrow<LevitationArrowEntity> LEVITATION_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of(
-              "levitation_arrow", LevitationArrowEntity::new, ModArrows::levitationArrow));
+          ArrowDefinition.<LevitationArrowEntity>of(
+                  "levitation_arrow", LevitationArrowEntity::new, ModArrows::levitationArrow)
+              .applying(ArrowEffect.onStruckTarget(StatusEffects.LEVITATION)));
 
   public static final RegisteredArrow<TauntArrowEntity> TAUNT_ARROW =
       REGISTRAR.register(
@@ -222,11 +233,12 @@ public final class ModArrows {
 
   public static final RegisteredArrow<SmokeArrowEntity> SMOKE_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of(
-              "smoke_arrow",
-              SmokeArrowEntity::new,
-              ModArrows::smokeArrow,
-              ArrowSound.own(ModSounds.SMOKE_ARROW_IMPACT.getId())));
+          ArrowDefinition.<SmokeArrowEntity>of(
+                  "smoke_arrow",
+                  SmokeArrowEntity::new,
+                  ModArrows::smokeArrow,
+                  ArrowSound.own(ModSounds.SMOKE_ARROW_IMPACT.getId()))
+              .applying(ArrowEffect.overArea(StatusEffects.BLINDNESS)));
 
   public static final RegisteredArrow<DisarmArrowEntity> DISARM_ARROW =
       REGISTRAR.register(

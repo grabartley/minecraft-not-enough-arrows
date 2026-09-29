@@ -1,13 +1,15 @@
-package com.grahambartley.notenougharrows.render;
+package com.grahambartley.notenougharrows.arrow;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
 import net.minecraft.util.Identifier;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class ArrowRendererRegistrarTest {
+class ArrowTexturesTest {
 
   @ParameterizedTest
   @CsvSource({
@@ -16,8 +18,7 @@ class ArrowRendererRegistrarTest {
     "arrow, textures/entity/arrow/arrow.png",
   })
   void derivesTheTexturePathFromTheArrowPath(final String path, final String expectedTexturePath) {
-    final Identifier texture =
-        ArrowRendererRegistrar.textureFor(Identifier.of(NotEnoughArrows.MOD_ID, path));
+    final Identifier texture = ArrowTextures.flight(Identifier.of(NotEnoughArrows.MOD_ID, path));
 
     assertEquals(expectedTexturePath, texture.getPath());
   }
@@ -25,8 +26,7 @@ class ArrowRendererRegistrarTest {
   @ParameterizedTest
   @CsvSource({"not-enough-arrows", "minecraft"})
   void keepsTheArrowNamespaceForItsTexture(final String namespace) {
-    final Identifier texture =
-        ArrowRendererRegistrar.textureFor(Identifier.of(namespace, "tnt_arrow"));
+    final Identifier texture = ArrowTextures.flight(Identifier.of(namespace, "tnt_arrow"));
 
     assertEquals(namespace, texture.getNamespace());
   }
@@ -39,9 +39,15 @@ class ArrowRendererRegistrarTest {
   void derivesTheTintTexturePathBesideTheArrowTexture(
       final String path, final String expectedTexturePath) {
     final Identifier texture =
-        ArrowRendererRegistrar.tintTextureFor(Identifier.of(NotEnoughArrows.MOD_ID, path));
+        ArrowTextures.flightTint(Identifier.of(NotEnoughArrows.MOD_ID, path));
 
     assertEquals(NotEnoughArrows.MOD_ID, texture.getNamespace());
     assertEquals(expectedTexturePath, texture.getPath());
+  }
+
+  @Test
+  void rejectsANullArrowId() {
+    assertThrows(NullPointerException.class, () -> ArrowTextures.flight(null));
+    assertThrows(NullPointerException.class, () -> ArrowTextures.flightTint(null));
   }
 }

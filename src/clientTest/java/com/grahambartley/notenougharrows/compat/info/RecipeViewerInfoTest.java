@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.grahambartley.notenougharrows.NotEnoughArrows;
+import com.grahambartley.notenougharrows.item.InfoKeys;
 import java.util.Arrays;
 import java.util.List;
 import net.minecraft.util.Identifier;

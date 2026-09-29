@@ -1,4 +1,4 @@
-package com.grahambartley.notenougharrows.compat.info;
+package com.grahambartley.notenougharrows.item;
 
 import java.util.Objects;
 import net.minecraft.util.Identifier;

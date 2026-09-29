@@ -21,7 +21,8 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     int maxTrackingRange,
     int trackingTickInterval,
     List<ArrowSound> sounds,
-    Optional<TintPalette> palette) {
+    Optional<TintPalette> palette,
+    List<ArrowEffect> effects) {
 
   public static final float DEFAULT_SIZE = 0.5f;
   public static final int DEFAULT_MAX_TRACKING_RANGE = 4;
@@ -35,6 +36,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     Objects.requireNonNull(spawnFactory, "spawnFactory");
     sounds = List.copyOf(Objects.requireNonNull(sounds, "sounds"));
     Objects.requireNonNull(palette, "palette");
+    effects = List.copyOf(Objects.requireNonNull(effects, "effects"));
 
     if (!VALID_PATH.matcher(path).matches()) {
       throw new IllegalArgumentException(
@@ -72,7 +74,8 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         maxTrackingRange,
         trackingTickInterval,
         sounds,
-        Optional.empty());
+        Optional.empty(),
+        List.of());
   }
 
   public static <E extends BaseArrowEntity> ArrowDefinition<E> of(
@@ -106,7 +109,22 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         DEFAULT_MAX_TRACKING_RANGE,
         DEFAULT_TRACKING_TICK_INTERVAL,
         Arrays.asList(Objects.requireNonNull(sounds, "sounds")),
-        Optional.of(Objects.requireNonNull(palette, "palette")));
+        Optional.of(Objects.requireNonNull(palette, "palette")),
+        List.of());
+  }
+
+  public ArrowDefinition<E> applying(final ArrowEffect... applied) {
+    return new ArrowDefinition<>(
+        path,
+        entityFactory,
+        spawnFactory,
+        width,
+        height,
+        maxTrackingRange,
+        trackingTickInterval,
+        sounds,
+        palette,
+        Arrays.asList(Objects.requireNonNull(applied, "applied")));
   }
 
   public Identifier id() {
