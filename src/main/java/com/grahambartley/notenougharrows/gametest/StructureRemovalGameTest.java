@@ -11,6 +11,7 @@ import com.grahambartley.notenougharrows.structure.StructureBlock;
 import com.grahambartley.notenougharrows.structure.StructureChunkMarks;
 import com.grahambartley.notenougharrows.structure.StructureRemoval;
 import com.grahambartley.notenougharrows.structure.TimedStructure;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.UUID;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -80,8 +81,7 @@ public final class StructureRemovalGameTest implements FabricGameTest {
     final TimedStructure structure = new TimedStructure(id, null, absolute(context, LINE), 0L);
 
     final int removed =
-        StructureRemoval.remove(
-            context.getWorld(), structure, StructureRemoval.loadedIn(context.getWorld()));
+        StructureRemoval.remove(context.getWorld(), structure, LoadedGround.in(context.getWorld()));
 
     context.assertEquals(removed, LINE.size(), "Blocks removed from loaded chunks");
     LINE.forEach(pos -> context.expectBlock(Blocks.AIR, pos));
@@ -91,11 +91,10 @@ public final class StructureRemovalGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theTestAreaCountsAsLoaded(TestContext context) {
     context.assertTrue(
-        StructureRemoval.loadedIn(context.getWorld()).test(context.getAbsolutePos(SECOND)),
+        LoadedGround.in(context.getWorld()).test(context.getAbsolutePos(SECOND)),
         "The chunk a test runs in is loaded");
     context.assertFalse(
-        StructureRemoval.loadedIn(context.getWorld())
-            .test(new BlockPos(20_000_000, 64, 20_000_000)),
+        LoadedGround.in(context.getWorld()).test(new BlockPos(20_000_000, 64, 20_000_000)),
         "A chunk nobody visited is not loaded, and asking must not load it");
     context.complete();
   }

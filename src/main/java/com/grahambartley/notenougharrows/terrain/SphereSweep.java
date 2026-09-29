@@ -1,8 +1,8 @@
 package com.grahambartley.notenougharrows.terrain;
 
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
 import com.grahambartley.notenougharrows.world.BlockEditPermission;
 import com.grahambartley.notenougharrows.world.BlockSphere;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -57,7 +57,7 @@ public final class SphereSweep {
 
   public static Predicate<BlockPos> editableBy(
       final ServerWorld world, @Nullable final PlayerEntity shooter) {
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     return pos ->
         isLoaded.test(pos)
             && world.isInBuildLimit(pos)

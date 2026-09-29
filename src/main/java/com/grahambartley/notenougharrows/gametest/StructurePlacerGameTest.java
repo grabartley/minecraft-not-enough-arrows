@@ -13,7 +13,7 @@ import com.grahambartley.notenougharrows.structure.StructureBlock;
 import com.grahambartley.notenougharrows.structure.StructureBudget;
 import com.grahambartley.notenougharrows.structure.StructureChunkMarks;
 import com.grahambartley.notenougharrows.structure.StructurePlacer;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -187,7 +187,7 @@ public final class StructurePlacerGameTest implements FabricGameTest {
     context.assertEquals(placed.size(), 1, "Blocks placed beside an unloaded candidate");
     context.expectBlock(Blocks.OAK_PLANKS, FIRST);
     context.assertFalse(
-        StructureRemoval.loadedIn(context.getWorld()).test(unvisited),
+        LoadedGround.in(context.getWorld()).test(unvisited),
         "Placing a structure should never load a chunk");
     context.complete();
   }

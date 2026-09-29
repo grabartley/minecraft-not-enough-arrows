@@ -4,9 +4,9 @@ import com.grahambartley.notenougharrows.config.ScaffoldArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import com.grahambartley.notenougharrows.structure.StructureBlock;
 import com.grahambartley.notenougharrows.structure.StructureBudget;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
 import com.grahambartley.notenougharrows.structure.TimedStructure;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -57,7 +57,7 @@ public final class ScaffoldService {
 
   public static Optional<BlockPos> footing(
       final ServerWorld world, final BlockPos impact, final int maxDrop) {
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     BlockPos candidate = impact;
     for (int dropped = 0; dropped <= maxDrop; dropped++) {
       if (!OpenRun.isOpen(world, candidate, MATERIAL, isLoaded)) {

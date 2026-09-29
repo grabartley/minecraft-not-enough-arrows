@@ -1,6 +1,5 @@
 package com.grahambartley.notenougharrows.structure;
 
-import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -36,9 +35,5 @@ public final class StructureRemoval {
       return false;
     }
     return world.setBlockState(pos, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
-  }
-
-  public static Predicate<BlockPos> loadedIn(final ServerWorld world) {
-    return LoadedGround.in(world);
   }
 }

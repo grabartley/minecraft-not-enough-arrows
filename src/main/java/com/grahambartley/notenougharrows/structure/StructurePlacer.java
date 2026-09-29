@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.structure;
 
 import com.grahambartley.notenougharrows.world.BlockEditPermission;
 import com.grahambartley.notenougharrows.world.BlockPlacement;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,7 @@ public final class StructurePlacer {
       @Nullable final PlayerEntity owner,
       final StructureBudget budget,
       final Predicate<BlockPos> isHeld) {
-    final Predicate<BlockPos> isLoaded = StructureRemoval.loadedIn(world);
+    final Predicate<BlockPos> isLoaded = LoadedGround.in(world);
     final List<StructureBlock> placed = new ArrayList<>();
     final Set<BlockPos> taken = new HashSet<>();
     for (final BlockPos candidate : candidates) {

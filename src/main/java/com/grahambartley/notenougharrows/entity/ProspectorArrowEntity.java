@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
+import com.grahambartley.notenougharrows.arrow.OneShot;
 import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.config.ProspectorArrowConfig;
 import com.grahambartley.notenougharrows.reveal.BlockRevealPulse;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class ProspectorArrowEntity extends BaseArrowEntity {
   private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
-  private boolean fired;
+  private final OneShot pulse = new OneShot();
 
   public ProspectorArrowEntity(
       final EntityType<? extends ProspectorArrowEntity> entityType, final World world) {
@@ -51,10 +52,9 @@ public class ProspectorArrowEntity extends BaseArrowEntity {
   }
 
   private void pulseAt(final ServerWorld world, final BlockPos center) {
-    if (fired) {
+    if (!pulse.claim()) {
       return;
     }
-    fired = true;
     final ProspectorArrowConfig prospector = ServerConfigService.get().discovery().prospector();
     BlockRevealPulse.fire(
         world,

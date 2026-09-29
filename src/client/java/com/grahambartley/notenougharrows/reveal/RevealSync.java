@@ -56,5 +56,6 @@ public final class RevealSync {
   public static void clear() {
     OUTLINES.clear();
     PATHS.clear();
+    currentWorld = null;
   }
 }

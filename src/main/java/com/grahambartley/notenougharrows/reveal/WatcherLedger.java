@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 import net.minecraft.util.math.BlockPos;
 
 public final class WatcherLedger {
-  private final Map<UUID, Watcher> watchers = new LinkedHashMap<>();
-
   public static final int MAX_PER_OWNER = 16;
+
+  private final Map<UUID, Watcher> watchers = new LinkedHashMap<>();
 
   public void add(final Watcher watcher) {
     if (watcher.owner() != null) {
