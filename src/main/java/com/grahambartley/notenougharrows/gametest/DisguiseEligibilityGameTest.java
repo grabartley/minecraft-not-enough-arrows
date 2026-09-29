@@ -5,6 +5,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.VexEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
@@ -59,6 +60,9 @@ public final class DisguiseEligibilityGameTest implements FabricGameTest {
     context.assertFalse(
         DisguiseEligibility.canDisguise(still(context, EntityType.WANDERING_TRADER)),
         "A wandering trader");
+    final VexEntity summoned = (VexEntity) still(context, EntityType.VEX);
+    summoned.setOwner(still(context, EntityType.EVOKER));
+    context.assertFalse(DisguiseEligibility.canDisguise(summoned), "A vex its evoker owns");
     context.assertFalse(
         DisguiseEligibility.canDisguise(still(context, EntityType.COW)), "A cow is not hostile");
     context.assertFalse(

@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.disguise;
 import java.util.Set;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Ownable;
 import net.minecraft.entity.Tameable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.Monster;
@@ -26,6 +27,7 @@ public final class DisguiseEligibility {
     return entity instanceof PlayerEntity
         || entity instanceof MerchantEntity
         || (entity instanceof Tameable tameable && tameable.getOwnerUuid() != null)
+        || (entity instanceof Ownable owned && owned.getOwner() != null)
         || BOSSES.contains(entity.getType());
   }
 }

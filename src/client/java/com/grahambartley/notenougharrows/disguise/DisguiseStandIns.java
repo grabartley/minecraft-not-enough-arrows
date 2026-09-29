@@ -5,6 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
+import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
@@ -71,6 +74,15 @@ public final class DisguiseStandIns {
     standIn.setCustomNameVisible(real.isCustomNameVisible());
     standIn.setInvisible(real.isInvisible());
     standIn.setGlowing(real.isGlowing());
+    standIn.setOnFire(real.isOnFire());
+    if (standIn instanceof MobEntity mob) {
+      mob.setBaby(real.isBaby());
+    }
+    final EntityAttributeInstance scale =
+        standIn.getAttributeInstance(EntityAttributes.GENERIC_SCALE);
+    if (scale != null) {
+      scale.setBaseValue(real.getScale());
+    }
     standIn.limbAnimator.prevSpeed = real.limbAnimator.prevSpeed;
     standIn.limbAnimator.speed = real.limbAnimator.speed;
     standIn.limbAnimator.pos = real.limbAnimator.pos;

@@ -10,7 +10,8 @@
 		"ServerCommonNetworkHandlerMixin",
 		"MobEntityDisguiseMixin",
 		"SlimeEntityDisguiseMixin",
-		"LivingEntityKnockbackMixin"
+		"LivingEntityKnockbackMixin",
+		"CreeperEntityDisguiseMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

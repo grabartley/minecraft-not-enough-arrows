@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +32,8 @@ class ExpiringLedgerTest {
     ledger.put(SECOND, "pig", 50L);
 
     assertEquals(List.of(FIRST), ledger.removeExpired(20L));
-    assertEquals(Set.of(SECOND), ledger.ids());
+    assertTrue(ledger.contains(SECOND));
+    assertFalse(ledger.contains(FIRST));
   }
 
   @Test
@@ -59,15 +59,6 @@ class ExpiringLedgerTest {
   @Test
   void containsIsFalseForNull() {
     assertFalse(new ExpiringLedger<String>().contains(null));
-  }
-
-  @Test
-  void clearEmptiesTheLedger() {
-    final ExpiringLedger<String> ledger = new ExpiringLedger<>();
-    ledger.put(FIRST, "sheep", 5L);
-    ledger.clear();
-
-    assertTrue(ledger.isEmpty());
   }
 
   @Test

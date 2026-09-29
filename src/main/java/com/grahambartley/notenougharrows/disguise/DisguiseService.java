@@ -31,11 +31,11 @@ public final class DisguiseService {
 
   public static void register() {
     ServerTickEvents.END_WORLD_TICK.register(DisguiseService::tick);
-    ServerEntityEvents.ENTITY_UNLOAD.register(DisguiseService::revert);
+    ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> revert(world, entity));
     ServerLivingEntityEvents.AFTER_DEATH.register(
         (entity, source) -> {
           if (entity.getWorld() instanceof ServerWorld world) {
-            revert(entity, world);
+            revert(world, entity);
           }
         });
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> LEDGERS.clear());
@@ -83,10 +83,6 @@ public final class DisguiseService {
   public static int liveDisguises(final ServerWorld world) {
     final ExpiringLedger<Identifier> ledger = LEDGERS.get(world.getRegistryKey());
     return ledger == null ? 0 : ledger.size();
-  }
-
-  private static void revert(final Entity entity, final ServerWorld world) {
-    revert(world, entity);
   }
 
   private static void tick(final ServerWorld world) {

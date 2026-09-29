@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 public final class ExpiringLedger<V> {
@@ -44,20 +43,12 @@ public final class ExpiringLedger<V> {
     return List.copyOf(expired);
   }
 
-  public Set<UUID> ids() {
-    return Set.copyOf(entries.keySet());
-  }
-
   public boolean isEmpty() {
     return entries.isEmpty();
   }
 
   public int size() {
     return entries.size();
-  }
-
-  public void clear() {
-    entries.clear();
   }
 
   private record Entry<V>(V value, long expiryTick) {}

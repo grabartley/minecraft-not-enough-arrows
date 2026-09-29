@@ -6,16 +6,19 @@ import com.grahambartley.notenougharrows.config.ServerConfigHolder;
 import com.grahambartley.notenougharrows.entity.StinkArrowEntity;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.test.AfterBatch;
 import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class StinkArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "stink-arrow";
   private static final String DISABLED_BATCH = "stink-arrow-disabled";
+  private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchTheStinkOffBeforeBatch(ServerWorld world) {
@@ -66,6 +69,48 @@ public final class StinkArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, StinkArrowEntity.class) != null,
               "A switched off stink arrow stays in the wall to be picked up");
+          context.complete();
+        });
+  }
+
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainArrowTestSupport.TICK_LIMIT)
+  public void aStinkArrowOpensItsCloudAtACreatureWithoutHurtingIt(TestContext context) {
+    final CowEntity cow = ControlTestSupport.sturdyStillCowAt(context, TARGET_STAND);
+    final float health = cow.getHealth();
+    TerrainArrowTestSupport.fireFromBow(context, ChaosArrows.STINK_ARROW.item());
+
+    context.runAtTick(
+        TerrainArrowTestSupport.SETTLED_TICK,
+        () -> {
+          context.assertTrue(
+              StinkCloudService.isInCloud(context.getWorld(), cow.getBoundingBox().getCenter()),
+              "A cloud should hang where the cow was struck");
+          context.assertEquals(health, cow.getHealth(), "The cow's health");
+          context.assertTrue(
+              FiringRangeSupport.arrowWasSpent(context), "The stink arrow should be spent");
+          context.complete();
+        });
+  }
+
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = DISABLED_BATCH,
+      tickLimit = TerrainArrowTestSupport.TICK_LIMIT)
+  public void aDisabledStinkArrowHurtsACreatureLikeAnArrow(TestContext context) {
+    final CowEntity cow = ControlTestSupport.sturdyStillCowAt(context, TARGET_STAND);
+    final float health = cow.getHealth();
+    TerrainArrowTestSupport.fireFromBow(context, ChaosArrows.STINK_ARROW.item());
+
+    context.runAtTick(
+        TerrainArrowTestSupport.SETTLED_TICK,
+        () -> {
+          context.assertFalse(
+              StinkCloudService.isInCloud(context.getWorld(), cow.getBoundingBox().getCenter()),
+              "No cloud should open");
+          context.assertTrue(cow.getHealth() < health, "A switched off stink arrow hurts");
           context.complete();
         });
   }
