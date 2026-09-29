@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
+import com.grahambartley.notenougharrows.arrow.FaceClearance;
 import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.chaos.StinkCloudService;
 import com.grahambartley.notenougharrows.config.StinkArrowConfig;
@@ -16,7 +17,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class StinkArrowEntity extends BaseArrowEntity {
-  private static final double FACE_CLEARANCE = 0.25;
   private static final float RELEASE_VOLUME = 1.0f;
   private static final float RELEASE_PITCH = 0.7f;
 
@@ -40,9 +40,7 @@ public class StinkArrowEntity extends BaseArrowEntity {
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
     final Vec3d inFront =
-        blockHitResult
-            .getPos()
-            .add(Vec3d.of(blockHitResult.getSide().getVector()).multiply(FACE_CLEARANCE));
+        FaceClearance.inFrontOf(blockHitResult.getPos(), blockHitResult.getSide());
     return release(world, inFront) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
   }
 
