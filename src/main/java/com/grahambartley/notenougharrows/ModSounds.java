@@ -50,6 +50,16 @@ public final class ModSounds {
   public static final SoundEvent SONAR_ARROW_PULSE = REGISTRAR.declare("sonar_arrow_pulse");
   public static final SoundEvent TRIPWIRE_ARROW_SET = REGISTRAR.declare("tripwire_arrow_set");
   public static final SoundEvent TRIPWIRE_ARROW_ALERT = REGISTRAR.declare("tripwire_arrow_alert");
+  public static final SoundEvent CHICKEN_ARROW_HATCH = REGISTRAR.declare("chicken_arrow_hatch");
+  public static final SoundEvent PUFFER_ARROW_INFLATE = REGISTRAR.declare("puffer_arrow_inflate");
+  public static final SoundEvent PUFFER_ARROW_DEFLATE = REGISTRAR.declare("puffer_arrow_deflate");
+  public static final SoundEvent STINK_ARROW_RELEASE = REGISTRAR.declare("stink_arrow_release");
+  public static final SoundEvent BOOMERANG_ARROW_RETURN =
+      REGISTRAR.declare("boomerang_arrow_return");
+  public static final SoundEvent POLYMORPH_ARROW_CHANGE =
+      REGISTRAR.declare("polymorph_arrow_change");
+  public static final SoundEvent POLYMORPH_ARROW_RESTORE =
+      REGISTRAR.declare("polymorph_arrow_restore");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 

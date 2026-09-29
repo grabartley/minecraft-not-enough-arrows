@@ -26,7 +26,7 @@ Across a server, everyone sees it. A charged crossbow needs no help, because the
 
 ## Tinted Arrows
 
-A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one arrow carrying a potion. The paint arrow carries a dye and the sapling arrow a sapling; the party arrow will carry a music disc the same way. However many choices it has, a tinted arrow is one item, one entity type, one entry in the `minecraft:arrows` tag, and one arrow towards the release count.
+A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one arrow carrying a potion. The paint arrow carries a dye, the sapling arrow a sapling, and the party arrow a music disc. However many choices it has, a tinted arrow is one item, one entity type, one entry in the `minecraft:arrows` tag, and one arrow towards the release count.
 
 | Rule | Behaviour |
 |---|---|
@@ -35,11 +35,13 @@ A tinted arrow is one arrow carrying a choice, in the way a tipped arrow is one 
 | Creative tab and recipe viewers | One entry per choice, as vanilla does for tipped arrows. EMI and JEI tell the variants apart, so looking one up finds its own recipe |
 | Look | One drawing shared by every variant, with part of it tinted to the choice, both as an item and in flight |
 | Firing and recovery | The choice rides on the arrow's item stack, so it survives being fired, recovered and fired again, a chunk unloading, and a server restart |
-| Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow and oak for the sapling arrow. The unrecognised value is kept rather than overwritten |
+| Unknown or missing choice | A stack carrying no choice, or one the mod does not recognise, still loads and reads as that arrow's default, which is white for the paint arrow, oak for the sapling arrow and cat for the party arrow. The unrecognised value is kept rather than overwritten |
 
 The paint arrow is registered, craftable in all sixteen colours, and fires and recovers like any arrow. What it paints is under Terrain Arrows below. Its sprite is a placeholder until the terrain art is drawn. [ADR 0036](adr/0036-a-tinted-arrow-carries-its-choice-on-the-stack.md) covers why the choice is a component rather than one arrow per colour.
 
 The sapling arrow offers one choice per member of vanilla's `minecraft:saplings` tag: oak, spruce, birch, jungle, acacia, dark oak, cherry, the mangrove propagule, azalea and flowering azalea. Its name reads *Oak Sapling Arrow*, *Mangrove Sapling Arrow* and so on, and its head is tinted a leaf colour for each. What it plants is under Agriculture Arrows below, and its sprite is a placeholder until the agriculture art is drawn.
+
+The party arrow offers one choice per vanilla music disc, nineteen in all, keyed by the disc's song: 13, cat, blocks, chirp, far, mall, mellohi, stal, strad, ward, 11, wait, otherside, 5, pigstep, relic, creator, creator (music box) and precipice. Its name reads *Pigstep Party Arrow*, *13 Party Arrow* and so on, and its head is tinted a colour for each disc. What it does is under Chaos Arrows below, and its sprite is a placeholder until the chaos art is drawn.
 
 ## Fire Patches
 
@@ -59,7 +61,7 @@ A fire patch is a timed structure, so it ends the same way every timed structure
 
 ## Timed Structures
 
-Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar, web, zipline, trampoline, scaffold, bridge and beacon arrows use it too; the control and chaos arrows will build on the same system. Ropes, vines and redstone charges answer for themselves instead.
+Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar, web, zipline, trampoline, scaffold, bridge and beacon arrows use it too; the control arrows will build on the same system. The stink cloud places no block, so it is a timed cloud like the smoke arrow's rather than a timed structure. Ropes, vines and redstone charges answer for themselves instead.
 
 | Rule | Behaviour |
 |---|---|
@@ -409,6 +411,32 @@ Six arrows that tell you what is somewhere you cannot see: whether it is lit, wh
 
 Every setting is read fresh on impact, and a watcher keeps the interval it was set with. The beacon, prospector and sonar arrows play their own sounds, and the tripwire arrow plays one when set and another when it reports, listed under Sounds. The torch plays vanilla's torch placement sound. All six item and in-flight sprites are placeholders, the paint arrow's drawing with a recoloured head, until the discovery art is drawn. [ADR 0041](adr/0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) covers why the pulses, the path and the watcher work the way they do.
 
+## Chaos Arrows
+
+Six arrows that exist for the fun of it. Each has its own switch under `chaos`, and turning one off leaves the other five working: a switched off chaos arrow hits and embeds like a plain arrow.
+
+| Arrow | Crafted around | On a block | On a creature | Spent |
+|---|---|---|---|---|
+| Party | Any music disc, one recipe each | Bursts into firework sparks and music notes and plays the disc it carries | The same, where it struck, without hurting it | Yes |
+| Chicken | An egg | Releases a chicken in the space in front of the face it struck | Releases a chicken where it struck, without hurting it | Only if a chicken appeared |
+| Puffer | A pufferfish | Hits like an arrow | Inflates the creature for `chaos.puffer.durationTicks`, without hurting it | Only if it inflated something |
+| Stink | Rotten flesh | Opens a stink cloud for `chaos.stink.cloudLifetimeTicks` in front of the face it struck | Opens the cloud where it struck, without hurting it | Only if a cloud opened |
+| Boomerang | Chorus fruit | Turns back and flies home to the shooter | Hurts like an arrow, then turns back and flies home | It comes back as an item |
+| Polymorph | A sculk catalyst | Hits like an arrow | Disguises a hostile mob as a farm animal for `chaos.polymorph.durationTicks`, without hurting it | Only if it disguised something |
+
+| Rule | Behaviour |
+|---|---|
+| Party | The disc's own song, looked up through vanilla's jukebox song registry, played once at the impact at jukebox loudness, so everyone within about 64 blocks hears it and it ends on its own. It plays in the Jukebox/Note Blocks category, so the player's own record slider is what turns it down, and `sound.volume` at zero silences it along with the mod's other sounds. It places no jukebox, spawns no firework rocket, changes no block and leaves nothing behind: the show is particles and one sound |
+| Chicken | An ordinary vanilla chicken, adult and ready to breed, with nothing of the mod attached to it: it persists, it can be killed or bred, and the mod never looks at it again. It arrives with no speed and no fall distance, and vanilla makes chickens immune to fall damage, so it takes none from the flight. It is refused, and the arrow embeds to be picked back up, beyond the world border, outside the build limit, inside anything solid, for a shooter in adventure mode, and inside spawn protection for anyone the server would not let build there. A chicken has no lifetime; what caps them is that every one costs a crafted arrow (PERF-13) |
+| Puffer | A temporary change to the creature's scale attribute, doubling its size so an ordinary mob no longer fits through a one-block gap, and doubling the knockback it takes while inflated. Before it grows, the mod checks the space the bigger body would fill. A creature with no room to double grows only to the largest of 1.75, 1.5 or 1.25 times that fits, and one with no room to grow at all is not inflated and the arrow glances off, so it can never be crushed or suffocated in a space it was already standing in. A second hit on an inflated creature extends the time rather than growing it again. The change reverts when its time is up, the moment the creature unloads or changes dimension, and on every restart, because a temporary attribute change is never saved |
+| Stink cloud | A sphere of three blocks, kept only in memory like the smoke cloud. Players inside, but not spectators, get nausea. Mobs will not path into it: any mob whose planned route crosses the cloud has that route cancelled, and any mob already inside is stopped and pushed back out, which also covers flyers that steer without a route. It blocks nothing, places no block, hurts nothing, and is gone when its lifetime ends or the server stops. Anyone arriving while it hangs sees it, because it is drawn with server particles |
+| Boomerang flight | Once it has hit something it turns back, stops falling and passes through blocks and creatures, curving home to the shooter's eyes without needing a surface to bounce from. That is what separates it from the ricochet arrow, and it carries no bounce count. It never turns back without first hitting something, and a boomerang with nobody to return to, such as a dispensed one, embeds like a plain arrow. A returning boomerang saved with its chunk keeps returning when the chunk loads |
+| Boomerang return | Every ending goes through one resolution, so it is returned exactly once (SAFE-10). Within a block and a half of the shooter it goes into their inventory, or drops at their feet when there is no room. If after ten seconds it still has not arrived it is handed over the same way. If the shooter has died, left the game or changed dimension, it drops where it is. An arrow nobody may pick up, such as one fired in creative, returns nothing. Nobody else can pick it out of the air on the way back |
+| Polymorph | Only a hostile mob. A player, a villager or wandering trader, anything with an owner, and the wither, the ender dragon and the warden are never changed, and this is not a setting: the arrow glances off them and does nothing. A disguised mob keeps being itself on the server. Its AI is paused and replaced by an animal's aimless wandering, so it cannot attack, shoot, explode or hurt by touch, and it makes no ambient sound. A lit creeper holds its fuse until the disguise ends, and a drawn bow is lowered. Everything else about it, its health, equipment, name and target, is simply left alone, so it is all still there when it changes back, and damage it takes while disguised stays taken |
+| Disguise | The server keeps a record of each disguised mob, in memory only, and tells every client with the mod which harmless form to draw in its place: a sheep, pig, chicken, rabbit or cow, picked at random. A player who comes into range later is told on arrival (SIDE-12). The client draws that animal where the mob stands, moving, turning and flashing red as the mob does, and a client told anything other than one of those five forms draws the mob as it is. The disguise ends on expiry, when the mob dies, when it unloads or changes dimension, and when the server stops. Nothing about it is ever saved, so a restart always leaves an ordinary mob (PERSIST-4), and because the mob itself is never replaced no path can duplicate or lose one (SAFE-12). A player without the mod sees the mob as it really is |
+
+Every setting is read fresh on impact. The chicken, puffer, stink, boomerang and polymorph arrows play their own sounds, listed under Sounds; the party arrow plays its disc. All six item and in-flight sprites are placeholders, the paint arrow's drawing with a recoloured head, until the chaos art is drawn. [ADR 0042](adr/0042-a-disguise-is-drawn-rather-than-swapped.md) covers why a disguise is drawn by the client rather than a swap of one mob for another.
+
 ## Ricochet Arrow
 
 The ricochet arrow glances off the surfaces it hits instead of embedding in them, so a shot can be banked around a corner or off a ceiling into somewhere a straight line does not reach. It is the trick-shot arrow, and it is only that if the bounce is predictable enough to aim with, which is what [ADR 0020](adr/0020-a-bounce-is-a-deflection-rather-than-a-landing.md) is about.
@@ -550,7 +578,7 @@ Like every arrow in the mod, each of the seven is craftable at a crafting table 
 
 The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
 
-Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's loudness and pitch spread. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
+Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's loudness and pitch spread. The party arrow is the one exception to the namespace below: it plays a vanilla music disc's own song, in the record category, so the player's record slider rather than the mod's volume decides how loud it is. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
 
 An arrow declares every sound its effect plays on its `ArrowDefinition`, which covers the impact sound IDENT-7 asks for. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep and the blast (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one. They check what an arrow declares, not what it plays, so a family issue still has to declare every sound it adds.
 
@@ -589,6 +617,13 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | `sonar_arrow_pulse` | `entity.warden.sonic_charge` | A sonar arrow's pulse sweeping the area | Under review: vanilla means a warden charging its attack |
 | `tripwire_arrow_set` | `block.tripwire.attach` | A tripwire arrow setting its watcher | Yes: a tripwire hooked up |
 | `tripwire_arrow_alert` | `block.sculk_sensor.clicking` | A watcher reporting, heard only by its owner | Yes: a sculk sensor noticing something |
+| `chicken_arrow_hatch` | `entity.chicken.egg` | A chicken arrow's chicken arriving | Yes: a chicken and its egg |
+| `puffer_arrow_inflate` | `entity.puffer_fish.blow_up` | A puffer arrow inflating what it struck | Yes: a pufferfish puffing up |
+| `puffer_arrow_deflate` | `entity.puffer_fish.blow_out` | An inflated creature shrinking back | Yes: a pufferfish deflating |
+| `stink_arrow_release` | `entity.panda.sneeze` | A stink arrow's cloud bursting | Under review: vanilla means a panda sneezing |
+| `boomerang_arrow_return` | `item.trident.return` | A boomerang arrow arriving home | Yes: a thrown weapon coming back |
+| `polymorph_arrow_change` | `entity.evoker.prepare_wololo` | A polymorph arrow changing a mob | Yes: an evoker's spell that changes a creature |
+| `polymorph_arrow_restore` | `block.sculk_catalyst.bloom` | A disguised mob changing back when its time is up | Under review: vanilla means a sculk catalyst blooming |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
 This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
@@ -652,6 +687,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/sonar_arrow.png` | The sonar arrow's item sprite, a placeholder |
 | `textures/item/tracer_arrow.png` | The tracer arrow's item sprite, a placeholder |
 | `textures/item/tripwire_arrow.png` | The tripwire arrow's item sprite, a placeholder |
+| `textures/item/party_arrow.png` | The party arrow's item sprite, left untinted, a placeholder |
+| `textures/item/party_arrow_head.png` | The party arrow's head, tinted to the disc it carries, a placeholder |
+| `textures/item/chicken_arrow.png` | The chicken arrow's item sprite, a placeholder |
+| `textures/item/puffer_arrow.png` | The puffer arrow's item sprite, a placeholder |
+| `textures/item/stink_arrow.png` | The stink arrow's item sprite, a placeholder |
+| `textures/item/boomerang_arrow.png` | The boomerang arrow's item sprite, a placeholder |
+| `textures/item/polymorph_arrow.png` | The polymorph arrow's item sprite, a placeholder |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
 | `textures/block/beacon_beam.png` | The core of the beam a beacon arrow raises, animated to scroll upward |
 | `textures/block/beacon_beam_glow.png` | The fainter glow around that core, animated the same way |
@@ -704,6 +746,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/sonar_arrow.png` | The sonar arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/tracer_arrow.png` | The tracer arrow in flight and planted in a block, a placeholder |
 | `textures/entity/arrow/tripwire_arrow.png` | The tripwire arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/party_arrow.png` | The party arrow in flight and planted in a block, left untinted, a placeholder |
+| `textures/entity/arrow/party_arrow_tint.png` | The party arrow's head in flight, tinted to its disc, a placeholder |
+| `textures/entity/arrow/chicken_arrow.png` | The chicken arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/puffer_arrow.png` | The puffer arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/stink_arrow.png` | The stink arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/boomerang_arrow.png` | The boomerang arrow in flight and planted in a block, a placeholder |
+| `textures/entity/arrow/polymorph_arrow.png` | The polymorph arrow in flight and planted in a block, a placeholder |
 | `textures/gui/container/fletching_station.png` | The fletching station screen: panel, slot wells, recipe list, and the row and scroller states |
 
 The three utility arrows are the family that has to read as tools rather than as weapons, so none of them carries a blade. Each one instead takes the silhouette of the ingredient it is crafted from: a bulging sac for the glow ink arrow, an open vortex ring for the wind arrow, and a compact faceted crystal for the redstone arrow. That split matters more than colour does, because the redstone arrow and the TNT arrow are both red and the glow ink arrow and the wind arrow are both pale and cold. A player picking between them at hotbar size is reading the shape.

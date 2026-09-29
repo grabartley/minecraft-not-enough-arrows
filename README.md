@@ -1,6 +1,6 @@
 <h1 align="center">Not Enough Arrows</h1>
 
-<p align="center"><b>Fifty-four new arrows for Minecraft 1.21.1 on Fabric.</b><br>
+<p align="center"><b>Sixty new arrows for Minecraft 1.21.1 on Fabric.</b><br>
 Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then teleport into it.</p>
 
 <p align="center">
@@ -123,6 +123,18 @@ across the ground, which is a problem for whoever has to go and fetch it.
 
 Vanilla already brews a tipped arrow for nearly every debuff, so none of these repeats one.
 
+## Do something for the sake of it
+
+Six arrows exist because they are funny. The **party arrow** bursts into fireworks and plays the
+music disc it was made from, once, for everyone nearby. The **chicken arrow** delivers a live
+chicken. The **puffer arrow** blows whatever it hits up to twice its size, so it takes twice the
+knockback and no longer fits through a one-block gap, without ever hurting it.
+
+The **stink arrow** leaves a cloud that makes players queasy and that mobs refuse to walk into. The
+**boomerang arrow** hits, then curves back through the air into your inventory. The **polymorph
+arrow** turns a hostile mob into a farm animal for a while; it wanders about, cannot hurt anyone,
+and changes back exactly as it was. It never touches players, villagers, pets or bosses.
+
 ## The full set
 
 | | Arrow | What it does | Craft it from |
@@ -181,6 +193,12 @@ Vanilla already brews a tipped arrow for nearly every debuff, so none of these r
 | 📡 | **Sonar** | Everything alive around where it lands glows through walls | Echo shard |
 | 〰️ | **Tracer** | Draws the path it flew, for everyone to see | Glow ink arrows and gunpowder |
 | 🕸️ | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
+| 🎉 | **Party** | Fireworks and the music disc it carries, once | Any music disc, one kind each |
+| 🐔 | **Chicken** | Releases a live chicken where it lands | Egg |
+| 🐡 | **Puffer** | Inflates what it hits for a while, harmlessly | Pufferfish |
+| 🤢 | **Stink** | A cloud that makes players sick and mobs keep out of | Rotten flesh |
+| 🪃 | **Boomerang** | Hits, then flies back to your inventory | Chorus fruit |
+| 🐑 | **Polymorph** | Turns a hostile mob into a farm animal for a while | Sculk catalyst |
 
 Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
 arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
@@ -218,8 +236,8 @@ Change it in the Mod Menu screen or from the command tree:
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`. `chaos` and `social` hold the settings for arrows that have not landed
-yet, so they exist ahead of the arrows they will control.
+`fletching`, and `sound`. `social` holds the settings for arrows that have not landed yet, so it
+exists ahead of the arrows it will control.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:

@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.entity;
 
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
+import com.grahambartley.notenougharrows.arrow.FaceClearance;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class AreaControlArrowEntity extends BaseArrowEntity {
-  private static final double FACE_CLEARANCE = 0.25;
 
   protected AreaControlArrowEntity(
       final EntityType<? extends AreaControlArrowEntity> entityType, final World world) {
@@ -36,10 +36,7 @@ public abstract class AreaControlArrowEntity extends BaseArrowEntity {
   @Override
   protected final ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
-    final Vec3d center =
-        blockHitResult
-            .getPos()
-            .add(Vec3d.of(blockHitResult.getSide().getVector()).multiply(FACE_CLEARANCE));
+    final Vec3d center = FaceClearance.inFrontOf(blockHitResult.getPos(), blockHitResult.getSide());
     return resolveAt(world, center, null) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
   }
 

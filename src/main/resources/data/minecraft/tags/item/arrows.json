@@ -54,6 +54,12 @@
     "not-enough-arrows:prospector_arrow",
     "not-enough-arrows:sonar_arrow",
     "not-enough-arrows:tracer_arrow",
-    "not-enough-arrows:tripwire_arrow"
+    "not-enough-arrows:tripwire_arrow",
+    "not-enough-arrows:party_arrow",
+    "not-enough-arrows:chicken_arrow",
+    "not-enough-arrows:puffer_arrow",
+    "not-enough-arrows:stink_arrow",
+    "not-enough-arrows:boomerang_arrow",
+    "not-enough-arrows:polymorph_arrow"
   ]
 }

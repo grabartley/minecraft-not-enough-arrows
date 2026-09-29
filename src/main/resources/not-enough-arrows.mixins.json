@@ -7,7 +7,11 @@
 		"MobEntityTargetMixin",
 		"BatEntityFlightMixin",
 		"WorldChunkStructureMixin",
-		"ServerCommonNetworkHandlerMixin"
+		"ServerCommonNetworkHandlerMixin",
+		"MobEntityDisguiseMixin",
+		"SlimeEntityDisguiseMixin",
+		"LivingEntityKnockbackMixin",
+		"CreeperEntityDisguiseMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

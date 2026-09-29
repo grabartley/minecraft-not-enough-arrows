@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.control;
 
+import com.grahambartley.notenougharrows.cloud.TimedCloud;
+import com.grahambartley.notenougharrows.cloud.TimedCloudTracker;
 import com.grahambartley.notenougharrows.config.SmokeArrowConfig;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +24,7 @@ public final class SmokeCloudService {
   private static final int PARTICLES_PER_BURST = 24;
   private static final double PARTICLE_DRIFT = 0.0;
 
-  private static final Map<RegistryKey<World>, SmokeCloudTracker> TRACKERS = new HashMap<>();
+  private static final Map<RegistryKey<World>, TimedCloudTracker> TRACKERS = new HashMap<>();
 
   private SmokeCloudService() {}
 
@@ -37,7 +39,7 @@ public final class SmokeCloudService {
       return false;
     }
     trackerFor(world)
-        .add(new SmokeCloud(center, smoke.radius(), world.getTime() + smoke.durationTicks()));
+        .add(new TimedCloud(center, smoke.radius(), world.getTime() + smoke.durationTicks()));
     return true;
   }
 
@@ -46,7 +48,7 @@ public final class SmokeCloudService {
   }
 
   private static void tick(final ServerWorld world) {
-    final SmokeCloudTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final TimedCloudTracker tracker = TRACKERS.get(world.getRegistryKey());
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
@@ -54,7 +56,7 @@ public final class SmokeCloudService {
     tracker.live().forEach(cloud -> blindInside(world, cloud));
   }
 
-  private static void blindInside(final ServerWorld world, final SmokeCloud cloud) {
+  private static void blindInside(final ServerWorld world, final TimedCloud cloud) {
     if (world.getTime() % PULSE_INTERVAL_TICKS != 0) {
       return;
     }
@@ -71,7 +73,7 @@ public final class SmokeCloudService {
     }
   }
 
-  private static void showCloud(final ServerWorld world, final SmokeCloud cloud) {
+  private static void showCloud(final ServerWorld world, final TimedCloud cloud) {
     world.spawnParticles(
         ParticleTypes.LARGE_SMOKE,
         cloud.center().getX(),
@@ -84,7 +86,7 @@ public final class SmokeCloudService {
         PARTICLE_DRIFT);
   }
 
-  private static SmokeCloudTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new SmokeCloudTracker());
+  private static TimedCloudTracker trackerFor(final ServerWorld world) {
+    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new TimedCloudTracker());
   }
 }
