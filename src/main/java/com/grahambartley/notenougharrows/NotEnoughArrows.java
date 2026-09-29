@@ -23,6 +23,8 @@ import com.grahambartley.notenougharrows.redstone.RedstoneChargeService;
 import com.grahambartley.notenougharrows.reveal.WatcherService;
 import com.grahambartley.notenougharrows.server.ServerConfigSyncListener;
 import com.grahambartley.notenougharrows.server.ServerConfigUpdateReceiver;
+import com.grahambartley.notenougharrows.social.MagnetPull;
+import com.grahambartley.notenougharrows.social.SnowGolemMelt;
 import com.grahambartley.notenougharrows.structure.TimedStructureService;
 import com.grahambartley.notenougharrows.tow.TowService;
 import com.grahambartley.notenougharrows.updraft.UpdraftService;
@@ -73,6 +75,8 @@ public class NotEnoughArrows implements ModInitializer {
     StinkCloudService.register();
     PufferService.register();
     DisguiseService.register();
+    SnowGolemMelt.register();
+    MagnetPull.register();
     WatcherService.register();
     NockedArrowBroadcaster.register();
     FletchingStationInteraction.register();

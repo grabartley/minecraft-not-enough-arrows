@@ -11,7 +11,10 @@
 		"MobEntityDisguiseMixin",
 		"SlimeEntityDisguiseMixin",
 		"LivingEntityKnockbackMixin",
-		"CreeperEntityDisguiseMixin"
+		"CreeperEntityDisguiseMixin",
+		"CraftingResultSlotMixin",
+		"CrafterBlockMixin",
+		"PersistentProjectileEntityDeliveryMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows;
 
+import com.grahambartley.notenougharrows.social.CourierPayload;
 import com.grahambartley.notenougharrows.tint.ArrowChoice;
 import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
@@ -18,9 +19,21 @@ public final class ModDataComponents {
               .packetCodec(ArrowChoice.PACKET_CODEC)
               .build());
 
+  public static final Identifier COURIER_PAYLOAD_ID =
+      Identifier.of(NotEnoughArrows.MOD_ID, "courier_payload");
+  public static final ComponentType<CourierPayload> COURIER_PAYLOAD =
+      Registry.register(
+          Registries.DATA_COMPONENT_TYPE,
+          COURIER_PAYLOAD_ID,
+          ComponentType.<CourierPayload>builder()
+              .codec(CourierPayload.CODEC)
+              .packetCodec(CourierPayload.PACKET_CODEC)
+              .build());
+
   private ModDataComponents() {}
 
   public static void register() {
-    NotEnoughArrows.LOGGER.debug("Registered data component {}", ARROW_CHOICE);
+    NotEnoughArrows.LOGGER.debug(
+        "Registered data components {} and {}", ARROW_CHOICE, COURIER_PAYLOAD);
   }
 }

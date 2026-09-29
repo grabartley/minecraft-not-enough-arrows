@@ -60,6 +60,9 @@
     "not-enough-arrows:puffer_arrow",
     "not-enough-arrows:stink_arrow",
     "not-enough-arrows:boomerang_arrow",
-    "not-enough-arrows:polymorph_arrow"
+    "not-enough-arrows:polymorph_arrow",
+    "not-enough-arrows:courier_arrow",
+    "not-enough-arrows:snow_golem_arrow",
+    "not-enough-arrows:magnet_arrow"
   ]
 }

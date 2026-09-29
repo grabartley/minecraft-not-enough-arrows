@@ -2,11 +2,15 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
 import com.grahambartley.notenougharrows.ModDataComponents;
+import com.grahambartley.notenougharrows.SocialArrows;
 import com.grahambartley.notenougharrows.arrow.ArrowDefinition;
 import com.grahambartley.notenougharrows.arrow.RegisteredArrow;
 import com.grahambartley.notenougharrows.entity.TintedArrowEntity;
+import com.grahambartley.notenougharrows.item.CourierArrowItem;
 import com.grahambartley.notenougharrows.item.TintedArrowItem;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.dispenser.ProjectileDispenserBehavior;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
@@ -38,6 +42,18 @@ public final class ArrowRegistrarGameTest implements FabricGameTest {
           Registries.ENTITY_TYPE.get(arrow.id()) == arrow.entityType(),
           "Arrow entity type " + arrow.id() + " should resolve to the registered type instance");
     }
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 10)
+  public void anArrowRegisteredWithItsOwnItemKeepsItAndItsDispenserBehaviour(TestContext context) {
+    final Item courier = Registries.ITEM.get(SocialArrows.COURIER_ARROW.id());
+
+    context.assertTrue(
+        courier instanceof CourierArrowItem, "The registrar should register the item it was given");
+    context.assertTrue(
+        DispenserBlock.BEHAVIORS.get(courier) instanceof ProjectileDispenserBehavior,
+        "A custom arrow item should still be dispensable");
     context.complete();
   }
 

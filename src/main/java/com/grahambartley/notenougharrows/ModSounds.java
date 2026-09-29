@@ -60,6 +60,9 @@ public final class ModSounds {
       REGISTRAR.declare("polymorph_arrow_change");
   public static final SoundEvent POLYMORPH_ARROW_RESTORE =
       REGISTRAR.declare("polymorph_arrow_restore");
+  public static final SoundEvent COURIER_ARROW_DELIVER = REGISTRAR.declare("courier_arrow_deliver");
+  public static final SoundEvent SNOW_GOLEM_ARROW_MELT = REGISTRAR.declare("snow_golem_arrow_melt");
+  public static final SoundEvent MAGNET_ARROW_PULL = REGISTRAR.declare("magnet_arrow_pull");
   public static final SoundEvent FLETCHING_STATION_SELECT =
       REGISTRAR.declare("fletching_station_select");
 
