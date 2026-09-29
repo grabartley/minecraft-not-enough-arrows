@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+cd "$(dirname "$0")/../.."
+
 RUN_DIR=run
 BOOT_TIMEOUT="${BOOT_TIMEOUT:-300}"
 STOP_TIMEOUT="${STOP_TIMEOUT:-60}"
