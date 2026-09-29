@@ -31,14 +31,16 @@ class TracerPathTest {
   }
 
   @Test
-  void stopsRecordingAtItsLimit() {
+  void neverHoldsMoreThanItsLimitButAlwaysEndsWhereTheArrowIs() {
     final TracerPath path = new TracerPath();
     for (int step = 0; step < TracerPath.MAX_POINTS + 50; step++) {
       path.record(new Vec3d(step, 64, 0));
     }
+    path.record(new Vec3d(900, 70, 5));
 
     assertEquals(TracerPath.MAX_POINTS, path.points().size());
     assertEquals(new Vec3d(0, 64, 0), path.points().getFirst());
+    assertEquals(new Vec3d(900, 70, 5), path.points().getLast());
   }
 
   @Test

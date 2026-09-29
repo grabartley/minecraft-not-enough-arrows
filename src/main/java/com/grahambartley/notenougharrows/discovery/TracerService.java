@@ -29,7 +29,9 @@ public final class TracerService {
     }
     final TracerPathS2CPayload payload = new TracerPathS2CPayload(path.points(), lifetimeTicks);
     final List<ServerPlayerEntity> audience = RevealAudience.watching(arrow, shooter);
-    audience.forEach(player -> ServerPlayNetworking.send(player, payload));
+    audience.stream()
+        .filter(player -> ServerPlayNetworking.canSend(player, TracerPathS2CPayload.ID))
+        .forEach(player -> ServerPlayNetworking.send(player, payload));
     return audience;
   }
 }

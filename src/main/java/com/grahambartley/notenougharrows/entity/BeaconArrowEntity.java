@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 public class BeaconArrowEntity extends BaseArrowEntity {
   private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
+  private boolean fired;
 
   public BeaconArrowEntity(
       final EntityType<? extends BeaconArrowEntity> entityType, final World world) {
@@ -48,6 +49,10 @@ public class BeaconArrowEntity extends BaseArrowEntity {
   }
 
   private boolean raiseAt(final ServerWorld world, final BlockPos base) {
+    if (fired) {
+      return false;
+    }
+    fired = true;
     if (BeaconService.raise(world, base, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }

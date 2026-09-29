@@ -61,12 +61,27 @@ class WatcherLedgerTest {
   }
 
   @Test
-  void clearsEverything() {
+  void keepsOnlyTheNewestWatchersOfOneOwner() {
     final WatcherLedger ledger = new WatcherLedger();
-    ledger.add(Watcher.placed(OWNER, BlockPos.ORIGIN, 0L, 200, 40));
+    final Watcher first = Watcher.placed(OWNER, BlockPos.ORIGIN, 0L, 200, 40);
+    ledger.add(first);
+    for (int more = 1; more <= WatcherLedger.MAX_PER_OWNER; more++) {
+      ledger.add(Watcher.placed(OWNER, BlockPos.ORIGIN.up(more), more, 200, 40));
+    }
 
-    ledger.clear();
+    assertEquals(WatcherLedger.MAX_PER_OWNER, ledger.all().size());
+    assertTrue(ledger.all().stream().noneMatch(watcher -> watcher.id().equals(first.id())));
+  }
 
-    assertTrue(ledger.isEmpty());
+  @Test
+  void oneOwnersCapNeverDropsAnotherOwnersWatcher() {
+    final WatcherLedger ledger = new WatcherLedger();
+    final Watcher someoneElses = Watcher.placed(UUID.randomUUID(), BlockPos.ORIGIN, 0L, 200, 40);
+    ledger.add(someoneElses);
+    for (int more = 0; more <= WatcherLedger.MAX_PER_OWNER; more++) {
+      ledger.add(Watcher.placed(OWNER, BlockPos.ORIGIN.up(more), more, 200, 40));
+    }
+
+    assertTrue(ledger.all().contains(someoneElses));
   }
 }

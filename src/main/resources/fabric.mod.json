@@ -221,7 +221,9 @@
       "com.grahambartley.notenougharrows.gametest.TracerServiceGameTest",
       "com.grahambartley.notenougharrows.gametest.TracerArrowEntityGameTest",
       "com.grahambartley.notenougharrows.gametest.ProspectorArrowEntityGameTest",
-      "com.grahambartley.notenougharrows.gametest.SonarArrowEntityGameTest"
+      "com.grahambartley.notenougharrows.gametest.SonarArrowEntityGameTest",
+      "com.grahambartley.notenougharrows.gametest.LoadedGroundGameTest",
+      "com.grahambartley.notenougharrows.gametest.WatcherAlarmGameTest"
     ]
   },
   "mixins": [

@@ -1,7 +1,7 @@
 package com.grahambartley.notenougharrows.reveal;
 
 import com.grahambartley.notenougharrows.network.RevealPayloads.BlockOutlineS2CPayload;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.List;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -27,7 +27,8 @@ public final class BlockRevealPulse {
       return found;
     }
     final BlockOutlineS2CPayload payload = new BlockOutlineS2CPayload(found, durationTicks);
-    RevealAudience.around(world, center, shooter)
+    RevealAudience.around(world, center, shooter).stream()
+        .filter(player -> ServerPlayNetworking.canSend(player, BlockOutlineS2CPayload.ID))
         .forEach(player -> ServerPlayNetworking.send(player, payload));
     return found;
   }
@@ -45,7 +46,7 @@ public final class BlockRevealPulse {
         center,
         radius,
         BlockOutlineS2CPayload.MAX_BLOCKS,
-        StructureRemoval.loadedIn(world),
+        LoadedGround.in(world),
         pos -> reveals.test(world.getBlockState(pos)));
   }
 }

@@ -21,7 +21,7 @@ class RevealSyncTest {
     RevealSync.acceptOutline(List.of(BlockPos.ORIGIN), 2);
 
     RevealSync.tick();
-    assertEquals(List.of(List.of(BlockPos.ORIGIN)), RevealSync.outlines());
+    assertEquals(List.of(BlockEdges.of(List.of(BlockPos.ORIGIN))), RevealSync.outlines());
 
     RevealSync.tick();
     assertTrue(RevealSync.outlines().isEmpty());
@@ -38,6 +38,30 @@ class RevealSyncTest {
   }
 
   @Test
+  void changingWorldForgetsWhatWasRevealedInTheLastOne() {
+    final Object overworld = new Object();
+    RevealSync.enterWorld(overworld);
+    RevealSync.acceptOutline(List.of(BlockPos.ORIGIN), 100);
+    RevealSync.acceptPath(List.of(Vec3d.ZERO, new Vec3d(1, 0, 0)), 100);
+
+    RevealSync.enterWorld(new Object());
+
+    assertTrue(RevealSync.outlines().isEmpty());
+    assertTrue(RevealSync.paths().isEmpty());
+  }
+
+  @Test
+  void stayingInTheSameWorldKeepsWhatWasRevealed() {
+    final Object overworld = new Object();
+    RevealSync.enterWorld(overworld);
+    RevealSync.acceptOutline(List.of(BlockPos.ORIGIN), 100);
+
+    RevealSync.enterWorld(overworld);
+
+    assertEquals(1, RevealSync.outlines().size());
+  }
+
+  @Test
   void holdsABoundedNumberOfPulses() {
     for (int pulse = 0; pulse < RevealSync.MAX_LIVE_PULSES + 3; pulse++) {
       RevealSync.acceptOutline(List.of(new BlockPos(pulse, 0, 0)), 100);
@@ -47,7 +71,7 @@ class RevealSyncTest {
   }
 
   @Test
-  void disconnectingForgetsEverything() {
+  void clearingForgetsEverything() {
     RevealSync.acceptOutline(List.of(BlockPos.ORIGIN), 100);
     RevealSync.acceptPath(List.of(Vec3d.ZERO, new Vec3d(1, 0, 0)), 100);
 

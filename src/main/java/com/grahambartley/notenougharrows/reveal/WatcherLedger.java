@@ -10,7 +10,16 @@ import net.minecraft.util.math.BlockPos;
 public final class WatcherLedger {
   private final Map<UUID, Watcher> watchers = new LinkedHashMap<>();
 
+  public static final int MAX_PER_OWNER = 16;
+
   public void add(final Watcher watcher) {
+    if (watcher.owner() != null) {
+      final List<Watcher> owned =
+          watchers.values().stream().filter(held -> watcher.owner().equals(held.owner())).toList();
+      owned.stream()
+          .limit(Math.max(0, owned.size() - MAX_PER_OWNER + 1))
+          .forEach(oldest -> watchers.remove(oldest.id()));
+    }
     watchers.put(watcher.id(), watcher);
   }
 
@@ -32,9 +41,5 @@ public final class WatcherLedger {
 
   public boolean isEmpty() {
     return watchers.isEmpty();
-  }
-
-  public void clear() {
-    watchers.clear();
   }
 }

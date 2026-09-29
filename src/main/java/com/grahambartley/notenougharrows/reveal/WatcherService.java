@@ -2,7 +2,7 @@ package com.grahambartley.notenougharrows.reveal;
 
 import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
-import com.grahambartley.notenougharrows.structure.StructureRemoval;
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,8 +93,7 @@ public final class WatcherService {
   }
 
   private static void tick(final ServerWorld world) {
-    sweep(world, world.getTime(), StructureRemoval.loadedIn(world))
-        .forEach(alarm -> report(world, alarm));
+    sweep(world, world.getTime(), LoadedGround.in(world)).forEach(alarm -> report(world, alarm));
   }
 
   private static void report(final ServerWorld world, final WatcherAlarm alarm) {

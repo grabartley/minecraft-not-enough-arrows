@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.structure;
 
+import com.grahambartley.notenougharrows.world.LoadedGround;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -7,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 public final class StructureRemoval {
@@ -39,11 +39,6 @@ public final class StructureRemoval {
   }
 
   public static Predicate<BlockPos> loadedIn(final ServerWorld world) {
-    return pos ->
-        world
-            .getChunkManager()
-            .isChunkLoaded(
-                ChunkSectionPos.getSectionCoord(pos.getX()),
-                ChunkSectionPos.getSectionCoord(pos.getZ()));
+    return LoadedGround.in(world);
   }
 }

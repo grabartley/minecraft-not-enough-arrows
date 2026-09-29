@@ -69,14 +69,22 @@ public final class ModNetworkingClient {
       final BlockOutlineS2CPayload payload, final ClientPlayNetworking.Context context) {
     context
         .client()
-        .execute(() -> RevealSync.acceptOutline(payload.blocks(), payload.durationTicks()));
+        .execute(
+            () -> {
+              RevealSync.enterWorld(context.client().world);
+              RevealSync.acceptOutline(payload.blocks(), payload.durationTicks());
+            });
   }
 
   private static void handleTracerPath(
       final TracerPathS2CPayload payload, final ClientPlayNetworking.Context context) {
     context
         .client()
-        .execute(() -> RevealSync.acceptPath(payload.points(), payload.lifetimeTicks()));
+        .execute(
+            () -> {
+              RevealSync.enterWorld(context.client().world);
+              RevealSync.acceptPath(payload.points(), payload.lifetimeTicks());
+            });
   }
 
   private static void handleNockedArrow(

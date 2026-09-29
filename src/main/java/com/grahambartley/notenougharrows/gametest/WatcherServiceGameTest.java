@@ -127,6 +127,8 @@ public final class WatcherServiceGameTest implements FabricGameTest {
     final Watcher watcher = place(context, context.createMockCreativeServerPlayerInWorld());
     stillCow(context, WIRE);
 
+    context.assertEquals(
+        1, sweep(context, LIFETIME_TICKS - 1).size(), "A watcher still reports a tick before");
     context.assertTrue(sweep(context, LIFETIME_TICKS).isEmpty(), "An expired watcher is silent");
     context.assertFalse(isLive(context, watcher), "An expired watcher is dropped");
     context.complete();
@@ -171,12 +173,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
 
   private static List<WatcherAlarm> sweep(final TestContext context, final long ticksLater) {
     final BlockPos wire = context.getAbsolutePos(WIRE);
-    final long placedAt =
-        WatcherService.in(context.getWorld()).stream()
-            .filter(watcher -> watcher.pos().equals(wire))
-            .mapToLong(watcher -> watcher.expiryTick() - LIFETIME_TICKS)
-            .findFirst()
-            .orElse(context.getWorld().getTime());
+    final long placedAt = context.getWorld().getTime();
     return WatcherService.sweep(context.getWorld(), placedAt + ticksLater, pos -> true).stream()
         .filter(alarm -> alarm.watcherPos().equals(wire))
         .toList();

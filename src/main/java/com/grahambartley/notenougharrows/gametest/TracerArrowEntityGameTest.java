@@ -42,13 +42,20 @@ public final class TracerArrowEntityGameTest implements FabricGameTest {
       templateName = DiscoveryTestSupport.TEMPLATE,
       batchId = BATCH,
       tickLimit = TerrainArrowTestSupport.TICK_LIMIT)
-  public void aTracerIsSpentWhenItLands(TestContext context) {
+  public void aTracerEndsItsPathWhereItLandedAndIsSpent(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
     TerrainArrowTestSupport.fireFromBow(context, DiscoveryArrows.TRACER_ARROW.item());
+    final TracerArrowEntity arrow = FiringRangeSupport.firedArrow(context, TracerArrowEntity.class);
+    final Vec3d wall =
+        context.getAbsolute(Vec3d.ofCenter(FiringRangeSupport.IMPACT_FACE).add(0.5, 0.0, 0.0));
 
     context.runAtTick(
         TerrainArrowTestSupport.SETTLED_TICK,
         () -> {
+          final Vec3d end = arrow.path().points().getLast();
+          context.assertTrue(
+              Math.abs(end.x - wall.x) < 0.1,
+              "The path ends on the struck face at x " + wall.x + ", not " + end.x);
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, TracerArrowEntity.class) == null,
               "A tracer that landed is spent");

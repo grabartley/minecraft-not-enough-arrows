@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 public class SonarArrowEntity extends BaseArrowEntity {
   private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
+  private boolean fired;
 
   public SonarArrowEntity(
       final EntityType<? extends SonarArrowEntity> entityType, final World world) {
@@ -49,6 +50,10 @@ public class SonarArrowEntity extends BaseArrowEntity {
   }
 
   private void pulseAt(final ServerWorld world, final Vec3d center) {
+    if (fired) {
+      return;
+    }
+    fired = true;
     final SonarArrowConfig sonar = ServerConfigService.get().discovery().sonar();
     EntityRevealPulse.fire(world, center, sonar.radius(), sonar.durationTicks(), this, getOwner());
     ModSoundPlayer.playFrom(this, ModSounds.SONAR_ARROW_PULSE, IMPACT_VOLUME, IMPACT_PITCH);

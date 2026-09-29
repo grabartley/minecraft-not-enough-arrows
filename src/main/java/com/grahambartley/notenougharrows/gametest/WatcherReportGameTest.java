@@ -2,7 +2,6 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.reveal.WatcherAlarm;
 import com.grahambartley.notenougharrows.reveal.WatcherReport;
-import java.util.Arrays;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
@@ -42,14 +41,18 @@ public final class WatcherReportGameTest implements FabricGameTest {
   public void neverGivesCoordinates(TestContext context) {
     final ServerPlayerEntity owner = ownerAt(context, OWNER_STAND);
     final CowEntity cow = context.spawnEntity(EntityType.COW, WIRE);
-    final BlockPos wire = context.getAbsolutePos(WIRE);
 
-    final String spoken = WatcherReport.of(alarm(context, owner, cow), owner).getString();
+    final Object[] args =
+        translatable(WatcherReport.of(alarm(context, owner, cow), owner)).getArgs();
 
-    context.assertFalse(
-        Arrays.stream(new int[] {wire.getX(), wire.getY(), wire.getZ()})
-            .anyMatch(coordinate -> spoken.contains(Integer.toString(coordinate))),
-        "A report never names a coordinate: " + spoken);
+    context.assertEquals(3, args.length, "What, how far, which way, and nothing more");
+    context.assertTrue(args[0] instanceof Text, "What crossed is a name");
+    context.assertTrue(
+        args[1] instanceof Integer distance && distance % 10 == 0,
+        "The distance is rounded to ten blocks: " + args[1]);
+    context.assertTrue(
+        translatable((Text) args[2]).getKey().startsWith("direction.not-enough-arrows."),
+        "The direction is a compass point");
     context.complete();
   }
 
