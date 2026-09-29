@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class HarvestArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
 
   public HarvestArrowEntity(
@@ -52,7 +51,8 @@ public class HarvestArrowEntity extends BaseArrowEntity {
     if (HarvestService.harvest(world, center, shootingPlayer().orElse(null)).isEmpty()) {
       return false;
     }
-    ModSoundPlayer.playFrom(this, ModSounds.HARVEST_ARROW_REAP, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(
+        this, ModSounds.HARVEST_ARROW_REAP, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
     return true;
   }
 }

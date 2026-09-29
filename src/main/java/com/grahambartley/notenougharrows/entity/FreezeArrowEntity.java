@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class FreezeArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
 
   public FreezeArrowEntity(
@@ -64,7 +63,8 @@ public class FreezeArrowEntity extends BaseArrowEntity {
   private void freezeAround(
       final ServerWorld world, final BlockPos center, final FreezeArrowConfig freeze) {
     if (!FreezeService.freeze(world, center, shootingPlayer().orElse(null), freeze).isEmpty()) {
-      ModSoundPlayer.playFrom(this, ModSounds.FREEZE_ARROW_FREEZE, IMPACT_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playFrom(
+          this, ModSounds.FREEZE_ARROW_FREEZE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
     }
   }
 }

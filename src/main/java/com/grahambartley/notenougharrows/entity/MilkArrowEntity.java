@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -9,6 +11,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class MilkArrowEntity extends BaseArrowEntity {
+  private static final float WASH_PITCH = 1.0f;
 
   public MilkArrowEntity(
       final EntityType<? extends MilkArrowEntity> entityType, final World world) {
@@ -31,6 +34,8 @@ public class MilkArrowEntity extends BaseArrowEntity {
       final ServerWorld world, final EntityHitResult entityHitResult) {
     if (entityHitResult.getEntity() instanceof LivingEntity living) {
       living.clearStatusEffects();
+      ModSoundPlayer.playFrom(
+          this, ModSounds.MILK_ARROW_WASH, ModSoundPlayer.LANDING_VOLUME, WASH_PITCH);
     }
   }
 

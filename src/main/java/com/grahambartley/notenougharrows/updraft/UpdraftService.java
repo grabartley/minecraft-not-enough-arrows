@@ -24,7 +24,6 @@ public final class UpdraftService {
   private static final int PULSE_INTERVAL_TICKS = 4;
   private static final int PARTICLES_PER_BLOCK = 2;
   private static final double PARTICLE_RISE = 0.15;
-  private static final float OPEN_VOLUME = 1.0f;
   private static final float OPEN_PITCH = 1.0f;
   private static final Map<RegistryKey<World>, UpdraftTracker> TRACKERS = new HashMap<>();
 
@@ -56,7 +55,12 @@ public final class UpdraftService {
                     updraft.strength(),
                     world.getTime() + updraft.lifetimeTicks())));
     ModSoundPlayer.play(
-        world, base, ModSounds.UPDRAFT_ARROW_OPEN, SoundCategory.NEUTRAL, OPEN_VOLUME, OPEN_PITCH);
+        world,
+        base,
+        ModSounds.UPDRAFT_ARROW_OPEN,
+        SoundCategory.NEUTRAL,
+        ModSoundPlayer.LANDING_VOLUME,
+        OPEN_PITCH);
     return true;
   }
 

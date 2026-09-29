@@ -549,6 +549,8 @@ Four of these are worth reading the detail on, because each refuses something a 
 
 Every setting above is read fresh at the moment it is used, whether that is on firing, in flight, or on impact, so changing one mid-flight changes what the arrow already in the air does next.
 
+The lifesteal, milk and volley arrows play their own sounds, listed under Sounds. Lifesteal plays only when its hit drew blood for a shooter, milk only when it struck a creature, and volley once as it splits.
+
 Like every arrow in the mod, each of the nine is craftable at a crafting table from eight arrows around its centre ingredient, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
 ## Control Arrows
@@ -607,51 +609,58 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | Sound | Plays | Used for | Vanilla meaning kept (IDENT-8) |
 |---|---|---|---|
 | `countdown_beep` | Mod asset | The single beep every explosive arrow plays while its fuse burns, shared by the three tiers | Own asset |
-| `smoke_arrow_impact` | `block.fire.extinguish` | A smoke arrow's cloud bursting | Yes: a hiss of smoke |
-| `repel_arrow_impact` | `block.soul_sand.break` | A repel arrow pushing mobs off | Under review: vanilla means soul sand breaking |
+| `smoke_arrow_impact` | Mod asset | A soft whump and a hiss as a smoke arrow's cloud bursts | Own asset |
+| `repel_arrow_impact` | Mod asset | A low shove of air as a repel arrow pushes mobs off | Own asset |
 | `taunt_arrow_impact` | `block.note_block.bell` | A taunt arrow calling mobs to it | Yes: a bell that draws attention |
-| `disarm_arrow_impact` | `block.tripwire.detach` | A disarm arrow knocking an item loose | Yes: something coming unhooked |
-| `allegiance_arrow_impact` | `entity.player.levelup` | An allegiance arrow turning a mob | Under review: vanilla means a level gained |
+| `disarm_arrow_impact` | Mod asset | A metal knock and a clatter as a disarm arrow knocks an item loose | Own asset |
+| `allegiance_arrow_impact` | Mod asset | A rising run of plucked notes as an allegiance arrow turns a mob | Own asset |
 | `ricochet_arrow_bounce` | `entity.arrow.hit` | A ricochet arrow bouncing off a block | Yes: an arrow striking something |
 | `ender_teleport` | `entity.enderman.teleport` | The ender pearl and recall arrows moving something, shared as one teleport system | Yes: a teleport |
-| `frost_arrow_freeze_crack` | `block.glass.break` | A frost arrow encasing its target | Under review: vanilla means glass breaking |
+| `frost_arrow_freeze_crack` | Mod asset | A thin, glassy snap as a frost arrow encases its target, higher and shorter than the freeze arrow's crack | Own asset |
 | `frost_arrow_freeze_settle` | `block.powder_snow.place` | Snow settling as the freeze lands | Yes: powder snow settling |
 | `frost_arrow_thaw` | `block.powder_snow.break` | The ice around a frozen target giving way | Yes: powder snow breaking |
 | `explosive_arrow_blast` | `entity.generic.explode` | The blast at the end of every explosive tier's fuse | Yes: an explosion |
 | `wind_arrow_burst` | `entity.wind_charge.wind_burst` | A wind arrow's gust | Yes: a wind charge bursting |
-| `shock_arrow_thunder` | `entity.lightning_bolt.thunder` | The thunder of a shock arrow's bolt | Yes: lightning |
+| `shock_arrow_thunder` | Mod asset | A short thunder crack for a shock arrow's bolt, briefer than vanilla's strike so it is not mistaken for weather | Own asset |
 | `shock_arrow_impact` | `entity.lightning_bolt.impact` | The crack where a shock arrow's bolt lands | Yes: lightning striking |
-| `drill_arrow_bore` | `block.grindstone.use` | A drill arrow breaking its block | Under review: vanilla means a grindstone in use |
-| `pillar_arrow_rise` | `block.piston.extend` | A pillar arrow raising its column | Yes: something pushed up out of place |
-| `drain_arrow_absorb` | `block.sponge.absorb` | A drain arrow soaking up water | Yes: a sponge absorbing |
-| `freeze_arrow_freeze` | `block.glass.place` | A freeze arrow setting fluid solid | Yes: ice is placed with glass's sounds |
+| `lifesteal_arrow_drain` | Mod asset | A wet, falling note as a lifesteal arrow draws blood from a shooter's target | Own asset |
+| `milk_arrow_wash` | Mod asset | A clean wipe and rinse as a milk arrow washes a creature's effects away | Own asset |
+| `volley_arrow_split` | Mod asset | Several arrows leaving at once as a volley arrow splits | Own asset |
+| `drill_arrow_bore` | `block.stone.break` | A drill arrow breaking its block | Yes: a block broken |
+| `pillar_arrow_rise` | Mod asset | Earth grinding upward as a pillar arrow raises its column | Own asset |
+| `drain_arrow_absorb` | Mod asset | Water swirling and gulping away as a drain arrow empties it | Own asset |
+| `freeze_arrow_freeze` | Mod asset | A deep crack spreading into crackle as a freeze arrow sets fluid solid | Own asset |
 | `blossom_arrow_bloom` | `item.bone_meal.use` | A blossom arrow bone mealing | Yes: bone meal used |
-| `harvest_arrow_reap` | `block.crop.break` | A harvest arrow reaping its crops | Yes: a crop broken |
+| `harvest_arrow_reap` | Mod asset | A quick sweep and gather as a harvest arrow reaps its crops | Own asset |
 | `till_arrow_till` | `item.hoe.till` | A till arrow turning ground to farmland | Yes: a hoe tilling |
 | `shear_arrow_carve` | `block.pumpkin.carve` | A shear arrow carving a pumpkin | Yes: a pumpkin carved |
 | `shear_arrow_hive` | `block.beehive.shear` | A shear arrow taking honeycomb from a hive | Yes: a hive shorn |
 | `bee_arrow_release` | `block.beehive.exit` | A bee arrow letting its bees out | Yes: bees leaving a hive |
-| `zipline_arrow_string` | `block.chain.place` | A zipline arrow stringing its cable, heard at both ends | Yes: a chain placed |
-| `updraft_arrow_open` | `entity.breeze.whirl` | An updraft arrow opening its column | Yes: a breeze's rising wind |
+| `zipline_arrow_string` | Mod asset | A metal line pulled taut as a zipline arrow strings its cable, heard at both ends | Own asset |
+| `updraft_arrow_open` | Mod asset | A long rush of rising air as an updraft arrow opens its column | Own asset |
 | `trampoline_arrow_launch` | `entity.slime.jump` | A trampoline throwing something back into the air | Yes: a slime bouncing |
-| `beacon_arrow_raise` | `block.beacon.activate` | A beacon arrow's beam rising | Yes: a beacon coming on |
-| `prospector_arrow_pulse` | `block.amethyst_block.resonate` | A prospector arrow's pulse ringing out through the rock | Yes: amethyst resonating |
-| `sonar_arrow_pulse` | `entity.warden.sonic_charge` | A sonar arrow's pulse sweeping the area | Under review: vanilla means a warden charging its attack |
+| `beacon_arrow_raise` | Mod asset | A low thud and a rising chord as a beacon arrow's beam goes up | Own asset |
+| `prospector_arrow_pulse` | Mod asset | A glassy, many-toned ping as a prospector arrow's pulse rings through the rock | Own asset |
+| `sonar_arrow_pulse` | Mod asset | A pure sonar ping with two fading echoes as a sonar arrow's pulse sweeps the area | Own asset |
 | `tripwire_arrow_set` | `block.tripwire.attach` | A tripwire arrow setting its watcher | Yes: a tripwire hooked up |
-| `tripwire_arrow_alert` | `block.sculk_sensor.clicking` | A watcher reporting, heard only by its owner | Yes: a sculk sensor noticing something |
+| `tripwire_arrow_alert` | Mod asset | Two quick rising chirps as a watcher reports, heard only by its owner and quieter than the other sounds so it does not startle in a cave | Own asset |
 | `chicken_arrow_hatch` | `entity.chicken.egg` | A chicken arrow's chicken arriving | Yes: a chicken and its egg |
-| `puffer_arrow_inflate` | `entity.puffer_fish.blow_up` | A puffer arrow inflating what it struck | Yes: a pufferfish puffing up |
+| `puffer_arrow_inflate` | Mod asset | A comic, rising squeak as a puffer arrow inflates what it struck | Own asset |
 | `puffer_arrow_deflate` | `entity.puffer_fish.blow_out` | An inflated creature shrinking back | Yes: a pufferfish deflating |
-| `stink_arrow_release` | `entity.panda.sneeze` | A stink arrow's cloud bursting | Under review: vanilla means a panda sneezing |
-| `boomerang_arrow_return` | `item.trident.return` | A boomerang arrow arriving home | Yes: a thrown weapon coming back |
-| `polymorph_arrow_change` | `entity.evoker.prepare_wololo` | A polymorph arrow changing a mob | Yes: an evoker's spell that changes a creature |
-| `polymorph_arrow_restore` | `block.sculk_catalyst.bloom` | A disguised mob changing back when its time is up | Under review: vanilla means a sculk catalyst blooming |
-| `courier_arrow_deliver` | `block.ender_chest.close` | A courier arrow handing over or dropping its payload | Yes: an ender chest closing on what it carried |
+| `stink_arrow_release` | Mod asset | A wet, spluttering burst as a stink arrow's cloud goes off | Own asset |
+| `boomerang_arrow_return` | Mod asset | A whirring whoosh that grows as a boomerang arrow comes home | Own asset |
+| `polymorph_arrow_change` | Mod asset | A rising note with a sparkle as a polymorph arrow changes a mob | Own asset |
+| `polymorph_arrow_restore` | Mod asset | The same note falling as a disguised mob changes back when its time is up | Own asset |
+| `courier_arrow_deliver` | Mod asset | Two rising chime notes as a courier arrow hands over or drops its payload | Own asset |
 | `snow_golem_arrow_melt` | `block.snow.break` | A snow golem melting when its time is up | Yes: snow breaking |
-| `magnet_arrow_pull` | `item.lodestone_compass.lock` | A magnet arrow catching loose items | Under review: vanilla means a compass locking to a lodestone |
+| `magnet_arrow_pull` | Mod asset | A rising magnetic hum as a magnet arrow catches loose items | Own asset |
 | `fletching_station_select` | `ui.stonecutter.select_recipe` | Picking a recipe at the fletching station, heard only by the player clicking | Yes: selecting a recipe at a workstation |
 
-This table is the reviewed list IDENT-8 asks for. A row marked under review keeps its sound until the sound design issue replaces it with a mod asset; it is not a licence for a new arrow to borrow the same way.
+This table is the reviewed list IDENT-8 asks for. A vanilla sound stays only where it already means what the arrow does; everything else is a mod asset, and `ModSoundsTest` fails if a sound the review flagged ever goes back to the vanilla sound it borrowed, if two sounds play the same asset, or if an asset is shipped that nothing plays.
+
+Every mod asset is mastered to the countdown beep's loudness or below, so none of them can drown it out and the beep stays legible by ear (A11Y-3). The watcher's chirp sits a little quieter than the rest.
+
+A sound played where an arrow lands is played at `ModSoundPlayer.LANDING_VOLUME`, which carries it 48 blocks instead of vanilla's usual 16, so a player who shot the arrow can hear its effect resolve out of sight (IDENT-7). Vanilla only uses a volume above one for range: the client clamps loudness to one, so these sounds carry further without playing any louder. Sounds that happen next to the shooter, like a boomerang coming home, a volley splitting just after it leaves the bow and a watcher's report, keep the ordinary range.
 
 The countdown communicates urgency through cadence rather than through different sounds: one short beep is replayed at a shortening interval as detonation approaches, so a player who hears the beeps speeding up knows to move. Keeping it to one asset is what makes that escalation smooth, because the interval is the only thing changing.
 

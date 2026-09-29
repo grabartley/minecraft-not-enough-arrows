@@ -1,6 +1,8 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.arrow.ArrowImpact;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.combat.LifestealHeal;
 import com.grahambartley.notenougharrows.config.LifestealArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
@@ -14,6 +16,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LifestealArrowEntity extends BaseArrowEntity {
+  private static final float DRAIN_PITCH = 1.0f;
+
   private double healthBeforeHit;
 
   public LifestealArrowEntity(
@@ -45,6 +49,10 @@ public class LifestealArrowEntity extends BaseArrowEntity {
     final double dealt = healthBeforeHit - poolOf(entityHitResult.getEntity());
     if (!(shooter().orElse(null) instanceof LivingEntity shooter)) {
       return;
+    }
+    if (dealt > 0.0) {
+      ModSoundPlayer.playFrom(
+          this, ModSounds.LIFESTEAL_ARROW_DRAIN, ModSoundPlayer.LANDING_VOLUME, DRAIN_PITCH);
     }
 
     final LifestealArrowConfig lifesteal = ServerConfigService.get().combat().lifesteal();

@@ -17,8 +17,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class StinkArrowEntity extends BaseArrowEntity {
-  private static final float RELEASE_VOLUME = 1.0f;
-  private static final float RELEASE_PITCH = 0.7f;
+  private static final float RELEASE_PITCH = 1.0f;
 
   public StinkArrowEntity(
       final EntityType<? extends StinkArrowEntity> entityType, final World world) {
@@ -64,7 +63,8 @@ public class StinkArrowEntity extends BaseArrowEntity {
     if (!StinkCloudService.open(world, at, config())) {
       return false;
     }
-    ModSoundPlayer.playFrom(this, ModSounds.STINK_ARROW_RELEASE, RELEASE_VOLUME, RELEASE_PITCH);
+    ModSoundPlayer.playFrom(
+        this, ModSounds.STINK_ARROW_RELEASE, ModSoundPlayer.LANDING_VOLUME, RELEASE_PITCH);
     return true;
   }
 

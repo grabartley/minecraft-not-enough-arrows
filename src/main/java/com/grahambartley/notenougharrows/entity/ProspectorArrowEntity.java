@@ -18,7 +18,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class ProspectorArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
   private final OneShot pulse = new OneShot();
 
@@ -63,6 +62,7 @@ public class ProspectorArrowEntity extends BaseArrowEntity {
         prospector.durationTicks(),
         RevealedBlocks.of(prospector.blocks()),
         getOwner());
-    ModSoundPlayer.playFrom(this, ModSounds.PROSPECTOR_ARROW_PULSE, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(
+        this, ModSounds.PROSPECTOR_ARROW_PULSE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
   }
 }

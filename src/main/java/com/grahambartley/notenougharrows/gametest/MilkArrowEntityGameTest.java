@@ -1,10 +1,12 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.ModSounds;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -69,6 +71,38 @@ public final class MilkArrowEntityGameTest implements FabricGameTest {
           context.assertTrue(
               bystander.getStatusEffect(StatusEffects.POISON) != null,
               "An arrow that hits a block should strip nobody's effects");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aHitOnACreaturePlaysTheWashOnce(TestContext context) {
+    FiringRangeSupport.liveTargetOnPedestalAt(context, TARGET_STAND);
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final HeardSounds heard = HeardSounds.by(context, shooter);
+    MockPlayerSupport.fireEastStraight(context, shooter, ModArrows.MILK_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.assertEquals(heard.count(ModSounds.MILK_ARROW_WASH), 1L, "milk washes heard");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  public void aHitOnlyOnABlockPlaysNoWash(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    final HeardSounds heard = HeardSounds.by(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.MILK_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK,
+        () -> {
+          context.assertEquals(heard.count(ModSounds.MILK_ARROW_WASH), 0L, "milk washes heard");
           context.complete();
         });
   }

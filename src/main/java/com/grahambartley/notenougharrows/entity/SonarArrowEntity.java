@@ -17,7 +17,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class SonarArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
   private final OneShot pulse = new OneShot();
 
@@ -56,6 +55,7 @@ public class SonarArrowEntity extends BaseArrowEntity {
     }
     final SonarArrowConfig sonar = ServerConfigService.get().discovery().sonar();
     EntityRevealPulse.fire(world, center, sonar.radius(), sonar.durationTicks(), this, getOwner());
-    ModSoundPlayer.playFrom(this, ModSounds.SONAR_ARROW_PULSE, IMPACT_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playFrom(
+        this, ModSounds.SONAR_ARROW_PULSE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
   }
 }

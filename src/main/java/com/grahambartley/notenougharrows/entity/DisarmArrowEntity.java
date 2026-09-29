@@ -15,8 +15,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class DisarmArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
-  private static final float IMPACT_PITCH = 1.2f;
+  private static final float IMPACT_PITCH = 1.0f;
 
   public DisarmArrowEntity(
       final EntityType<? extends DisarmArrowEntity> entityType, final World world) {
@@ -47,7 +46,8 @@ public class DisarmArrowEntity extends BaseArrowEntity {
         shooter().map(Entity::getPos).orElse(null),
         disarm.affectsPlayers(),
         disarm.throwDistance())) {
-      ModSoundPlayer.playFrom(this, ModSounds.DISARM_ARROW_IMPACT, IMPACT_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playFrom(
+          this, ModSounds.DISARM_ARROW_IMPACT, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
     }
   }
 

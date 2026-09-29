@@ -14,8 +14,7 @@ public final class FrostEffects {
   private static final int THAW_PARTICLES = 12;
   private static final double BURST_SPEED = 0.08;
   private static final double SHIMMER_SPEED = 0.01;
-  private static final float SOUND_VOLUME = 1.0f;
-  private static final float FREEZE_PITCH = 1.2f;
+  private static final float FREEZE_PITCH = 1.0f;
   private static final float THAW_PITCH = 0.8f;
 
   private FrostEffects() {}
@@ -65,6 +64,11 @@ public final class FrostEffects {
       final SoundEvent event,
       final float pitch) {
     ModSoundPlayer.play(
-        world, target.getPos(), event, target.getSoundCategory(), SOUND_VOLUME, pitch);
+        world,
+        target.getPos(),
+        event,
+        target.getSoundCategory(),
+        ModSoundPlayer.LANDING_VOLUME,
+        pitch);
   }
 }

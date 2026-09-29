@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class DrainArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_VOLUME = 1.0f;
   private static final float IMPACT_PITCH = 1.0f;
 
   public DrainArrowEntity(
@@ -59,7 +58,8 @@ public class DrainArrowEntity extends BaseArrowEntity {
   private void drainAround(
       final ServerWorld world, final BlockPos center, final DrainArrowConfig drain) {
     if (!DrainService.drain(world, center, shootingPlayer().orElse(null), drain).isEmpty()) {
-      ModSoundPlayer.playFrom(this, ModSounds.DRAIN_ARROW_ABSORB, IMPACT_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playFrom(
+          this, ModSounds.DRAIN_ARROW_ABSORB, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
     }
   }
 }

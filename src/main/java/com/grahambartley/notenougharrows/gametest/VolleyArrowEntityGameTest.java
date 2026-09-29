@@ -1,6 +1,7 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.ModArrows;
+import com.grahambartley.notenougharrows.ModSounds;
 import com.grahambartley.notenougharrows.config.VolleyArrowConfig;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -8,6 +9,7 @@ import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -123,5 +125,21 @@ public final class VolleyArrowEntityGameTest implements FabricGameTest {
     return context
         .getWorld()
         .getEntitiesByClass(ArrowEntity.class, context.getTestBox(), fragment -> true);
+  }
+
+  @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
+  public void theSplitPlaysItsSoundOnce(TestContext context) {
+    final ServerPlayerEntity shooter =
+        MockPlayerSupport.playerAt(context, CombatTestSupport.LONG_RANGE_SHOOTER_STAND);
+    final HeardSounds heard = HeardSounds.by(context, shooter);
+    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.VOLLEY_ARROW.item());
+
+    context.runAtTick(
+        A_SECOND_WINDOW,
+        () -> {
+          context.assertEquals(
+              heard.count(ModSounds.VOLLEY_ARROW_SPLIT), 1L, "volley splits heard");
+          context.complete();
+        });
   }
 }

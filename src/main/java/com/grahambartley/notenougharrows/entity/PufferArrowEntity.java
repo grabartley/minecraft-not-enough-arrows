@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class PufferArrowEntity extends BaseArrowEntity {
-  private static final float INFLATE_VOLUME = 1.0f;
   private static final float INFLATE_PITCH = 1.0f;
 
   public PufferArrowEntity(
@@ -43,7 +42,7 @@ public class PufferArrowEntity extends BaseArrowEntity {
     if (entityHitResult.getEntity() instanceof LivingEntity struck
         && PufferService.inflate(world, struck, config())) {
       ModSoundPlayer.playFrom(
-          struck, ModSounds.PUFFER_ARROW_INFLATE, INFLATE_VOLUME, INFLATE_PITCH);
+          struck, ModSounds.PUFFER_ARROW_INFLATE, ModSoundPlayer.LANDING_VOLUME, INFLATE_PITCH);
       return ArrowImpact.DISCARD;
     }
     return glanceOff(entityHitResult.getEntity());

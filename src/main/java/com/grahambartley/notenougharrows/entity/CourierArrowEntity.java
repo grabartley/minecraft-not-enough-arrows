@@ -23,7 +23,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class CourierArrowEntity extends BaseArrowEntity {
-  private static final float DELIVER_VOLUME = 1.0f;
   private static final float DELIVER_PITCH = 1.0f;
 
   public CourierArrowEntity(
@@ -111,7 +110,7 @@ public class CourierArrowEntity extends BaseArrowEntity {
         at,
         ModSounds.COURIER_ARROW_DELIVER,
         getSoundCategory(),
-        DELIVER_VOLUME,
+        ModSoundPlayer.LANDING_VOLUME,
         DELIVER_PITCH);
   }
 

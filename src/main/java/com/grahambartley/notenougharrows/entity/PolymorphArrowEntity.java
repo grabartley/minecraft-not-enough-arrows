@@ -59,7 +59,7 @@ public class PolymorphArrowEntity extends BaseArrowEntity {
     ModSoundPlayer.playFrom(
         struck,
         ModSounds.POLYMORPH_ARROW_CHANGE,
-        DisguiseService.CUE_VOLUME,
+        ModSoundPlayer.LANDING_VOLUME,
         DisguiseService.CUE_PITCH);
     return ArrowImpact.DISCARD;
   }

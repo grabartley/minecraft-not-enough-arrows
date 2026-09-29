@@ -23,7 +23,7 @@ public class BoomerangArrowEntity extends BaseArrowEntity {
   private static final String RETURN_TICKS_KEY = "ReturnTicks";
   private static final byte NOT_HOLDING_PIERCE = -1;
   private static final float RETURN_VOLUME = 1.0f;
-  private static final float RETURN_PITCH = 1.2f;
+  private static final float RETURN_PITCH = 1.0f;
 
   private boolean returning;
   private int returnTicks;

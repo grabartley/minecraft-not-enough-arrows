@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows.entity;
 
+import com.grahambartley.notenougharrows.ModSounds;
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.combat.VolleyBurst;
 import com.grahambartley.notenougharrows.config.VolleyArrowConfig;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
@@ -12,6 +14,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class VolleyArrowEntity extends BaseArrowEntity {
   private static final String FLIGHT_TICKS_KEY = "FlightTicks";
+  private static final float SPLIT_VOLUME = 1.0f;
+  private static final float SPLIT_PITCH = 1.0f;
 
   private int flightTicks;
 
@@ -44,6 +48,7 @@ public class VolleyArrowEntity extends BaseArrowEntity {
     }
 
     VolleyBurst.split(world, this, volley);
+    ModSoundPlayer.playFrom(this, ModSounds.VOLLEY_ARROW_SPLIT, SPLIT_VOLUME, SPLIT_PITCH);
     discard();
   }
 

@@ -6,21 +6,15 @@
     ]
   },
   "smoke_arrow_impact": {
-    "subtitle": "subtitles.block.fire.extinguish",
+    "subtitle": "subtitles.not-enough-arrows.smoke_arrow_impact",
     "sounds": [
-      {
-        "name": "minecraft:block.fire.extinguish",
-        "type": "event"
-      }
+      "not-enough-arrows:smoke_arrow_impact"
     ]
   },
   "repel_arrow_impact": {
-    "subtitle": "subtitles.block.generic.break",
+    "subtitle": "subtitles.not-enough-arrows.repel_arrow_impact",
     "sounds": [
-      {
-        "name": "minecraft:block.soul_sand.break",
-        "type": "event"
-      }
+      "not-enough-arrows:repel_arrow_impact"
     ]
   },
   "taunt_arrow_impact": {
@@ -33,21 +27,15 @@
     ]
   },
   "disarm_arrow_impact": {
-    "subtitle": "subtitles.block.tripwire.detach",
+    "subtitle": "subtitles.not-enough-arrows.disarm_arrow_impact",
     "sounds": [
-      {
-        "name": "minecraft:block.tripwire.detach",
-        "type": "event"
-      }
+      "not-enough-arrows:disarm_arrow_impact"
     ]
   },
   "allegiance_arrow_impact": {
-    "subtitle": "subtitles.entity.player.levelup",
+    "subtitle": "subtitles.not-enough-arrows.allegiance_arrow_impact",
     "sounds": [
-      {
-        "name": "minecraft:entity.player.levelup",
-        "type": "event"
-      }
+      "not-enough-arrows:allegiance_arrow_impact"
     ]
   },
   "ricochet_arrow_bounce": {
@@ -69,12 +57,9 @@
     ]
   },
   "frost_arrow_freeze_crack": {
-    "subtitle": "subtitles.block.generic.break",
+    "subtitle": "subtitles.not-enough-arrows.frost_arrow_freeze_crack",
     "sounds": [
-      {
-        "name": "minecraft:block.glass.break",
-        "type": "event"
-      }
+      "not-enough-arrows:frost_arrow_freeze_crack"
     ]
   },
   "frost_arrow_freeze_settle": {
@@ -114,39 +99,30 @@
     ]
   },
   "drill_arrow_bore": {
-    "subtitle": "subtitles.block.grindstone.use",
+    "subtitle": "subtitles.block.generic.break",
     "sounds": [
       {
-        "name": "minecraft:block.grindstone.use",
+        "name": "minecraft:block.stone.break",
         "type": "event"
       }
     ]
   },
   "pillar_arrow_rise": {
-    "subtitle": "subtitles.block.piston.move",
+    "subtitle": "subtitles.not-enough-arrows.pillar_arrow_rise",
     "sounds": [
-      {
-        "name": "minecraft:block.piston.extend",
-        "type": "event"
-      }
+      "not-enough-arrows:pillar_arrow_rise"
     ]
   },
   "drain_arrow_absorb": {
-    "subtitle": "subtitles.block.sponge.absorb",
+    "subtitle": "subtitles.not-enough-arrows.drain_arrow_absorb",
     "sounds": [
-      {
-        "name": "minecraft:block.sponge.absorb",
-        "type": "event"
-      }
+      "not-enough-arrows:drain_arrow_absorb"
     ]
   },
   "freeze_arrow_freeze": {
-    "subtitle": "subtitles.block.generic.place",
+    "subtitle": "subtitles.not-enough-arrows.freeze_arrow_freeze",
     "sounds": [
-      {
-        "name": "minecraft:block.glass.place",
-        "type": "event"
-      }
+      "not-enough-arrows:freeze_arrow_freeze"
     ]
   },
   "blossom_arrow_bloom": {
@@ -159,12 +135,9 @@
     ]
   },
   "harvest_arrow_reap": {
-    "subtitle": "subtitles.block.generic.break",
+    "subtitle": "subtitles.not-enough-arrows.harvest_arrow_reap",
     "sounds": [
-      {
-        "name": "minecraft:block.crop.break",
-        "type": "event"
-      }
+      "not-enough-arrows:harvest_arrow_reap"
     ]
   },
   "till_arrow_till": {
@@ -203,21 +176,10 @@
       }
     ]
   },
-  "fletching_station_select": {
-    "sounds": [
-      {
-        "name": "minecraft:ui.stonecutter.select_recipe",
-        "type": "event"
-      }
-    ]
-  },
   "shock_arrow_thunder": {
-    "subtitle": "subtitles.entity.lightning_bolt.thunder",
+    "subtitle": "subtitles.not-enough-arrows.shock_arrow_thunder",
     "sounds": [
-      {
-        "name": "minecraft:entity.lightning_bolt.thunder",
-        "type": "event"
-      }
+      "not-enough-arrows:shock_arrow_thunder"
     ]
   },
   "shock_arrow_impact": {
@@ -232,19 +194,13 @@
   "zipline_arrow_string": {
     "subtitle": "subtitles.not-enough-arrows.zipline_arrow_string",
     "sounds": [
-      {
-        "name": "minecraft:block.chain.place",
-        "type": "event"
-      }
+      "not-enough-arrows:zipline_arrow_string"
     ]
   },
   "updraft_arrow_open": {
     "subtitle": "subtitles.not-enough-arrows.updraft_arrow_open",
     "sounds": [
-      {
-        "name": "minecraft:entity.breeze.whirl",
-        "type": "event"
-      }
+      "not-enough-arrows:updraft_arrow_open"
     ]
   },
   "trampoline_arrow_launch": {
@@ -259,28 +215,19 @@
   "beacon_arrow_raise": {
     "subtitle": "subtitles.not-enough-arrows.beacon_arrow_raise",
     "sounds": [
-      {
-        "name": "minecraft:block.beacon.activate",
-        "type": "event"
-      }
+      "not-enough-arrows:beacon_arrow_raise"
     ]
   },
   "prospector_arrow_pulse": {
     "subtitle": "subtitles.not-enough-arrows.prospector_arrow_pulse",
     "sounds": [
-      {
-        "name": "minecraft:block.amethyst_block.resonate",
-        "type": "event"
-      }
+      "not-enough-arrows:prospector_arrow_pulse"
     ]
   },
   "sonar_arrow_pulse": {
     "subtitle": "subtitles.not-enough-arrows.sonar_arrow_pulse",
     "sounds": [
-      {
-        "name": "minecraft:entity.warden.sonic_charge",
-        "type": "event"
-      }
+      "not-enough-arrows:sonar_arrow_pulse"
     ]
   },
   "tripwire_arrow_set": {
@@ -295,10 +242,7 @@
   "tripwire_arrow_alert": {
     "subtitle": "subtitles.not-enough-arrows.tripwire_arrow_alert",
     "sounds": [
-      {
-        "name": "minecraft:block.sculk_sensor.clicking",
-        "type": "event"
-      }
+      "not-enough-arrows:tripwire_arrow_alert"
     ]
   },
   "chicken_arrow_hatch": {
@@ -313,10 +257,7 @@
   "puffer_arrow_inflate": {
     "subtitle": "subtitles.not-enough-arrows.puffer_arrow_inflate",
     "sounds": [
-      {
-        "name": "minecraft:entity.puffer_fish.blow_up",
-        "type": "event"
-      }
+      "not-enough-arrows:puffer_arrow_inflate"
     ]
   },
   "puffer_arrow_deflate": {
@@ -331,46 +272,31 @@
   "stink_arrow_release": {
     "subtitle": "subtitles.not-enough-arrows.stink_arrow_release",
     "sounds": [
-      {
-        "name": "minecraft:entity.panda.sneeze",
-        "type": "event"
-      }
+      "not-enough-arrows:stink_arrow_release"
     ]
   },
   "boomerang_arrow_return": {
     "subtitle": "subtitles.not-enough-arrows.boomerang_arrow_return",
     "sounds": [
-      {
-        "name": "minecraft:item.trident.return",
-        "type": "event"
-      }
+      "not-enough-arrows:boomerang_arrow_return"
     ]
   },
   "polymorph_arrow_change": {
     "subtitle": "subtitles.not-enough-arrows.polymorph_arrow_change",
     "sounds": [
-      {
-        "name": "minecraft:entity.evoker.prepare_wololo",
-        "type": "event"
-      }
+      "not-enough-arrows:polymorph_arrow_change"
     ]
   },
   "polymorph_arrow_restore": {
     "subtitle": "subtitles.not-enough-arrows.polymorph_arrow_restore",
     "sounds": [
-      {
-        "name": "minecraft:block.sculk_catalyst.bloom",
-        "type": "event"
-      }
+      "not-enough-arrows:polymorph_arrow_restore"
     ]
   },
   "courier_arrow_deliver": {
     "subtitle": "subtitles.not-enough-arrows.courier_arrow_deliver",
     "sounds": [
-      {
-        "name": "minecraft:block.ender_chest.close",
-        "type": "event"
-      }
+      "not-enough-arrows:courier_arrow_deliver"
     ]
   },
   "snow_golem_arrow_melt": {
@@ -385,8 +311,31 @@
   "magnet_arrow_pull": {
     "subtitle": "subtitles.not-enough-arrows.magnet_arrow_pull",
     "sounds": [
+      "not-enough-arrows:magnet_arrow_pull"
+    ]
+  },
+  "lifesteal_arrow_drain": {
+    "subtitle": "subtitles.not-enough-arrows.lifesteal_arrow_drain",
+    "sounds": [
+      "not-enough-arrows:lifesteal_arrow_drain"
+    ]
+  },
+  "milk_arrow_wash": {
+    "subtitle": "subtitles.not-enough-arrows.milk_arrow_wash",
+    "sounds": [
+      "not-enough-arrows:milk_arrow_wash"
+    ]
+  },
+  "volley_arrow_split": {
+    "subtitle": "subtitles.not-enough-arrows.volley_arrow_split",
+    "sounds": [
+      "not-enough-arrows:volley_arrow_split"
+    ]
+  },
+  "fletching_station_select": {
+    "sounds": [
       {
-        "name": "minecraft:item.lodestone_compass.lock",
+        "name": "minecraft:ui.stonecutter.select_recipe",
         "type": "event"
       }
     ]

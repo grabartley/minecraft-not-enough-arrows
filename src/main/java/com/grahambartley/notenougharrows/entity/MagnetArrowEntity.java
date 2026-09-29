@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class MagnetArrowEntity extends BaseArrowEntity {
-  private static final float PULL_VOLUME = 1.0f;
   private static final float PULL_PITCH = 1.0f;
 
   public MagnetArrowEntity(
@@ -59,6 +58,11 @@ public class MagnetArrowEntity extends BaseArrowEntity {
       return;
     }
     ModSoundPlayer.play(
-        world, impact, ModSounds.MAGNET_ARROW_PULL, getSoundCategory(), PULL_VOLUME, PULL_PITCH);
+        world,
+        impact,
+        ModSounds.MAGNET_ARROW_PULL,
+        getSoundCategory(),
+        ModSoundPlayer.LANDING_VOLUME,
+        PULL_PITCH);
   }
 }
