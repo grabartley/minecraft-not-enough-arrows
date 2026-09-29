@@ -19,11 +19,11 @@ import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.EntityTypeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFunction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameMode;
 import net.minecraft.world.GameRules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +31,11 @@ import org.slf4j.LoggerFactory;
 final class MobArena {
   private static final Logger LOGGER = LoggerFactory.getLogger(MobArena.class);
   static final String TEMPLATE = "not-enough-arrows:open_arena";
-  static final BlockPos PLAYER_STAND = new BlockPos(4, 2, 8);
-  static final BlockPos NEAR_STAND = new BlockPos(8, 2, 8);
-  static final BlockPos THREAT_STAND = new BlockPos(6, 2, 11);
-  static final BlockPos DECOY_STAND = new BlockPos(22, 2, 8);
-  static final BlockPos FAR_STAND = new BlockPos(18, 2, 8);
+  static final BlockPos PLAYER_STAND = new BlockPos(4, 3, 8);
+  static final BlockPos NEAR_STAND = new BlockPos(8, 3, 8);
+  static final BlockPos THREAT_STAND = new BlockPos(6, 3, 11);
+  static final BlockPos DECOY_STAND = new BlockPos(22, 3, 8);
+  static final BlockPos FAR_STAND = new BlockPos(18, 3, 8);
   static final int SETTLED = 10;
   static final int SHORT_LIMIT = 60;
   static final int LONG_LIMIT = 320;
@@ -80,11 +80,13 @@ final class MobArena {
 
   private static void prepare(final TestContext context, final Mob mob) {
     context.getWorld().getGameRules().get(GameRules.DO_MOB_GRIEFING).set(false, null);
+    context.checkBlock(PLAYER_STAND.down(), Blocks.BEDROCK::equals, "The arena stands on bedrock");
+    context.checkBlock(PLAYER_STAND, Blocks.AIR::equals, "The arena stands are open air");
     if (mob.moves() != Moves.WATER) {
       return;
     }
     for (int x = 1; x <= 46; x++) {
-      for (int y = 2; y <= WATER_TOP; y++) {
+      for (int y = PLAYER_STAND.getY(); y <= WATER_TOP; y++) {
         for (int z = 1; z <= 14; z++) {
           context.setBlockState(new BlockPos(x, y, z), Blocks.WATER);
         }
@@ -107,7 +109,7 @@ final class MobArena {
   }
 
   static MobEntity thinking(final TestContext context, final Mob mob, final BlockPos at) {
-    final MobEntity spawned = context.spawnMob(mob.type(), standFor(mob, at));
+    final MobEntity spawned = context.spawnEntity(mob.type(), standFor(mob, at));
     spawned.initialize(
         context.getWorld(),
         context.getWorld().getLocalDifficulty(context.getAbsolutePos(at)),
@@ -120,18 +122,21 @@ final class MobArena {
     if (spawned instanceof HoglinEntity hoglin) {
       hoglin.setImmuneToZombification(true);
     }
-    if (spawned.getEquippedStack(EquipmentSlot.HEAD).isEmpty()) {
-      spawned.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-    }
-    return sturdy(spawned);
+    return sturdy(helmeted(spawned));
   }
 
   static MobEntity threatFor(final TestContext context, final Mob mob) {
     final EntityType<? extends MobEntity> type =
         mob.moves() == Moves.WATER ? EntityType.DROWNED : EntityType.ZOMBIE;
-    final MobEntity threat = context.spawnMob(type, standFor(mob, THREAT_STAND));
-    threat.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-    return sturdy(threat);
+    return sturdy(helmeted(context.spawnEntity(type, standFor(mob, THREAT_STAND))));
+  }
+
+  private static MobEntity helmeted(final MobEntity mob) {
+    if (mob.getType().isIn(EntityTypeTags.UNDEAD)
+        && mob.getEquippedStack(EquipmentSlot.HEAD).isEmpty()) {
+      mob.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
+    }
+    return mob;
   }
 
   private static MobEntity sturdy(final MobEntity mob) {
@@ -141,8 +146,7 @@ final class MobArena {
   }
 
   static ServerPlayerEntity player(final TestContext context) {
-    final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    player.changeGameMode(GameMode.SURVIVAL);
+    final ServerPlayerEntity player = MockPlayerSupport.survivalPlayerAt(context, PLAYER_STAND);
     player.addStatusEffect(
         new StatusEffectInstance(StatusEffects.RESISTANCE, LONG_LIMIT * 2, UNHARMABLE));
     player.addStatusEffect(new StatusEffectInstance(StatusEffects.WATER_BREATHING, LONG_LIMIT * 2));

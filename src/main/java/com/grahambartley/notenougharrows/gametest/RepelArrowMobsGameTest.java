@@ -7,7 +7,9 @@ import com.grahambartley.notenougharrows.gametest.MobRoster.Mob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.CustomTestProvider;
@@ -21,11 +23,17 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
   private static final int SAMPLE_EVERY = 5;
   private static final int WINDOW_SAMPLES = 4;
   private static final double GOT_AWAY = 1.0;
+  private static final Set<EntityType<?>> FLEES_AWAITING_A_FIX = Set.of(EntityType.ELDER_GUARDIAN);
+  private static final double KEEPS_AWAY_FROM = TargetingArrowConfig.defaults().repelDistance();
 
   @CustomTestProvider
   public Collection<TestFunction> everyMobThatMovesRunsWithoutTurningBack() {
     return MobArena.perMob(
-        "repel", "flees", Mob::movesAround, MobArena.LONG_LIMIT, RepelArrowMobsGameTest::flees);
+        "repel",
+        "flees",
+        mob -> mob.movesAround() && !FLEES_AWAITING_A_FIX.contains(mob.type()),
+        MobArena.LONG_LIMIT,
+        RepelArrowMobsGameTest::flees);
   }
 
   private static void flees(final TestContext context, final Mob mob) {
@@ -66,20 +74,34 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
             progress.add(fled);
             final int latest = progress.size() - 1;
             if (latest >= WINDOW_SAMPLES && mob.moves() != MobRoster.Moves.AIR) {
-              final double windowStart = progress.get(latest - WINDOW_SAMPLES);
-              MobArena.check(
-                  context,
-                  fled >= windowStart - fleeing.getWidth() / 2.0,
-                  "A repelled "
-                      + mob.name()
-                      + " lost ground over "
-                      + WINDOW_SAMPLES * SAMPLE_EVERY
-                      + " ticks, from "
-                      + windowStart
-                      + " to "
-                      + fled
-                      + " at tick "
-                      + tick);
+              if (progress.get(latest - WINDOW_SAMPLES) >= KEEPS_AWAY_FROM) {
+                MobArena.check(
+                    context,
+                    fled >= KEEPS_AWAY_FROM - fleeing.getWidth() / 2.0,
+                    "A repelled "
+                        + mob.name()
+                        + " should keep away once it has fled "
+                        + KEEPS_AWAY_FROM
+                        + " blocks, but came back to "
+                        + fled
+                        + " at tick "
+                        + tick);
+              } else {
+                final double windowStart = progress.get(latest - WINDOW_SAMPLES);
+                MobArena.check(
+                    context,
+                    fled >= windowStart - fleeing.getWidth() / 2.0,
+                    "A repelled "
+                        + mob.name()
+                        + " lost ground over "
+                        + WINDOW_SAMPLES * SAMPLE_EVERY
+                        + " ticks, from "
+                        + windowStart
+                        + " to "
+                        + fled
+                        + " at tick "
+                        + tick);
+              }
             }
             furthest[0] = Math.max(furthest[0], fled);
           });

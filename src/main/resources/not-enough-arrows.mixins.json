@@ -6,6 +6,7 @@
 		"LevelStorageMixin",
 		"MobEntityTargetMixin",
 		"BatEntityFlightMixin",
+		"SlimeRandomLookGoalMixin",
 		"WorldChunkStructureMixin",
 		"ServerCommonNetworkHandlerMixin",
 		"MobEntityDisguiseMixin",

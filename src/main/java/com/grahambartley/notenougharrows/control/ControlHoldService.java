@@ -151,6 +151,7 @@ public final class ControlHoldService {
     TRACKERS.clear();
     CORNERED.clear();
     BatFlight.forgetAll();
+    SlimeSteering.forgetAll();
   }
 
   private static void tick(final ServerWorld world) {
@@ -167,6 +168,7 @@ public final class ControlHoldService {
     final MobEntity mob = mobIn(world, hold);
     if (mob == null) {
       tracker.forget(hold.mobId());
+      SlimeSteering.release(hold.mobId());
       return;
     }
     if (hold.steering().targetPolicy().retargetsEveryTick() && !applyTargeting(world, mob, hold)) {
@@ -205,11 +207,11 @@ public final class ControlHoldService {
                 || MobSteering.hasWanderedOffCourse(mob, fleeDestination(mob, hold))
             ? steer(mob, hold.anchor(), hold.steering())
             : MobSteering.isUnderway(mob);
-    if (hasSomewhereToRun) {
+    if (!hasSomewhereToRun && MobSteering.canPlanFromHere(mob)) {
+      CORNERED.add(mob.getUuid());
+    } else {
       CORNERED.remove(mob.getUuid());
       MobAggression.aim(mob, null);
-    } else {
-      CORNERED.add(mob.getUuid());
     }
   }
 
@@ -284,11 +286,15 @@ public final class ControlHoldService {
 
   private static void handBack(final ServerWorld world, final ControlHold hold) {
     CORNERED.remove(hold.mobId());
+    SlimeSteering.release(hold.mobId());
     final MobEntity mob = mobIn(world, hold);
     if (mob == null) {
       return;
     }
     mob.removeAttached(ControlPersistence.HOLD);
+    hold.subjectId()
+        .map(world::getEntity)
+        .ifPresent(subject -> MobAggression.forgive(mob, subject));
     if (hold.steering() != ControlSteering.FLEEING) {
       MobAggression.aim(mob, null);
     }

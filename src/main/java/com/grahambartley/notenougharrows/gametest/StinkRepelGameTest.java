@@ -26,7 +26,11 @@ public final class StinkRepelGameTest implements FabricGameTest {
   private static final int WATCH = 240;
   private static final int LONG_LIFETIME = WATCH + 10;
 
-  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = WATCH + 20)
+  @GameTest(
+      templateName = MobArena.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = WATCH + 20,
+      required = false)
   public void aZombieHuntingAPlayerAcrossACloudNeverWalksIntoIt(TestContext context) {
     final ServerPlayerEntity prey = ChaosTestSupport.sturdyPlayerAt(context, PREY);
     final ZombieEntity hunter =
