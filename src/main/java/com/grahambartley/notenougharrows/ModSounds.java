@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows;
 
+import com.grahambartley.notenougharrows.audio.ModSoundPlayer;
 import com.grahambartley.notenougharrows.audio.SoundRegistrar;
 import java.util.List;
 import net.minecraft.registry.Registries;
@@ -10,7 +11,8 @@ import net.minecraft.util.Identifier;
 public final class ModSounds {
   private static final SoundRegistrar REGISTRAR = new SoundRegistrar();
 
-  public static final SoundEvent COUNTDOWN_BEEP = REGISTRAR.declare("countdown_beep");
+  public static final SoundEvent COUNTDOWN_BEEP =
+      REGISTRAR.declareReaching("countdown_beep", ModSoundPlayer.LANDING_RANGE_BLOCKS);
   public static final Identifier COUNTDOWN_BEEP_ID = COUNTDOWN_BEEP.getId();
 
   public static final SoundEvent SMOKE_ARROW_IMPACT = REGISTRAR.declare("smoke_arrow_impact");

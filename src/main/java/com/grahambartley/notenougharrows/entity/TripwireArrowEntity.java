@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class TripwireArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
 
   public TripwireArrowEntity(
       final EntityType<? extends TripwireArrowEntity> entityType, final World world) {
@@ -41,8 +40,7 @@ public class TripwireArrowEntity extends BaseArrowEntity {
         .isEmpty()) {
       return ArrowImpact.DEFAULT;
     }
-    ModSoundPlayer.playFrom(
-        this, ModSounds.TRIPWIRE_ARROW_SET, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playLanding(this, ModSounds.TRIPWIRE_ARROW_SET);
     return ArrowImpact.DISCARD;
   }
 }

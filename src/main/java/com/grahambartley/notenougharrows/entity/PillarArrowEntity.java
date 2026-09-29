@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class PillarArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
 
   public PillarArrowEntity(
       final EntityType<? extends PillarArrowEntity> entityType, final World world) {
@@ -37,8 +36,7 @@ public class PillarArrowEntity extends BaseArrowEntity {
         .isEmpty()) {
       return ArrowImpact.DEFAULT;
     }
-    ModSoundPlayer.playFrom(
-        this, ModSounds.PILLAR_ARROW_RISE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playLanding(this, ModSounds.PILLAR_ARROW_RISE);
     return ArrowImpact.DISCARD;
   }
 }

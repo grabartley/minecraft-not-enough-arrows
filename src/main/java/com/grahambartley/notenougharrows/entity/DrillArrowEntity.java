@@ -12,7 +12,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class DrillArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
 
   public DrillArrowEntity(
       final EntityType<? extends DrillArrowEntity> entityType, final World world) {
@@ -36,8 +35,7 @@ public class DrillArrowEntity extends BaseArrowEntity {
     if (!DrillService.bore(world, blockHitResult.getBlockPos(), shootingPlayer().orElse(null))) {
       return ArrowImpact.DEFAULT;
     }
-    ModSoundPlayer.playFrom(
-        this, ModSounds.DRILL_ARROW_BORE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playLanding(this, ModSounds.DRILL_ARROW_BORE);
     return ArrowImpact.DISCARD;
   }
 }

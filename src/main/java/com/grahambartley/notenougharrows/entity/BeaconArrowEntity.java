@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class BeaconArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
   private boolean raised;
 
   public BeaconArrowEntity(
@@ -54,8 +53,7 @@ public class BeaconArrowEntity extends BaseArrowEntity {
       return false;
     }
     raised = true;
-    ModSoundPlayer.playFrom(
-        this, ModSounds.BEACON_ARROW_RAISE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playLanding(this, ModSounds.BEACON_ARROW_RAISE);
     return true;
   }
 }

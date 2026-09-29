@@ -1,12 +1,9 @@
 package com.grahambartley.notenougharrows.gametest;
 
 import io.netty.channel.embedded.EmbeddedChannel;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.network.ClientConnection;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.test.TestContext;
@@ -46,19 +43,6 @@ final class HeardSounds {
   }
 
   private static EmbeddedChannel channelOf(final ServerPlayerEntity listener) {
-    final ClientConnection connection =
-        read(ServerCommonNetworkHandler.class, "connection", listener.networkHandler);
-    return read(ClientConnection.class, "channel", connection);
-  }
-
-  @SuppressWarnings("unchecked")
-  private static <T> T read(final Class<?> owner, final String name, final Object target) {
-    try {
-      final Field field = owner.getDeclaredField(name);
-      field.setAccessible(true);
-      return (T) field.get(target);
-    } catch (final ReflectiveOperationException e) {
-      throw new IllegalStateException("Cannot reach " + owner.getSimpleName() + "." + name, e);
-    }
+    return (EmbeddedChannel) listener.networkHandler.connection.channel;
   }
 }

@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class SmokeArrowEntity extends AreaControlArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
 
   public SmokeArrowEntity(
       final EntityType<? extends SmokeArrowEntity> entityType, final World world) {
@@ -37,8 +36,7 @@ public class SmokeArrowEntity extends AreaControlArrowEntity {
     if (!SmokeCloudService.open(world, center, ServerConfigService.get().control().smoke())) {
       return false;
     }
-    ModSoundPlayer.playFrom(
-        this, ModSounds.SMOKE_ARROW_IMPACT, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playLanding(this, ModSounds.SMOKE_ARROW_IMPACT);
     return true;
   }
 }

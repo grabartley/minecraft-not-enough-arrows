@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
@@ -17,6 +18,17 @@ public final class SoundRegistrar {
   private boolean registered;
 
   public SoundEvent declare(final String path) {
+    return declare(path, SoundEvent::of);
+  }
+
+  public SoundEvent declareReaching(final String path, final float blocks) {
+    if (!(blocks > 0.0f)) {
+      throw new IllegalArgumentException("A sound's reach must be positive but was " + blocks);
+    }
+    return declare(path, id -> SoundEvent.of(id, blocks));
+  }
+
+  private SoundEvent declare(final String path, final Function<Identifier, SoundEvent> create) {
     Objects.requireNonNull(path, "path");
     if (registered) {
       throw new IllegalStateException(
@@ -31,7 +43,7 @@ public final class SoundRegistrar {
     if (declared.containsKey(id)) {
       throw new IllegalArgumentException("Sound '" + id + "' is already declared");
     }
-    final SoundEvent event = SoundEvent.of(id);
+    final SoundEvent event = create.apply(id);
     declared.put(id, event);
     return event;
   }

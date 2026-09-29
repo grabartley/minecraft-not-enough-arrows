@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class AllegianceArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
 
   public AllegianceArrowEntity(
       final EntityType<? extends AllegianceArrowEntity> entityType, final World world) {
@@ -41,8 +40,7 @@ public class AllegianceArrowEntity extends BaseArrowEntity {
         ControlHoldService.enlist(
             world, mob, shooter().orElse(null), ServerConfigService.get().control().allegiance());
     if (enlisted) {
-      ModSoundPlayer.playFrom(
-          this, ModSounds.ALLEGIANCE_ARROW_IMPACT, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playLanding(this, ModSounds.ALLEGIANCE_ARROW_IMPACT);
     }
   }
 

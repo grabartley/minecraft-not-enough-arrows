@@ -103,4 +103,37 @@ class SoundRegistrarTest {
   void rejectsANullRegistry() {
     assertThrows(NullPointerException.class, () -> new SoundRegistrar().registerInto(null));
   }
+
+  @Test
+  void aSoundDeclaredWithAReachTravelsThatFarAtAnyVolume() {
+    final SoundEvent beep = new SoundRegistrar().declareReaching("countdown_beep", 48.0f);
+
+    assertEquals(48.0f, beep.getDistanceToTravel(0.5f));
+    assertEquals(48.0f, beep.getDistanceToTravel(2.0f));
+  }
+
+  @Test
+  void aSoundDeclaredWithoutAReachTravelsByVolume() {
+    final SoundEvent smoke = new SoundRegistrar().declare("smoke_arrow_impact");
+
+    assertEquals(16.0f, smoke.getDistanceToTravel(1.0f));
+    assertEquals(32.0f, smoke.getDistanceToTravel(2.0f));
+  }
+
+  @ParameterizedTest
+  @ValueSource(floats = {0.0f, -16.0f, Float.NaN})
+  void refusesAReachThatIsNotPositive(final float blocks) {
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new SoundRegistrar().declareReaching("countdown_beep", blocks));
+  }
+
+  @Test
+  void aSoundDeclaredWithAReachStillCannotBeDeclaredTwice() {
+    final SoundRegistrar registrar = new SoundRegistrar();
+    registrar.declare("countdown_beep");
+
+    assertThrows(
+        IllegalArgumentException.class, () -> registrar.declareReaching("countdown_beep", 48.0f));
+  }
 }

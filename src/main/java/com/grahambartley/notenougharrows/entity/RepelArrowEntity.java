@@ -13,7 +13,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class RepelArrowEntity extends AreaControlArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
 
   public RepelArrowEntity(
       final EntityType<? extends RepelArrowEntity> entityType, final World world) {
@@ -38,8 +37,7 @@ public class RepelArrowEntity extends AreaControlArrowEntity {
         == 0) {
       return false;
     }
-    ModSoundPlayer.playFrom(
-        this, ModSounds.REPEL_ARROW_IMPACT, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+    ModSoundPlayer.playLanding(this, ModSounds.REPEL_ARROW_IMPACT);
     return true;
   }
 }

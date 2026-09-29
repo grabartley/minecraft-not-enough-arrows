@@ -9,7 +9,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 
 public final class ModSoundPlayer {
-  public static final float BLOCKS_PER_UNIT_VOLUME = 16.0f;
+  private static final float BLOCKS_PER_UNIT_VOLUME = 16.0f;
   public static final int LANDING_RANGE_BLOCKS = 48;
   public static final float LANDING_VOLUME = LANDING_RANGE_BLOCKS / BLOCKS_PER_UNIT_VOLUME;
 
@@ -39,6 +39,10 @@ public final class ModSoundPlayer {
         category,
         volume,
         pitch);
+  }
+
+  public static void playLanding(final Entity source, final SoundEvent sound) {
+    playFrom(source, sound, LANDING_VOLUME, 1.0f);
   }
 
   public static void playFrom(

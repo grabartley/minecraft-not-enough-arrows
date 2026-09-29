@@ -30,8 +30,6 @@ public final class SnowGolemMelt {
   private static final int MELT_PARTICLES = 24;
   private static final double MELT_SPREAD = 0.4;
   private static final double MELT_SPEED = 0.05;
-  private static final float MELT_VOLUME = 1.0f;
-  private static final float MELT_PITCH = 1.0f;
 
   private static final Map<RegistryKey<World>, ExpiringLedger<Boolean>> LEDGERS = new HashMap<>();
 
@@ -99,7 +97,7 @@ public final class SnowGolemMelt {
         MELT_SPREAD,
         MELT_SPREAD,
         MELT_SPEED);
-    ModSoundPlayer.playFrom(golem, ModSounds.SNOW_GOLEM_ARROW_MELT, MELT_VOLUME, MELT_PITCH);
+    ModSoundPlayer.playLanding(golem, ModSounds.SNOW_GOLEM_ARROW_MELT);
     golem.discard();
   }
 }

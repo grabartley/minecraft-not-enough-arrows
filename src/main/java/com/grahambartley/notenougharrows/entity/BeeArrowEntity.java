@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class BeeArrowEntity extends BaseArrowEntity {
-  private static final float IMPACT_PITCH = 1.0f;
   private static final double CLEAR_OF_THE_FACE = 0.5;
 
   public BeeArrowEntity(final EntityType<? extends BeeArrowEntity> entityType, final World world) {
@@ -52,8 +51,7 @@ public class BeeArrowEntity extends BaseArrowEntity {
 
   private void release(final ServerWorld world, final Vec3d at, @Nullable final Entity struck) {
     if (!BeeSwarmRelease.release(world, at, shooter().orElse(null), struck).isEmpty()) {
-      ModSoundPlayer.playFrom(
-          this, ModSounds.BEE_ARROW_RELEASE, ModSoundPlayer.LANDING_VOLUME, IMPACT_PITCH);
+      ModSoundPlayer.playLanding(this, ModSounds.BEE_ARROW_RELEASE);
     }
   }
 }

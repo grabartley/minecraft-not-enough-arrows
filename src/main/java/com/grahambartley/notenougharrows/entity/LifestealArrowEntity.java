@@ -16,7 +16,6 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public class LifestealArrowEntity extends BaseArrowEntity {
-  private static final float DRAIN_PITCH = 1.0f;
 
   private double healthBeforeHit;
 
@@ -51,8 +50,7 @@ public class LifestealArrowEntity extends BaseArrowEntity {
       return;
     }
     if (dealt > 0.0) {
-      ModSoundPlayer.playFrom(
-          this, ModSounds.LIFESTEAL_ARROW_DRAIN, ModSoundPlayer.LANDING_VOLUME, DRAIN_PITCH);
+      ModSoundPlayer.playLanding(this, ModSounds.LIFESTEAL_ARROW_DRAIN);
     }
 
     final LifestealArrowConfig lifesteal = ServerConfigService.get().combat().lifesteal();

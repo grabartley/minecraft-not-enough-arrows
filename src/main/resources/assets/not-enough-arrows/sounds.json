@@ -2,7 +2,10 @@
   "countdown_beep": {
     "subtitle": "subtitles.not-enough-arrows.countdown_beep",
     "sounds": [
-      "not-enough-arrows:countdown_beep"
+      {
+        "name": "not-enough-arrows:countdown_beep",
+        "attenuation_distance": 48
+      }
     ]
   },
   "smoke_arrow_impact": {
