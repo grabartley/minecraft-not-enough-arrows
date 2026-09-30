@@ -68,6 +68,14 @@ class GhastCourseTest {
   }
 
   @Test
+  void staysPutWhenItHasAlreadyArrived() {
+    final Vec3d destination = new Vec3d(0.0, 6.0, 0.0);
+    assertEquals(
+        Optional.of(destination),
+        GhastCourse.plan(new Vec3d(0.3, 6.0, 0.0), destination, GHAST_HEIGHT, OPEN_SKY));
+  }
+
+  @Test
   void neverPicksAWaypointItIsAlreadyAt() {
     final Vec3d from = new Vec3d(0.0, 10.0, 0.0);
     final Predicate<Vec3d> onlyHere = position -> position.equals(from);

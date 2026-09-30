@@ -68,7 +68,7 @@ public final class DefenderTargets {
         .map(LivingEntity.class::cast);
   }
 
-  public static boolean isSummonedBy(final LivingEntity candidate, final MobEntity summoner) {
+  private static boolean isSummonedBy(final LivingEntity candidate, final MobEntity summoner) {
     return candidate instanceof Ownable summoned && summoned.getOwner() == summoner;
   }
 

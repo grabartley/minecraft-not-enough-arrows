@@ -21,7 +21,7 @@ public final class WitherHeads {
     }
   }
 
-  public static List<Integer> aimedAt(final IntUnaryOperator trackedIdOfHead, final int sparedId) {
+  static List<Integer> aimedAt(final IntUnaryOperator trackedIdOfHead, final int sparedId) {
     return IntStream.rangeClosed(FIRST_SIDE_HEAD, LAST_SIDE_HEAD)
         .filter(head -> trackedIdOfHead.applyAsInt(head) == sparedId)
         .boxed()

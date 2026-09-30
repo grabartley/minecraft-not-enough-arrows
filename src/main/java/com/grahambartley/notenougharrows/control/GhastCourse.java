@@ -14,6 +14,9 @@ public final class GhastCourse {
 
   public static Optional<Vec3d> plan(
       final Vec3d from, final Vec3d destination, final double lift, final Predicate<Vec3d> fitsAt) {
+    if (destination.squaredDistanceTo(from) < WORTH_FLYING * WORTH_FLYING) {
+      return Optional.of(destination);
+    }
     final Vec3d over = destination.add(0.0, lift, 0.0);
     final List<Vec3d> waypoints =
         List.of(
