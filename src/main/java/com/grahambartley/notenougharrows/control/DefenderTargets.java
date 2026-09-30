@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Ownable;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
@@ -58,12 +59,17 @@ public final class DefenderTargets {
             search,
             candidate ->
                 candidate != defender
-                    && (threatens(candidate, defended) || threatens(candidate, defender)));
+                    && (threatens(candidate, defended)
+                        || (threatens(candidate, defender) && !isSummonedBy(candidate, defender))));
     return threats.stream()
         .min(
             (left, right) ->
                 Double.compare(defender.squaredDistanceTo(left), defender.squaredDistanceTo(right)))
         .map(LivingEntity.class::cast);
+  }
+
+  private static boolean isSummonedBy(final LivingEntity candidate, final MobEntity summoner) {
+    return candidate instanceof Ownable summoned && summoned.getOwner() == summoner;
   }
 
   private static boolean isFoe(
@@ -74,6 +80,7 @@ public final class DefenderTargets {
     return candidate != null
         && candidate != defender
         && candidate != defended
+        && (!isSummonedBy(candidate, defender) || threatens(candidate, defended))
         && candidate.isAlive()
         && inReach(candidate, defended, radius);
   }
