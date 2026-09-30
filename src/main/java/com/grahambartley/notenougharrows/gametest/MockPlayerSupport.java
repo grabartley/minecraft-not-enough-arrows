@@ -83,7 +83,8 @@ final class MockPlayerSupport {
   }
 
   static ServerPlayerEntity playerAt(final TestContext context, final BlockPos relativePos) {
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player =
+        LeavesWhenTestEnds.register(context, context.createMockCreativeServerPlayerInWorld());
     moveTo(context, player, Vec3d.ofBottomCenter(relativePos));
     return player;
   }
@@ -102,6 +103,7 @@ final class MockPlayerSupport {
     final ClientConnection connection = new ClientConnection(NetworkSide.SERVERBOUND);
     new EmbeddedChannel(connection);
     context.getWorld().getServer().getPlayerManager().onPlayerConnect(connection, player, client);
+    LeavesWhenTestEnds.register(context, player);
     player.changeGameMode(GameMode.SURVIVAL);
     moveTo(context, player, Vec3d.ofBottomCenter(relativePos));
     return player;

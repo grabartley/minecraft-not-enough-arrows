@@ -20,19 +20,14 @@ import net.minecraft.util.math.Vec3d;
 
 public final class StinkRepelGameTest implements FabricGameTest {
   private static final String BATCH = "stink-repel";
-  private static final BlockPos PREY = new BlockPos(4, 3, 8);
   private static final BlockPos HUNTER = new BlockPos(20, 3, 8);
   private static final BlockPos CLOUD = new BlockPos(12, 3, 8);
   private static final int WATCH = 240;
   private static final int LONG_LIFETIME = WATCH + 10;
 
-  @GameTest(
-      templateName = MobArena.TEMPLATE,
-      batchId = BATCH,
-      tickLimit = WATCH + 20,
-      required = false)
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = WATCH + 20)
   public void aZombieHuntingAPlayerAcrossACloudNeverWalksIntoIt(TestContext context) {
-    final ServerPlayerEntity prey = ChaosTestSupport.sturdyPlayerAt(context, PREY);
+    final ServerPlayerEntity prey = MobArena.player(context);
     final ZombieEntity hunter =
         ChaosTestSupport.shaded(context.spawnEntity(EntityType.ZOMBIE, HUNTER));
     final TimedCloud cloud = open(context);

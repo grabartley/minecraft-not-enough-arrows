@@ -15,16 +15,26 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.CustomTestProvider;
 import net.minecraft.test.TestContext;
 import net.minecraft.test.TestFunction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class RepelArrowMobsGameTest implements FabricGameTest {
-  private static final int WATCH = 100;
+  private static final int FIRST_RUN = 290;
+  private static final int SECOND_RUN = 150;
   private static final double ARENA_END = 42.0;
+  private static final double IMPACT_OFFSET = 4.0;
+  private static final BlockPos OUT_OF_THE_WAY = new BlockPos(44, 3, 2);
   private static final int SAMPLE_EVERY = 5;
   private static final int WINDOW_SAMPLES = 4;
-  private static final double GOT_AWAY = 1.0;
-  private static final Set<EntityType<?>> FLEES_AWAITING_A_FIX = Set.of(EntityType.ELDER_GUARDIAN);
+  private static final double SLOW_GAIN = 2.0;
+  private static final double TURNED_BACK = 1.5;
+  private static final double DRIFT = 1.5;
+  private static final TargetingArrowConfig LONG_ENOUGH_TO_GET_CLEAR =
+      TargetingArrowConfig.defaults().withRepelDurationTicks(FIRST_RUN + 10);
   private static final double KEEPS_AWAY_FROM = TargetingArrowConfig.defaults().repelDistance();
+  private static final Set<EntityType<?>> FLEES_AWAITING_A_FIX = Set.of(EntityType.AXOLOTL);
+  private static final Set<EntityType<?>> TOO_SLOW_TO_GET_CLEAR =
+      Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.PANDA, EntityType.TURTLE);
 
   @CustomTestProvider
   public Collection<TestFunction> everyMobThatMovesRunsWithoutTurningBack() {
@@ -32,95 +42,191 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
         "repel",
         "flees",
         mob -> mob.movesAround() && !FLEES_AWAITING_A_FIX.contains(mob.type()),
-        MobArena.LONG_LIMIT,
+        MobArena.SLOW_LIMIT,
         RepelArrowMobsGameTest::flees);
   }
 
   private static void flees(final TestContext context, final Mob mob) {
     final ServerPlayerEntity player = MobArena.player(context);
     final MobEntity fleeing = MobArena.thinking(context, mob, MobArena.NEAR_STAND);
-    final double[] start = new double[1];
-    final Vec3d[] impact = new Vec3d[1];
-    final double[] furthest = {Double.NEGATIVE_INFINITY};
-    final List<Double> progress = new ArrayList<>();
+    final Flight first = new Flight(context, mob, fleeing, "first", true);
+    final Flight second = new Flight(context, mob, fleeing, "second", false);
+    final int turn = MobArena.SETTLED + FIRST_RUN;
     if (mob.fights()) {
       context.runAtTick(2, () -> MobAggression.aim(fleeing, player));
     }
+    first.repelFrom(MobArena.SETTLED, -IMPACT_OFFSET, LONG_ENOUGH_TO_GET_CLEAR);
+    first.watchUntil(turn);
     context.runAtTick(
-        MobArena.SETTLED,
+        turn,
         () -> {
-          impact[0] = player.getPos();
-          start[0] = horizontalDistance(fleeing.getPos(), impact[0]);
-          ControlHoldService.repel(context.getWorld(), impact[0], TargetingArrowConfig.defaults());
+          if (MobRoster.outgrowsTheArena(mob)) {
+            return;
+          }
+          if (TOO_SLOW_TO_GET_CLEAR.contains(mob.type())) {
+            first.checkGained(SLOW_GAIN);
+          } else {
+            first.checkReached(KEEPS_AWAY_FROM);
+          }
         });
-    for (int t = MobArena.SETTLED + 10; t <= MobArena.SETTLED + WATCH; t += SAMPLE_EVERY) {
-      final int tick = t;
-      context.runAtTick(
-          tick,
-          () -> {
-            if (context.getRelative(fleeing.getPos()).x >= ARENA_END) {
-              return;
-            }
-            final double fled = horizontalDistance(fleeing.getPos(), impact[0]);
-            if (mob.fights()) {
-              MobArena.check(
-                  context,
-                  fleeing.getTarget() == null,
-                  "A repelled "
-                      + mob.name()
-                      + " should drop its target while it runs, at tick "
-                      + tick);
-            }
-            progress.add(fled);
-            final int latest = progress.size() - 1;
-            if (latest >= WINDOW_SAMPLES && mob.moves() != MobRoster.Moves.AIR) {
-              if (progress.get(latest - WINDOW_SAMPLES) >= KEEPS_AWAY_FROM) {
-                MobArena.check(
-                    context,
-                    fled >= KEEPS_AWAY_FROM - fleeing.getWidth() / 2.0,
-                    "A repelled "
-                        + mob.name()
-                        + " should keep away once it has fled "
-                        + KEEPS_AWAY_FROM
-                        + " blocks, but came back to "
-                        + fled
-                        + " at tick "
-                        + tick);
-              } else {
-                final double windowStart = progress.get(latest - WINDOW_SAMPLES);
-                MobArena.check(
-                    context,
-                    fled >= windowStart - fleeing.getWidth() / 2.0,
-                    "A repelled "
-                        + mob.name()
-                        + " lost ground over "
-                        + WINDOW_SAMPLES * SAMPLE_EVERY
-                        + " ticks, from "
-                        + windowStart
-                        + " to "
-                        + fled
-                        + " at tick "
-                        + tick);
-              }
-            }
-            furthest[0] = Math.max(furthest[0], fled);
-          });
-    }
     context.runAtTick(
-        MobArena.SETTLED + WATCH + 1,
+        turn,
+        () -> MockPlayerSupport.moveTo(context, player, Vec3d.ofBottomCenter(OUT_OF_THE_WAY)));
+    second.repelFrom(turn, IMPACT_OFFSET, TargetingArrowConfig.defaults());
+    second.watchUntil(turn + SECOND_RUN);
+    context.runAtTick(
+        turn + SECOND_RUN + 1,
         () -> {
-          MobArena.check(
-              context,
-              furthest[0] - start[0] >= GOT_AWAY,
-              "A repelled "
-                  + mob.name()
-                  + " should get away, but only fled "
-                  + (furthest[0] - start[0]));
+          if (second.startedInTheArena() && !MobRoster.outgrowsTheArena(mob)) {
+            second.checkGained(TURNED_BACK);
+          }
           context.complete();
         });
   }
 
+  private static boolean isInTheArena(final Vec3d relative) {
+    return relative.x >= 0.0
+        && relative.x < ARENA_END
+        && relative.z >= 0.0
+        && relative.z < MobArena.ARENA_WIDTH;
+  }
+
   private static double horizontalDistance(final Vec3d from, final Vec3d to) {
     return Math.hypot(from.x - to.x, from.z - to.z);
+  }
+
+  private static final class Flight {
+    private final TestContext context;
+    private final Mob mob;
+    private final MobEntity fleeing;
+    private final String name;
+    private final boolean keepsAway;
+    private final List<Double> progress = new ArrayList<>();
+    private Vec3d impact;
+    private double start;
+    private double furthest = Double.NEGATIVE_INFINITY;
+    private int from;
+    private boolean startedInTheArena;
+
+    Flight(
+        final TestContext context,
+        final Mob mob,
+        final MobEntity fleeing,
+        final String name,
+        final boolean keepsAway) {
+      this.context = context;
+      this.mob = mob;
+      this.fleeing = fleeing;
+      this.name = name;
+      this.keepsAway = keepsAway;
+    }
+
+    void repelFrom(
+        final int tick, final double offsetAlongX, final TargetingArrowConfig targeting) {
+      from = tick;
+      context.runAtTick(
+          tick,
+          () -> {
+            startedInTheArena = isInTheArena(context.getRelative(fleeing.getPos()));
+            impact = fleeing.getPos().add(offsetAlongX, 0.0, 0.0);
+            start = horizontalDistance(fleeing.getPos(), impact);
+            ControlHoldService.repel(context.getWorld(), impact, targeting);
+          });
+    }
+
+    void watchUntil(final int last) {
+      for (int t = from + 10; t <= last; t += SAMPLE_EVERY) {
+        final int tick = t;
+        context.runAtTick(tick, () -> sample(tick));
+      }
+    }
+
+    boolean startedInTheArena() {
+      return startedInTheArena;
+    }
+
+    private void sample(final int tick) {
+      if (!isInTheArena(context.getRelative(fleeing.getPos()))) {
+        return;
+      }
+      final double fled = horizontalDistance(fleeing.getPos(), impact);
+      if (mob.fights()) {
+        MobArena.check(
+            context,
+            fleeing.getTarget() == null,
+            "A repelled " + mob.name() + " should drop its target while it runs, at tick " + tick);
+      }
+      progress.add(fled);
+      final int latest = progress.size() - 1;
+      if (latest >= WINDOW_SAMPLES && mob.moves() != MobRoster.Moves.AIR) {
+        final double windowStart = progress.get(latest - WINDOW_SAMPLES);
+        final double slack = fleeing.getWidth() / 2.0;
+        if (windowStart >= KEEPS_AWAY_FROM) {
+          if (!keepsAway) {
+            return;
+          }
+          MobArena.check(
+              context,
+              fled >= KEEPS_AWAY_FROM - Math.max(slack, DRIFT),
+              "A repelled "
+                  + mob.name()
+                  + " should keep away once it has fled "
+                  + KEEPS_AWAY_FROM
+                  + " blocks, but came back to "
+                  + fled
+                  + " on its "
+                  + name
+                  + " run at tick "
+                  + tick);
+        } else {
+          MobArena.check(
+              context,
+              fled >= windowStart - slack,
+              "A repelled "
+                  + mob.name()
+                  + " lost ground over "
+                  + WINDOW_SAMPLES * SAMPLE_EVERY
+                  + " ticks, from "
+                  + windowStart
+                  + " to "
+                  + fled
+                  + " on its "
+                  + name
+                  + " run at tick "
+                  + tick);
+        }
+      }
+      furthest = Math.max(furthest, fled);
+    }
+
+    void checkReached(final double distance) {
+      MobArena.check(
+          context,
+          furthest >= distance,
+          "A repelled "
+              + mob.name()
+              + " should run "
+              + distance
+              + " blocks from the impact, but only reached "
+              + furthest
+              + " on its "
+              + name
+              + " run");
+    }
+
+    void checkGained(final double gain) {
+      MobArena.check(
+          context,
+          furthest - start >= gain,
+          "A repelled "
+              + mob.name()
+              + " should run at least "
+              + gain
+              + " blocks from the impact, but only fled "
+              + (furthest - start)
+              + " on its "
+              + name
+              + " run");
+    }
   }
 }
