@@ -33,7 +33,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
   private static final TargetingArrowConfig LONG_ENOUGH_TO_GET_CLEAR =
       TargetingArrowConfig.defaults().withRepelDurationTicks(FIRST_RUN + 10);
   private static final double KEEPS_AWAY_FROM = TargetingArrowConfig.defaults().repelDistance();
-  private static final Set<EntityType<?>> FLEES_AWAITING_A_FIX = Set.of(EntityType.AXOLOTL);
+  private static final Set<EntityType<?>> FLEES_AWAITING_A_FIX = Set.of();
   private static final Set<EntityType<?>> TOO_SLOW_TO_GET_CLEAR =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.PANDA, EntityType.TURTLE);
 
@@ -42,7 +42,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     return MobArena.perMob(
         "repel",
         "flees",
-        mob -> mob.movesAround() && !FLEES_AWAITING_A_FIX.contains(mob.type()),
+        MobRoster.Mob::movesAround,
         MobArena.SLOW_LIMIT,
         RepelArrowMobsGameTest::flees);
   }
@@ -147,10 +147,11 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     }
 
     private void sample(final int tick) {
+      final double fled = horizontalDistance(fleeing.getPos(), impact);
+      furthest = Math.max(furthest, fled);
       if (!isInTheArena(context.getRelative(fleeing.getPos()))) {
         return;
       }
-      final double fled = horizontalDistance(fleeing.getPos(), impact);
       if (mob.fights()) {
         MobArena.check(
             context,
@@ -158,7 +159,6 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
             "A repelled " + mob.name() + " should drop its target while it runs, at tick " + tick);
       }
       progress.add(fled);
-      furthest = Math.max(furthest, fled);
       final int latest = progress.size() - 1;
       if (latest >= WINDOW_SAMPLES && mob.moves() != MobRoster.Moves.AIR) {
         final double windowStart = progress.get(latest - WINDOW_SAMPLES);

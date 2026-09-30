@@ -199,6 +199,7 @@ public final class ControlHoldService {
       MobAggression.aim(mob, null);
       return;
     }
+    MobSteering.rouse(mob);
     final boolean pulledBackToAFight = mob.getTarget() != null;
     final boolean hasSomewhereToRun =
         pulledBackToAFight
@@ -265,12 +266,14 @@ public final class ControlHoldService {
     }
     if (Escort.isCloseEnough(squaredDistance, mob.getWidth())) {
       MobSteering.halt(mob);
-    } else if ((Escort.shouldCloseIn(squaredDistance, mob.getWidth())
-            || MobSteering.fliesAtRandom(mob))
-        && (!MobSteering.isUnderway(mob)
-            || MobSteering.steersItself(mob)
-            || MobSteering.hasWanderedOffCourse(mob, defended.getPos()))) {
-      MobSteering.moveTo(mob, defended.getPos(), ESCORT_SPEED);
+    } else if (Escort.shouldCloseIn(squaredDistance, mob.getWidth())
+        || MobSteering.fliesAtRandom(mob)) {
+      MobSteering.rouse(mob);
+      if (!MobSteering.isUnderway(mob)
+          || MobSteering.steersItself(mob)
+          || MobSteering.hasWanderedOffCourse(mob, defended.getPos())) {
+        MobSteering.moveTo(mob, defended.getPos(), ESCORT_SPEED);
+      }
     }
     MobSteering.keepPace(mob, ESCORT_SPEED);
   }
