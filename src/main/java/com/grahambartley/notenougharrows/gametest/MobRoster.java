@@ -123,6 +123,10 @@ final class MobRoster {
     return mob.type() == EntityType.WITHER || mob.type() == EntityType.ENDER_DRAGON;
   }
 
+  static boolean outgrowsTheArena(final Mob mob) {
+    return mob.type() == EntityType.ENDER_DRAGON;
+  }
+
   static boolean isBoss(final Mob mob) {
     return mob.type() == EntityType.ENDER_DRAGON
         || mob.type() == EntityType.WITHER

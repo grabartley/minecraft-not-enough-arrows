@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.gametest;
 import com.grahambartley.notenougharrows.gametest.MobRoster.Mob;
 import com.grahambartley.notenougharrows.gametest.MobRoster.Moves;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import net.minecraft.block.Blocks;
@@ -31,16 +32,24 @@ import org.slf4j.LoggerFactory;
 final class MobArena {
   private static final Logger LOGGER = LoggerFactory.getLogger(MobArena.class);
   static final String TEMPLATE = "not-enough-arrows:open_arena";
+  static final double ARENA_WIDTH = 16.0;
   static final BlockPos PLAYER_STAND = new BlockPos(4, 3, 8);
   static final BlockPos NEAR_STAND = new BlockPos(8, 3, 8);
   static final BlockPos THREAT_STAND = new BlockPos(6, 3, 11);
   static final BlockPos DECOY_STAND = new BlockPos(22, 3, 8);
   static final BlockPos FAR_STAND = new BlockPos(18, 3, 8);
+  static final BlockPos SECOND_WARD_STAND = new BlockPos(21, 3, 8);
   static final int SETTLED = 10;
   static final int SHORT_LIMIT = 60;
   static final int LONG_LIMIT = 320;
   static final int SLOW_LIMIT = 620;
 
+  private static final Map<EntityType<?>, EntityType<? extends MobEntity>> THREATS_LEFT_ALONE =
+      Map.of(
+          EntityType.AXOLOTL, EntityType.ZOMBIE,
+          EntityType.IRON_GOLEM, EntityType.WOLF,
+          EntityType.SNOW_GOLEM, EntityType.WOLF,
+          EntityType.ZOGLIN, EntityType.ZOGLIN);
   private static final int AIRBORNE = 3;
   private static final int SUBMERGED = 2;
   private static final int WATER_TOP = 8;
@@ -126,9 +135,16 @@ final class MobArena {
   }
 
   static MobEntity threatFor(final TestContext context, final Mob mob) {
-    final EntityType<? extends MobEntity> type =
-        mob.moves() == Moves.WATER ? EntityType.DROWNED : EntityType.ZOMBIE;
-    return sturdy(helmeted(context.spawnEntity(type, standFor(mob, THREAT_STAND))));
+    return sturdy(
+        helmeted(context.spawnEntity(threatLeftAloneBy(mob), standFor(mob, THREAT_STAND))));
+  }
+
+  static EntityType<? extends MobEntity> threatLeftAloneBy(final Mob mob) {
+    final EntityType<? extends MobEntity> leftAlone = THREATS_LEFT_ALONE.get(mob.type());
+    if (leftAlone != null) {
+      return leftAlone;
+    }
+    return mob.moves() == Moves.WATER ? EntityType.DROWNED : EntityType.ZOMBIE;
   }
 
   private static MobEntity helmeted(final MobEntity mob) {
@@ -159,6 +175,14 @@ final class MobArena {
     cow.addStatusEffect(new StatusEffectInstance(StatusEffects.WATER_BREATHING, LONG_LIMIT * 2));
     cow.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, LONG_LIMIT * 2));
     return cow;
+  }
+
+  static void clearPedestal(final TestContext context, final Mob mob, final BlockPos at) {
+    if (mob.moves() == Moves.AIR) {
+      context.setBlockState(standFor(mob, at).down(), Blocks.AIR);
+    } else if (mob.moves() == Moves.WATER) {
+      context.setBlockState(standFor(mob, at).down(), Blocks.WATER);
+    }
   }
 
   static Item weaponFor(final Mob mob) {

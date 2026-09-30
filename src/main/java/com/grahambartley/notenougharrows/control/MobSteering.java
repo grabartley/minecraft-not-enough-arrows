@@ -4,6 +4,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
@@ -73,6 +74,7 @@ public final class MobSteering {
     }
     if (mob.getNavigation()
         .startMovingTo(destination.x, destination.y, destination.z, paceFor(mob, speed))) {
+      skipNodesUnderfoot(mob);
       walkTheBrainTo(mob, destination, speed);
       keepPace(mob, speed);
       return true;
@@ -86,6 +88,19 @@ public final class MobSteering {
       climbing.targetPos = null;
     }
     return false;
+  }
+
+  private static void skipNodesUnderfoot(final MobEntity mob) {
+    final Path path = mob.getNavigation().getCurrentPath();
+    if (path == null || plansItsOwnWalks(mob)) {
+      return;
+    }
+    final int ahead =
+        PathStart.firstNodeAhead(
+            path::getNodePos, path.getCurrentNodeIndex(), path.getLength(), mob.getBoundingBox());
+    while (path.getCurrentNodeIndex() < ahead) {
+      path.next();
+    }
   }
 
   private static boolean movesThroughOpenSpace(final MobEntity mob) {

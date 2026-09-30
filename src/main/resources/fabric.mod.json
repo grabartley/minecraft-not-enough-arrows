@@ -37,6 +37,7 @@
       "com.grahambartley.notenougharrows.gametest.DisarmArrowMobsGameTest",
       "com.grahambartley.notenougharrows.gametest.FrostArrowMobsGameTest",
       "com.grahambartley.notenougharrows.gametest.LevitationArrowMobsGameTest",
+      "com.grahambartley.notenougharrows.gametest.LeavesWhenTestEndsGameTest",
       "com.grahambartley.notenougharrows.gametest.RepelArrowMobsGameTest",
       "com.grahambartley.notenougharrows.gametest.SmokeArrowMobsGameTest",
       "com.grahambartley.notenougharrows.gametest.TauntArrowMobsGameTest",
