@@ -33,7 +33,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
   private static final TargetingArrowConfig LONG_ENOUGH_TO_GET_CLEAR =
       TargetingArrowConfig.defaults().withRepelDurationTicks(FIRST_RUN + 10);
   private static final double KEEPS_AWAY_FROM = TargetingArrowConfig.defaults().repelDistance();
-  private static final Set<EntityType<?>> FLEES_AWAITING_A_FIX = Set.of();
+  private static final Set<EntityType<?>> PASSES_THROUGH_WALLS = Set.of(EntityType.VEX);
   private static final Set<EntityType<?>> TOO_SLOW_TO_GET_CLEAR =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.PANDA, EntityType.TURTLE);
 
@@ -148,8 +148,11 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
 
     private void sample(final int tick) {
       final double fled = horizontalDistance(fleeing.getPos(), impact);
-      furthest = Math.max(furthest, fled);
-      if (!isInTheArena(context.getRelative(fleeing.getPos()))) {
+      final boolean inTheArena = isInTheArena(context.getRelative(fleeing.getPos()));
+      if (inTheArena || PASSES_THROUGH_WALLS.contains(mob.type())) {
+        furthest = Math.max(furthest, fled);
+      }
+      if (!inTheArena) {
         return;
       }
       if (mob.fights()) {

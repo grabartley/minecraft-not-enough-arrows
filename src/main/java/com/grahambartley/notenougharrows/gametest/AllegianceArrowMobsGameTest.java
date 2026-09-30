@@ -30,7 +30,6 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
   private static final int LAST_LOOK = MobArena.SLOW_LIMIT - 10;
   private static final double WIDEST_HEEL = 2.0;
   private static final double MOSTLY = 0.75;
-  private static final Set<EntityType<?>> FOLLOWS_AWAITING_A_FIX = Set.of();
   private static final Set<EntityType<?>> TOO_SLOW_TO_KEEP_UP =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.TURTLE);
   private static final Set<EntityType<?>> JUMPS_ABOUT =
@@ -73,13 +72,19 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
         () -> {
           MobArena.check(
               context,
-              ally.getTarget() == threat || DefenderTargets.threatens(ally.getTarget(), player),
+              targetsAThreatTo(ally, threat, player),
               "An allied "
                   + mob.name()
                   + " should attack whatever attacks the shooter, but it targets "
                   + ally.getTarget());
           context.complete();
         });
+  }
+
+  private static boolean targetsAThreatTo(
+      final MobEntity ally, final MobEntity spawnedThreat, final ServerPlayerEntity shooter) {
+    return ally.getTarget() == spawnedThreat
+        || DefenderTargets.threatens(ally.getTarget(), shooter);
   }
 
   private static void follows(final TestContext context, final Mob mob) {
