@@ -100,7 +100,7 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
           return MobArena.cow(context, MobArena.standFor(mob, MobArena.SECOND_WARD_STAND));
         });
     context.runAtTick(
-        LAST_LOOK,
+        LAST_LOOK + 1,
         () -> {
           toFirst.check();
           toSecond.check();

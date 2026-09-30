@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.gametest;
 import com.grahambartley.notenougharrows.gametest.MobRoster.Mob;
 import com.grahambartley.notenougharrows.gametest.MobRoster.Moves;
 import java.util.Collection;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import net.minecraft.block.Blocks;
@@ -43,6 +44,12 @@ final class MobArena {
   static final int LONG_LIMIT = 320;
   static final int SLOW_LIMIT = 620;
 
+  private static final Map<EntityType<?>, EntityType<? extends MobEntity>> THREATS_LEFT_ALONE =
+      Map.of(
+          EntityType.AXOLOTL, EntityType.ZOMBIE,
+          EntityType.IRON_GOLEM, EntityType.WOLF,
+          EntityType.SNOW_GOLEM, EntityType.WOLF,
+          EntityType.ZOGLIN, EntityType.ZOGLIN);
   private static final int AIRBORNE = 3;
   private static final int SUBMERGED = 2;
   private static final int WATER_TOP = 8;
@@ -133,15 +140,9 @@ final class MobArena {
   }
 
   static EntityType<? extends MobEntity> threatLeftAloneBy(final Mob mob) {
-    final EntityType<?> type = mob.type();
-    if (type == EntityType.ZOGLIN) {
-      return EntityType.ZOGLIN;
-    }
-    if (type == EntityType.IRON_GOLEM || type == EntityType.SNOW_GOLEM) {
-      return EntityType.WOLF;
-    }
-    if (type == EntityType.AXOLOTL) {
-      return EntityType.ZOMBIE;
+    final EntityType<? extends MobEntity> leftAlone = THREATS_LEFT_ALONE.get(mob.type());
+    if (leftAlone != null) {
+      return leftAlone;
     }
     return mob.moves() == Moves.WATER ? EntityType.DROWNED : EntityType.ZOMBIE;
   }

@@ -24,6 +24,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
   private static final double ARENA_END = 42.0;
   private static final double IMPACT_OFFSET = 4.0;
   private static final BlockPos OUT_OF_THE_WAY = new BlockPos(44, 3, 2);
+  private static final int FIRST_LOOK = 10;
   private static final int SAMPLE_EVERY = 5;
   private static final int WINDOW_SAMPLES = 4;
   private static final double SLOW_GAIN = 2.0;
@@ -58,7 +59,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     first.repelFrom(MobArena.SETTLED, -IMPACT_OFFSET, LONG_ENOUGH_TO_GET_CLEAR);
     first.watchUntil(turn);
     context.runAtTick(
-        turn,
+        turn + 1,
         () -> {
           if (MobRoster.outgrowsTheArena(mob)) {
             return;
@@ -135,7 +136,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     }
 
     void watchUntil(final int last) {
-      for (int t = from + 10; t <= last; t += SAMPLE_EVERY) {
+      for (int t = from + FIRST_LOOK; t <= last; t += SAMPLE_EVERY) {
         final int tick = t;
         context.runAtTick(tick, () -> sample(tick));
       }
@@ -157,6 +158,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
             "A repelled " + mob.name() + " should drop its target while it runs, at tick " + tick);
       }
       progress.add(fled);
+      furthest = Math.max(furthest, fled);
       final int latest = progress.size() - 1;
       if (latest >= WINDOW_SAMPLES && mob.moves() != MobRoster.Moves.AIR) {
         final double windowStart = progress.get(latest - WINDOW_SAMPLES);
@@ -196,7 +198,6 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
                   + tick);
         }
       }
-      furthest = Math.max(furthest, fled);
     }
 
     void checkReached(final double distance) {
