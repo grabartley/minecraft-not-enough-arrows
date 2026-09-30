@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.control;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -27,6 +28,13 @@ public final class GhastCourse {
       }
     }
     return farthestClear(from, over, fitsAt);
+  }
+
+  public static Predicate<Vec3d> fitsAt(final Entity ghast) {
+    return position ->
+        ghast
+            .getWorld()
+            .isSpaceEmpty(ghast, ghast.getBoundingBox().offset(position.subtract(ghast.getPos())));
   }
 
   public static boolean isClear(final Vec3d from, final Vec3d to, final Predicate<Vec3d> fitsAt) {

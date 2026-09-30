@@ -59,8 +59,8 @@ public final class DefenderTargets {
             search,
             candidate ->
                 candidate != defender
-                    && !isSummonedBy(candidate, defender)
-                    && (threatens(candidate, defended) || threatens(candidate, defender)));
+                    && (threatens(candidate, defended)
+                        || (threatens(candidate, defender) && !isSummonedBy(candidate, defender))));
     return threats.stream()
         .min(
             (left, right) ->
@@ -80,7 +80,7 @@ public final class DefenderTargets {
     return candidate != null
         && candidate != defender
         && candidate != defended
-        && !isSummonedBy(candidate, defender)
+        && (!isSummonedBy(candidate, defender) || threatens(candidate, defended))
         && candidate.isAlive()
         && inReach(candidate, defended, radius);
   }

@@ -1,6 +1,5 @@
 package com.grahambartley.notenougharrows.control;
 
-import java.util.function.Predicate;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
@@ -61,13 +60,12 @@ public final class MobSteering {
       return true;
     }
     if (mob instanceof GhastEntity ghast) {
-      return GhastCourse.plan(ghast.getPos(), destination, ghast.getHeight(), fitsAt(ghast))
-          .map(
-              waypoint -> {
-                ghast.getMoveControl().moveTo(waypoint.x, waypoint.y, waypoint.z, speed);
-                return true;
-              })
-          .orElse(false);
+      final Vec3d waypoint =
+          GhastCourse.plan(
+                  ghast.getPos(), destination, ghast.getHeight(), GhastCourse.fitsAt(ghast))
+              .orElse(destination);
+      ghast.getMoveControl().moveTo(waypoint.x, waypoint.y, waypoint.z, speed);
+      return true;
     }
     if (mob instanceof VexEntity) {
       mob.getMoveControl().moveTo(destination.x, destination.y, destination.z, speed);
@@ -84,16 +82,10 @@ public final class MobSteering {
       return true;
     }
     if (mob.getNavigation() instanceof SpiderNavigation climbing
-        && ClimbingGrip.shouldLetGo(mob.isOnGround(), mob.getY(), destination.y)) {
+        && ClimbingGrip.shouldLetGo(mob.isClimbing(), mob.getY(), destination.y)) {
       climbing.targetPos = null;
     }
     return false;
-  }
-
-  private static Predicate<Vec3d> fitsAt(final MobEntity mob) {
-    return position ->
-        mob.getWorld()
-            .isSpaceEmpty(mob, mob.getBoundingBox().offset(position.subtract(mob.getPos())));
   }
 
   private static boolean movesThroughOpenSpace(final MobEntity mob) {

@@ -5,7 +5,7 @@ public final class ClimbingGrip {
   private ClimbingGrip() {}
 
   public static boolean shouldLetGo(
-      final boolean onGround, final double climberY, final double destinationY) {
-    return !onGround && climberY > destinationY;
+      final boolean climbing, final double climberY, final double destinationY) {
+    return climbing && climberY > destinationY;
   }
 }

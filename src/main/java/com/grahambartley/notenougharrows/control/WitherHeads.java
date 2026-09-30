@@ -8,8 +8,8 @@ import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.mob.MobEntity;
 
 public final class WitherHeads {
-  public static final int FIRST_SIDE_HEAD = 1;
-  public static final int LAST_SIDE_HEAD = 2;
+  private static final int FIRST_SIDE_HEAD = 1;
+  private static final int LAST_SIDE_HEAD = 2;
   private static final int NO_TARGET = 0;
 
   private WitherHeads() {}
