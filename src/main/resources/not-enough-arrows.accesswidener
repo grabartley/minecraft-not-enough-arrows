@@ -6,6 +6,7 @@ accessible method net/minecraft/entity/mob/MobEntity getDropChance (Lnet/minecra
 accessible class net/minecraft/entity/mob/SlimeEntity$SlimeMoveControl
 accessible field net/minecraft/entity/mob/PhantomEntity targetPosition Lnet/minecraft/util/math/Vec3d;
 accessible field net/minecraft/entity/passive/BatEntity hangingPosition Lnet/minecraft/util/math/BlockPos;
+accessible field net/minecraft/entity/ai/pathing/SpiderNavigation targetPos Lnet/minecraft/util/math/BlockPos;
 accessible method net/minecraft/entity/passive/FoxEntity stopActions ()V
 accessible method net/minecraft/entity/mob/MobEntity getItemPickUpRangeExpander ()Lnet/minecraft/util/math/Vec3i;
 accessible field net/minecraft/entity/mob/MobEntity goalSelector Lnet/minecraft/entity/ai/goal/GoalSelector;

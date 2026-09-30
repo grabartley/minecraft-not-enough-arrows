@@ -1,9 +1,11 @@
 package com.grahambartley.notenougharrows.control;
 
+import java.util.function.Predicate;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.SpiderNavigation;
 import net.minecraft.entity.ai.pathing.SwimNavigation;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.boss.dragon.phase.ChargingPlayerPhase;
@@ -58,7 +60,16 @@ public final class MobSteering {
       chargeToward(dragon, destination);
       return true;
     }
-    if (mob instanceof GhastEntity || mob instanceof VexEntity) {
+    if (mob instanceof GhastEntity ghast) {
+      return GhastCourse.plan(ghast.getPos(), destination, ghast.getHeight(), fitsAt(ghast))
+          .map(
+              waypoint -> {
+                ghast.getMoveControl().moveTo(waypoint.x, waypoint.y, waypoint.z, speed);
+                return true;
+              })
+          .orElse(false);
+    }
+    if (mob instanceof VexEntity) {
       mob.getMoveControl().moveTo(destination.x, destination.y, destination.z, speed);
       return true;
     }
@@ -72,7 +83,17 @@ public final class MobSteering {
       mob.getMoveControl().moveTo(destination.x, destination.y, destination.z, speed);
       return true;
     }
+    if (mob.getNavigation() instanceof SpiderNavigation climbing
+        && ClimbingGrip.shouldLetGo(mob.isOnGround(), mob.getY(), destination.y)) {
+      climbing.targetPos = null;
+    }
     return false;
+  }
+
+  private static Predicate<Vec3d> fitsAt(final MobEntity mob) {
+    return position ->
+        mob.getWorld()
+            .isSpaceEmpty(mob, mob.getBoundingBox().offset(position.subtract(mob.getPos())));
   }
 
   private static boolean movesThroughOpenSpace(final MobEntity mob) {

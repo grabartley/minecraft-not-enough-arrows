@@ -246,6 +246,7 @@ public final class ControlHoldService {
     if (!(subject instanceof LivingEntity defended) || !defended.isAlive()) {
       return false;
     }
+    WitherHeads.spare(mob, defended);
     final LivingEntity threat =
         DefenderTargets.threatTo(world, defended, mob, hold.reach()).orElse(null);
     MobAggression.aim(mob, threat);
