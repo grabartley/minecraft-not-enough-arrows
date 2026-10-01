@@ -4,6 +4,7 @@ import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
 import net.minecraft.entity.ai.control.AquaticMoveControl;
+import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
@@ -85,11 +86,21 @@ public final class MobSteering {
       mob.getMoveControl().moveTo(destination.x, destination.y, destination.z, speed);
       return true;
     }
-    if (mob.getNavigation() instanceof SpiderNavigation climbing
-        && ClimbingGrip.shouldLetGo(mob.isClimbing(), mob.getY(), destination.y)) {
-      climbing.targetPos = null;
+    if (mob.getNavigation() instanceof SpiderNavigation climbing && mob.isClimbing()) {
+      endTheJumpThatStartedTheClimb(mob);
+      if (ClimbingGrip.shouldLetGo(mob.isClimbing(), mob.getY(), destination.y)) {
+        climbing.targetPos = null;
+      }
     }
     return false;
+  }
+
+  private static void endTheJumpThatStartedTheClimb(final MobEntity mob) {
+    final MoveControl control = mob.getMoveControl();
+    if (control.state == MoveControl.State.JUMPING) {
+      control.state = MoveControl.State.WAIT;
+      mob.setForwardSpeed(0.0f);
+    }
   }
 
   private static void skipNodesUnderfoot(final MobEntity mob) {
