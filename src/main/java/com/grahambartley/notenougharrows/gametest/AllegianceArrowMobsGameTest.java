@@ -2,6 +2,7 @@ package com.grahambartley.notenougharrows.gametest;
 
 import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
+import com.grahambartley.notenougharrows.control.DefenderTargets;
 import com.grahambartley.notenougharrows.control.Escort;
 import com.grahambartley.notenougharrows.control.MobAggression;
 import com.grahambartley.notenougharrows.gametest.MobRoster.Mob;
@@ -29,8 +30,6 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
   private static final int LAST_LOOK = MobArena.SLOW_LIMIT - 10;
   private static final double WIDEST_HEEL = 2.0;
   private static final double MOSTLY = 0.75;
-  private static final Set<EntityType<?>> FOLLOWS_AWAITING_A_FIX =
-      Set.of(EntityType.AXOLOTL, EntityType.PANDA);
   private static final Set<EntityType<?>> TOO_SLOW_TO_KEEP_UP =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.TURTLE);
   private static final Set<EntityType<?>> JUMPS_ABOUT =
@@ -53,10 +52,7 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
     return MobArena.perMob(
         "allegiance",
         "follows",
-        mob ->
-            mob.movesAround()
-                && !MobRoster.outgrowsTheArena(mob)
-                && !FOLLOWS_AWAITING_A_FIX.contains(mob.type()),
+        mob -> mob.movesAround() && !MobRoster.outgrowsTheArena(mob),
         MobArena.SLOW_LIMIT,
         AllegianceArrowMobsGameTest::follows);
   }
@@ -76,13 +72,19 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
         () -> {
           MobArena.check(
               context,
-              ally.getTarget() == threat,
+              targetsAThreatTo(ally, threat, player),
               "An allied "
                   + mob.name()
                   + " should attack whatever attacks the shooter, but it targets "
                   + ally.getTarget());
           context.complete();
         });
+  }
+
+  private static boolean targetsAThreatTo(
+      final MobEntity ally, final MobEntity spawnedThreat, final ServerPlayerEntity shooter) {
+    return ally.getTarget() == spawnedThreat
+        || DefenderTargets.threatens(ally.getTarget(), shooter);
   }
 
   private static void follows(final TestContext context, final Mob mob) {

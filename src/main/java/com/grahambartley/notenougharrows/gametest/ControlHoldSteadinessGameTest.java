@@ -4,18 +4,22 @@ import com.grahambartley.notenougharrows.config.AllegianceArrowConfig;
 import com.grahambartley.notenougharrows.config.TargetingArrowConfig;
 import com.grahambartley.notenougharrows.control.ControlHoldService;
 import com.grahambartley.notenougharrows.control.Escort;
+import com.grahambartley.notenougharrows.control.MobSteering;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public final class ControlHoldSteadinessGameTest implements FabricGameTest {
@@ -31,6 +35,9 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
   private static final int SAMPLE_EVERY = 5;
   private static final double TURNING_BACK = 0.25;
   private static final int ESCORT_DEADLINE = 160;
+  private static final int LIES_DOWN = 25;
+  private static final BlockPos SWIM_STAND = new BlockPos(10, 4, 8);
+  private static final float FACING_AWAY = 30.0f;
 
   private static PlayerEntity unharmablePlayer(final TestContext context) {
     final PlayerEntity player = MockPlayerSupport.mortalPlayerAt(context, PLAYER_STAND);
@@ -155,6 +162,80 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
           context.assertTrue(
               zombie.getTarget() == null,
               "A mob that stopped running should still leave you alone");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-rouse", tickLimit = 60)
+  public void anAlliedPandaThatLiesDownOnTheWayGetsBackUp(TestContext context) {
+    final CowEntity defended = MobArena.cow(context, MobArena.PLAYER_STAND);
+    final PandaEntity ally = context.spawnMob(EntityType.PANDA, MobArena.FAR_STAND);
+    context.runAtTick(
+        LANDED,
+        () ->
+            ControlHoldService.enlist(
+                context.getWorld(), ally, defended, AllegianceArrowConfig.defaults()));
+    context.runAtTick(LIES_DOWN, () -> ally.setLyingOnBack(true));
+    context.runAtTick(
+        LIES_DOWN + 2,
+        () -> {
+          context.assertFalse(
+              ally.isLyingOnBack(),
+              "An allied panda with ground to cover should get up rather than lie on its back");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-rouse", tickLimit = 60)
+  public void aRepelledPandaThatLiesDownOnTheWayGetsBackUp(TestContext context) {
+    final PandaEntity fleeing = context.spawnMob(EntityType.PANDA, MobArena.NEAR_STAND);
+    context.runAtTick(
+        LANDED,
+        () ->
+            ControlHoldService.repel(
+                context.getWorld(),
+                fleeing.getPos().add(-2.0, 0.0, 0.0),
+                TargetingArrowConfig.defaults()));
+    context.runAtTick(LIES_DOWN, () -> fleeing.setLyingOnBack(true));
+    context.runAtTick(
+        LIES_DOWN + 2,
+        () -> {
+          context.assertFalse(
+              fleeing.isLyingOnBack(),
+              "A repelled panda should keep running rather than lie on its back");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-swimmer", tickLimit = 40)
+  public void aRepelledAxolotlTurnsAwayAtOnceInsteadOfSwimmingOnThroughTheImpact(
+      TestContext context) {
+    for (int x = 1; x <= 20; x++) {
+      for (int y = 3; y <= 6; y++) {
+        for (int z = 4; z <= 12; z++) {
+          context.setBlockState(new BlockPos(x, y, z), Blocks.WATER);
+        }
+      }
+    }
+    final AxolotlEntity axolotl = context.spawnMob(EntityType.AXOLOTL, SWIM_STAND);
+    final Vec3d[] impact = new Vec3d[1];
+    context.runAtTick(
+        LANDED,
+        () -> {
+          impact[0] = axolotl.getPos().add(-3.0, 0.0, 0.0);
+          axolotl.setYaw(MobSteering.yawToward(axolotl.getPos(), impact[0]));
+          ControlHoldService.repel(context.getWorld(), impact[0], TargetingArrowConfig.defaults());
+        });
+    context.runAtTick(
+        LANDED + 1,
+        () -> {
+          final float away = MobSteering.yawToward(impact[0], axolotl.getPos());
+          final float off = Math.abs(MathHelper.wrapDegrees(axolotl.getYaw() - away));
+          context.assertTrue(
+              off <= FACING_AWAY,
+              "A repelled axolotl should turn its back on the impact at once, but it is "
+                  + off
+                  + " degrees off");
           context.complete();
         });
   }

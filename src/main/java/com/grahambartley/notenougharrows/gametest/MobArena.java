@@ -10,6 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.attribute.DefaultAttributeRegistry;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -17,6 +18,7 @@ import net.minecraft.entity.mob.AbstractPiglinEntity;
 import net.minecraft.entity.mob.HoglinEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.entity.passive.PandaEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -130,6 +132,15 @@ final class MobArena {
     }
     if (spawned instanceof HoglinEntity hoglin) {
       hoglin.setImmuneToZombification(true);
+    }
+    if (spawned instanceof PandaEntity panda) {
+      panda.setMainGene(PandaEntity.Gene.NORMAL);
+      panda.setHiddenGene(PandaEntity.Gene.NORMAL);
+      panda
+          .getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED)
+          .setBaseValue(
+              DefaultAttributeRegistry.get(EntityType.PANDA)
+                  .getBaseValue(EntityAttributes.GENERIC_MOVEMENT_SPEED));
     }
     return sturdy(helmeted(spawned));
   }

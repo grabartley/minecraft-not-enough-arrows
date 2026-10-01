@@ -3,6 +3,7 @@ package com.grahambartley.notenougharrows.control;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
+import net.minecraft.entity.ai.control.AquaticMoveControl;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.ai.pathing.SpiderNavigation;
@@ -75,6 +76,7 @@ public final class MobSteering {
     if (mob.getNavigation()
         .startMovingTo(destination.x, destination.y, destination.z, paceFor(mob, speed))) {
       skipNodesUnderfoot(mob);
+      turnSlowSwimmerToward(mob, destination);
       walkTheBrainTo(mob, destination, speed);
       keepPace(mob, speed);
       return true;
@@ -100,6 +102,15 @@ public final class MobSteering {
             path::getNodePos, path.getCurrentNodeIndex(), path.getLength(), mob.getBoundingBox());
     while (path.getCurrentNodeIndex() < ahead) {
       path.next();
+    }
+  }
+
+  private static void turnSlowSwimmerToward(final MobEntity mob, final Vec3d destination) {
+    if (mob.getMoveControl() instanceof AquaticMoveControl && mob.isTouchingWater()) {
+      final float yaw = yawToward(mob.getPos(), destination);
+      mob.setYaw(yaw);
+      mob.setBodyYaw(yaw);
+      mob.setHeadYaw(yaw);
     }
   }
 
@@ -162,7 +173,7 @@ public final class MobSteering {
     return mob instanceof RabbitEntity ? Math.max(speed, RABBIT_HOP_SPEED) : speed;
   }
 
-  private static void rouse(final MobEntity mob) {
+  public static void rouse(final MobEntity mob) {
     if (mob instanceof FoxEntity fox) {
       fox.stopActions();
     }
