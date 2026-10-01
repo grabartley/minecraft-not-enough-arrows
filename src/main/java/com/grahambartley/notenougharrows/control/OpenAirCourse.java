@@ -15,34 +15,34 @@ public final class OpenAirCourse {
             destination,
             new Vec3d(destination.x, from.y, from.z),
             new Vec3d(from.x, from.y, destination.z));
-    BlockPos best = BlockPos.ofFloored(from);
-    double bestReach = 0.0;
+    Reach best = new Reach(BlockPos.ofFloored(from), 0.0, false);
     for (final Vec3d line : lines) {
-      final BlockPos reached = lastOpen(from, line, isAir);
-      final double reach = Vec3d.ofBottomCenter(reached).squaredDistanceTo(from);
-      if (reach > bestReach) {
-        best = reached;
-        bestReach = reach;
+      final Reach reach = lastOpen(from, line, isAir);
+      if (reach.distance() > best.distance()) {
+        best = reach;
       }
-      if (reached.equals(BlockPos.ofFloored(line))) {
-        return best;
+      if (reach.clear()) {
+        return best.open();
       }
     }
-    return best;
+    return best.open();
   }
 
-  private static BlockPos lastOpen(
-      final Vec3d from, final Vec3d to, final Predicate<BlockPos> isAir) {
+  private static Reach lastOpen(final Vec3d from, final Vec3d to, final Predicate<BlockPos> isAir) {
     final Vec3d step = to.subtract(from);
     final double length = step.length();
     BlockPos open = BlockPos.ofFloored(from);
-    for (double reached = 1.0; reached <= length; reached += 1.0) {
-      final BlockPos next = BlockPos.ofFloored(from.add(step.multiply(reached / length)));
-      if (!isAir.test(next)) {
-        break;
+    double reached = 0.0;
+    for (double next = 1.0; next <= length; next += 1.0) {
+      final BlockPos ahead = BlockPos.ofFloored(from.add(step.multiply(next / length)));
+      if (!isAir.test(ahead)) {
+        return new Reach(open, reached, false);
       }
-      open = next;
+      open = ahead;
+      reached = next;
     }
-    return open;
+    return new Reach(open, reached, true);
   }
+
+  private record Reach(BlockPos open, double distance, boolean clear) {}
 }

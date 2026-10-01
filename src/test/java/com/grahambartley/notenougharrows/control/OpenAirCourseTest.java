@@ -13,7 +13,7 @@ class OpenAirCourseTest {
   private static final Predicate<BlockPos> WALL_BELOW_Z_TWO = pos -> pos.getZ() >= 2;
 
   @Test
-  void flyStraightAtAnOpenDestination() {
+  void fliesStraightAtAnOpenDestination() {
     assertEquals(
         new BlockPos(22, 6, 0), OpenAirCourse.toward(FROM, new Vec3d(22.5, 6.5, 0.5), OPEN_SKY));
   }

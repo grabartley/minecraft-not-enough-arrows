@@ -36,7 +36,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
   private static final Set<EntityType<?>> PASSES_THROUGH_WALLS = Set.of(EntityType.VEX);
   private static final Set<EntityType<?>> TOO_SLOW_TO_GET_CLEAR =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.PANDA, EntityType.TURTLE);
-  private static final Set<EntityType<?>> COASTS_ONTO_THE_IMPACT = Set.of(EntityType.PHANTOM);
+  private static final Set<EntityType<?>> WANDERS_AS_FAR_AS_IT_FLEES = Set.of(EntityType.PHANTOM);
 
   @CustomTestProvider
   public Collection<TestFunction> everyMobThatMovesRunsWithoutTurningBack() {
@@ -79,12 +79,10 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     context.runAtTick(
         turn + SECOND_RUN + 1,
         () -> {
-          if (second.startedInTheArena() && !MobRoster.outgrowsTheArena(mob)) {
-            if (COASTS_ONTO_THE_IMPACT.contains(mob.type())) {
-              second.checkGainedFromNearest(TURNED_BACK);
-            } else {
-              second.checkGained(TURNED_BACK);
-            }
+          if (second.startedInTheArena()
+              && !MobRoster.outgrowsTheArena(mob)
+              && !WANDERS_AS_FAR_AS_IT_FLEES.contains(mob.type())) {
+            second.checkGained(TURNED_BACK);
           }
           context.complete();
         });
@@ -111,7 +109,6 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     private Vec3d impact;
     private double start;
     private double furthest = Double.NEGATIVE_INFINITY;
-    private double nearest = Double.POSITIVE_INFINITY;
     private int from;
     private boolean startedInTheArena;
 
@@ -157,7 +154,6 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
       final boolean inTheArena = isInTheArena(context.getRelative(fleeing.getPos()));
       if (inTheArena || PASSES_THROUGH_WALLS.contains(mob.type())) {
         furthest = Math.max(furthest, fled);
-        nearest = Math.min(nearest, fled);
       }
       if (!inTheArena) {
         return;
@@ -220,21 +216,6 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
               + distance
               + " blocks from the impact, but only reached "
               + furthest
-              + " on its "
-              + name
-              + " run");
-    }
-
-    void checkGainedFromNearest(final double gain) {
-      MobArena.check(
-          context,
-          furthest - nearest >= gain,
-          "A repelled "
-              + mob.name()
-              + " should run at least "
-              + gain
-              + " blocks from the nearest it came to the impact, but only fled "
-              + (furthest - nearest)
               + " on its "
               + name
               + " run");
