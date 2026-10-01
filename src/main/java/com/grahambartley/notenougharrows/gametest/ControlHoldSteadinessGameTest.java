@@ -46,6 +46,11 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
   private static final double HIGH_UP = 10.0;
   private static final double ON_THE_FLOOR = 4.0;
   private static final double RAN_CLEAR = 6.0;
+  private static final double AT_HEEL = Escort.CLOSE_IN_BEYOND + 1.5;
+  private static final BlockPos LEDGE = new BlockPos(10, 12, 14);
+  private static final BlockPos BELOW_THE_LEDGE = new BlockPos(10, 3, 9);
+  private static final int UP_ON_THE_LEDGE = 160;
+  private static final double CLIMBED_UP = 7.0;
 
   private static PlayerEntity unharmablePlayer(final TestContext context) {
     final PlayerEntity player = MockPlayerSupport.mortalPlayerAt(context, PLAYER_STAND);
@@ -251,7 +256,7 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 220)
   public void anAlliedSpiderPinnedUnderTheRoofComesDownToWhoItDefends(TestContext context) {
     final CowEntity defended = MobArena.cow(context, MobArena.PLAYER_STAND);
-    final SpiderEntity spider = spiderPinnedUnderTheRoof(context);
+    final SpiderEntity spider = climberPinnedUnderTheRoof(context, EntityType.SPIDER);
     context.runAtTick(
         PINNED_UNDER_THE_ROOF,
         () ->
@@ -261,18 +266,58 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
         CLIMBED_DOWN,
         () -> {
           final double height = context.getRelative(spider.getPos()).y;
+          final double gap = Math.sqrt(spider.squaredDistanceTo(defended));
           context.assertTrue(
-              height < ON_THE_FLOOR,
-              "An allied spider stuck high on a wall should drop down to who it defends, but it is"
-                  + " still at y="
-                  + height);
+              height < ON_THE_FLOOR && gap <= AT_HEEL,
+              "An allied spider stuck high on a wall should come down to who it defends, but it is"
+                  + " at y="
+                  + height
+                  + ", "
+                  + gap
+                  + " blocks away");
           context.complete();
         });
   }
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 220)
   public void aRepelledSpiderPinnedUnderTheRoofDropsAndRunsAway(TestContext context) {
-    final SpiderEntity spider = spiderPinnedUnderTheRoof(context);
+    repelsAClimberPinnedUnderTheRoof(context, EntityType.SPIDER);
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 220)
+  public void aRepelledCaveSpiderPinnedUnderTheRoofDropsAndRunsAway(TestContext context) {
+    repelsAClimberPinnedUnderTheRoof(context, EntityType.CAVE_SPIDER);
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 200)
+  public void anAlliedSpiderStillClimbsUpToWhoItDefendsOnALedge(TestContext context) {
+    for (int x = LEDGE.getX() - 1; x <= LEDGE.getX() + 1; x++) {
+      for (int y = MobArena.PLAYER_STAND.getY(); y < LEDGE.getY(); y++) {
+        context.setBlockState(new BlockPos(x, y, LEDGE.getZ()), Blocks.STONE);
+      }
+    }
+    final CowEntity defended = MobArena.cow(context, LEDGE);
+    final SpiderEntity spider = context.spawnMob(EntityType.SPIDER, BELOW_THE_LEDGE);
+    givePace(spider);
+    ControlHoldService.enlist(
+        context.getWorld(), spider, defended, AllegianceArrowConfig.defaults());
+    context.runAtTick(
+        UP_ON_THE_LEDGE,
+        () -> {
+          final double gap = Math.sqrt(spider.squaredDistanceTo(defended));
+          context.assertTrue(
+              context.getRelative(spider.getPos()).y > CLIMBED_UP && gap <= AT_HEEL,
+              "An allied spider should still climb up to who it defends on a ledge, but it is "
+                  + gap
+                  + " blocks away at "
+                  + context.getRelative(spider.getPos()));
+          context.complete();
+        });
+  }
+
+  private static void repelsAClimberPinnedUnderTheRoof(
+      final TestContext context, final EntityType<? extends SpiderEntity> type) {
+    final SpiderEntity spider = climberPinnedUnderTheRoof(context, type);
     final Vec3d[] impact = new Vec3d[1];
     context.runAtTick(
         PINNED_UNDER_THE_ROOF,
@@ -287,7 +332,9 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
           final double away = Math.hypot(spider.getX() - impact[0].x, spider.getZ() - impact[0].z);
           context.assertTrue(
               height < ON_THE_FLOOR && away > RAN_CLEAR,
-              "A repelled spider stuck high on a wall should drop and run, but it is at y="
+              "A repelled "
+                  + type.getUntranslatedName()
+                  + " stuck high on a wall should drop and run, but it is at y="
                   + height
                   + ", "
                   + away
@@ -296,12 +343,12 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
         });
   }
 
-  private static SpiderEntity spiderPinnedUnderTheRoof(final TestContext context) {
-    final SpiderEntity spider = context.spawnMob(EntityType.SPIDER, BY_THE_WALL);
+  private static SpiderEntity climberPinnedUnderTheRoof(
+      final TestContext context, final EntityType<? extends SpiderEntity> type) {
+    final SpiderEntity spider = context.spawnMob(type, BY_THE_WALL);
     final Vec3d farAbove =
         context.getAbsolute(Vec3d.ofBottomCenter(BY_THE_WALL.south()).add(0.0, FAR_ABOVE, 0.0));
-    spider.getNavigation().startMovingTo(spider, 1.0);
-    spider.getNavigation().stop();
+    givePace(spider);
     context.runAtEveryTick(
         () -> {
           if (!spider.isClimbing() && context.getTick() < PINNED_UNDER_THE_ROOF) {
@@ -318,5 +365,10 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
                     + " climbing="
                     + spider.isClimbing()));
     return spider;
+  }
+
+  private static void givePace(final SpiderEntity spider) {
+    spider.getNavigation().startMovingTo(spider, 1.0);
+    spider.getNavigation().stop();
   }
 }

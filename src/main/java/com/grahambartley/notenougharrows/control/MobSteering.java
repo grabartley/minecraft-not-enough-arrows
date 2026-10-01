@@ -88,7 +88,7 @@ public final class MobSteering {
     }
     if (mob.getNavigation() instanceof SpiderNavigation climbing && mob.isClimbing()) {
       endTheJumpThatStartedTheClimb(mob);
-      if (ClimbingGrip.shouldLetGo(mob.isClimbing(), mob.getY(), destination.y)) {
+      if (ClimbingGrip.shouldLetGo(mob.getY(), destination.y)) {
         climbing.targetPos = null;
       }
     }
