@@ -50,6 +50,33 @@ class GhastCourseTest {
   }
 
   @Test
+  void slidesAlongAWallItsDestinationIsInsideOf() {
+    final Predicate<Vec3d> wallPastZTwo = position -> position.z < 2.0;
+    final Vec3d from = new Vec3d(10.0, 13.0, 0.0);
+    assertEquals(
+        Optional.of(new Vec3d(22.0, 13.0, 0.0)),
+        GhastCourse.plan(from, new Vec3d(22.0, 13.0, 3.0), GHAST_HEIGHT, wallPastZTwo));
+  }
+
+  @Test
+  void slidesAcrossWhenTheWallRunsTheOtherWay() {
+    final Predicate<Vec3d> wallPastXTwelve = position -> position.x < 12.0;
+    final Vec3d from = new Vec3d(10.0, 13.0, 0.0);
+    assertEquals(
+        Optional.of(new Vec3d(10.0, 13.0, 12.0)),
+        GhastCourse.plan(from, new Vec3d(13.0, 13.0, 12.0), GHAST_HEIGHT, wallPastXTwelve));
+  }
+
+  @Test
+  void slidesBeforeClimbingWhenItIsAlreadyUnderTheCeiling() {
+    final Predicate<Vec3d> ceilingAndSideWall = position -> position.y <= 13.0 && position.z < 2.0;
+    final Vec3d from = new Vec3d(10.0, 13.0, 0.0);
+    assertEquals(
+        Optional.of(new Vec3d(22.0, 13.0, 0.0)),
+        GhastCourse.plan(from, new Vec3d(22.0, 13.0, 3.0), GHAST_HEIGHT, ceilingAndSideWall));
+  }
+
+  @Test
   void fliesAsFarAsItCanWhenNoWaypointIsClear() {
     final Predicate<Vec3d> boxedIn = position -> position.x > 11.5 && position.y < 7.0;
     final Optional<Vec3d> course =

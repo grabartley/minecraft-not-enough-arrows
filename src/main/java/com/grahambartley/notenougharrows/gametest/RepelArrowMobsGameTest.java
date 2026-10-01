@@ -36,6 +36,7 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
   private static final Set<EntityType<?>> PASSES_THROUGH_WALLS = Set.of(EntityType.VEX);
   private static final Set<EntityType<?>> TOO_SLOW_TO_GET_CLEAR =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.PANDA, EntityType.TURTLE);
+  private static final Set<EntityType<?>> WANDERS_AS_FAR_AS_IT_FLEES = Set.of(EntityType.PHANTOM);
 
   @CustomTestProvider
   public Collection<TestFunction> everyMobThatMovesRunsWithoutTurningBack() {
@@ -78,7 +79,9 @@ public final class RepelArrowMobsGameTest implements FabricGameTest {
     context.runAtTick(
         turn + SECOND_RUN + 1,
         () -> {
-          if (second.startedInTheArena() && !MobRoster.outgrowsTheArena(mob)) {
+          if (second.startedInTheArena()
+              && !MobRoster.outgrowsTheArena(mob)
+              && !WANDERS_AS_FAR_AS_IT_FLEES.contains(mob.type())) {
             second.checkGained(TURNED_BACK);
           }
           context.complete();

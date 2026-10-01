@@ -22,6 +22,8 @@ public final class GhastCourse {
         List.of(
             destination,
             over,
+            new Vec3d(destination.x, from.y, from.z),
+            new Vec3d(from.x, from.y, destination.z),
             new Vec3d(from.x, over.y, from.z),
             new Vec3d(over.x, from.y, over.z));
     for (final Vec3d waypoint : waypoints) {
