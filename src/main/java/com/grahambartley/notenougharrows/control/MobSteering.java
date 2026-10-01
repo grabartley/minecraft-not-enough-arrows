@@ -50,7 +50,7 @@ public final class MobSteering {
       return true;
     }
     if (mob instanceof BatEntity bat) {
-      BatFlight.steer(bat, openAirToward(bat, destination));
+      BatFlight.steer(bat, OpenAirCourse.toward(bat.getPos(), destination, bat.getWorld()::isAir));
       return true;
     }
     if (mob instanceof SquidEntity squid) {
@@ -193,21 +193,6 @@ public final class MobSteering {
       panda.setLyingOnBack(false);
       panda.setPlaying(false);
     }
-  }
-
-  private static BlockPos openAirToward(final MobEntity mob, final Vec3d destination) {
-    final Vec3d from = mob.getPos();
-    final Vec3d step = destination.subtract(from);
-    final double length = step.length();
-    BlockPos open = mob.getBlockPos();
-    for (double reached = 1.0; reached <= length; reached += 1.0) {
-      final BlockPos next = BlockPos.ofFloored(from.add(step.multiply(reached / length)));
-      if (!mob.getWorld().isAir(next)) {
-        break;
-      }
-      open = next;
-    }
-    return open;
   }
 
   private static void walkTheBrainTo(

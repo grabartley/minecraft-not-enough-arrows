@@ -38,20 +38,26 @@ public final class BatFlight {
 
   public static void flyToward(final BatEntity bat, final BlockPos target) {
     bat.setRoosting(false);
-    final double dx = target.getX() + 0.5 - bat.getX();
-    final double dy = target.getY() + 0.1 - bat.getY();
-    final double dz = target.getZ() + 0.5 - bat.getZ();
-    final Vec3d velocity = bat.getVelocity();
     final Vec3d steered =
-        velocity.add(
-            (Math.signum(dx) * HORIZONTAL_PULL - velocity.x) * RESPONSIVENESS,
-            (Math.signum(dy) * VERTICAL_PULL - velocity.y) * RESPONSIVENESS,
-            (Math.signum(dz) * HORIZONTAL_PULL - velocity.z) * RESPONSIVENESS);
+        steered(
+            bat.getVelocity(),
+            new Vec3d(
+                target.getX() + 0.5 - bat.getX(),
+                target.getY() + 0.1 - bat.getY(),
+                target.getZ() + 0.5 - bat.getZ()));
     bat.setVelocity(steered);
     final float heading =
         (float) (MathHelper.atan2(steered.z, steered.x) * MathHelper.DEGREES_PER_RADIAN) - 90.0f;
     bat.forwardSpeed = WINGBEAT;
     bat.setYaw(bat.getYaw() + MathHelper.wrapDegrees(heading - bat.getYaw()));
+  }
+
+  public static Vec3d steered(final Vec3d velocity, final Vec3d toTarget) {
+    final Vec3d heading = new Vec3d(toTarget.x, 0.0, toTarget.z).normalize();
+    return velocity.add(
+        (heading.x * HORIZONTAL_PULL - velocity.x) * RESPONSIVENESS,
+        (Math.signum(toTarget.y) * VERTICAL_PULL - velocity.y) * RESPONSIVENESS,
+        (heading.z * HORIZONTAL_PULL - velocity.z) * RESPONSIVENESS);
   }
 
   public static void forgetAll() {
