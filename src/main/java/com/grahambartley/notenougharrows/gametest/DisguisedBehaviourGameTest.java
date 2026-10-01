@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.disguise.DisguiseService;
 import com.grahambartley.notenougharrows.disguise.DisguisedBehaviour;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.mob.ZombieEntity;
@@ -53,14 +54,21 @@ public final class DisguisedBehaviourGameTest implements FabricGameTest {
       maxAttempts = 3)
   public void aDisguisedMobStillWandersLikeAnAnimal(TestContext context) {
     final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, STAND);
+    zombie.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
     final Vec3d start = zombie.getPos();
     DisguiseService.disguise(context.getWorld(), zombie, LONG);
 
+    final double[] furthest = {0.0};
+    context.runAtEveryTick(
+        () -> furthest[0] = Math.max(furthest[0], zombie.getPos().distanceTo(start)));
     context.runAtTick(
         WANDER_WATCH,
         () -> {
           context.assertTrue(
-              zombie.getPos().distanceTo(start) > MOVED, "The disguised zombie should wander");
+              furthest[0] > MOVED,
+              "The disguised zombie should wander, but it only got "
+                  + furthest[0]
+                  + " blocks from where it started");
           DisguiseService.revert(context.getWorld(), zombie);
           context.complete();
         });

@@ -37,8 +37,7 @@ public final class VineArrowEntityGameTest implements FabricGameTest {
   @GameTest(
       templateName = TraversalTestSupport.TEMPLATE,
       batchId = BATCH,
-      tickLimit = TerrainArrowTestSupport.TICK_LIMIT,
-      required = false)
+      tickLimit = TerrainArrowTestSupport.TICK_LIMIT)
   public void aDispensedVineArrowGrowsAVineToo(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
     FiringRangeSupport.dispenseEast(
