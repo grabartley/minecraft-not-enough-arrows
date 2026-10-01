@@ -54,6 +54,15 @@ class OpenAirCourseTest {
   }
 
   @Test
+  void triesTheLongSlideWhenTheOtherIsUnderABlock() {
+    final Predicate<BlockPos> onlyThisLevelOfThisColumn =
+        pos -> pos.getX() == 10 && pos.getY() == 6;
+    assertEquals(
+        new BlockPos(10, 6, 12),
+        OpenAirCourse.toward(FROM, new Vec3d(10.8, 3.5, 12.5), onlyThisLevelOfThisColumn));
+  }
+
+  @Test
   void holdsItsOwnBlockWhenBoxedIn() {
     assertEquals(
         BlockPos.ofFloored(FROM),

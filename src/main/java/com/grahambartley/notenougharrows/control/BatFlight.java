@@ -52,7 +52,7 @@ public final class BatFlight {
     bat.setYaw(bat.getYaw() + MathHelper.wrapDegrees(heading - bat.getYaw()));
   }
 
-  public static Vec3d steered(final Vec3d velocity, final Vec3d toTarget) {
+  static Vec3d steered(final Vec3d velocity, final Vec3d toTarget) {
     final Vec3d heading = new Vec3d(toTarget.x, 0.0, toTarget.z).normalize();
     return velocity.add(
         (heading.x * HORIZONTAL_PULL - velocity.x) * RESPONSIVENESS,

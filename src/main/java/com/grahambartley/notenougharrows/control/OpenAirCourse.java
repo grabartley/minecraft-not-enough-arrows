@@ -17,6 +17,9 @@ public final class OpenAirCourse {
             new Vec3d(from.x, from.y, destination.z));
     Reach best = new Reach(BlockPos.ofFloored(from), 0.0, false);
     for (final Vec3d line : lines) {
+      if (line.squaredDistanceTo(from) < 1.0) {
+        continue;
+      }
       final Reach reach = lastOpen(from, line, isAir);
       if (reach.distance() > best.distance()) {
         best = reach;
