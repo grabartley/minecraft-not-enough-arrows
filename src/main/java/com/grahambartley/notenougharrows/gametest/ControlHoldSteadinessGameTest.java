@@ -10,6 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.mob.SpiderEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.passive.AxolotlEntity;
 import net.minecraft.entity.passive.CowEntity;
@@ -38,6 +39,18 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
   private static final int LIES_DOWN = 25;
   private static final BlockPos SWIM_STAND = new BlockPos(10, 4, 8);
   private static final float FACING_AWAY = 30.0f;
+  private static final BlockPos BY_THE_WALL = new BlockPos(10, 3, 13);
+  private static final double FAR_ABOVE = 14.0;
+  private static final int PINNED_UNDER_THE_ROOF = 140;
+  private static final int CLIMBED_DOWN = PINNED_UNDER_THE_ROOF + 60;
+  private static final double HIGH_UP = 10.0;
+  private static final double ON_THE_FLOOR = 4.0;
+  private static final double RAN_CLEAR = 6.0;
+  private static final double AT_HEEL = Escort.CLOSE_IN_BEYOND + 1.5;
+  private static final BlockPos LEDGE = new BlockPos(10, 12, 14);
+  private static final BlockPos BELOW_THE_LEDGE = new BlockPos(10, 3, 9);
+  private static final int UP_ON_THE_LEDGE = 160;
+  private static final double CLIMBED_UP = 7.0;
 
   private static PlayerEntity unharmablePlayer(final TestContext context) {
     final PlayerEntity player = MockPlayerSupport.mortalPlayerAt(context, PLAYER_STAND);
@@ -238,5 +251,124 @@ public final class ControlHoldSteadinessGameTest implements FabricGameTest {
                   + " degrees off");
           context.complete();
         });
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 220)
+  public void anAlliedSpiderPinnedUnderTheRoofComesDownToWhoItDefends(TestContext context) {
+    final CowEntity defended = MobArena.cow(context, MobArena.PLAYER_STAND);
+    final SpiderEntity spider = climberPinnedUnderTheRoof(context, EntityType.SPIDER);
+    context.runAtTick(
+        PINNED_UNDER_THE_ROOF,
+        () ->
+            ControlHoldService.enlist(
+                context.getWorld(), spider, defended, AllegianceArrowConfig.defaults()));
+    context.runAtTick(
+        CLIMBED_DOWN,
+        () -> {
+          final double height = context.getRelative(spider.getPos()).y;
+          final double gap = Math.sqrt(spider.squaredDistanceTo(defended));
+          context.assertTrue(
+              height < ON_THE_FLOOR && gap <= AT_HEEL,
+              "An allied spider stuck high on a wall should come down to who it defends, but it is"
+                  + " at y="
+                  + height
+                  + ", "
+                  + gap
+                  + " blocks away");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 220)
+  public void aRepelledSpiderPinnedUnderTheRoofDropsAndRunsAway(TestContext context) {
+    repelsAClimberPinnedUnderTheRoof(context, EntityType.SPIDER);
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 220)
+  public void aRepelledCaveSpiderPinnedUnderTheRoofDropsAndRunsAway(TestContext context) {
+    repelsAClimberPinnedUnderTheRoof(context, EntityType.CAVE_SPIDER);
+  }
+
+  @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH + "-climber", tickLimit = 200)
+  public void anAlliedSpiderStillClimbsUpToWhoItDefendsOnALedge(TestContext context) {
+    for (int x = LEDGE.getX() - 1; x <= LEDGE.getX() + 1; x++) {
+      for (int y = MobArena.PLAYER_STAND.getY(); y < LEDGE.getY(); y++) {
+        context.setBlockState(new BlockPos(x, y, LEDGE.getZ()), Blocks.STONE);
+      }
+    }
+    final CowEntity defended = MobArena.cow(context, LEDGE);
+    final SpiderEntity spider = context.spawnMob(EntityType.SPIDER, BELOW_THE_LEDGE);
+    givePace(spider);
+    ControlHoldService.enlist(
+        context.getWorld(), spider, defended, AllegianceArrowConfig.defaults());
+    context.runAtTick(
+        UP_ON_THE_LEDGE,
+        () -> {
+          final double gap = Math.sqrt(spider.squaredDistanceTo(defended));
+          context.assertTrue(
+              context.getRelative(spider.getPos()).y > CLIMBED_UP && gap <= AT_HEEL,
+              "An allied spider should still climb up to who it defends on a ledge, but it is "
+                  + gap
+                  + " blocks away at "
+                  + context.getRelative(spider.getPos()));
+          context.complete();
+        });
+  }
+
+  private static void repelsAClimberPinnedUnderTheRoof(
+      final TestContext context, final EntityType<? extends SpiderEntity> type) {
+    final SpiderEntity spider = climberPinnedUnderTheRoof(context, type);
+    final Vec3d[] impact = new Vec3d[1];
+    context.runAtTick(
+        PINNED_UNDER_THE_ROOF,
+        () -> {
+          impact[0] = spider.getPos().add(-3.0, 0.0, 0.0);
+          ControlHoldService.repel(context.getWorld(), impact[0], TargetingArrowConfig.defaults());
+        });
+    context.runAtTick(
+        CLIMBED_DOWN,
+        () -> {
+          final double height = context.getRelative(spider.getPos()).y;
+          final double away = Math.hypot(spider.getX() - impact[0].x, spider.getZ() - impact[0].z);
+          context.assertTrue(
+              height < ON_THE_FLOOR && away > RAN_CLEAR,
+              "A repelled "
+                  + type.getUntranslatedName()
+                  + " stuck high on a wall should drop and run, but it is at y="
+                  + height
+                  + ", "
+                  + away
+                  + " blocks from the impact");
+          context.complete();
+        });
+  }
+
+  private static SpiderEntity climberPinnedUnderTheRoof(
+      final TestContext context, final EntityType<? extends SpiderEntity> type) {
+    final SpiderEntity spider = context.spawnMob(type, BY_THE_WALL);
+    final Vec3d farAbove =
+        context.getAbsolute(Vec3d.ofBottomCenter(BY_THE_WALL.south()).add(0.0, FAR_ABOVE, 0.0));
+    givePace(spider);
+    context.runAtEveryTick(
+        () -> {
+          if (!spider.isClimbing() && context.getTick() < PINNED_UNDER_THE_ROOF) {
+            spider.getMoveControl().moveTo(farAbove.x, farAbove.y, farAbove.z, 1.0);
+          }
+        });
+    context.runAtTick(
+        PINNED_UNDER_THE_ROOF - 1,
+        () ->
+            context.assertTrue(
+                context.getRelative(spider.getPos()).y > HIGH_UP,
+                "The spider should have climbed the wall to the roof first, but it is at "
+                    + context.getRelative(spider.getPos())
+                    + " climbing="
+                    + spider.isClimbing()));
+    return spider;
+  }
+
+  private static void givePace(final SpiderEntity spider) {
+    spider.getNavigation().startMovingTo(spider, 1.0);
+    spider.getNavigation().stop();
   }
 }
