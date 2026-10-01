@@ -22,6 +22,7 @@ public final class DisguisedBehaviourGameTest implements FabricGameTest {
   private static final int WANDER_WATCH = 380;
   private static final int LONG = 2000;
   private static final double MOVED = 0.5;
+  private static final int SETTLE = 20;
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aLitCreeperIsDefusedWhenDisguised(TestContext context) {
@@ -55,12 +56,17 @@ public final class DisguisedBehaviourGameTest implements FabricGameTest {
   public void aDisguisedMobStillWandersLikeAnAnimal(TestContext context) {
     final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, STAND);
     zombie.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-    final Vec3d start = zombie.getPos();
     DisguiseService.disguise(context.getWorld(), zombie, LONG);
 
+    final Vec3d[] start = {zombie.getPos()};
+    context.runAtTick(SETTLE - 1, () -> start[0] = zombie.getPos());
     final double[] furthest = {0.0};
     context.runAtEveryTick(
-        () -> furthest[0] = Math.max(furthest[0], zombie.getPos().distanceTo(start)));
+        () -> {
+          if (context.getTick() >= SETTLE) {
+            furthest[0] = Math.max(furthest[0], zombie.getPos().distanceTo(start[0]));
+          }
+        });
     context.runAtTick(
         WANDER_WATCH,
         () -> {
