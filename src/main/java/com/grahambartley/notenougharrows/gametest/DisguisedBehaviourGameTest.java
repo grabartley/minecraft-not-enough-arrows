@@ -4,6 +4,7 @@ import com.grahambartley.notenougharrows.disguise.DisguiseService;
 import com.grahambartley.notenougharrows.disguise.DisguisedBehaviour;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.mob.ZombieEntity;
@@ -21,6 +22,7 @@ public final class DisguisedBehaviourGameTest implements FabricGameTest {
   private static final int WANDER_WATCH = 380;
   private static final int LONG = 2000;
   private static final double MOVED = 0.5;
+  private static final int SETTLE = 20;
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aLitCreeperIsDefusedWhenDisguised(TestContext context) {
@@ -53,14 +55,26 @@ public final class DisguisedBehaviourGameTest implements FabricGameTest {
       maxAttempts = 3)
   public void aDisguisedMobStillWandersLikeAnAnimal(TestContext context) {
     final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, STAND);
-    final Vec3d start = zombie.getPos();
+    zombie.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
     DisguiseService.disguise(context.getWorld(), zombie, LONG);
 
+    final Vec3d[] start = {zombie.getPos()};
+    context.runAtTick(SETTLE - 1, () -> start[0] = zombie.getPos());
+    final double[] furthest = {0.0};
+    context.runAtEveryTick(
+        () -> {
+          if (context.getTick() >= SETTLE) {
+            furthest[0] = Math.max(furthest[0], zombie.getPos().distanceTo(start[0]));
+          }
+        });
     context.runAtTick(
         WANDER_WATCH,
         () -> {
           context.assertTrue(
-              zombie.getPos().distanceTo(start) > MOVED, "The disguised zombie should wander");
+              furthest[0] > MOVED,
+              "The disguised zombie should wander, but it only got "
+                  + furthest[0]
+                  + " blocks from where it started");
           DisguiseService.revert(context.getWorld(), zombie);
           context.complete();
         });

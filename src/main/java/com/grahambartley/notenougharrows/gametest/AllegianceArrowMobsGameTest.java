@@ -33,7 +33,7 @@ public final class AllegianceArrowMobsGameTest implements FabricGameTest {
   private static final Set<EntityType<?>> TOO_SLOW_TO_KEEP_UP =
       Set.of(EntityType.CAMEL, EntityType.MAGMA_CUBE, EntityType.TURTLE);
   private static final Set<EntityType<?>> JUMPS_ABOUT =
-      Set.of(EntityType.ENDERMAN, EntityType.SLIME);
+      Set.of(EntityType.ENDERMAN, EntityType.RABBIT, EntityType.SLIME);
   private static final AllegianceArrowConfig LASTS_THE_WHOLE_TEST =
       new AllegianceArrowConfig(MobArena.SLOW_LIMIT, AllegianceArrowConfig.DEFAULT_DEFEND_RADIUS);
 

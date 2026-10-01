@@ -42,6 +42,7 @@ final class FiringRangeSupport {
         Blocks.DISPENSER.getDefaultState().with(DispenserBlock.FACING, Direction.EAST));
     final DispenserBlockEntity dispenser = context.getBlockEntity(relativePos);
     dispenser.setStack(0, new ItemStack(arrow, 1));
+    SteadyDispensers.steadyEast(context.getAbsolutePos(relativePos));
     context.putAndRemoveRedstoneBlock(relativePos.up(), DISPENSER_TRIGGER_TICKS);
   }
 
