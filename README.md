@@ -25,16 +25,22 @@ silly. They all fire from a bow, a crossbow or a dispenser, and they all work in
 > [Open an issue](https://github.com/grabartley/minecraft-not-enough-arrows/issues/new) and tell me
 > what you think.
 
+## Installing
+
+1. Put Not Enough Arrows and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
+2. Craft eight arrows around a tripwire hook to make grapple arrows.
+3. Fire one from a bow at the side of something tall.
+
 ## Getting around
 
-The **grapple arrow** hooks into whatever it hits and pulls you to it. You take no fall damage when
+The **grapple arrow** hooks into the block it hits and pulls you to it. You take no fall damage when
 you arrive, and the arrow comes back to you, so one arrow can take you up a mountain a stretch at a
 time.
 
 <p align="center"><img src="docs/screenshots/grapple.jpg" alt="A player pulled up a cliff face by a grapple arrow" width="720"></p>
 
-The **rope arrow** hangs a climbable rope down from where it lands. Shoot the top of a cliff and you
-have a way back up. Shoot the edge of a ravine and you have a way down.
+The **rope arrow** hangs a climbable rope straight down from the underside of the block it hits. Aim
+at an overhang, a ledge or a cave ceiling and you have a way up or down.
 
 <p align="center"><img src="docs/screenshots/rope.jpg" alt="A rope hanging from a rope arrow down a stone cliff" width="720"></p>
 
@@ -87,8 +93,8 @@ alone.
 The **shock arrow** calls down lightning that jumps to one more target. The **lifesteal arrow**
 heals you for part of the damage it deals. The **homing arrow** curves toward hostile mobs, and the
 **volley arrow** splits into several arrows in mid-air. The **railgun arrow** flies very fast and
-barely drops. The **rust**, **milk**, **haste** and **guard** arrows apply an effect to whatever
-they hit, friend or enemy.
+barely drops. The **rust**, **haste** and **guard** arrows apply an effect to whatever they hit,
+friend or enemy, and the **milk** arrow clears every effect.
 
 Other arrows change what a mob does instead of hurting it. The **taunt** arrow turns the mobs
 fighting you onto whatever it hits, and the **repel** arrow sends nearby mobs running. The
@@ -98,20 +104,24 @@ way powder snow does, the **levitation** arrow floats it up, the **smoke** arrow
 
 ## Just for fun
 
-The **party arrow** sets off fireworks and plays the music disc it was made with. The **chicken
-arrow** drops off a live chicken. The **puffer arrow** blows whatever it hits up to twice its size
-for a while, without hurting it. The **stink arrow** leaves a cloud that mobs avoid. The **boomerang
-arrow** flies back into your inventory after it hits. The **polymorph arrow** turns a hostile mob
-into a farm animal for a while.
+The **party arrow** bursts into firework sparks and plays the music disc it was made with. The
+**chicken arrow** drops off a live chicken. The **puffer arrow** blows whatever it hits up to twice
+its size for a while, without hurting it. The **stink arrow** leaves a cloud that mobs avoid. The
+**boomerang arrow** flies back into your inventory after it hits. The **polymorph arrow** disguises
+a hostile mob as a farm animal for a while.
 
 ## Helping friends
 
-The **courier arrow** carries a stack of items to the player it hits, even with PvP off. The **snow
-golem arrow** builds a snow golem that melts after a while. The **magnet arrow** pulls loose items
-and experience toward you.
+The **courier arrow** carries a stack of items to the player it hits, even with PvP off. Load it by
+crafting an empty courier arrow together with the stack you want to send. The **snow golem arrow**
+builds a snow golem that melts after a while. The **magnet arrow** pulls loose items and experience
+toward you.
 
-A few more do small jobs: the **redstone** arrow powers the block it hits, the **wind** arrow pushes
-things away like a wind charge, and the **ricochet** arrow bounces off walls.
+## Other arrows
+
+The **redstone** arrow powers the block it hits for a moment, so you can open a door or fire a
+piston from a distance. The **wind** arrow pushes things away like a wind charge, and the
+**ricochet** arrow bounces off walls.
 
 <details>
 <summary><b>All sixty-three arrows</b></summary>
@@ -146,7 +156,7 @@ things away like a wind charge, and the **ricochet** arrow bounces off walls.
 | 🏃 | **Repel** | Sends every nearby mob running from where it lands | Soul sand |
 | 🤝 | **Allegiance** | The mob you hit fights for you for a while | Golden apple |
 | 🌫️ | **Smoke** | A cloud that blinds. It blocks nothing | Campfire |
-| 🪃 | **Disarm** | Throws the held item across the ground | Fishing rod |
+| 🤺 | **Disarm** | Throws the held item across the ground | Fishing rod |
 | ⛏️ | **Drill** | Mines the one block you hit and hands you its drop | Iron pickaxe |
 | 🟫 | **Pillar** | Raises a column of dirt on the block you hit, for a while | Dirt |
 | 🧽 | **Drain** | Soaks up the water where it lands | Sponge |
@@ -160,18 +170,18 @@ things away like a wind charge, and the **ricochet** arrow bounces off walls.
 | ✂️ | **Shear** | Shears sheep, mooshrooms, snow golems, bogged, pumpkins, and full hives | Shears |
 | 🐝 | **Bee** | A few bees that go for what you hit, never for you | Honeycomb |
 | ⛓️ | **Zipline** | Two shots string a cable between two blocks. Ride it | Chain |
-| 🪝 | **Tow** | Drags what it hits across the ground to you | Grapple arrows and a fermented spider eye |
+| 🚚 | **Tow** | Drags what it hits across the ground to you | Grapple arrows and a fermented spider eye |
 | 🌬️ | **Updraft** | A column of wind that lifts everyone in it | Breeze rod |
 | 🌿 | **Vine** | Grows a climbable vine up the wall it hits | Vine |
-| 🟩 | **Trampoline** | A pad that throws you back up, with no fall damage | Slime block |
+| 🦘 | **Trampoline** | A pad that throws you back up, with no fall damage | Slime block |
 | 🪜 | **Scaffold** | A column of scaffolding to climb, for a while | Scaffolding |
 | 🌉 | **Bridge** | A plank walkway from where it lands back to you, for a while | Oak planks |
-| 🔥 | **Torch** | Places a torch where it lands, wherever you could have by hand | Torch |
+| 🔦 | **Torch** | Places a torch where it lands, wherever you could have by hand | Torch |
 | 🗼 | **Beacon** | A glowing beam straight up, seen from afar, for a while | Glowstone |
 | 💎 | **Prospector** | Outlines the ore around where it lands, through the rock | Amethyst shard |
 | 📡 | **Sonar** | Everything alive around where it lands glows through walls | Echo shard |
 | 〰️ | **Tracer** | Draws the path it flew, for everyone to see | Glow ink arrows and gunpowder |
-| 🕸️ | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
+| 🪤 | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
 | 🎉 | **Party** | Fireworks and the music disc it carries, once | Any music disc, one kind each |
 | 🐔 | **Chicken** | Releases a live chicken where it lands | Egg |
 | 🐡 | **Puffer** | Inflates what it hits for a while, harmlessly | Pufferfish |
@@ -195,16 +205,11 @@ crafting table.
 
 <p align="center"><img src="docs/screenshots/fletching-station.jpg" alt="The Fletching Station screen with grapple arrows selected" width="720"></p>
 
-## Getting started
-
-1. Put Not Enough Arrows and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
-2. Craft eight arrows around a tripwire hook.
-3. Shoot the top of something tall.
-
 ## Settings
 
-You can change settings from the Mod Menu screen or with `/nea`. Settings are saved per world.
-Changing them needs operator permission, which in single player means cheats are on.
+You can change settings from the Mod Menu screen or with `/nea` (or `/notenougharrows`). Settings
+are saved per world. Changing them needs operator permission, which in single player means cheats
+are on.
 
 ```
 /nea status                                 show every setting
@@ -212,10 +217,27 @@ Changing them needs operator permission, which in single player means cheats are
 /nea config reset                           go back to the defaults
 ```
 
-The defaults are set up for fun, not for safety. On a shared server you may want to turn off
-`explosive.damageTerrain`, `ender.recallAffectsPlayers` and `control.disarm.affectsPlayers`, which
-let explosive arrows break blocks and let recall, tow and disarm arrows affect other players. Spawn
-protection and the world border are always respected.
+Each part of a setting's name becomes its own word in the command, in lower case, and on/off
+settings take `true` or `false`. For example:
+
+```
+/nea config explosive gunpowder delayticks 100
+/nea config explosive damageterrain false
+```
+
+The families are `explosive`, `grapple`, `utility`, `physics`, `ender`, `combat`, `control`,
+`traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, `fletching` and `sound`.
+
+The defaults allow the most. On a shared server you may want to change these:
+
+- `explosive.damageTerrain` is on, so explosive arrows break blocks.
+- `physics.gravityImpactRadius` is 3, so a gravity arrow drops a whole ball of blocks. Set it to 0 for one block.
+- `ender.recallAffectsPlayers` is on, so recall and tow arrows can pull other players.
+- `control.disarm.affectsPlayers` is on, so a disarm arrow can knock an item out of a player's hand.
+- `discovery.sonar.durationTicks` is 200, so a sonar arrow shows other players through walls. Set it to 0 to turn that off.
+
+Arrows that place or remove blocks respect spawn protection and the world border. Explosions do not,
+which is what `explosive.damageTerrain` is for.
 
 <details>
 <summary><b>Every setting, with its default and range</b></summary>
@@ -372,17 +394,15 @@ These four are saved on your own machine and only affect you:
 | `client.countdownRingScale` | 1.0 | 0.5 to 2.0 |
 | `client.modSoundVolume` | 1.0 | 0.0 to 1.0 |
 
-`sound.volume` and `client.modSoundVolume` scale every sound this mod plays and nothing else, so a
-server and a player can each turn the mod down without touching the game's own volume sliders. The
-two multiply, and zero on either silences the mod's sounds. Turning them down makes the mod quieter
-without shortening how far its sounds carry. An explosive arrow's countdown ring still shows with
-every sound off.
+`sound.volume` and `client.modSoundVolume` turn down only this mod's sounds. An explosive arrow's
+countdown ring still shows with every sound off.
 
 </details>
 
 ## Compatibility
 
-Minecraft `1.21.1` with Java `21`, in single player or on a dedicated server.
+Minecraft `1.21.1` with Java `21`, in single player or on a dedicated server. On a server, install
+the mod on the server and on every player's client.
 
 | Mod | Required | What it adds |
 |---|---|---|
