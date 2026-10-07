@@ -2,8 +2,7 @@
 
 <h1 align="center">Not Enough Arrows</h1>
 
-<p align="center"><b>Sixty-three new arrows for Minecraft 1.21.1 on Fabric.</b><br>
-Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then teleport into it.</p>
+<p align="center"><b>Sixty-three new arrows for Minecraft 1.21.1 on Fabric.</b></p>
 
 <p align="center">
 <a href="https://modrinth.com/mod/not-enough-arrows"><img src="https://img.shields.io/modrinth/dt/not-enough-arrows?logo=modrinth&label=Modrinth%20downloads&color=00AF5C" alt="Modrinth downloads"></a>
@@ -18,145 +17,115 @@ Grapple up a cliff. Hang a rope into a ravine. Blow a hole in a mountain, then t
 </a>
 </p>
 
-## Your bow deserves better than one arrow
+Not Enough Arrows adds sixty-three craftable arrows, each with its own effect. They cover travel,
+fighting, farming, exploring and helping friends, and a few are just for fun. They all fire from a
+bow, a crossbow or a dispenser, and they all work in multiplayer.
 
-Vanilla gives you an arrow that does one thing: it hurts. Every bow you have ever drawn has been a
-slightly slower sword.
-
-**Not Enough Arrows** gives that bow twenty-nine more things to do. The cliff you were going to walk
-around becomes a cliff you shoot a hook into and get pulled up. The ravine you were going to bridge
-becomes a ravine you drop a rope into. The mountain in your way stops being in your way.
-
-Every one of them is craftable, every one of them is configurable, and every one of them works from
-a bow, a crossbow, or a dispenser.
-
-> **Alpha:** Not Enough Arrows is in alpha and feedback is very welcome.
+> **Alpha:** the mod is still in alpha, and feedback is very welcome.
 > [Open an issue](https://github.com/grabartley/minecraft-not-enough-arrows/issues/new) and tell me
 > what you think.
 
-## Get off the ground
+## Installing
 
-Fire the **grapple arrow** at anything solid and it hooks in and reels you to it. Fall damage is
-cancelled when you land, and the arrow comes back to you, so the same one carries you up a mountain
-in stages.
+1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 1.21.1.
+2. Put Not Enough Arrows and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
+3. Craft eight arrows around a tripwire hook to make grapple arrows.
+4. Fire one from a bow at the side of something tall.
 
-<p align="center"><img src="docs/screenshots/grapple.jpg" alt="A player reeled up a cliff face on a grapple arrow's lead" width="720"></p>
+## Getting around
 
-The **rope arrow** is the slower, safer version: it hangs a climbable rope beneath whatever it hits,
-up to 128 blocks of it. Shoot the lip of a cliff and the way back up is already built. Shoot into a
-ravine and you have a way down that does not involve falling.
+The **grapple arrow** hooks into the block it hits and pulls you to it. You take no fall damage when
+you arrive, and the arrow comes back to you, so one arrow can take you up a mountain a stretch at a
+time.
+
+<p align="center"><img src="docs/screenshots/grapple.jpg" alt="A player pulled up a cliff face by a grapple arrow" width="720"></p>
+
+The **rope arrow** hangs a climbable rope straight down from the underside of the block it hits. Aim
+at an overhang, a ledge or a cave ceiling and you have a way up or down.
 
 <p align="center"><img src="docs/screenshots/rope.jpg" alt="A rope hanging from a rope arrow down a stone cliff" width="720"></p>
 
-## Cross what you could not walk
+There are more ways to travel. The **zipline arrow** strings a cable between two shots. Use the
+cable to ride it, and sneak to let go. The **tow arrow** drags whatever it hits over to you. The
+**updraft arrow** lifts anyone standing in it, and the **trampoline arrow** puts down a pad that
+bounces you back up. The **vine**, **scaffold** and **bridge** arrows build something to climb or
+walk on. The **ender pearl arrow** teleports you to where it lands, and the **recall arrow** brings
+whatever it hits back to you. Most of what these build goes away after a while.
 
-Seven more get you somewhere. Fire a **zipline arrow** into one block and another into a second, and
-a chain cable strings itself between them; grab it and ride to the far end. The **tow arrow** drags
-whatever it hits across the ground to you, over the ravine in between if that is where the ground
-goes. The **updraft arrow** opens a column of rising wind that lifts everyone standing in it, and
-lets them go at the top. The **vine arrow** grows a climbable vine up a wall, the **trampoline
-arrow** puts down a pad that throws you back into the air and takes the sting out of the landing,
-the **scaffold arrow** raises a column of scaffolding to climb, and the **bridge arrow** lays a plank
-walkway from where it lands back to your feet. Everything but the vines clears away after a while.
+## Explosives
 
-## See what is out there
-
-Six more tell you what you are walking into. The **torch arrow** lights the far wall before you get
-there, the **beacon arrow** raises a glowing beam anyone can see from a distance, and the **tracer
-arrow** draws the line it flew so everyone can see where the shot went. The **prospector arrow**
-outlines the ore in the rock around where it lands, the **sonar arrow** makes everything alive
-around it glow through the walls, and the **tripwire arrow** leaves an invisible wire that tells
-you, and only you, when something walks through it and roughly where.
-
-## Blow something up, eventually
-
-Explosive arrows do not go off on impact. They stick, they beep, the beeping speeds up, and a ring
-in the world counts down the time you have left. Plenty of time to admire the angle you fired at,
-and just enough to regret it.
+Explosive arrows do not go off when they hit. They stick in a block or ride the mob they hit, start
+beeping, and show a countdown ring when you look at them, which gives you a few seconds to get
+clear. There are three sizes: gunpowder, TNT and fire charge. You craft each one from the size below
+it. The **incendiary arrow** never explodes, but it sets everything around it on fire.
 
 <p align="center"><img src="docs/screenshots/explosive.jpg" alt="An explosive arrow's blast throwing up smoke and dirt" width="720"></p>
 
-There are three tiers and each is built from the one below it, so the blast you get is the blast you
-worked up to. The **incendiary arrow** is the odd one out: it never explodes, it just sets
-everything nearby alight.
+## Changing the ground
 
-## Move the world instead
+The **gravity arrow** makes a ball of blocks around where it hits fall like sand, which is a quick
+way through a ceiling. The **drill arrow** mines the block it hits and gives you the drop. The
+**pillar** arrow pushes up a column of dirt for a while. The **drain** arrow soaks up water, and the
+**freeze** arrow turns water to ice and lava to obsidian. The **web** arrow leaves cobwebs, and the
+**paint** arrow comes in all sixteen dye colours and recolours wool, glass, terracotta and sheep.
 
-The **gravity arrow** cuts the ground out from under whatever you hit. A sphere of blocks stops
-being attached to anything and falls, which is a fast way down through a ceiling and a fast way to
-ruin someone's floor.
+## Finding things
 
-Six more change the block you hit instead of dropping it. The **drill arrow** mines it and hands you
-whatever an iron pickaxe would have got. The **pillar arrow** pushes a column of dirt up out of it
-for a while, the **drain arrow** soaks up a pond, the **freeze arrow** turns water to ice and lava to
-obsidian, and the **web arrow** hangs cobweb wherever it lands. The **paint arrow** comes in all
-sixteen dye colours and recolours wool, carpet, glass, terracotta, candles, and sheep. None of them
-touches anything you could not have changed standing there with the item it was crafted from.
-
-The **glow ink arrow** outlines what you hit through walls, for everyone on the server, so the
-creeper behind the ridge is now a problem everybody can see.
+The **glow ink arrow** makes whatever it hits glow through walls, for everyone on the server.
 
 <p align="center"><img src="docs/screenshots/glow-ink.jpg" alt="A cow outlined by a glow ink arrow" width="720"></p>
 
-## Tend the farm from where you stand
+The **torch arrow** places a torch where it lands, so you can light a cave before you walk into it.
+The **beacon arrow** puts up a beam you can see from far away. The **prospector arrow** shows the
+ore in the rock around it. The **sonar arrow** makes nearby creatures glow, and the **tracer arrow**
+leaves a line showing the path it flew. The **tripwire arrow** sets an invisible wire that tells you
+when something walks through it.
 
-Six arrows do the farm round for you. The **blossom arrow** bone meals everything around where it
-lands, the **harvest arrow** reaps every ripe crop nearby, replants it, and puts the harvest in your
-inventory, and the **till arrow** hoes a circle of ground into wet farmland. The **sapling arrow**
-comes in one kind per sapling and plants it where it lands. The **shear arrow** shears a sheep, a
-mooshroom, a snow golem, a bogged, a pumpkin, or a full beehive without hurting anything, and the **bee arrow**
-lets loose a few bees that go for whatever you hit and never for you. They leave after a while.
+## Farming
 
-## Win the fight differently
+The **blossom** arrow bone meals the plants around it. The **harvest** arrow picks the ripe crops
+nearby, replants them and puts the food in your inventory. The **till** arrow turns the ground into
+wet farmland, the **sapling** arrow plants a sapling, and the **shear** arrow shears a sheep from
+across the field. The **bee** arrow releases a few bees that attack whatever you hit and leave you
+alone.
 
-Nine arrows change a fight without making your bow hit harder. The **shock arrow** calls lightning
-down on what it hits and jumps once to whatever is standing closest, lighting no fires on the way.
-The **lifesteal arrow** gives you back a share of the damage it dealt. The **homing arrow** curves
-toward hostile mobs, and never toward a player, which is not a setting you can change.
+## Fighting
 
-The **volley arrow** splits in the air into a handful of ordinary arrows, and the **railgun arrow**
-goes very fast and drops very little. The rest are status in arrow form: rust, milk, haste and
-guard, fired at whatever needs them.
+The **shock arrow** calls down lightning that jumps to one more target. The **lifesteal arrow**
+heals you for part of the damage it deals. The **homing arrow** curves toward hostile mobs, and the
+**volley arrow** splits into several arrows in mid-air. The **railgun arrow** flies very fast and
+barely drops. The **rust**, **haste** and **guard** arrows apply an effect to whatever they hit,
+friend or enemy, and the **milk** arrow clears every effect.
 
-## Take something out of the fight without killing it
+Other arrows change what a mob does instead of hurting it. The **taunt** arrow turns the mobs
+fighting you onto whatever it hits, and the **repel** arrow sends nearby mobs running. The
+**allegiance** arrow makes a mob fight for you for a while. The **frost** arrow freezes a mob the
+way powder snow does, the **levitation** arrow floats it up, the **smoke** arrow blinds it, and the
+**disarm** arrow knocks the weapon out of its hand.
 
-Seven arrows change what a creature is doing rather than how much health it has. The **taunt arrow**
-pulls every mob already fighting something over to where it landed, and the **repel arrow** sends
-them the other way.
+## Just for fun
 
-The **allegiance arrow** turns the mob it hits into your bodyguard: it stops fighting you and goes
-after whoever is attacking you instead, until it wears off and remembers whose side it was on.
+The **party arrow** bursts into firework sparks and plays the music disc it was made with. The
+**chicken arrow** drops off a live chicken. The **puffer arrow** blows whatever it hits up to twice
+its size for a while, without hurting it. The **stink arrow** leaves a cloud that mobs avoid. The
+**boomerang arrow** flies back into your inventory after it hits. The **polymorph arrow** disguises
+a hostile mob as a farm animal for a while.
 
-The **smoke arrow** opens a cloud that blinds anything standing in it and blocks nothing at all, so
-your own arrows still go through. The **disarm arrow** knocks the sword out of a hand and throws it
-across the ground, which is a problem for whoever has to go and fetch it.
+## Helping friends
 
-Vanilla already brews a tipped arrow for nearly every debuff, so none of these repeats one.
+The **courier arrow** carries a stack of items to the player it hits, even with PvP off. Load it by
+crafting an empty courier arrow together with the stack you want to send. The **snow golem arrow**
+builds a snow golem that melts after a while. The **magnet arrow** pulls loose items and experience
+toward you.
 
-## Do something for the sake of it
+## Other arrows
 
-Six arrows exist because they are funny. The **party arrow** bursts into fireworks and plays the
-music disc it was made from, once, for everyone nearby. The **chicken arrow** delivers a live
-chicken. The **puffer arrow** blows whatever it hits up to twice its size, so it takes twice the
-knockback and no longer fits through a one-block gap, without ever hurting it.
+The **redstone** arrow powers the block it hits for a moment, so you can open a door or fire a
+piston from a distance. The **wind** arrow pushes things away like a wind charge, and the
+**ricochet** arrow bounces off walls.
 
-The **stink arrow** leaves a cloud that makes players queasy and that mobs refuse to walk into. The
-**boomerang arrow** hits, then curves back through the air into your inventory. The **polymorph
-arrow** turns a hostile mob into a farm animal for a while; it wanders about, cannot hurt anyone,
-and changes back exactly as it was. It never touches players, villagers, pets or bosses.
-
-## Do something for someone else
-
-The **courier arrow** carries one stack to whoever you hit. Craft an empty courier arrow with a
-stack to load it, craft it on its own to take the stack back out, and the tooltip says what it is
-carrying. A player it hits gets the stack, a full inventory finds it at their feet, and anywhere
-else it lands where the arrow does. It never hurts anyone, and it reaches a friend even with PvP off.
-
-The **snow golem arrow** builds a snow golem where it lands, without its pumpkin, which melts
-away after a while. The **magnet arrow** pulls the loose items and experience orbs around where it lands back
-toward you, where you pick them up the ordinary way.
-
-## The full set
+<details>
+<summary><b>All sixty-three arrows</b></summary>
 
 | | Arrow | What it does | Craft it from |
 |---|---|---|---|
@@ -169,7 +138,7 @@ toward you, where you pick them up the ordinary way.
 | 🧨 | **TNT** | A bigger blast. Built from gunpowder arrows | TNT |
 | 🔥 | **Fire charge** | The biggest blast, and it leaves fire. Built from TNT arrows | Fire charge |
 | 🕯️ | **Incendiary** | Sets everything nearby alight. Never explodes | Fire charge |
-| 🪨 | **Gravity** | Drops the block you hit, like sand | Slime ball |
+| 🪨 | **Gravity** | Drops a ball of blocks where it hits, like sand | Slime ball |
 | ⚙️ | **Ricochet** | Bounces off blocks instead of sticking | Iron nugget |
 | 🟣 | **Ender pearl** | Teleports you to wherever it lands | Ender pearl |
 | 🌀 | **Recall** | Brings whatever you hit back to you. Built from ender pearl arrows | Fermented spider eye |
@@ -188,7 +157,7 @@ toward you, where you pick them up the ordinary way.
 | 🏃 | **Repel** | Sends every nearby mob running from where it lands | Soul sand |
 | 🤝 | **Allegiance** | The mob you hit fights for you for a while | Golden apple |
 | 🌫️ | **Smoke** | A cloud that blinds. It blocks nothing | Campfire |
-| 🪃 | **Disarm** | Throws the held item across the ground | Fishing rod |
+| 🤺 | **Disarm** | Throws the held item across the ground | Fishing rod |
 | ⛏️ | **Drill** | Mines the one block you hit and hands you its drop | Iron pickaxe |
 | 🟫 | **Pillar** | Raises a column of dirt on the block you hit, for a while | Dirt |
 | 🧽 | **Drain** | Soaks up the water where it lands | Sponge |
@@ -202,88 +171,75 @@ toward you, where you pick them up the ordinary way.
 | ✂️ | **Shear** | Shears sheep, mooshrooms, snow golems, bogged, pumpkins, and full hives | Shears |
 | 🐝 | **Bee** | A few bees that go for what you hit, never for you | Honeycomb |
 | ⛓️ | **Zipline** | Two shots string a cable between two blocks. Ride it | Chain |
-| 🪝 | **Tow** | Drags what it hits across the ground to you | Grapple arrows and a fermented spider eye |
+| 🚚 | **Tow** | Drags what it hits across the ground to you | Grapple arrows and a fermented spider eye |
 | 🌬️ | **Updraft** | A column of wind that lifts everyone in it | Breeze rod |
 | 🌿 | **Vine** | Grows a climbable vine up the wall it hits | Vine |
-| 🟩 | **Trampoline** | A pad that throws you back up, with no fall damage | Slime block |
+| 🦘 | **Trampoline** | A pad that throws you back up, with no fall damage | Slime block |
 | 🪜 | **Scaffold** | A column of scaffolding to climb, for a while | Scaffolding |
 | 🌉 | **Bridge** | A plank walkway from where it lands back to you, for a while | Oak planks |
-| 🔥 | **Torch** | Places a torch where it lands, wherever you could have by hand | Torch |
+| 🔦 | **Torch** | Places a torch where it lands, wherever you could have by hand | Torch |
 | 🗼 | **Beacon** | A glowing beam straight up, seen from afar, for a while | Glowstone |
 | 💎 | **Prospector** | Outlines the ore around where it lands, through the rock | Amethyst shard |
 | 📡 | **Sonar** | Everything alive around where it lands glows through walls | Echo shard |
 | 〰️ | **Tracer** | Draws the path it flew, for everyone to see | Glow ink arrows and gunpowder |
-| 🕸️ | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
-| 🎉 | **Party** | Fireworks and the music disc it carries, once | Any music disc, one kind each |
+| 🪤 | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
+| 🎉 | **Party** | Firework sparks and the music disc it carries, once | Any music disc, one kind each |
 | 🐔 | **Chicken** | Releases a live chicken where it lands | Egg |
 | 🐡 | **Puffer** | Inflates what it hits for a while, harmlessly | Pufferfish |
 | 🤢 | **Stink** | A cloud that makes players sick and mobs keep out of | Rotten flesh |
 | 🪃 | **Boomerang** | Hits, then flies back to your inventory | Chorus fruit |
-| 🐑 | **Polymorph** | Turns a hostile mob into a farm animal for a while | Sculk catalyst |
+| 🐑 | **Polymorph** | Disguises a hostile mob as a farm animal for a while | Sculk catalyst |
 | 📦 | **Courier** | Carries one stack to the player or place it hits | Ender chest |
 | ⛄ | **Snow golem** | Builds a snow golem that melts after a while | Carved pumpkin |
 | 🧲 | **Magnet** | Pulls loose items and orbs back to you | Iron block |
 
-Every recipe is the vanilla tipped-arrow shape: **eight arrows around one ingredient, for eight
-arrows back.** The tiers stack, so eight gunpowder arrows around TNT gives you TNT arrows, and eight
-of those around a fire charge gives you the top tier. Recall is built from ender pearl arrows the
-same way, so is tow from grapple arrows, and so is tracer from glow ink arrows.
+</details>
 
-## Cheaper arrows at the fletching table
+## Crafting
 
-Right-click any vanilla fletching table and it opens a crafting station that sells this mod's arrows
-at a better rate than a crafting table does. Same ingredients, more arrows out.
+Every arrow uses the vanilla tipped arrow recipe: eight arrows around one ingredient gives you eight
+of the new arrow. A few are made from other modded arrows, such as TNT arrows from gunpowder arrows.
+
+Right-click a vanilla fletching table to open the Fletching Station. It makes the same arrows from
+the same ingredients, but gives you more of them per craft. Everything can still be made at a
+crafting table.
 
 <p align="center"><img src="docs/screenshots/fletching-station.jpg" alt="The Fletching Station screen with grapple arrows selected" width="720"></p>
 
-Nothing is gated behind it: every arrow stays craftable at a crafting table forever, the station is
-just the reward for finding one. The block is untouched vanilla, so uninstalling the mod leaves your
-world exactly as it was, and your fletcher keeps their job.
-
-## Quick start
-
-1. Drop Not Enough Arrows and Fabric API into your `mods` folder
-2. Load a world, craft eight arrows around a tripwire hook
-3. Find the tallest thing nearby and shoot the top of it
-
-No config to edit, no server setup, no extra steps.
-
 ## Settings
 
-Everything is adjustable while the server is running, per world, and it sticks across restarts.
-Change it in the Mod Menu screen or from the command tree:
+You can change settings from the Mod Menu screen, if you have Mod Menu installed, or with `/nea` (or
+`/notenougharrows`). Settings are saved per world. Changing them needs operator permission, which in
+single player means cheats are on.
 
 ```
-/nea status                                 read every setting
+/nea status                                 show every setting
 /nea config <family> <option> <value>       change one
-/nea config reset                           back to defaults
+/nea config reset                           go back to the defaults
 ```
 
-`/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
-needs operator level 2, which in a single-player world means cheats are on. Running `/nea` on its
-own lists only the commands you can use. The families are `explosive`, `grapple`, `utility`,
-`physics`, `ender`, `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`,
-`chaos`, `social`, `fletching`, and `sound`.
+Each part of a setting's name becomes its own word in the command, in lower case, and on/off
+settings take `true` or `false`. For example:
 
-The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
-are the ones to turn **down**:
+```
+/nea config explosive gunpowder delayticks 100
+/nea config explosive damageterrain false
+```
 
-- **`explosive.damageTerrain` is on.** Explosive arrows break blocks out of the box. Turn it off and
-blasts still throw entities around, they just leave the scenery alone.
-- **`ender.recallAffectsPlayers` is on.** A recall arrow can drag another player, and their boat,
-back to the shooter, and a tow arrow can drag them across the ground. Turn it off and only mobs
-move.
-- **`physics.gravityImpactRadius` is 3**, so a gravity arrow drops a sphere rather than the single
-block it hit. Set it to 0 for one block.
-- **`control.disarm.affectsPlayers` is on.** A disarm arrow can knock an item out of another
-player's hand. Turn it off and only mobs are disarmed.
-- **`discovery.sonar.durationTicks` is 200.** A sonar arrow outlines other players through walls,
-for everyone, just as it outlines mobs. Set it to 0 and a sonar arrow reveals nothing.
+The families are `explosive`, `grapple`, `utility`, `physics`, `ender`, `combat`, `control`,
+`traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, `fletching` and `sound`.
 
-None of that gets past spawn protection or the world border. A gravity arrow asks the world for
-permission block by block, fire patches are time-boxed and server-owned, and a teleport that would
-land somewhere unsafe is refused rather than relocated. The defaults decide how loud the mod is, not
-what it is allowed to touch.
+Everything is on by default. On a shared server you may want to change these:
+
+- `explosive.damageTerrain` is on, so explosive arrows break blocks.
+- `physics.gravityImpactRadius` is 3, so a gravity arrow drops a whole ball of blocks. Set it to 0 for one block.
+- `ender.recallAffectsPlayers` is on, so recall and tow arrows can pull other players.
+- `control.disarm.affectsPlayers` is on, so a disarm arrow can knock an item out of a player's hand.
+- `discovery.sonar.durationTicks` is 200, so a sonar arrow shows other players through walls, as the glow ink arrow does for a player it hits. Setting it to 0 turns the sonar arrow off completely.
+
+Arrows that place or remove blocks respect spawn protection and the world border. Explosions do not,
+so turn off `explosive.damageTerrain` if that matters. The wind arrow's burst can also knock down
+torches and flowers anywhere, the way a wind charge does.
 
 <details>
 <summary><b>Every setting, with its default and range</b></summary>
@@ -431,11 +387,7 @@ arrow's undeliverable items, are edited rather than replaced:
 
 `remove <id>` and `clear` work the same way on every list.
 
-An identifier longer than 64 characters is refused, so a full list always fits in the packet that
-syncs settings to players.
-
-These four are yours alone. They live on your machine, they are never sent anywhere, and changing
-them changes nothing for anyone else:
+These four are saved on your own machine and only affect you:
 
 | Setting | Default | Range |
 |---|---|---|
@@ -444,54 +396,44 @@ them changes nothing for anyone else:
 | `client.countdownRingScale` | 1.0 | 0.5 to 2.0 |
 | `client.modSoundVolume` | 1.0 | 0.0 to 1.0 |
 
-`sound.volume` and `client.modSoundVolume` scale every sound this mod plays and nothing else, so a
-server and a player can each turn the mod down without touching the game's own volume sliders. The
-two multiply, and zero on either silences the mod's sounds. Turning them down makes the mod
-quieter without shortening how far its sounds carry. Nothing in the mod needs to be heard to
-be survived: an explosive arrow's countdown ring still shows with every sound off.
+`sound.volume` and `client.modSoundVolume` turn down only this mod's sounds. An explosive arrow's
+countdown ring still shows with every sound off.
 
 </details>
 
 ## Compatibility
 
-Minecraft `1.21.1` on Java `21`, singleplayer or dedicated server, fully multiplayer.
+Minecraft `1.21.1` with Java `21`, in single player or on a dedicated server. On a server, install
+the mod on the server and on every player's client.
 
-| Dependency | Version | Required | Reason |
-|---|---|---|---|
-| [Fabric Loader](https://fabricmc.net/use/installer/) | `>=0.16.5` | Yes | Mod loader |
-| [Fabric API](https://modrinth.com/mod/fabric-api) | `>=0.107.0+1.21.1` | Yes | Fabric hooks and APIs |
-| Mod Menu | any | No | Settings screen in the mods list |
-| JEI | any | No | Recipe and info pages |
-| EMI | any | No | Recipe and info pages |
-
-**[Mod Menu](https://modrinth.com/mod/modmenu)** puts the settings screen in your mods list.
-**[EMI](https://modrinth.com/mod/emi)** and **[JEI](https://modrinth.com/mod/jei)** put every arrow
-and every fletching station rate in your recipe lookup. None of these are bundled or required, and
-the mod runs identically without them.
+| Mod | Required | What it adds |
+|---|---|---|
+| [Fabric Loader](https://fabricmc.net/use/installer/) `0.16.5` or newer | Yes | |
+| [Fabric API](https://modrinth.com/mod/fabric-api) `0.107.0+1.21.1` or newer | Yes | |
+| [Mod Menu](https://modrinth.com/mod/modmenu) | No | A settings screen in the mods list |
+| [EMI](https://modrinth.com/mod/emi) or [JEI](https://modrinth.com/mod/jei) | No | Every arrow recipe and Fletching Station rate in the recipe viewer |
 
 ## Building it yourself
 
 ```bash
-./gradlew check        # formatting, unit tests, side-safety, jar checks
+./gradlew check        # formatting, unit tests and jar checks
 ./gradlew runClient    # dev client
-./gradlew runGametest  # the in-game test suite
+./gradlew runGametest  # in-game tests
 ```
 
-Add `-Precipe_viewers=true` to `runClient` to launch with JEI and EMI loaded. They are off by
-default so their overlays stay out of screenshots.
+Add `-Precipe_viewers=true` to `runClient` to load JEI and EMI as well.
 
-## Documentation
+## More detail
 
-- [`docs/mechanics.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/mechanics.md) is the detailed behaviour of every arrow and every shared system
-- [`docs/prd.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/prd.md) is what the mod is: use cases, numbered requirements, and what it deliberately leaves out
-- [`docs/adr/`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/adr/) is why it is built the way it is
-- [`docs/standards.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/standards.md) is the engineering standards shared across these mods
+- [`docs/mechanics.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/mechanics.md) explains exactly how every arrow behaves
+- [`docs/prd.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/prd.md) lists what the mod does and what it leaves out on purpose
+- [`docs/adr/`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/adr/) records why it is built the way it is
 
-## Open source
+## License and support
 
-Not Enough Arrows is MIT licensed. Every asset is original work.
+Not Enough Arrows is MIT licensed, and all of its art is original.
 
-If this mod made a mountain more fun to get up, a star on GitHub or a coffee on Ko-fi means a lot.
+If you enjoy the mod, a star on GitHub or a coffee on Ko-fi is much appreciated.
 
 <a href="https://ko-fi.com/grahambartley" rel="noopener nofollow ugc" target="_blank">
 <img src="https://i.imgur.com/FSNi7zk.png" alt="Support me on Ko-fi">
