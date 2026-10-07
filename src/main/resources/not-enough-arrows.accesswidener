@@ -19,3 +19,4 @@ accessible field net/minecraft/network/ClientConnection channel Lio/netty/channe
 accessible class net/minecraft/entity/ai/control/MoveControl$State
 accessible field net/minecraft/entity/ai/control/MoveControl state Lnet/minecraft/entity/ai/control/MoveControl$State;
 accessible field net/minecraft/recipe/ShapedRecipe raw Lnet/minecraft/recipe/RawShapedRecipe;
+accessible field net/minecraft/recipe/ShapedRecipe result Lnet/minecraft/item/ItemStack;

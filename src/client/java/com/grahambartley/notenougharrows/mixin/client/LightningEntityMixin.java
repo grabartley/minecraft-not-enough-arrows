@@ -19,7 +19,9 @@ public abstract class LightningEntityMixin {
               value = "INVOKE",
               target =
                   "Lnet/minecraft/world/World;playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZ)V"),
-      index = 3)
+      index = 3,
+      require = 2,
+      allow = 2)
   private SoundEvent notEnoughArrows$voiceShockBolt(final SoundEvent sound) {
     return ShockBoltSounds.voice(isShockBolt(), sound);
   }

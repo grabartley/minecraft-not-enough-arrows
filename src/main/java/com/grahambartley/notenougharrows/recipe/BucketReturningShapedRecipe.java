@@ -14,7 +14,7 @@ public class BucketReturningShapedRecipe extends ShapedRecipe {
         shaped.getGroup(),
         shaped.getCategory(),
         shaped.raw,
-        shaped.getResult(null),
+        shaped.result,
         shaped.showNotification());
   }
 

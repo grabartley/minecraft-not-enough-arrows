@@ -1,47 +1,89 @@
 package com.grahambartley.notenougharrows.mixin.client;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.lang.reflect.Method;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.sound.SoundEvent;
+import net.minecraft.entity.LightningEntity;
 import org.junit.jupiter.api.Test;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 class LightningEntityMixinTest {
-  private static final String PLAY_SOUND =
-      "Lnet/minecraft/world/World;playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZ)V";
-  private static final int SOUND_ARGUMENT = 3;
 
   @Test
-  void rewritesTheSoundOfEveryPlaySoundCallInTick() {
-    final ModifyArg swap = onlySoundSwap();
+  void itsTargetIsCalledByVanillaTickExactlyAsOftenAsTheMixinRequires() throws IOException {
+    final ModifyArg swap = soundSwap();
 
-    assertArrayEquals(new String[] {"tick()V"}, swap.method());
-    assertEquals("INVOKE", swap.at().value());
-    assertEquals(PLAY_SOUND, swap.at().target());
-    assertEquals(SOUND_ARGUMENT, swap.index());
+    final List<String> calls = callsInVanillaTick();
+
+    assertEquals(
+        swap.require(),
+        calls.stream().filter(swap.at().target()::equals).count(),
+        "LightningEntity.tick() calls " + calls);
+    assertEquals(swap.require(), swap.allow());
   }
 
   @Test
-  void theSwapTakesAndReturnsASoundEvent() {
-    final Method swap = soundSwaps().get(0);
+  void itsArgumentIndexPointsAtTheSoundEventInVanillasSignature() {
+    final ModifyArg swap = soundSwap();
+    final String target = swap.at().target();
+    final Type[] arguments = Type.getArgumentTypes(target.substring(target.indexOf('(')));
 
-    assertArrayEquals(new Class<?>[] {SoundEvent.class}, swap.getParameterTypes());
-    assertEquals(SoundEvent.class, swap.getReturnType());
+    assertEquals("net.minecraft.sound.SoundEvent", arguments[swap.index()].getClassName(), target);
   }
 
-  private static ModifyArg onlySoundSwap() {
-    final List<Method> swaps = soundSwaps();
+  private static ModifyArg soundSwap() {
+    final List<ModifyArg> swaps =
+        Arrays.stream(LightningEntityMixin.class.getDeclaredMethods())
+            .map(method -> method.getAnnotation(ModifyArg.class))
+            .filter(annotation -> annotation != null)
+            .toList();
     assertEquals(1, swaps.size(), "LightningEntityMixin should declare one sound swap");
-    return swaps.get(0).getAnnotation(ModifyArg.class);
+    return swaps.get(0);
   }
 
-  private static List<Method> soundSwaps() {
-    return Arrays.stream(LightningEntityMixin.class.getDeclaredMethods())
-        .filter(method -> method.isAnnotationPresent(ModifyArg.class))
-        .toList();
+  private static List<String> callsInVanillaTick() throws IOException {
+    final String resource = LightningEntity.class.getName().replace('.', '/') + ".class";
+    try (InputStream bytes = LightningEntity.class.getClassLoader().getResourceAsStream(resource)) {
+      assertNotNull(bytes, resource);
+      final List<String> calls = new ArrayList<>();
+      new ClassReader(bytes)
+          .accept(
+              new ClassVisitor(Opcodes.ASM9) {
+                @Override
+                public MethodVisitor visitMethod(
+                    final int access,
+                    final String name,
+                    final String descriptor,
+                    final String signature,
+                    final String[] exceptions) {
+                  if (!"tick".equals(name) || !"()V".equals(descriptor)) {
+                    return null;
+                  }
+                  return new MethodVisitor(Opcodes.ASM9) {
+                    @Override
+                    public void visitMethodInsn(
+                        final int opcode,
+                        final String owner,
+                        final String callee,
+                        final String calleeDescriptor,
+                        final boolean isInterface) {
+                      calls.add("L" + owner + ";" + callee + calleeDescriptor);
+                    }
+                  };
+                }
+              },
+              ClassReader.SKIP_DEBUG);
+      return calls;
+    }
   }
 }
