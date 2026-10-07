@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "not-enough-arrows:bucket_returning_shaped",
   "category": "equipment",
   "group": "not_enough_arrows_arrows",
   "pattern": [

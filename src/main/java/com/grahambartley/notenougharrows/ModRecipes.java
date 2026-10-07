@@ -1,5 +1,7 @@
 package com.grahambartley.notenougharrows;
 
+import com.grahambartley.notenougharrows.recipe.BucketReturningShapedRecipe;
+import com.grahambartley.notenougharrows.recipe.BucketReturningShapedRecipeSerializer;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipe;
 import com.grahambartley.notenougharrows.recipe.FletchingRecipeSerializer;
 import com.grahambartley.notenougharrows.social.CourierLoadingRecipe;
@@ -35,6 +37,12 @@ public final class ModRecipes {
   public static final RecipeSerializer<CourierUnloadingRecipe> COURIER_UNLOADING_SERIALIZER =
       new SpecialRecipeSerializer<>(CourierUnloadingRecipe::new);
 
+  public static final Identifier BUCKET_RETURNING_SHAPED_ID =
+      Identifier.of(NotEnoughArrows.MOD_ID, "bucket_returning_shaped");
+
+  public static final RecipeSerializer<BucketReturningShapedRecipe>
+      BUCKET_RETURNING_SHAPED_SERIALIZER = new BucketReturningShapedRecipeSerializer();
+
   private ModRecipes() {}
 
   public static void register() {
@@ -43,6 +51,10 @@ public final class ModRecipes {
     Registry.register(Registries.RECIPE_SERIALIZER, COURIER_LOADING_ID, COURIER_LOADING_SERIALIZER);
     Registry.register(
         Registries.RECIPE_SERIALIZER, COURIER_UNLOADING_ID, COURIER_UNLOADING_SERIALIZER);
+    Registry.register(
+        Registries.RECIPE_SERIALIZER,
+        BUCKET_RETURNING_SHAPED_ID,
+        BUCKET_RETURNING_SHAPED_SERIALIZER);
     NotEnoughArrows.LOGGER.info("Registered recipe type {}", FLETCHING_ID);
   }
 }

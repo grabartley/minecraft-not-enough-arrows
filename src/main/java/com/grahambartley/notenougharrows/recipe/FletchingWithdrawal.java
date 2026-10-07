@@ -3,7 +3,6 @@ package com.grahambartley.notenougharrows.recipe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public record FletchingWithdrawal(int slot, int count) {
@@ -23,11 +22,12 @@ public record FletchingWithdrawal(int slot, int count) {
 
   public ItemStack containerLeftBy(final ItemStack drawnFrom) {
     Objects.requireNonNull(drawnFrom, "drawnFrom");
-    final Item drawn = drawnFrom.getItem();
-    if (drawnFrom.isEmpty() || !drawn.hasRecipeRemainder()) {
+    if (drawnFrom.isEmpty()) {
       return ItemStack.EMPTY;
     }
-    return new ItemStack(drawn.getRecipeRemainder(), count);
+    return RecipeRemainders.remainderOf(drawnFrom.getItem())
+        .map(left -> new ItemStack(left, count))
+        .orElse(ItemStack.EMPTY);
   }
 
   public static List<FletchingWithdrawal> plan(
