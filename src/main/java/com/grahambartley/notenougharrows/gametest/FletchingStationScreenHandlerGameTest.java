@@ -344,6 +344,11 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   }
 
   @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = CONTAINER_BATCH, tickLimit = 20)
+  public void aFrostArrowHandsBackTheEmptyBucket(TestContext context) {
+    assertTheBucketComesBack(context, Items.POWDER_SNOW_BUCKET, ModArrows.FROST_ARROW.item());
+  }
+
+  @GameTest(templateName = FletchingTestSupport.TEMPLATE, batchId = CONTAINER_BATCH, tickLimit = 20)
   public void anIngredientWithNoContainerLeavesItsSlotEmpty(TestContext context) {
     final ServerPlayerEntity player = player(context);
     final FletchingStationScreenHandler station = station(context, player);

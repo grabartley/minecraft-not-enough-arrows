@@ -91,6 +91,17 @@ public final class FletchingWithdrawalGameTest implements FabricGameTest {
   }
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
+  public void drawingAPowderSnowBucketLeavesAnEmptyBucket(TestContext context) {
+    final ItemStack left =
+        new FletchingWithdrawal(0, 1).containerLeftBy(new ItemStack(Items.POWDER_SNOW_BUCKET));
+
+    context.assertTrue(
+        left.isOf(Items.BUCKET) && left.getCount() == 1,
+        "A drawn powder snow bucket should leave one empty bucket, but left " + left);
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 10)
   public void drawingSeveralContainersLeavesOneEmptyContainerEach(TestContext context) {
     final ItemStack left =
         new FletchingWithdrawal(0, 3).containerLeftBy(new ItemStack(Items.HONEY_BOTTLE, 5));
