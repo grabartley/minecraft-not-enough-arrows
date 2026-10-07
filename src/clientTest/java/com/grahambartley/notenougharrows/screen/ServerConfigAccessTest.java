@@ -11,21 +11,23 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class ServerConfigAccessTest {
 
-  @ParameterizedTest(name = "inWorld={0} singleplayer={1} operator={2} gives {3}")
+  @ParameterizedTest(name = "inWorld={0} operator={1} gives {2}")
   @CsvSource({
-    "false, false, false, NOT_IN_WORLD",
-    "false, true,  true,  NOT_IN_WORLD",
-    "true,  true,  false, EDITABLE",
-    "true,  false, true,  EDITABLE",
-    "true,  true,  true,  EDITABLE",
-    "true,  false, false, NOT_OPERATOR",
+    "false, false, NOT_IN_WORLD",
+    "false, true,  NOT_IN_WORLD",
+    "true,  true,  EDITABLE",
+    "true,  false, NOT_OPERATOR",
   })
   void resolvesAccessFromTheSessionTheScreenOpenedIn(
-      final boolean inWorld,
-      final boolean singleplayer,
-      final boolean operator,
-      final ServerConfigAccess expected) {
-    assertEquals(expected, ServerConfigAccess.of(inWorld, singleplayer, operator));
+      final boolean inWorld, final boolean operator, final ServerConfigAccess expected) {
+    assertEquals(expected, ServerConfigAccess.of(inWorld, operator));
+  }
+
+  @Test
+  void keepsServerSettingsReadOnlyForASingleplayerHostWithCheatsOff() {
+    final boolean hostOperatorWithCheatsOff = false;
+    assertEquals(
+        ServerConfigAccess.NOT_OPERATOR, ServerConfigAccess.of(true, hostOperatorWithCheatsOff));
   }
 
   @Test

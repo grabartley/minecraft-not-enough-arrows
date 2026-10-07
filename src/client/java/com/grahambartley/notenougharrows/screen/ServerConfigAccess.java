@@ -25,21 +25,17 @@ public enum ServerConfigAccess {
     return Optional.ofNullable(messageKey);
   }
 
-  public static ServerConfigAccess of(
-      final boolean inWorld, final boolean singleplayer, final boolean operator) {
+  public static ServerConfigAccess of(final boolean inWorld, final boolean operator) {
     if (!inWorld) {
       return NOT_IN_WORLD;
     }
-    return singleplayer || operator ? EDITABLE : NOT_OPERATOR;
+    return operator ? EDITABLE : NOT_OPERATOR;
   }
 
   public static ServerConfigAccess of(final MinecraftClient client) {
     if (client == null || client.player == null) {
       return NOT_IN_WORLD;
     }
-    return of(
-        true,
-        client.isInSingleplayer(),
-        client.player.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL));
+    return of(true, client.player.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL));
   }
 }

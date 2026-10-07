@@ -1,3 +1,5 @@
+<p align="center"><img src="src/main/resources/assets/not-enough-arrows/icon.png" alt="Not Enough Arrows icon" width="128" height="128"></p>
+
 <h1 align="center">Not Enough Arrows</h1>
 
 <p align="center"><b>Sixty-three new arrows for Minecraft 1.21.1 on Fabric.</b><br>
@@ -248,7 +250,8 @@ Change it in the Mod Menu screen or from the command tree:
 ```
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
-needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
+needs operator level 2, which in a single-player world means cheats are on. Running `/nea` on its
+own lists only the commands you can use. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
 `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
 `fletching`, and `sound`.
 

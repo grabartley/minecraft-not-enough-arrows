@@ -14,6 +14,7 @@
     "issues": "https://github.com/grabartley/minecraft-not-enough-arrows/issues"
   },
   "license": "MIT",
+  "icon": "assets/not-enough-arrows/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [

@@ -7,6 +7,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -68,15 +70,19 @@ public final class NotEnoughArrowsCommand {
   private static int help(final CommandContext<ServerCommandSource> context) {
     final ServerCommandSource source = context.getSource();
     source.sendFeedback(() -> Text.translatable(HELP_HEADER_KEY), false);
-
-    final CommandDispatcher<ServerCommandSource> dispatcher =
-        source.getServer().getCommandManager().getDispatcher();
-    final CommandNode<ServerCommandSource> root = dispatcher.getRoot().getChild(ROOT);
-    for (final String usage : dispatcher.getAllUsage(root, source, false)) {
-      final String line = ROOT + " " + usage;
+    for (final String line : helpLines(source)) {
       source.sendFeedback(() -> Text.translatable(HELP_ENTRY_KEY, line), false);
     }
     return 1;
+  }
+
+  public static List<String> helpLines(final ServerCommandSource source) {
+    final CommandDispatcher<ServerCommandSource> dispatcher =
+        source.getServer().getCommandManager().getDispatcher();
+    final CommandNode<ServerCommandSource> root = dispatcher.getRoot().getChild(ROOT);
+    return Arrays.stream(dispatcher.getAllUsage(root, source, true))
+        .map(usage -> ROOT + " " + usage)
+        .toList();
   }
 
   private static int reset(final CommandContext<ServerCommandSource> context) {

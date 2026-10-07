@@ -61,7 +61,7 @@ A fire patch is a timed structure, so it ends the same way every timed structure
 
 ## Timed Structures
 
-Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar, web, zipline, trampoline, scaffold, bridge and beacon arrows use it too; the control arrows will build on the same system. The stink cloud places no block, so it is a timed cloud like the smoke arrow's rather than a timed structure. Ropes, vines and redstone charges answer for themselves instead.
+Every block the mod places for a while belongs to a timed structure: a set of positions recorded against one shooter, with an expiry tick. Fire patches were the first, and the pillar, web, zipline, trampoline, scaffold, bridge and beacon arrows use it too. The stink cloud places no block, so it is a timed cloud like the smoke arrow's rather than a timed structure. Ropes, vines and redstone charges answer for themselves instead.
 
 | Rule | Behaviour |
 |---|---|
@@ -124,6 +124,64 @@ Arrows that attach themselves to the world share one anchoring system rather tha
 | Leaving | Dying or disconnecting releases every anchor that player held in every world, and stopping the server clears all anchor state |
 
 Anchor state is server-owned and lives in memory only. The client is never the authority on where an anchor is, and nothing is written into the world save, so no anchor survives a restart.
+
+## Reveal Pulses
+
+The prospector and sonar arrows share one reveal system. A pulse is a single question asked once at the impact point: what is within reach right now. The server answers it, and the answer is shown for a while and then forgotten. Nothing keeps scanning.
+
+| Rule | Behaviour |
+|---|---|
+| When it fires | Once, at the arrow's first impact, so an arrow piercing several creatures still pulses once. It never scans again, never follows anyone, and costs nothing after impact |
+| Block pulse | Walks a sphere around the impact, nearest first, and keeps every block on its list, up to 512. Only positions in loaded chunks are looked at, and no chunk is ever loaded to answer it. The prospector arrow uses this |
+| Entity pulse | Finds every living thing inside the sphere that is alive, is not a spectator, and is not the shooter, and gives each vanilla's glowing effect. Only loaded entities are looked at. The sonar arrow uses this |
+| Who is told | A block pulse sends the positions it found once, to every player tracking the impact point and to the shooter. A player without the mod is sent nothing. An entity pulse sends nothing of its own, because the glowing effect is vanilla's and reaches every player who can see the creature |
+| Reach and time | Each arrow's radius and duration come from its own settings and are capped by each setting's maximum. A duration of zero reveals nothing |
+| What the client keeps | The outlined blocks, held until the duration runs out or its player changes dimension. Nothing is saved anywhere |
+
+[ADR 0041](adr/0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) covers why a reveal is found once by the server and drawn by the client.
+
+## Watchers
+
+A watcher is an invisible tripwire held by the server. The tripwire arrow sets one, and it tells its owner when something walks through it.
+
+| Rule | Behaviour |
+|---|---|
+| What it is | A single block position, kept only in memory: no block, no entity, no collision and no item form. Nothing about it is written into the world save |
+| How long it lasts | The lifetime it was set with. It is dropped at expiry, the moment its chunk unloads, and when the server stops, so no watcher survives a restart |
+| How many | A player holds at most 16 in each dimension. Setting another drops their oldest |
+| What sets it off | A living thing that is alive, is not a spectator, and is not the watcher's owner, standing in its block |
+| What the owner is told | A chat message, sent to the owner and nobody else, naming what crossed, how far the watcher is from the owner rounded to the nearest ten blocks and never less than ten, and which of eight compass directions it lies in. It never gives coordinates. An owner in another dimension is told only what crossed. The owner also hears `tripwire_arrow_alert`, played to them alone |
+| How often | At most once per report interval, however busy the corridor. A watcher keeps the interval it was set with, so a later change to the setting does not reach it |
+| A watcher with no owner | A dispensed tripwire arrow has no player behind it, so its watcher reports to nobody and expires quietly |
+| An owner who is offline | The report is skipped, and the interval still starts, so the watcher does not save it up |
+
+## Carried Payloads
+
+A carried payload is one item stack riding on an arrow's own item stack, as the `not-enough-arrows:courier_payload` data component. The courier arrow is the only arrow that carries one. Because the payload is part of the stack, it survives everything the stack survives: an inventory, a chest, a chunk unload, a restart, and being fired. [ADR 0043](adr/0043-a-courier-payload-rides-on-the-arrows-own-stack.md) covers why.
+
+| Rule | Behaviour |
+|---|---|
+| Loading | A courier arrow is crafted empty. An empty courier arrow and one stack, at a crafting table or the station, make one loaded arrow carrying the whole stack, up to `social.courier.maxPayload`. Anything over the cap stays where it was. A stack of empty arrows loads one at a time. The payload shows in the tooltip, a loaded arrow glints, and identical loaded arrows stack. A crafter never loads one, because it takes a single item per slot and would duplicate the rest |
+| Unloading | A loaded arrow on its own gives back its stack and one empty arrow. At a crafting table the empty arrow stays in its slot, or goes to the player's inventory while other loaded arrows still fill that slot. A crafter ejects it beside the payload. The station puts it back in the slot the loaded arrow left, or hands it to the player while that slot is still full, so a stack of loaded arrows can be unloaded one after another |
+| Refusals | A courier arrow will not carry another courier arrow, loaded or empty, nor any item holding one anywhere inside it, such as a shulker box, a bundle or a charged crossbow, so payloads can never nest without end. It will not carry anything on `social.courier.undeliverable`, which is empty by default. The list and the cap are checked again on impact, so a payload made undeliverable after loading is not delivered: the arrow, still loaded, goes back to the shooter's inventory or their feet, or drops where it struck if there is no shooter |
+| Delivery to a player | A struck player gets as much of the stack as fits and the rest at their feet, never part of it lost, including a creative player whose inventory vanilla would otherwise let swallow it. A loaded courier arrow reaches a player even when the server has PvP off or the two are teammates without friendly fire, because it does no damage |
+| Delivery anywhere else | A creature other than a player gets the stack at its feet. A block gets it in front of the face struck |
+| Every other path | Dropped where the arrow was when it despawned, was killed, or was discarded. A payload lost to the void goes back to its shooter, even one in another dimension, or falls with no shooter to return it to. A chunk unload or a restart mid-flight keeps the payload aboard, because it is saved with the arrow |
+| Copies that spend no arrow | A copy fired by multishot, which spends no arrow, carries nothing, so only one of three arrows delivers. A creative shooter's arrows all carry theirs |
+
+## Disguises
+
+A disguise changes what players see, not what a mob is. The polymorph arrow is the only thing that applies one. The server keeps a record of each disguised mob and tells every client with the mod which harmless animal to draw in its place. The mob itself is never replaced, which is why no path can duplicate or lose one. [ADR 0042](adr/0042-a-disguise-is-drawn-rather-than-swapped.md) covers why.
+
+| Rule | Behaviour |
+|---|---|
+| Who can be disguised | A living hostile mob. A player, a villager or wandering trader, anything with an owner, and the wither, the ender dragon and the warden never are, and this is not a setting |
+| Which form | A sheep, pig, chicken, rabbit or cow, picked at random when the disguise starts |
+| A second hit | Restarts the clock at a full duration and keeps the form the mob already wears |
+| What the mob does | Its AI is paused and replaced by an animal's aimless wandering, so it cannot attack, shoot, explode or hurt by touch, and it makes no ambient sound. A lit creeper holds its fuse until the disguise ends, and a drawn bow is lowered. Its health, equipment, name and target are left alone, so they are all still there when it changes back, and damage it takes while disguised stays taken |
+| Who sees it | Every player with the mod tracking the mob is told when it starts and when it ends, and a player who comes into range later is told on arrival. The client draws the animal where the mob stands, moving, turning and flashing red as the mob does. A client told anything other than one of the five forms draws the mob as it is. A player without the mod sees the mob as it really is |
+| How it ends | On expiry, with a puff of smoke and `polymorph_arrow_restore`. Also, silently, when the mob dies, when it unloads or changes dimension, and when the server stops |
+| Saving | Nothing about a disguise is saved, so a restart always leaves an ordinary mob |
 
 ## Grapple Arrow
 
@@ -322,7 +380,7 @@ Six arrows that change a block at range: break it, raise ground on top of it, dr
 | Web | A sphere of `terrain.web.patchRadius` of cobweb in air or a replaceable block such as grass or a snow layer, which clears away to air after `terrain.web.lifetimeTicks`. What it covered is not put back |
 | Paint | Any wool or carpet takes the arrow's colour. Undyed glass, glass panes, terracotta and candles take their first colour, keeping a candle's count and flame. Everything else, including concrete and glass already stained, is left alone. A sheep is painted as a dye in hand would: alive, unsheared and not already that colour |
 | Radius zero | Means the position struck alone |
-| Switches | Each arrow has its own `terrain.<arrow>.enabled`. A switched off terrain arrow behaves as a plain arrow |
+| Switches | Each arrow has its own: `terrain.drill.enabled`, `terrain.pillar.enabled`, `terrain.drain.enabled`, `terrain.freeze.enabled`, `terrain.web.enabled` and `terrain.paint.enabled`. A switched off terrain arrow behaves as a plain arrow |
 
 Every setting is read fresh on impact, so a change takes effect on the next shot. What a terrain arrow changed is never put back, apart from the pillar and web, which are timed.
 
@@ -401,19 +459,19 @@ Six arrows that tell you what is somewhere you cannot see: whether it is lit, wh
 |---|---|
 | Torch | Placed only where the shooter could have placed one by hand: on a top or side face, into open air, never into water or over grass, never by a shooter in adventure mode, and never where the shooter may not build. A ceiling takes no torch, as a hand-placed torch takes none. Where it cannot go the arrow embeds silently and is recovered. `discovery.torch.enabled` off makes every torch arrow embed. The torch is an ordinary permanent torch, the one permanent light the mod places |
 | Beacon beam | The mod's own `beacon_beam` block: no collision, no light, no item form, no drop, and nothing to aim at, so it can be neither bumped into nor broken by hand, and building into it simply replaces it. It rises up to 64 blocks and stops at the first block that is not air, so it never replaces grass, flowers, snow or water, and never passes through a floor. It is a timed structure, so it is cut short where the shooter may not build and clears away after `discovery.beacon.lifetimeTicks`. It is drawn like a vanilla beacon beam, a straight bright core inside a fainter glow, both scrolling upward, and full bright so it reads at night. What tells it apart from a vanilla beam is not its colour: it is narrower, it rises from open ground with no beacon beneath it, and it clears away. One arrow raises at most one beam, so an arrow that raised one off a creature and pierces on into a wall is spent there. One that could not raise a beam off the creature tries again where it lands |
-| Reveal pulse | The prospector and sonar arrows each fire one pulse, once, at their first impact, so an arrow piercing several creatures still pulses once. It never scans again, never follows anyone, and costs nothing after impact. A radius or duration is capped by its setting's maximum, and a duration of zero reveals nothing. The prospector scans only positions in loaded chunks and never loads one. The sonar looks only at loaded entities |
+| Reveal pulse | The prospector and sonar arrows each fire one pulse at their first impact, as Reveal Pulses above describes. The prospector's reach is `discovery.prospector.radius`, held for `discovery.prospector.durationTicks`. The sonar's reach is `discovery.sonar.radius`, held for `discovery.sonar.durationTicks`. A radius or duration is capped by its setting's maximum |
 | Prospector outline | Only blocks on `discovery.prospector.blocks` are outlined, nearest first, up to 512. The server sends that set once to every player who can see the impact point and to the shooter, and each client draws the edges through terrain, each shared edge once, and forgets them when the duration runs out or its player changes dimension. A player without the mod is sent nothing. An operator decides what counts as worth revealing with `/nea config discovery prospector blocks add`, `remove` and `clear` |
 | Sonar outline | Vanilla's glowing effect, the same one the glow ink arrow applies, so every player who can see the creature sees its outline, and its countdown and syncing are vanilla's. The shooter is never marked. Other players in range are, which is what a sonar is for |
 | Tracer path | The server records the positions the arrow actually passed through, up to 256 points and always ending where it landed, and sends them once when it lands to every player with the mod tracking the arrow and to the shooter. Each client draws a flat line along them, hidden by terrain like anything else, and forgets it when its lifetime ends or its player changes dimension. A client never guesses the path for itself. The path lives only in memory, so a tracer whose chunk unloads mid-flight draws only what it flew after its chunk came back |
-| Watcher | Server-owned and kept only in memory: no block, no entity, no collision, no item form. It lasts `discovery.tripwire.lifetimeTicks`, and is dropped the moment its chunk unloads and on every restart. A watcher needs open space, so a face whose next block is solid sets none. A player holds at most 16, and setting another drops their oldest |
-| Watcher report | When a living thing that is not its owner stands in the watcher, the owner, and nobody else, gets a chat message naming what crossed, a distance rounded to ten blocks, and one of eight compass directions, from the owner to the watcher, plus a quiet sculk click only they hear. It never gives coordinates, and an owner in another dimension is told only that it happened. A watcher reports at most once per `discovery.tripwire.reportIntervalTicks`, however busy the corridor. A dispensed tripwire arrow has no owner, so its watcher reports to nobody and expires quietly |
+| Watcher | The tripwire arrow sets one watcher in the space in front of the face it struck, as Watchers above describes. A watcher needs open space, so a face whose next block is solid sets none, and the arrow is recovered. It lasts `discovery.tripwire.lifetimeTicks` |
+| Watcher report | At most once per `discovery.tripwire.reportIntervalTicks`, to the shooter alone |
 | Particles | Nothing here is drawn with particles, so everything still reads on the Minimal particle setting |
 
 Every setting is read fresh on impact, and a watcher keeps the interval it was set with. The beacon, prospector and sonar arrows play their own sounds, and the tripwire arrow plays one when set and another when it reports, listed under Sounds. The torch plays vanilla's torch placement sound. Each arrow has its own item sprite and flight texture, drawn from its recipe's material: a lit torch, a glowstone block with a rising beam, an amethyst cluster, an echo shard with sonar arcs, the glow ink head with a gunpowder trail, and a sculk sensor. [ADR 0041](adr/0041-reveals-are-drawn-by-the-client-from-what-the-server-found-once.md) covers why the pulses, the path and the watcher work the way they do.
 
 ## Chaos Arrows
 
-Six arrows that exist for the fun of it. Each has its own switch under `chaos`, and turning one off leaves the other five working: a switched off chaos arrow hits and embeds like a plain arrow.
+Six arrows that exist for the fun of it. Each has its own switch, `chaos.party.enabled`, `chaos.chicken.enabled`, `chaos.puffer.enabled`, `chaos.stink.enabled`, `chaos.boomerang.enabled` and `chaos.polymorph.enabled`, and turning one off leaves the other five working: a switched off chaos arrow hits and embeds like a plain arrow.
 
 | Arrow | Crafted around | On a block | On a creature | Spent |
 |---|---|---|---|---|
@@ -433,7 +491,7 @@ Six arrows that exist for the fun of it. Each has its own switch under `chaos`, 
 | Boomerang flight | Once it has hit something it turns back, stops falling and passes through blocks and creatures, curving home to the shooter's eyes without needing a surface to bounce from. That is what separates it from the ricochet arrow, and it carries no bounce count. It never turns back without first hitting something, and a boomerang with nobody to return to, such as a dispensed one, embeds like a plain arrow. A returning boomerang saved with its chunk keeps returning when the chunk loads |
 | Boomerang return | Every ending goes through one resolution, so it is returned exactly once (SAFE-10). Within a block and a half of the shooter it goes into their inventory, or drops at their feet when there is no room. If after ten seconds it still has not arrived it is handed over the same way. If the shooter has died, left the game or changed dimension, it drops where it is. An arrow nobody may pick up, such as one fired in creative, returns nothing. Nobody else can pick it out of the air on the way back |
 | Polymorph | Only a hostile mob. A player, a villager or wandering trader, anything with an owner, and the wither, the ender dragon and the warden are never changed, and this is not a setting: the arrow glances off them and does nothing. A disguised mob keeps being itself on the server. Its AI is paused and replaced by an animal's aimless wandering, so it cannot attack, shoot, explode or hurt by touch, and it makes no ambient sound. A lit creeper holds its fuse until the disguise ends, and a drawn bow is lowered. Everything else about it, its health, equipment, name and target, is simply left alone, so it is all still there when it changes back, and damage it takes while disguised stays taken |
-| Disguise | The server keeps a record of each disguised mob, in memory only, and tells every client with the mod which harmless form to draw in its place: a sheep, pig, chicken, rabbit or cow, picked at random. A player who comes into range later is told on arrival (SIDE-12). The client draws that animal where the mob stands, moving, turning and flashing red as the mob does, and a client told anything other than one of those five forms draws the mob as it is. The disguise ends on expiry, when the mob dies, when it unloads or changes dimension, and when the server stops. Nothing about it is ever saved, so a restart always leaves an ordinary mob (PERSIST-4), and because the mob itself is never replaced no path can duplicate or lose one (SAFE-12). A player without the mod sees the mob as it really is |
+| Disguise | Which form is drawn, who sees it, and every way it ends are described under Disguises above. A disguise lasts `chaos.polymorph.durationTicks`, and a duration of zero disguises nothing |
 
 Every setting is read fresh on impact. The chicken, puffer, stink, boomerang and polymorph arrows play their own sounds, listed under Sounds; the party arrow plays its disc. Each arrow has its own item sprite and flight texture: a hen's head, a spiked pufferfish, a rotten lump with an odour line, a chorus-purple return path, and a head half sculk and half pig. [ADR 0042](adr/0042-a-disguise-is-drawn-rather-than-swapped.md) covers why a disguise is drawn by the client rather than a swap of one mob for another.
 
@@ -449,11 +507,7 @@ Three arrows aimed at someone or something other than what the shooter is holdin
 
 | Rule | Behaviour |
 |---|---|
-| Loading | A courier arrow is crafted empty. An empty courier arrow and one stack, at a crafting table or the station, make one loaded arrow carrying the whole stack, up to `social.courier.maxPayload`; anything over the cap stays where it was. A stack of empty arrows loads one at a time. The payload is a data component on the arrow's stack, so it is shown in the tooltip, a loaded arrow glints, and identical loaded arrows stack (TOGETHER-6, CRAFT-10). A crafter never loads one, because it takes a single item per slot and would duplicate the rest. [ADR 0043](adr/0043-a-courier-payload-rides-on-the-arrows-own-stack.md) covers why |
-| Unloading | A loaded arrow on its own gives back its stack and one empty arrow. At a crafting table the empty arrow stays in its slot, or goes to the player's inventory while other loaded arrows still fill that slot. A crafter ejects it beside the payload. The station puts it back in the slot the loaded arrow left, or hands it to the player while that slot is still full, so a stack of loaded arrows can be unloaded one after another |
-| Refusals | A courier arrow will not carry another courier arrow, loaded or empty, nor a shulker box, bundle or charged crossbow with a courier arrow anywhere inside it, so payloads can never nest without end, nor anything in `social.courier.undeliverable` (TOGETHER-4). The list is checked again on impact, along with the cap, so a payload made undeliverable after loading is not delivered: the arrow, still loaded, goes back to the shooter's inventory or their feet, or drops where it struck if there is no shooter |
-| Delivery | A struck player gets as much of the stack as fits and the rest at their feet, never part of it lost, including a creative player whose inventory vanilla would otherwise let swallow it (TOGETHER-5). A loaded courier arrow reaches a player even when the server has PvP off or the two are teammates without friendly fire, because it does no damage |
-| Every other path | Dropped where the arrow was when it despawned, was killed, or was discarded. A payload lost to the void goes back to its shooter, even one in another dimension, or falls with no shooter to return it to. A chunk unload or a restart mid-flight keeps the payload aboard, because it is saved with the arrow. A copy fired by multishot, which spends no arrow, carries nothing, so only one of three arrows delivers; a creative shooter's arrows all carry theirs (TOGETHER-2, TOGETHER-3, SAFE-9) |
+| Courier payload | Loading, unloading, what a courier arrow refuses to carry, and how its stack is delivered are described under Carried Payloads above. `social.courier.maxPayload` caps the stack and `social.courier.undeliverable` lists what it will not carry |
 | Snow golem | An ordinary vanilla snow golem, owned by nobody, built without its pumpkin so a twelve-arrow craft cannot be sheared back into twelve pumpkins. It fights and dies as any snow golem does. It melts after `social.snowGolem.lifetimeTicks`: its melting time is saved on the golem, so one that was unloaded past its time melts as soon as it loads, and a golem built by hand never melts. It is refused, and the arrow embeds to be picked back up, where a player could not build one: beyond the world border, outside the build limit, without two blocks of room, for a shooter in adventure mode, and inside spawn protection for anyone the server would not let build there (TOGETHER-7, TOGETHER-8) |
 | Magnet | Moves item entities and experience orbs only, never a creature, a vehicle or an arrow (TOGETHER-9). It sets their speed toward the shooter each tick for up to five seconds and stops each one dead when it arrives, so the shooter picks it up under vanilla's rules and a full inventory leaves it at their feet rather than flying past (TOGETHER-10). A pull is held in memory only, so a restart leaves pulled items where they were. A dispensed magnet arrow, with no shooter, pulls nothing (TOGETHER-11) |
 
@@ -474,7 +528,7 @@ The ricochet arrow glances off the surfaces it hits instead of embedding in them
 | Running out of bounces | The arrow embeds in the next surface it meets and is recovered like any other arrow |
 | Crossing a reload | The bounces it has used are written into the arrow, so an arrow that survives a chunk unload or a restart mid-flight does not get its bounces back |
 
-Its recipe is the one place this mod's content departs from the issue that specified it. The issue asked for a tripwire hook, which is already the grapple arrow's ingredient, and two identical shaped recipes would have left one of the two arrows uncraftable. An iron nugget is the centre instead, which is also the warm iron the arrow's art is built from. Like every arrow in the mod, it is craftable at a crafting table from eight arrows around that one nugget, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
+Its centre is an iron nugget rather than a tripwire hook, because a tripwire hook is already the grapple arrow's ingredient, and two identical shaped recipes would have left one of the two arrows uncraftable. The nugget is also the warm iron the arrow's art is built from. Like every arrow in the mod, it is craftable at a crafting table from eight arrows around that one nugget, yielding eight, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why that route is never gated behind the fletching table station.
 
 ## Ender Pearl Arrow
 
@@ -508,7 +562,7 @@ It is also the only thing in the mod that moves a player who did not choose to b
 | Damage | None. The arrow passes its effect on and disappears, hurting neither what it strikes nor anything else |
 | The arrow afterwards | Spent on anything it strikes, whether or not it moved it, and recovered when it struck a block and moved nothing |
 
-Its range is deliberately shorter than the ender pearl arrow's. Moving yourself somewhere you can see is a traversal tool, and moving something else to you is a weapon, so the weapon reaches half as far.
+Its range has its own setting, separate from the ender pearl arrow's, because moving yourself somewhere you can see is a traversal tool and moving something else to you is a weapon. Both reach the full hundred and twenty eight by default, so a server that wants the weapon to reach less far lowers `ender.recallMaxRangeBlocks` alone.
 
 ## Combat Arrows
 
@@ -525,7 +579,7 @@ Four of them deliberately do no damage at all. The rust, milk, haste and guard a
 | Haste | Sugar | Haste for `combat.status.hasteDurationTicks` |
 | Guard | A shield | Absorption for `combat.status.guardDurationTicks` |
 | Homing | A compass | Curves toward the nearest hostile mob inside its search cone |
-| Volley | A feather | Splits in flight into `combat.volley.fragmentCount` ordinary arrows |
+| Volley | A feather | Splits in flight into `combat.volley.fragmentCount` ordinary arrows, fanned by `combat.volley.spreadDegrees`, after `combat.volley.splitDelayTicks` ticks |
 | Railgun | An iron ingot | Flies at `combat.railgun.speedMultiplier` times normal speed with its drop scaled by `combat.railgun.gravityFactor` |
 
 Four of these are worth reading the detail on, because each refuses something a player might reasonably expect it to do.
@@ -540,6 +594,7 @@ Four of these are worth reading the detail on, because each refuses something a 
 | Milk and picking and choosing | Beneficial and harmful effects go alike. A selective cleanse is a different tool, and a player has to be able to predict what they fired |
 | Homing and players | It curves toward hostile mobs only, never toward a player. **This is not a setting.** An arrow that could be pointed at a player would be aim assist, so the refusal is in the code rather than in the config |
 | Homing and finding nothing | `combat.homing.turnRate`, `combat.homing.searchRadius` and `combat.homing.searchConeDegrees` govern the search, and with nothing eligible ahead of it the arrow flies straight |
+| Volley and when it splits | It splits after `combat.volley.splitDelayTicks` ticks of flight, never at the moment it leaves the bow. The fragments leave from where it is, at its speed, spaced evenly around a cone `combat.volley.spreadDegrees` off its line of flight, and the volley arrow itself is gone. One that lands or hits something before then never splits, and is an ordinary arrow hit. A spread of zero sends every fragment along the same line |
 | Volley and splitting again | It splits once. The fragments are ordinary vanilla arrows, so a fragment splitting again is not merely forbidden, it is impossible |
 | Volley and picking the fragments up | Fragments cannot be recovered, and `combat.volley.fragmentCount` is capped so one shot can never flood a server |
 | Volley and the damage it adds up to | Each fragment carries `combat.volley.damageShare` of the original and so lands softer than the arrow it came from. The fragments together can total more than one arrow at point blank, which is the trade the arrow offers: a spread that mostly misses at range, and a payoff up close. Fragments carry no bow enchantments and roll no critical of their own, so Power and a full draw are not paid out once per fragment |
@@ -604,7 +659,7 @@ The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are dec
 
 Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's pitch spread and the mod's shared loudness. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
 
-An arrow declares every sound its effect plays on its `ArrowDefinition`, which covers the impact sound IDENT-7 asks for. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep and the blast (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one. They check what an arrow declares, not what it plays, so a family issue still has to declare every sound it adds.
+An arrow declares every sound its effect plays on its `ArrowDefinition`, which covers the impact sound IDENT-7 asks for. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep and the blast (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one. They check what an arrow declares, not what it plays, so an arrow that plays a new sound still has to declare it.
 
 | Sound | Plays | Used for | Vanilla meaning kept (IDENT-8) |
 |---|---|---|---|
@@ -644,6 +699,7 @@ An arrow declares every sound its effect plays on its `ArrowDefinition`, which c
 | `sonar_arrow_pulse` | Mod asset | A pure sonar ping with two fading echoes as a sonar arrow's pulse sweeps the area | Own asset |
 | `tripwire_arrow_set` | `block.tripwire.attach`'s files, turned down | A tripwire arrow setting its watcher | Yes: a tripwire hooked up |
 | `tripwire_arrow_alert` | Mod asset | Two quick rising chirps as a watcher reports, heard only by its owner and quieter than the other sounds so it does not startle in a cave | Own asset |
+| `party_arrow_<song>` | Each vanilla record's files, turned down, streamed | A party arrow playing the disc it carries, one sound per disc, nineteen in all, named after the song as the party arrow's choices are, such as `party_arrow_pigstep` and `party_arrow_creator_music_box`. They share one subtitle | Yes: a record playing |
 | `chicken_arrow_hatch` | `entity.chicken.egg`'s files, turned down | A chicken arrow's chicken arriving | Yes: a chicken and its egg |
 | `puffer_arrow_inflate` | Mod asset | A comic, rising squeak as a puffer arrow inflates what it struck | Own asset |
 | `puffer_arrow_deflate` | `entity.puffer_fish.blow_out`'s files, turned down | An inflated creature shrinking back | Yes: a pufferfish deflating |
@@ -673,7 +729,7 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a texture sits in `item/`, `block/`, `entity/arrow/`, or `gui/container/` according to what draws it. The PNG is the source of truth and the thing that gets edited.
+Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a texture sits in `item/`, `block/`, `entity/arrow/`, or `gui/container/` according to what draws it. The fletching station screen's texture is client-only, so it ships from the client resources rather than beside the rest. The PNG is the source of truth and the thing that gets edited.
 
 | Texture | Used for |
 |---|---|
@@ -699,6 +755,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/homing_arrow.png` | The homing arrow's item sprite |
 | `textures/item/volley_arrow.png` | The volley arrow's item sprite |
 | `textures/item/railgun_arrow.png` | The railgun arrow's item sprite |
+| `textures/item/frost_arrow.png` | The frost arrow's item sprite |
+| `textures/item/levitation_arrow.png` | The levitation arrow's item sprite |
+| `textures/item/taunt_arrow.png` | The taunt arrow's item sprite |
+| `textures/item/repel_arrow.png` | The repel arrow's item sprite |
+| `textures/item/allegiance_arrow.png` | The allegiance arrow's item sprite |
+| `textures/item/smoke_arrow.png` | The smoke arrow's item sprite |
+| `textures/item/disarm_arrow.png` | The disarm arrow's item sprite |
 | `textures/item/paint_arrow.png` | The paint arrow's item sprite, left untinted |
 | `textures/item/paint_arrow_head.png` | The paint arrow's head, tinted to the dye it carries |
 | `textures/item/drill_arrow.png` | The drill arrow's item sprite |
@@ -738,8 +801,8 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/item/snow_golem_arrow.png` | The snow golem arrow's item sprite |
 | `textures/item/magnet_arrow.png` | The magnet arrow's item sprite |
 | `textures/block/rope.png` | The climbable rope the rope arrow leaves behind |
-| `textures/block/beacon_beam.png` | The core of the beam a beacon arrow raises, animated to scroll upward |
-| `textures/block/beacon_beam_glow.png` | The fainter glow around that core, animated the same way |
+| `textures/block/beacon_beam.png` | The core of the beam a beacon arrow raises, animated to scroll upward by its `.png.mcmeta`, two ticks a frame |
+| `textures/block/beacon_beam_glow.png` | The fainter glow around that core, animated the same way by its own `.png.mcmeta` |
 | `textures/entity/arrow/grapple_arrow.png` | The grapple arrow in flight and planted in a block |
 | `textures/entity/arrow/rope_arrow.png` | The rope arrow in flight and planted in a block |
 | `textures/entity/arrow/glow_ink_arrow.png` | The glow ink arrow in flight and planted in a block |
@@ -762,6 +825,13 @@ Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a te
 | `textures/entity/arrow/homing_arrow.png` | The homing arrow in flight and planted in a block |
 | `textures/entity/arrow/volley_arrow.png` | The volley arrow in flight and planted in a block |
 | `textures/entity/arrow/railgun_arrow.png` | The railgun arrow in flight and planted in a block |
+| `textures/entity/arrow/frost_arrow.png` | The frost arrow in flight and planted in a block |
+| `textures/entity/arrow/levitation_arrow.png` | The levitation arrow in flight and planted in a block |
+| `textures/entity/arrow/taunt_arrow.png` | The taunt arrow in flight and planted in a block |
+| `textures/entity/arrow/repel_arrow.png` | The repel arrow in flight and planted in a block |
+| `textures/entity/arrow/allegiance_arrow.png` | The allegiance arrow in flight and planted in a block |
+| `textures/entity/arrow/smoke_arrow.png` | The smoke arrow in flight and planted in a block |
+| `textures/entity/arrow/disarm_arrow.png` | The disarm arrow in flight and planted in a block |
 | `textures/entity/arrow/paint_arrow.png` | The paint arrow in flight and planted in a block, left untinted |
 | `textures/entity/arrow/paint_arrow_tint.png` | The paint arrow's head in flight, drawn over the arrow and tinted to its dye |
 | `textures/entity/arrow/drill_arrow.png` | The drill arrow in flight and planted in a block |
@@ -875,7 +945,8 @@ Server settings are edited on a draft and sent to the server when the screen clo
 
 | Session | Server settings | Client settings |
 |---|---|---|
-| Singleplayer | Editable | Editable |
+| Singleplayer, cheats on or opened to LAN with cheats | Editable | Editable |
+| Singleplayer, cheats off | Read-only, with the reason shown under the title | Editable |
 | Multiplayer, operator | Editable | Editable |
 | Multiplayer, not an operator | Read-only, with the reason shown under the title | Editable |
 | Title screen, no world joined | Read-only, showing defaults | Editable |
@@ -925,7 +996,7 @@ Every arrow ships with a station recipe that asks for exactly what its crafting 
 | Crafting table | 8 | 1 | 8 |
 | Fletching station | 8 | 1 | 12 |
 
-The shaft is a plain arrow for every arrow except the three that are built from another of this mod's arrows, two rungs up the explosive ladder and one up the ender ladder, at both routes alike:
+Every one of the sixty-three arrows has a station recipe. A tinted arrow has one per choice, each asking for that choice's own item. The shaft is a plain arrow for every arrow except the five that are built from another of this mod's arrows, at both routes alike: two rungs up the explosive ladder, the recall arrow from ender pearl arrows, the tow arrow from grapple arrows, and the tracer arrow from glow ink arrows. The courier arrow comes out of the station empty, and loading it is described under Carried Payloads.
 
 | Arrow | Shaft | Ingredient |
 |---|---|---|
@@ -939,11 +1010,61 @@ The shaft is a plain arrow for every arrow except the three that are built from 
 | Fire charge | `not-enough-arrows:tnt_arrow` | `minecraft:fire_charge` |
 | Incendiary | `minecraft:arrow` | `minecraft:fire_charge` |
 | Gravity | `minecraft:arrow` | `minecraft:slime_ball` |
+| Drill | `minecraft:arrow` | `minecraft:iron_pickaxe` |
+| Pillar | `minecraft:arrow` | `minecraft:dirt` |
+| Drain | `minecraft:arrow` | `minecraft:sponge` |
+| Freeze | `minecraft:arrow` | `minecraft:blue_ice` |
+| Web | `minecraft:arrow` | `minecraft:cobweb` |
+| Paint | `minecraft:arrow` | Any of the sixteen dyes, one recipe each |
+| Blossom | `minecraft:arrow` | `minecraft:bone_meal` |
+| Harvest | `minecraft:arrow` | `minecraft:iron_hoe` |
+| Till | `minecraft:arrow` | `minecraft:water_bucket` |
+| Sapling | `minecraft:arrow` | Any of its ten saplings, the mangrove propagule among them, one recipe each |
+| Shear | `minecraft:arrow` | `minecraft:shears` |
+| Bee | `minecraft:arrow` | `minecraft:honeycomb` |
+| Zipline | `minecraft:arrow` | `minecraft:chain` |
+| Tow | `not-enough-arrows:grapple_arrow` | `minecraft:fermented_spider_eye` |
+| Updraft | `minecraft:arrow` | `minecraft:breeze_rod` |
+| Vine | `minecraft:arrow` | `minecraft:vine` |
+| Trampoline | `minecraft:arrow` | `minecraft:slime_block` |
+| Scaffold | `minecraft:arrow` | `minecraft:scaffolding` |
+| Bridge | `minecraft:arrow` | `minecraft:oak_planks` |
+| Torch | `minecraft:arrow` | `minecraft:torch` |
+| Beacon | `minecraft:arrow` | `minecraft:glowstone` |
+| Prospector | `minecraft:arrow` | `minecraft:amethyst_shard` |
+| Sonar | `minecraft:arrow` | `minecraft:echo_shard` |
+| Tracer | `not-enough-arrows:glow_ink_arrow` | `minecraft:gunpowder` |
+| Tripwire | `minecraft:arrow` | `minecraft:sculk_sensor` |
+| Party | `minecraft:arrow` | Any of the nineteen music discs, one recipe each |
+| Chicken | `minecraft:arrow` | `minecraft:egg` |
+| Puffer | `minecraft:arrow` | `minecraft:pufferfish` |
+| Stink | `minecraft:arrow` | `minecraft:rotten_flesh` |
+| Boomerang | `minecraft:arrow` | `minecraft:chorus_fruit` |
+| Polymorph | `minecraft:arrow` | `minecraft:sculk_catalyst` |
+| Courier | `minecraft:arrow` | `minecraft:ender_chest` |
+| Snow golem | `minecraft:arrow` | `minecraft:carved_pumpkin` |
+| Magnet | `minecraft:arrow` | `minecraft:iron_block` |
 | Ricochet | `minecraft:arrow` | `minecraft:iron_nugget` |
 | Ender pearl | `minecraft:arrow` | `minecraft:ender_pearl` |
 | Recall | `not-enough-arrows:ender_pearl_arrow` | `minecraft:fermented_spider_eye` |
+| Shock | `minecraft:arrow` | `minecraft:lightning_rod` |
+| Lifesteal | `minecraft:arrow` | `minecraft:ghast_tear` |
+| Rust | `minecraft:arrow` | `minecraft:oxidized_copper` |
+| Milk | `minecraft:arrow` | `minecraft:milk_bucket` |
+| Haste | `minecraft:arrow` | `minecraft:sugar` |
+| Guard | `minecraft:arrow` | `minecraft:shield` |
+| Homing | `minecraft:arrow` | `minecraft:compass` |
+| Volley | `minecraft:arrow` | `minecraft:feather` |
+| Railgun | `minecraft:arrow` | `minecraft:iron_ingot` |
+| Frost | `minecraft:arrow` | `minecraft:powder_snow_bucket` |
+| Levitation | `minecraft:arrow` | `minecraft:shulker_shell` |
+| Taunt | `minecraft:arrow` | `minecraft:note_block` |
+| Repel | `minecraft:arrow` | `minecraft:soul_sand` |
+| Allegiance | `minecraft:arrow` | `minecraft:golden_apple` |
+| Smoke | `minecraft:arrow` | `minecraft:campfire` |
+| Disarm | `minecraft:arrow` | `minecraft:fishing_rod` |
 
-Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own. The recall arrow sits on the ender ladder rather than the explosive one and compounds the same way, at two and a quarter times, because it is built from ender pearl arrows that were themselves discounted.
+Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own. The recall, tow and tracer arrows compound the same way, at two and a quarter times, because each is built from arrows that were themselves discounted.
 
 Station recipes live in `data/not-enough-arrows/recipe/fletching/` and crafting table recipes in `data/not-enough-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
 

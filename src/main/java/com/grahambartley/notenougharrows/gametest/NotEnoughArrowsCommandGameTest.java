@@ -1,5 +1,6 @@
 package com.grahambartley.notenougharrows.gametest;
 
+import com.grahambartley.notenougharrows.command.NotEnoughArrowsCommand;
 import com.grahambartley.notenougharrows.config.ConfigFile;
 import com.grahambartley.notenougharrows.config.ConfigPaths;
 import com.grahambartley.notenougharrows.config.GrappleArrowConfig;
@@ -8,6 +9,7 @@ import com.grahambartley.notenougharrows.config.ServerConfigHolder;
 import com.grahambartley.notenougharrows.server.ServerConfigService;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.nio.file.Path;
+import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -18,6 +20,8 @@ import net.minecraft.util.WorldSavePath;
 public final class NotEnoughArrowsCommandGameTest implements FabricGameTest {
   private static final String BATCH = "server-config";
   private static final String SET_MAX_RANGE = "notenougharrows config grapple maxrangeblocks ";
+  private static final String STATUS_USAGE = "notenougharrows status";
+  private static final String CONFIG_USAGE = "notenougharrows config ";
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void anOperatorCanChangeASetting(TestContext context) {
@@ -178,6 +182,32 @@ public final class NotEnoughArrowsCommandGameTest implements FabricGameTest {
         GrappleArrowConfig.DEFAULT_MAX_RANGE_BLOCKS,
         ServerConfigService.get().grapple().maxRangeBlocks(),
         "Live config after a refused command through the alias");
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void helpHidesConfigCommandsFromANonOperator(TestContext context) {
+    final List<String> lines = NotEnoughArrowsCommand.helpLines(operator(context).withLevel(0));
+
+    context.assertTrue(
+        lines.contains(STATUS_USAGE), "A non-operator's help should list the status command");
+    context.assertFalse(
+        lines.stream().anyMatch(line -> line.startsWith(CONFIG_USAGE)),
+        "A non-operator's help should list no config commands, got " + lines);
+    context.complete();
+  }
+
+  @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
+  public void helpListsConfigCommandsForAnOperator(TestContext context) {
+    final List<String> lines = NotEnoughArrowsCommand.helpLines(operator(context));
+
+    context.assertTrue(
+        lines.contains(STATUS_USAGE), "An operator's help should list the status command");
+    context.assertTrue(
+        lines.contains(CONFIG_USAGE + "reset"), "An operator's help should list config reset");
+    context.assertTrue(
+        lines.stream().anyMatch(line -> line.startsWith(CONFIG_USAGE + "grapple ")),
+        "An operator's help should list the config families, got " + lines);
     context.complete();
   }
 
