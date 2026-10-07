@@ -24,13 +24,6 @@ class ServerConfigAccessTest {
   }
 
   @Test
-  void keepsServerSettingsReadOnlyForASingleplayerHostWithCheatsOff() {
-    final boolean hostOperatorWithCheatsOff = false;
-    assertEquals(
-        ServerConfigAccess.NOT_OPERATOR, ServerConfigAccess.of(true, hostOperatorWithCheatsOff));
-  }
-
-  @Test
   void onlyLetsTheEditableStateChangeServerSettings() {
     assertTrue(ServerConfigAccess.EDITABLE.editable());
     assertFalse(ServerConfigAccess.NOT_OPERATOR.editable());

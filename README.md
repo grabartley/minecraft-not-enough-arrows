@@ -261,9 +261,9 @@ Change it in the Mod Menu screen or from the command tree:
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
 needs operator level 2, which in a single-player world means cheats are on. Running `/nea` on its
-own lists only the commands you can use. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
-`combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`.
+own lists only the commands you can use. The families are `explosive`, `grapple`, `utility`,
+`physics`, `ender`, `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`,
+`chaos`, `social`, `fletching`, and `sound`.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
