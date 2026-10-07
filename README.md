@@ -17,9 +17,9 @@
 </a>
 </p>
 
-Not Enough Arrows adds sixty-three craftable arrows, each with its own effect. Some get you up a
-cliff, some change the ground they land in, some help a friend, and a few are there because they are
-silly. They all fire from a bow, a crossbow or a dispenser, and they all work in multiplayer.
+Not Enough Arrows adds sixty-three craftable arrows, each with its own effect. They cover travel,
+fighting, farming, exploring and helping friends, and a few are just for fun. They all fire from a
+bow, a crossbow or a dispenser, and they all work in multiplayer.
 
 > **Alpha:** the mod is still in alpha, and feedback is very welcome.
 > [Open an issue](https://github.com/grabartley/minecraft-not-enough-arrows/issues/new) and tell me
@@ -27,9 +27,10 @@ silly. They all fire from a bow, a crossbow or a dispenser, and they all work in
 
 ## Installing
 
-1. Put Not Enough Arrows and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
-2. Craft eight arrows around a tripwire hook to make grapple arrows.
-3. Fire one from a bow at the side of something tall.
+1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 1.21.1.
+2. Put Not Enough Arrows and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
+3. Craft eight arrows around a tripwire hook to make grapple arrows.
+4. Fire one from a bow at the side of something tall.
 
 ## Getting around
 
@@ -44,19 +45,19 @@ at an overhang, a ledge or a cave ceiling and you have a way up or down.
 
 <p align="center"><img src="docs/screenshots/rope.jpg" alt="A rope hanging from a rope arrow down a stone cliff" width="720"></p>
 
-There are more ways to travel. The **zipline arrow** strings a cable between two shots that you can
-ride. The **tow arrow** drags whatever it hits over to you. The **updraft arrow** lifts anyone
-standing in it, and the **trampoline arrow** puts down a pad that bounces you back up. The **vine**,
-**scaffold** and **bridge** arrows build something to climb or walk on. The **ender pearl arrow**
-teleports you to where it lands, and the **recall arrow** brings whatever it hits back to you. Most
-of what these build goes away after a while.
+There are more ways to travel. The **zipline arrow** strings a cable between two shots. Use the
+cable to ride it, and sneak to let go. The **tow arrow** drags whatever it hits over to you. The
+**updraft arrow** lifts anyone standing in it, and the **trampoline arrow** puts down a pad that
+bounces you back up. The **vine**, **scaffold** and **bridge** arrows build something to climb or
+walk on. The **ender pearl arrow** teleports you to where it lands, and the **recall arrow** brings
+whatever it hits back to you. Most of what these build goes away after a while.
 
 ## Explosives
 
-Explosive arrows do not go off when they hit. They stick, start beeping, and show a countdown ring,
-which gives you a few seconds to get clear. There are three sizes: gunpowder, TNT and fire charge.
-You craft each one from the size below it. The **incendiary arrow** never explodes, but it sets
-everything around it on fire.
+Explosive arrows do not go off when they hit. They stick in a block or ride the mob they hit, start
+beeping, and show a countdown ring when you look at them, which gives you a few seconds to get
+clear. There are three sizes: gunpowder, TNT and fire charge. You craft each one from the size below
+it. The **incendiary arrow** never explodes, but it sets everything around it on fire.
 
 <p align="center"><img src="docs/screenshots/explosive.jpg" alt="An explosive arrow's blast throwing up smoke and dirt" width="720"></p>
 
@@ -84,7 +85,7 @@ when something walks through it.
 
 The **blossom** arrow bone meals the plants around it. The **harvest** arrow picks the ripe crops
 nearby, replants them and puts the food in your inventory. The **till** arrow turns the ground into
-wet farmland, the **sapling** arrow plants a tree, and the **shear** arrow shears a sheep from
+wet farmland, the **sapling** arrow plants a sapling, and the **shear** arrow shears a sheep from
 across the field. The **bee** arrow releases a few bees that attack whatever you hit and leave you
 alone.
 
@@ -137,7 +138,7 @@ piston from a distance. The **wind** arrow pushes things away like a wind charge
 | 🧨 | **TNT** | A bigger blast. Built from gunpowder arrows | TNT |
 | 🔥 | **Fire charge** | The biggest blast, and it leaves fire. Built from TNT arrows | Fire charge |
 | 🕯️ | **Incendiary** | Sets everything nearby alight. Never explodes | Fire charge |
-| 🪨 | **Gravity** | Drops the block you hit, like sand | Slime ball |
+| 🪨 | **Gravity** | Drops a ball of blocks where it hits, like sand | Slime ball |
 | ⚙️ | **Ricochet** | Bounces off blocks instead of sticking | Iron nugget |
 | 🟣 | **Ender pearl** | Teleports you to wherever it lands | Ender pearl |
 | 🌀 | **Recall** | Brings whatever you hit back to you. Built from ender pearl arrows | Fermented spider eye |
@@ -182,12 +183,12 @@ piston from a distance. The **wind** arrow pushes things away like a wind charge
 | 📡 | **Sonar** | Everything alive around where it lands glows through walls | Echo shard |
 | 〰️ | **Tracer** | Draws the path it flew, for everyone to see | Glow ink arrows and gunpowder |
 | 🪤 | **Tripwire** | An invisible wire that tells you when something crosses it | Sculk sensor |
-| 🎉 | **Party** | Fireworks and the music disc it carries, once | Any music disc, one kind each |
+| 🎉 | **Party** | Firework sparks and the music disc it carries, once | Any music disc, one kind each |
 | 🐔 | **Chicken** | Releases a live chicken where it lands | Egg |
 | 🐡 | **Puffer** | Inflates what it hits for a while, harmlessly | Pufferfish |
 | 🤢 | **Stink** | A cloud that makes players sick and mobs keep out of | Rotten flesh |
 | 🪃 | **Boomerang** | Hits, then flies back to your inventory | Chorus fruit |
-| 🐑 | **Polymorph** | Turns a hostile mob into a farm animal for a while | Sculk catalyst |
+| 🐑 | **Polymorph** | Disguises a hostile mob as a farm animal for a while | Sculk catalyst |
 | 📦 | **Courier** | Carries one stack to the player or place it hits | Ender chest |
 | ⛄ | **Snow golem** | Builds a snow golem that melts after a while | Carved pumpkin |
 | 🧲 | **Magnet** | Pulls loose items and orbs back to you | Iron block |
@@ -207,9 +208,9 @@ crafting table.
 
 ## Settings
 
-You can change settings from the Mod Menu screen or with `/nea` (or `/notenougharrows`). Settings
-are saved per world. Changing them needs operator permission, which in single player means cheats
-are on.
+You can change settings from the Mod Menu screen, if you have Mod Menu installed, or with `/nea` (or
+`/notenougharrows`). Settings are saved per world. Changing them needs operator permission, which in
+single player means cheats are on.
 
 ```
 /nea status                                 show every setting
@@ -228,16 +229,17 @@ settings take `true` or `false`. For example:
 The families are `explosive`, `grapple`, `utility`, `physics`, `ender`, `combat`, `control`,
 `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`, `fletching` and `sound`.
 
-The defaults allow the most. On a shared server you may want to change these:
+Everything is on by default. On a shared server you may want to change these:
 
 - `explosive.damageTerrain` is on, so explosive arrows break blocks.
 - `physics.gravityImpactRadius` is 3, so a gravity arrow drops a whole ball of blocks. Set it to 0 for one block.
 - `ender.recallAffectsPlayers` is on, so recall and tow arrows can pull other players.
 - `control.disarm.affectsPlayers` is on, so a disarm arrow can knock an item out of a player's hand.
-- `discovery.sonar.durationTicks` is 200, so a sonar arrow shows other players through walls. Set it to 0 to turn that off.
+- `discovery.sonar.durationTicks` is 200, so a sonar arrow shows other players through walls, as the glow ink arrow does for a player it hits. Setting it to 0 turns the sonar arrow off completely.
 
 Arrows that place or remove blocks respect spawn protection and the world border. Explosions do not,
-which is what `explosive.damageTerrain` is for.
+so turn off `explosive.damageTerrain` if that matters. The wind arrow's burst can also knock down
+torches and flowers anywhere, the way a wind charge does.
 
 <details>
 <summary><b>Every setting, with its default and range</b></summary>
