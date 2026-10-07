@@ -204,21 +204,36 @@ tasks.register("verifyMainSourceSideSafety") {
 
 tasks.register("verifyNoBundledRecipeViewers") {
 	group = "verification"
-	description = "Fails if the remapped jar bundles Mod Menu, JEI, or EMI code"
+	description = "Fails if the remapped jar bundles Mod Menu, JEI, or EMI code, directly or as a nested jar"
 
 	def remappedJar = tasks.named("remapJar").flatMap { it.archiveFile }
 	inputs.file(remappedJar)
 
 	doLast {
 		def bundledPrefixes = ["mezz/jei/", "dev/emi/", "com/terraformersmc/modmenu/"]
+		def bundledModIds = ["jei", "emi", "modmenu"]
 		def violations = []
 
-		new java.util.zip.ZipFile(remappedJar.get().asFile).withCloseable { zip ->
-			zip.entries().each { entry ->
+		def scan
+		scan = { java.util.zip.ZipInputStream zip, String location ->
+			def entry
+			while ((entry = zip.nextEntry) != null) {
+				def path = location + entry.name
 				if (bundledPrefixes.any { entry.name.startsWith(it) }) {
-					violations << entry.name
+					violations << path
+				} else if (entry.name == "fabric.mod.json" && location) {
+					def modId = new groovy.json.JsonSlurper().parse(zip.readAllBytes()).id
+					if (modId in bundledModIds) {
+						violations << "${path} (mod id ${modId})"
+					}
+				} else if (entry.name.startsWith("META-INF/jars/") && entry.name.endsWith(".jar")) {
+					scan(new java.util.zip.ZipInputStream(new ByteArrayInputStream(zip.readAllBytes())), path + "!/")
 				}
 			}
+		}
+
+		remappedJar.get().asFile.withInputStream { stream ->
+			scan(new java.util.zip.ZipInputStream(stream), "")
 		}
 
 		if (!violations.isEmpty()) {

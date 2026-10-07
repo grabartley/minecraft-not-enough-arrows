@@ -116,7 +116,7 @@
   "config.not-enough-arrows.title": "Not Enough Arrows Settings",
   "config.not-enough-arrows.reset": "Reset to Defaults",
   "config.not-enough-arrows.save.failed": "Not Enough Arrows could not save your settings",
-  "config.not-enough-arrows.access.not_operator": "Server settings are read-only because you are not an operator on this server",
+  "config.not-enough-arrows.access.not_operator": "Server settings are read-only because you are not an operator, or cheats are off in this world",
   "config.not-enough-arrows.access.not_in_world": "Server settings are read-only until you join a world",
   "config.not-enough-arrows.update.applied": "Not Enough Arrows server settings updated",
   "config.not-enough-arrows.update.rejected": "Only operators can change Not Enough Arrows server settings",

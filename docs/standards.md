@@ -22,7 +22,7 @@ Practical consequences:
 
 A server owner without a client mod, working over SSH on a headless box, must be able to configure the mod completely. Graphical configuration screens are a convenience layered on top, never the only way in.
 
-The canonical implementations are **Loot Lock** and **Dogs Unleashed**. Follow their structure rather than inventing a new one:
+The canonical implementation is **Dogs Unleashed**. Follow its structure rather than inventing a new one:
 
 - Server configuration is an immutable `record`, with a `DEFAULT_` constant and explicit bounds beside each field.
 - It is persisted as JSON in the world save directory, so configuration is per world rather than global.

@@ -1,3 +1,5 @@
+<p align="center"><img src="src/main/resources/assets/not-enough-arrows/icon.png" alt="Not Enough Arrows icon" width="128" height="128"></p>
+
 <h1 align="center">Not Enough Arrows</h1>
 
 <p align="center"><b>Sixty-three new arrows for Minecraft 1.21.1 on Fabric.</b><br>
@@ -38,9 +40,13 @@ Fire the **grapple arrow** at anything solid and it hooks in and reels you to it
 cancelled when you land, and the arrow comes back to you, so the same one carries you up a mountain
 in stages.
 
+<p align="center"><img src="docs/screenshots/grapple.jpg" alt="A player reeled up a cliff face on a grapple arrow's lead" width="720"></p>
+
 The **rope arrow** is the slower, safer version: it hangs a climbable rope beneath whatever it hits,
 up to 128 blocks of it. Shoot the lip of a cliff and the way back up is already built. Shoot into a
 ravine and you have a way down that does not involve falling.
+
+<p align="center"><img src="docs/screenshots/rope.jpg" alt="A rope hanging from a rope arrow down a stone cliff" width="720"></p>
 
 ## Cross what you could not walk
 
@@ -68,6 +74,8 @@ Explosive arrows do not go off on impact. They stick, they beep, the beeping spe
 in the world counts down the time you have left. Plenty of time to admire the angle you fired at,
 and just enough to regret it.
 
+<p align="center"><img src="docs/screenshots/explosive.jpg" alt="An explosive arrow's blast throwing up smoke and dirt" width="720"></p>
+
 There are three tiers and each is built from the one below it, so the blast you get is the blast you
 worked up to. The **incendiary arrow** is the odd one out: it never explodes, it just sets
 everything nearby alight.
@@ -87,6 +95,8 @@ touches anything you could not have changed standing there with the item it was 
 
 The **glow ink arrow** outlines what you hit through walls, for everyone on the server, so the
 creeper behind the ridge is now a problem everybody can see.
+
+<p align="center"><img src="docs/screenshots/glow-ink.jpg" alt="A cow outlined by a glow ink arrow" width="720"></p>
 
 ## Tend the farm from where you stand
 
@@ -224,6 +234,8 @@ same way, so is tow from grapple arrows, and so is tracer from glow ink arrows.
 Right-click any vanilla fletching table and it opens a crafting station that sells this mod's arrows
 at a better rate than a crafting table does. Same ingredients, more arrows out.
 
+<p align="center"><img src="docs/screenshots/fletching-station.jpg" alt="The Fletching Station screen with grapple arrows selected" width="720"></p>
+
 Nothing is gated behind it: every arrow stays craftable at a crafting table forever, the station is
 just the reward for finding one. The block is untouched vanilla, so uninstalling the mod leaves your
 world exactly as it was, and your fletcher keeps their job.
@@ -248,9 +260,10 @@ Change it in the Mod Menu screen or from the command tree:
 ```
 
 `/nea` and `/notenougharrows` are the same command. Reading is open to anyone; changing anything
-needs operator level 2. The families are `explosive`, `grapple`, `utility`, `physics`, `ender`,
-`combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`, `chaos`, `social`,
-`fletching`, and `sound`.
+needs operator level 2, which in a single-player world means cheats are on. Running `/nea` on its
+own lists only the commands you can use. The families are `explosive`, `grapple`, `utility`,
+`physics`, `ender`, `combat`, `control`, `traversal`, `terrain`, `agriculture`, `discovery`,
+`chaos`, `social`, `fletching`, and `sound`.
 
 The defaults ship the fun version of the mod rather than the safe one, so on a shared server these
 are the ones to turn **down**:
