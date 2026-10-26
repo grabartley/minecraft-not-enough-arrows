@@ -1,0 +1,22 @@
+{
+  "type": "volley:bucket_returning_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:powder_snow_bucket"
+    }
+  },
+  "result": {
+    "id": "volley:frost_arrow",
+    "count": 8
+  }
+}

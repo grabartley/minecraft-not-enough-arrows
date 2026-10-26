@@ -1,14 +1,14 @@
-<p align="center"><img src="src/main/resources/assets/not-enough-arrows/icon.png" alt="Not Enough Arrows icon" width="128" height="128"></p>
+<p align="center"><img src="src/main/resources/assets/volley/icon.png" alt="Volley icon" width="128" height="128"></p>
 
-<h1 align="center">Not Enough Arrows</h1>
+<h1 align="center">Volley</h1>
 
 <p align="center"><b>Sixty-three new arrows for Minecraft 1.21.1 on Fabric.</b></p>
 
 <p align="center">
-<a href="https://modrinth.com/mod/not-enough-arrows"><img src="https://img.shields.io/modrinth/dt/not-enough-arrows?logo=modrinth&label=Modrinth%20downloads&color=00AF5C" alt="Modrinth downloads"></a>
-<a href="https://github.com/grabartley/minecraft-not-enough-arrows/stargazers"><img src="https://img.shields.io/github/stars/grabartley/minecraft-not-enough-arrows?logo=github&label=Stars&color=4078c0" alt="GitHub stars"></a>
-<a href="https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"></a>
-<a href="https://ko-fi.com/grahambartley"><img src="https://img.shields.io/badge/Ko--fi-Support_Not_Enough_Arrows-009078?logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
+<a href="https://modrinth.com/mod/volley"><img src="https://img.shields.io/modrinth/dt/volley?logo=modrinth&label=Modrinth%20downloads&color=00AF5C" alt="Modrinth downloads"></a>
+<a href="https://github.com/grabartley/minecraft-volley/stargazers"><img src="https://img.shields.io/github/stars/grabartley/minecraft-volley?logo=github&label=Stars&color=4078c0" alt="GitHub stars"></a>
+<a href="https://github.com/grabartley/minecraft-volley/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="License: MIT"></a>
+<a href="https://ko-fi.com/grahambartley"><img src="https://img.shields.io/badge/Ko--fi-Support_Volley-009078?logo=ko-fi&logoColor=white" alt="Ko-fi"></a>
 </p>
 
 <p align="center">
@@ -17,18 +17,18 @@
 </a>
 </p>
 
-Not Enough Arrows adds sixty-three craftable arrows, each with its own effect. They cover travel,
+Volley adds sixty-three craftable arrows, each with its own effect. They cover travel,
 fighting, farming, exploring and helping friends, and a few are just for fun. They all fire from a
 bow, a crossbow or a dispenser, and they all work in multiplayer.
 
 > **Alpha:** the mod is still in alpha, and feedback is very welcome.
-> [Open an issue](https://github.com/grabartley/minecraft-not-enough-arrows/issues/new) and tell me
+> [Open an issue](https://github.com/grabartley/minecraft-volley/issues/new) and tell me
 > what you think.
 
 ## Installing
 
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) for Minecraft 1.21.1.
-2. Put Not Enough Arrows and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
+2. Put Volley and [Fabric API](https://modrinth.com/mod/fabric-api) in your `mods` folder.
 3. Craft eight arrows around a tripwire hook to make grapple arrows.
 4. Fire one from a bow at the side of something tall.
 
@@ -208,22 +208,22 @@ crafting table.
 
 ## Settings
 
-You can change settings from the Mod Menu screen, if you have Mod Menu installed, or with `/nea` (or
-`/notenougharrows`). Settings are saved per world. Changing them needs operator permission, which in
+You can change settings from the Mod Menu screen, if you have Mod Menu installed, or with
+`/volley`. Settings are saved per world. Changing them needs operator permission, which in
 single player means cheats are on.
 
 ```
-/nea status                                 show every setting
-/nea config <family> <option> <value>       change one
-/nea config reset                           go back to the defaults
+/volley status                              show every setting
+/volley config <family> <option> <value>    change one
+/volley config reset                        go back to the defaults
 ```
 
 Each part of a setting's name becomes its own word in the command, in lower case, and on/off
 settings take `true` or `false`. For example:
 
 ```
-/nea config explosive gunpowder delayticks 100
-/nea config explosive damageterrain false
+/volley config explosive gunpowder delayticks 100
+/volley config explosive damageterrain false
 ```
 
 The families are `explosive`, `grapple`, `utility`, `physics`, `ender`, `combat`, `control`,
@@ -378,11 +378,11 @@ The three lists, the gravity arrow's exclusions, the prospector arrow's blocks, 
 arrow's undeliverable items, are edited rather than replaced:
 
 ```
-/nea config physics gravityblockexclusions add <id>
-/nea config physics gravityblockexclusions remove <id>
-/nea config physics gravityblockexclusions clear
-/nea config discovery prospector blocks add <id>
-/nea config social courier undeliverable add <id>
+/volley config physics gravityblockexclusions add <id>
+/volley config physics gravityblockexclusions remove <id>
+/volley config physics gravityblockexclusions clear
+/volley config discovery prospector blocks add <id>
+/volley config social courier undeliverable add <id>
 ```
 
 `remove <id>` and `clear` work the same way on every list.
@@ -425,13 +425,13 @@ Add `-Precipe_viewers=true` to `runClient` to load JEI and EMI as well.
 
 ## More detail
 
-- [`docs/mechanics.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/mechanics.md) explains exactly how every arrow behaves
-- [`docs/prd.md`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/prd.md) lists what the mod does and what it leaves out on purpose
-- [`docs/adr/`](https://github.com/grabartley/minecraft-not-enough-arrows/blob/main/docs/adr/) records why it is built the way it is
+- [`docs/mechanics.md`](https://github.com/grabartley/minecraft-volley/blob/main/docs/mechanics.md) explains exactly how every arrow behaves
+- [`docs/prd.md`](https://github.com/grabartley/minecraft-volley/blob/main/docs/prd.md) lists what the mod does and what it leaves out on purpose
+- [`docs/adr/`](https://github.com/grabartley/minecraft-volley/blob/main/docs/adr/) records why it is built the way it is
 
 ## License and support
 
-Not Enough Arrows is MIT licensed, and all of its art is original.
+Volley is MIT licensed, and all of its art is original.
 
 If you enjoy the mod, a star on GitHub or a coffee on Ko-fi is much appreciated.
 

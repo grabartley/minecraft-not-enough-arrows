@@ -13,7 +13,7 @@ Several arrows already play vanilla sounds whose identifiers belong to Minecraft
 
 ## Decision
 
-The mod's category is its namespace. Every sound the mod plays is declared in `ModSounds` under a `not-enough-arrows:` identifier. Where the sound is a vanilla one, its `sounds.json` entry is an alias that plays the vanilla sound's files and keeps the vanilla subtitle. The party arrow's records are aliased the same way, one per disc.
+The mod's category is its namespace. Every sound the mod plays is declared in `ModSounds` under a `volley:` identifier. Where the sound is a vanilla one, its `sounds.json` entry is an alias that plays the vanilla sound's files and keeps the vanilla subtitle. The party arrow's records are aliased the same way, one per disc.
 
 Two settings scale those sounds and nothing else. `sound.volume` is a server setting an operator controls, and it reaches every client with the rest of the synced server config. `client.modSoundVolume` is each player's own. Each client multiplies a mod sound's loudness by both, in `SoundSystem`, after vanilla has clamped the sound's loudness to its 0 to 1 range.
 

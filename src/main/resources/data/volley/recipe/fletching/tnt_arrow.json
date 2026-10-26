@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "volley:gunpowder_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:tnt"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:tnt_arrow",
+    "count": 12
+  }
+}

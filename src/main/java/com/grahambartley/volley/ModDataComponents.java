@@ -1,0 +1,37 @@
+package com.grahambartley.volley;
+
+import com.grahambartley.volley.social.CourierPayload;
+import com.grahambartley.volley.tint.ArrowChoice;
+import net.minecraft.component.ComponentType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.util.Identifier;
+
+public final class ModDataComponents {
+  public static final Identifier ARROW_CHOICE_ID = Identifier.of(Volley.MOD_ID, "arrow_choice");
+  public static final ComponentType<ArrowChoice> ARROW_CHOICE =
+      Registry.register(
+          Registries.DATA_COMPONENT_TYPE,
+          ARROW_CHOICE_ID,
+          ComponentType.<ArrowChoice>builder()
+              .codec(ArrowChoice.CODEC)
+              .packetCodec(ArrowChoice.PACKET_CODEC)
+              .build());
+
+  public static final Identifier COURIER_PAYLOAD_ID =
+      Identifier.of(Volley.MOD_ID, "courier_payload");
+  public static final ComponentType<CourierPayload> COURIER_PAYLOAD =
+      Registry.register(
+          Registries.DATA_COMPONENT_TYPE,
+          COURIER_PAYLOAD_ID,
+          ComponentType.<CourierPayload>builder()
+              .codec(CourierPayload.CODEC)
+              .packetCodec(CourierPayload.PACKET_CODEC)
+              .build());
+
+  private ModDataComponents() {}
+
+  public static void register() {
+    Volley.LOGGER.debug("Registered data components {} and {}", ARROW_CHOICE, COURIER_PAYLOAD);
+  }
+}

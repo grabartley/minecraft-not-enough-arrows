@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_party_arrow",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:music_disc_wait"
+    }
+  },
+  "result": {
+    "id": "volley:party_arrow",
+    "count": 8,
+    "components": {
+      "volley:arrow_choice": "wait"
+    }
+  }
+}

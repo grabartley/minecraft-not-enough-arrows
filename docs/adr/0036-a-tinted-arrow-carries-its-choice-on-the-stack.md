@@ -13,7 +13,7 @@ Vanilla has already solved the same problem. A tipped arrow is one item and one 
 
 ## Decision
 
-A tinted arrow is one item and one entity type, and its choice is the mod's own data component, `not-enough-arrows:arrow_choice`, holding the choice's key as a plain string. Each tinted arrow declares a palette: the choices it offers, the item that makes each one, the colour and name it shows, and a default.
+A tinted arrow is one item and one entity type, and its choice is the mod's own data component, `volley:arrow_choice`, holding the choice's key as a plain string. Each tinted arrow declares a palette: the choices it offers, the item that makes each one, the colour and name it shows, and a default.
 
 The component stores the key the recipe named and nothing else. Colour, name, and ingredient are looked up in the palette when needed, so a palette can be retuned without rewriting anyone's saved stacks. A key the palette does not know, and a stack with no key at all, both read as the default, and the unknown key is left on the stack rather than overwritten. A stack saved by a later version with a choice this version lacks therefore still loads, still fires, and is still handed back intact.
 

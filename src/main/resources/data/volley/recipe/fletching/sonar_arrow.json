@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:echo_shard"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:sonar_arrow",
+    "count": 12
+  }
+}

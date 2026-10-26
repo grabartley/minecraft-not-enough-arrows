@@ -194,8 +194,8 @@ jobs:
         with:
           tag_name: v${{ steps.semver.outputs.new_version }}
           files: |
-            build/libs/not-enough-arrows-${{ steps.semver.outputs.new_version }}.jar
-            build/libs/not-enough-arrows-${{ steps.semver.outputs.new_version }}-sources.jar
+            build/libs/volley-${{ steps.semver.outputs.new_version }}.jar
+            build/libs/volley-${{ steps.semver.outputs.new_version }}-sources.jar
           fail_on_unmatched_files: true
           body_path: release-notes.md
           prerelease: ${{ inputs.release_type != 'stable' }}

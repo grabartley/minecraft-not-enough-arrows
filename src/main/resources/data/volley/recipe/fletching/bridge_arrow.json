@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:oak_planks"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:bridge_arrow",
+    "count": 12
+  }
+}

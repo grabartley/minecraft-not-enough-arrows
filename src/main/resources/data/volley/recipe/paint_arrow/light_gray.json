@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_paint_arrow",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:light_gray_dye"
+    }
+  },
+  "result": {
+    "id": "volley:paint_arrow",
+    "count": 8,
+    "components": {
+      "volley:arrow_choice": "light_gray"
+    }
+  }
+}
