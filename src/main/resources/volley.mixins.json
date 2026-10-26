@@ -1,0 +1,26 @@
+{
+	"required": true,
+	"package": "com.grahambartley.volley.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"LevelStorageMixin",
+		"MobEntityTargetMixin",
+		"BatEntityFlightMixin",
+		"SlimeRandomLookGoalMixin",
+		"WorldChunkStructureMixin",
+		"ServerCommonNetworkHandlerMixin",
+		"MobEntityDisguiseMixin",
+		"SlimeEntityDisguiseMixin",
+		"LivingEntityKnockbackMixin",
+		"CreeperEntityDisguiseMixin",
+		"CraftingResultSlotMixin",
+		"CrafterBlockMixin",
+		"PersistentProjectileEntityDeliveryMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

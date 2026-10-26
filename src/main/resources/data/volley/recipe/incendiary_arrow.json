@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "AAA",
+    "AFA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "F": {
+      "item": "minecraft:fire_charge"
+    }
+  },
+  "result": {
+    "id": "volley:incendiary_arrow",
+    "count": 8
+  }
+}

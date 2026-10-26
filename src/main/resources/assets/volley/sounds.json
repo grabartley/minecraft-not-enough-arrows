@@ -1,0 +1,911 @@
+{
+  "countdown_beep": {
+    "subtitle": "subtitles.volley.countdown_beep",
+    "sounds": [
+      {
+        "name": "volley:countdown_beep",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "smoke_arrow_impact": {
+    "subtitle": "subtitles.volley.smoke_arrow_impact",
+    "sounds": [
+      {
+        "name": "volley:smoke_arrow_impact",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "repel_arrow_impact": {
+    "subtitle": "subtitles.volley.repel_arrow_impact",
+    "sounds": [
+      {
+        "name": "volley:repel_arrow_impact",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "taunt_arrow_impact": {
+    "subtitle": "subtitles.block.note_block.note",
+    "sounds": [
+      {
+        "name": "minecraft:note/bell",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "disarm_arrow_impact": {
+    "subtitle": "subtitles.volley.disarm_arrow_impact",
+    "sounds": [
+      {
+        "name": "volley:disarm_arrow_impact",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "allegiance_arrow_impact": {
+    "subtitle": "subtitles.volley.allegiance_arrow_impact",
+    "sounds": [
+      {
+        "name": "volley:allegiance_arrow_impact",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ricochet_arrow_bounce": {
+    "subtitle": "subtitles.entity.arrow.hit",
+    "sounds": [
+      {
+        "name": "minecraft:random/bowhit1",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/bowhit2",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/bowhit3",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/bowhit4",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "ender_teleport": {
+    "subtitle": "subtitles.entity.enderman.teleport",
+    "sounds": [
+      {
+        "name": "minecraft:mob/endermen/portal",
+        "volume": 0.292,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/endermen/portal2",
+        "volume": 0.292,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "frost_arrow_freeze_crack": {
+    "subtitle": "subtitles.volley.frost_arrow_freeze_crack",
+    "sounds": [
+      {
+        "name": "volley:frost_arrow_freeze_crack",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "frost_arrow_freeze_settle": {
+    "subtitle": "subtitles.block.generic.place",
+    "sounds": [
+      {
+        "name": "minecraft:block/powder_snow/break1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break4",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break5",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break6",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break7",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "frost_arrow_thaw": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "minecraft:block/powder_snow/break1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break4",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break5",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break6",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/powder_snow/break7",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "explosive_arrow_blast": {
+    "subtitle": "subtitles.entity.generic.explode",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "wind_arrow_burst": {
+    "subtitle": "subtitles.entity.wind_charge.wind_burst",
+    "sounds": [
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst1",
+        "volume": 0.376,
+        "pitch": 1.25,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst2",
+        "volume": 0.376,
+        "pitch": 1.25,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:entity/wind_charge/wind_burst3",
+        "volume": 0.376,
+        "pitch": 1.25,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "drill_arrow_bore": {
+    "subtitle": "subtitles.block.generic.break",
+    "sounds": [
+      {
+        "name": "minecraft:dig/stone1",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/stone2",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/stone3",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/stone4",
+        "volume": 0.65,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "pillar_arrow_rise": {
+    "subtitle": "subtitles.volley.pillar_arrow_rise",
+    "sounds": [
+      {
+        "name": "volley:pillar_arrow_rise",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "drain_arrow_absorb": {
+    "subtitle": "subtitles.volley.drain_arrow_absorb",
+    "sounds": [
+      {
+        "name": "volley:drain_arrow_absorb",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "freeze_arrow_freeze": {
+    "subtitle": "subtitles.volley.freeze_arrow_freeze",
+    "sounds": [
+      {
+        "name": "volley:freeze_arrow_freeze",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "blossom_arrow_bloom": {
+    "subtitle": "subtitles.item.bone_meal.use",
+    "sounds": [
+      {
+        "name": "minecraft:item/bonemeal/bonemeal1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal1",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal1",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal2",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal2",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal3",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal3",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal4",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal4",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal4",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal5",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal5",
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/bonemeal/bonemeal5",
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "harvest_arrow_reap": {
+    "subtitle": "subtitles.volley.harvest_arrow_reap",
+    "sounds": [
+      {
+        "name": "volley:harvest_arrow_reap",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "till_arrow_till": {
+    "subtitle": "subtitles.item.hoe.till",
+    "sounds": [
+      {
+        "name": "minecraft:item/hoe/till1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/hoe/till2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/hoe/till3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:item/hoe/till4",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shear_arrow_carve": {
+    "subtitle": "subtitles.block.pumpkin.carve",
+    "sounds": [
+      {
+        "name": "minecraft:block/pumpkin/carve1",
+        "volume": 0.593,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/pumpkin/carve2",
+        "volume": 0.593,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shear_arrow_hive": {
+    "subtitle": "subtitles.block.beehive.shear",
+    "sounds": [
+      {
+        "name": "minecraft:block/beehive/shear",
+        "volume": 0.67,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/shear",
+        "volume": 0.67,
+        "pitch": 0.8,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/shear",
+        "volume": 0.67,
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "bee_arrow_release": {
+    "subtitle": "subtitles.block.beehive.exit",
+    "sounds": [
+      {
+        "name": "minecraft:block/beehive/exit",
+        "volume": 0.68,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/exit",
+        "volume": 0.68,
+        "pitch": 0.9,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:block/beehive/exit",
+        "volume": 0.68,
+        "pitch": 1.1,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shock_arrow_thunder": {
+    "subtitle": "subtitles.volley.shock_arrow_thunder",
+    "sounds": [
+      {
+        "name": "volley:shock_arrow_thunder",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "shock_arrow_impact": {
+    "subtitle": "subtitles.entity.lightning_bolt.impact",
+    "sounds": [
+      {
+        "name": "minecraft:random/explode1",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/explode2",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/explode3",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:random/explode4",
+        "volume": 0.281,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "zipline_arrow_string": {
+    "subtitle": "subtitles.volley.zipline_arrow_string",
+    "sounds": [
+      {
+        "name": "volley:zipline_arrow_string",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "updraft_arrow_open": {
+    "subtitle": "subtitles.volley.updraft_arrow_open",
+    "sounds": [
+      {
+        "name": "volley:updraft_arrow_open",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "trampoline_arrow_launch": {
+    "subtitle": "subtitles.volley.trampoline_arrow_launch",
+    "sounds": [
+      {
+        "name": "minecraft:mob/slime/big1",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/slime/big2",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/slime/big3",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:mob/slime/big4",
+        "volume": 0.485,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "beacon_arrow_raise": {
+    "subtitle": "subtitles.volley.beacon_arrow_raise",
+    "sounds": [
+      {
+        "name": "volley:beacon_arrow_raise",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "prospector_arrow_pulse": {
+    "subtitle": "subtitles.volley.prospector_arrow_pulse",
+    "sounds": [
+      {
+        "name": "volley:prospector_arrow_pulse",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "sonar_arrow_pulse": {
+    "subtitle": "subtitles.volley.sonar_arrow_pulse",
+    "sounds": [
+      {
+        "name": "volley:sonar_arrow_pulse",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tripwire_arrow_set": {
+    "subtitle": "subtitles.volley.tripwire_arrow_set",
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "volume": 0.493,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "tripwire_arrow_alert": {
+    "subtitle": "subtitles.volley.tripwire_arrow_alert",
+    "sounds": [
+      {
+        "name": "volley:tripwire_arrow_alert",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "chicken_arrow_hatch": {
+    "subtitle": "subtitles.volley.chicken_arrow_hatch",
+    "sounds": [
+      {
+        "name": "minecraft:mob/chicken/plop",
+        "volume": 0.652,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "puffer_arrow_inflate": {
+    "subtitle": "subtitles.volley.puffer_arrow_inflate",
+    "sounds": [
+      {
+        "name": "volley:puffer_arrow_inflate",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "puffer_arrow_deflate": {
+    "subtitle": "subtitles.volley.puffer_arrow_deflate",
+    "sounds": [
+      {
+        "name": "minecraft:entity/pufferfish/blow_out1",
+        "volume": 0.564,
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:entity/pufferfish/blow_out2",
+        "volume": 0.564,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "stink_arrow_release": {
+    "subtitle": "subtitles.volley.stink_arrow_release",
+    "sounds": [
+      {
+        "name": "volley:stink_arrow_release",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "boomerang_arrow_return": {
+    "subtitle": "subtitles.volley.boomerang_arrow_return",
+    "sounds": [
+      {
+        "name": "volley:boomerang_arrow_return",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "polymorph_arrow_change": {
+    "subtitle": "subtitles.volley.polymorph_arrow_change",
+    "sounds": [
+      {
+        "name": "volley:polymorph_arrow_change",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "polymorph_arrow_restore": {
+    "subtitle": "subtitles.volley.polymorph_arrow_restore",
+    "sounds": [
+      {
+        "name": "volley:polymorph_arrow_restore",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "courier_arrow_deliver": {
+    "subtitle": "subtitles.volley.courier_arrow_deliver",
+    "sounds": [
+      {
+        "name": "volley:courier_arrow_deliver",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "snow_golem_arrow_melt": {
+    "subtitle": "subtitles.volley.snow_golem_arrow_melt",
+    "sounds": [
+      {
+        "name": "minecraft:dig/snow1",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/snow2",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/snow3",
+        "attenuation_distance": 48
+      },
+      {
+        "name": "minecraft:dig/snow4",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "magnet_arrow_pull": {
+    "subtitle": "subtitles.volley.magnet_arrow_pull",
+    "sounds": [
+      {
+        "name": "volley:magnet_arrow_pull",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "lifesteal_arrow_drain": {
+    "subtitle": "subtitles.volley.lifesteal_arrow_drain",
+    "sounds": [
+      {
+        "name": "volley:lifesteal_arrow_drain",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "milk_arrow_wash": {
+    "subtitle": "subtitles.volley.milk_arrow_wash",
+    "sounds": [
+      {
+        "name": "volley:milk_arrow_wash",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "volley_arrow_split": {
+    "subtitle": "subtitles.volley.volley_arrow_split",
+    "sounds": [
+      {
+        "name": "volley:volley_arrow_split",
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_13": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/13",
+        "volume": 0.225,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_cat": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/cat",
+        "volume": 0.27,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_blocks": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/blocks",
+        "volume": 0.428,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_chirp": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/chirp",
+        "volume": 0.31,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_far": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/far",
+        "volume": 0.461,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_mall": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/mall",
+        "volume": 0.461,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_mellohi": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/mellohi",
+        "volume": 0.292,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_stal": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/stal",
+        "volume": 0.338,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_strad": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/strad",
+        "volume": 0.356,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_ward": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/ward",
+        "volume": 0.413,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_11": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/11",
+        "volume": 0.313,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_wait": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/wait",
+        "volume": 0.565,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_otherside": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/otherside",
+        "volume": 0.248,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_5": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/5",
+        "volume": 0.235,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_pigstep": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/pigstep",
+        "volume": 0.265,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_relic": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/relic",
+        "volume": 0.278,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_creator": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/creator",
+        "volume": 0.37,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_creator_music_box": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/creator_music_box",
+        "volume": 0.538,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "party_arrow_precipice": {
+    "subtitle": "subtitles.volley.party_arrow_disc",
+    "sounds": [
+      {
+        "name": "minecraft:records/precipice",
+        "volume": 0.402,
+        "stream": true,
+        "attenuation_distance": 48
+      }
+    ]
+  },
+  "fletching_station_select": {
+    "sounds": [
+      {
+        "name": "minecraft:ui.stonecutter.select_recipe",
+        "type": "event"
+      }
+    ]
+  }
+}

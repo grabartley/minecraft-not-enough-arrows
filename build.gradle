@@ -37,10 +37,10 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
-	accessWidenerPath = file("src/main/resources/not-enough-arrows.accesswidener")
+	accessWidenerPath = file("src/main/resources/volley.accesswidener")
 
 	mods {
-		"not-enough-arrows" {
+		"volley" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -188,17 +188,17 @@ tasks.register("verifyMainSourceSideSafety") {
 	doLast {
 		def disallowedPatterns = [
 			"net.minecraft.client.",
-			"com.grahambartley.notenougharrows.client.",
-			"com.grahambartley.notenougharrows.compat.",
-			"com.grahambartley.notenougharrows.hud.",
-			"com.grahambartley.notenougharrows.render.",
-			"com.grahambartley.notenougharrows.sound.",
-			"com.grahambartley.notenougharrows.model.",
-			"com.grahambartley.notenougharrows.screen.",
-			"com.grahambartley.notenougharrows.mixin.client.",
-			"com.grahambartley.notenougharrows.NotEnoughArrowsClient",
-			"com.grahambartley.notenougharrows.NotEnoughArrowsModMenu",
-			"com.grahambartley.notenougharrows.network.ModNetworkingClient"
+			"com.grahambartley.volley.client.",
+			"com.grahambartley.volley.compat.",
+			"com.grahambartley.volley.hud.",
+			"com.grahambartley.volley.render.",
+			"com.grahambartley.volley.sound.",
+			"com.grahambartley.volley.model.",
+			"com.grahambartley.volley.screen.",
+			"com.grahambartley.volley.mixin.client.",
+			"com.grahambartley.volley.VolleyClient",
+			"com.grahambartley.volley.VolleyModMenu",
+			"com.grahambartley.volley.network.ModNetworkingClient"
 		]
 		def violations = []
 
@@ -311,9 +311,9 @@ spotless {
 }
 
 modrinth {
-	projectId = 'not-enough-arrows'
+	projectId = 'volley'
 	versionNumber = project.version.toString()
-	versionName = "Not Enough Arrows v${project.version}"
+	versionName = "Volley v${project.version}"
 	versionType = System.getenv('MOD_RELEASE_TYPE') ?: 'alpha'
 	uploadFile = remapJar
 	gameVersions = ['1.21.1']

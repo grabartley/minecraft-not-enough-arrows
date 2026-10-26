@@ -1,0 +1,23 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:music_disc_creator_music_box"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:party_arrow",
+    "count": 12,
+    "components": {
+      "volley:arrow_choice": "creator_music_box"
+    }
+  }
+}

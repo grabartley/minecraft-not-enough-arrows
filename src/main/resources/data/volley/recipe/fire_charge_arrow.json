@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "TTT",
+    "TFT",
+    "TTT"
+  ],
+  "key": {
+    "T": {
+      "item": "volley:tnt_arrow"
+    },
+    "F": {
+      "item": "minecraft:fire_charge"
+    }
+  },
+  "result": {
+    "id": "volley:fire_charge_arrow",
+    "count": 8
+  }
+}

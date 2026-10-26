@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:powder_snow_bucket"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:frost_arrow",
+    "count": 12
+  }
+}

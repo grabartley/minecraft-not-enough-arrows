@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:vine"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:vine_arrow",
+    "count": 12
+  }
+}

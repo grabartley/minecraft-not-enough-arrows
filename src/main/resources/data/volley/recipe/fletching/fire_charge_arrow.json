@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "volley:tnt_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:fire_charge"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:fire_charge_arrow",
+    "count": 12
+  }
+}

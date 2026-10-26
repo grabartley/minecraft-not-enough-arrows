@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_sapling_arrow",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:flowering_azalea"
+    }
+  },
+  "result": {
+    "id": "volley:sapling_arrow",
+    "count": 8,
+    "components": {
+      "volley:arrow_choice": "flowering_azalea"
+    }
+  }
+}

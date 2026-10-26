@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "AAA",
+    "ALA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "L": {
+      "item": "minecraft:lead"
+    }
+  },
+  "result": {
+    "id": "volley:rope_arrow",
+    "count": 8
+  }
+}

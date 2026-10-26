@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "volley:glow_ink_arrow"
+    },
+    "C": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "id": "volley:tracer_arrow",
+    "count": 8
+  }
+}

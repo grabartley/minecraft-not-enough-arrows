@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "AAA",
+    "APA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "P": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "result": {
+    "id": "volley:ender_pearl_arrow",
+    "count": 8
+  }
+}
