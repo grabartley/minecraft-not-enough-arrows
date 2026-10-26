@@ -344,7 +344,7 @@ tasks.register('curseforge', TaskPublishCurseForge) {
 			throw new GradleException('Set the CURSEFORGE_TOKEN environment variable to a CurseForge API token.')
 		}
 		def mainFile = upload(projectId.toLong(), remapJar)
-		mainFile.displayName = "Not Enough Arrows v${project.version}"
+		mainFile.displayName = "Volley v${project.version}"
 		mainFile.releaseType = System.getenv('MOD_RELEASE_TYPE') ?: 'alpha'
 		mainFile.changelogType = 'markdown'
 		mainFile.changelog = rootProject.file('release-notes.md').exists()
