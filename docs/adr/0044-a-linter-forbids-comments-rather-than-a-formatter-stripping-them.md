@@ -43,7 +43,7 @@ The test proves the **query**, not the **wiring**. Repointing `checkstyle.config
 
 ## Consequences
 
-A comment cannot reach `main`. It fails locally on `./gradlew check` and in CI, at `file:line:column`, tagged `[NoComments]`, with the violation message naming the standard and pointing at this directory for where reasoning belongs instead.
+A comment cannot reach `main`. It fails locally on `./gradlew check` and in CI, at `file:line`, tagged `[NoComments]`, with the violation message naming the standard and pointing at this directory for where reasoning belongs instead.
 
 The drawbacks accepted:
 

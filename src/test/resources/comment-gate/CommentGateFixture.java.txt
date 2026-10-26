@@ -1,4 +1,4 @@
-package com.grahambartley.totalstorage;
+package com.grahambartley.notenougharrows;
 
 /** Javadoc on the type. */
 public final class CommentGateFixture {
