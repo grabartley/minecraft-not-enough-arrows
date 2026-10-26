@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "volley:ender_pearl_arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:fermented_spider_eye"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:recall_arrow",
+    "count": 12
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "PPP",
+    "PEP",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "volley:ender_pearl_arrow"
+    },
+    "E": {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  },
+  "result": {
+    "id": "volley:recall_arrow",
+    "count": 8
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:milk_bucket"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:milk_arrow",
+    "count": 12
+  }
+}

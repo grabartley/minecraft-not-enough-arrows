@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "volley:item/sapling_arrow_head",
+    "layer1": "volley:item/sapling_arrow"
+  }
+}

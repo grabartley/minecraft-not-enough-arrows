@@ -1,0 +1,23 @@
+{
+  "type": "volley:fletching",
+  "ingredients": [
+    {
+      "ingredient": {
+        "item": "minecraft:arrow"
+      },
+      "count": 8
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:brown_dye"
+      }
+    }
+  ],
+  "result": {
+    "id": "volley:paint_arrow",
+    "count": 12,
+    "components": {
+      "volley:arrow_choice": "brown"
+    }
+  }
+}

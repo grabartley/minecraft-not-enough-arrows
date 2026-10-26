@@ -1,8 +1,8 @@
-# Not Enough Arrows: Product Requirements
+# Volley: Product Requirements
 
 ## How To Read This Document
 
-This document says **what Not Enough Arrows is**: which player goals it serves, who is allowed to do what, which side of the client and server boundary enforces each rule, and what the mod deliberately does not do. Every requirement carries a stable identifier so it can be cited from an issue, a commit, or a review.
+This document says **what Volley is**: which player goals it serves, who is allowed to do what, which side of the client and server boundary enforces each rule, and what the mod deliberately does not do. Every requirement carries a stable identifier so it can be cited from an issue, a commit, or a review.
 
 It holds **no status**. Nothing here says what is built, in progress, or blocked, and no issue is linked as a progress pointer. Progress lives on the project board. A requirement belongs here whether it shipped a year ago or has not been started, because both are equally part of what the mod is. If merging a pull request would require editing this document, something in it is status and should be taken out.
 
@@ -20,7 +20,7 @@ Meanwhile the fletching table sits in villages doing nothing. It has no interfac
 
 ### What The Mod Is
 
-Not Enough Arrows turns the bow into a toolkit. It adds sixty-three craftable arrows that carry an effect on impact instead of, or alongside, damage: arrows that move the player, arrows that move the world, arrows that shape terrain, tend a farm, reveal what is there, take a creature out of a fight, or simply make something happen for the sake of it. Each is crafted from ordinary materials in the shape players already know from tipped arrows, and each works everywhere a vanilla arrow works, including crossbows and dispensers. It also gives the fletching table the interface it never had, as a station that offers the same arrows at a better exchange rate.
+Volley turns the bow into a toolkit. It adds sixty-three craftable arrows that carry an effect on impact instead of, or alongside, damage: arrows that move the player, arrows that move the world, arrows that shape terrain, tend a farm, reveal what is there, take a creature out of a fight, or simply make something happen for the sake of it. Each is crafted from ordinary materials in the shape players already know from tipped arrows, and each works everywhere a vanilla arrow works, including crossbows and dispensers. It also gives the fletching table the interface it never had, as a station that offers the same arrows at a better exchange rate.
 
 The size is the point. A bow with three options is a bow with a favourite; a bow with sixty-three is a bow a player packs for a trip.
 
@@ -146,9 +146,9 @@ Out of the first release, deliberately.
 | **Carrier** | The entity a fuse is tracked against: the arrow entity when it embedded in a block, or the struck mob when it hit one |
 | **Blast** | What a fuse dispatches on expiry. Each explosive tier decides for itself what its blast means |
 | **Fletching station** | The interface attached to the vanilla `minecraft:fletching_table` block, offering this mod's arrows at a better exchange rate than a crafting table |
-| **Fletching recipe** | A recipe of type `not-enough-arrows:fletching`: an unordered list of one to nine counted ingredients and one result stack |
-| **Server config** | The authoritative, per-world settings record, persisted at `<world>/not-enough-arrows/server-config.json` and synced to clients |
-| **Client state** | Per-installation interface preferences, persisted at `<config>/not-enough-arrows/client-state.json`, never sent anywhere |
+| **Fletching recipe** | A recipe of type `volley:fletching`: an unordered list of one to nine counted ingredients and one result stack |
+| **Server config** | The authoritative, per-world settings record, persisted at `<world>/volley/server-config.json` and synced to clients |
+| **Client state** | Per-installation interface preferences, persisted at `<config>/volley/client-state.json`, never sent anywhere |
 | **Option catalog** | The single description of every setting, from which the status output and the settings screen are both built |
 
 ### Geometry
@@ -1022,8 +1022,8 @@ Access control is stated in one place because it is the difference between a too
 |---|---|---|---|---|---|
 | Craft any arrow | Yes | Yes | Yes | Yes, it is server-side recipe data | n/a |
 | Fire any arrow | Yes | Yes | Yes | Yes | Yes |
-| Run `/notenougharrows`, or its `/nea` alias | Yes | Yes | Yes | Yes | n/a |
-| Run `/notenougharrows status`, or its `/nea` alias | Yes | Yes | Yes | Yes | n/a |
+| Run `/volley` | Yes | Yes | Yes | Yes | n/a |
+| Run `/volley status` | Yes | Yes | Yes | Yes | n/a |
 | Change any server setting | No | No | Yes | No | n/a |
 | Reset every setting to defaults | No | No | Yes | No | n/a |
 | Change own client preferences | Yes | Yes | Yes | No, there is no client state without the mod | n/a |

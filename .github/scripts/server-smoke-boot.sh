@@ -66,7 +66,7 @@ if (( status != 0 )); then
   exit "$status"
 fi
 
-for marker in 'Not Enough Arrows server config loaded for world' 'All dimensions are saved'; do
+for marker in 'Volley server config loaded for world' 'All dimensions are saved'; do
   if ! grep -q "$marker" "$LOG"; then
     echo "::error::Server log is missing '${marker}'"
     exit 1

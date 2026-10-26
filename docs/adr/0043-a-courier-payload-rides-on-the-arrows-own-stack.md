@@ -15,7 +15,7 @@ A fourth surprise is in the projectile itself. Vanilla throws away an arrow's hi
 
 ## Decision
 
-**The payload is the mod's own data component, `not-enough-arrows:courier_payload`, on the courier arrow's item stack.** It travels into the entity with the stack, is saved with the entity's chunk, and comes back out of it. The entity takes the payload off its stack before it acts on it, on every path, so whatever happens next cannot see it twice. Its `remove` override releases a payload still aboard when the arrow is destroyed or discarded for any reason, and leaves it alone when the arrow is only unloaded or changes dimension, because those save or copy the stack.
+**The payload is the mod's own data component, `volley:courier_payload`, on the courier arrow's item stack.** It travels into the entity with the stack, is saved with the entity's chunk, and comes back out of it. The entity takes the payload off its stack before it acts on it, on every path, so whatever happens next cannot see it twice. Its `remove` override releases a payload still aboard when the arrow is destroyed or discarded for any reason, and leaves it alone when the arrow is only unloaded or changes dimension, because those save or copy the stack.
 
 A payload may not hold a courier arrow anywhere inside it, in a shulker box, a bundle or a charged crossbow, so couriers and containers can never nest without end.
 

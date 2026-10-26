@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "volley:item/courier_arrow"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "volley:loaded": 1
+      },
+      "model": "volley:item/courier_arrow_loaded"
+    }
+  ]
+}

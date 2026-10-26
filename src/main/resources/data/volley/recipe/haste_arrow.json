@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "group": "volley_arrows",
+  "pattern": [
+    "AAA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:arrow"
+    },
+    "C": {
+      "item": "minecraft:sugar"
+    }
+  },
+  "result": {
+    "id": "volley:haste_arrow",
+    "count": 8
+  }
+}

@@ -1,6 +1,6 @@
 # Mechanics
 
-The detailed rules behind every system in Not Enough Arrows: what each arrow does down to its edge cases, how the shared subsystems behave, and where the assets live. [`../README.md`](../README.md) is the short version; this is the long one.
+The detailed rules behind every system in Volley: what each arrow does down to its edge cases, how the shared subsystems behave, and where the assets live. [`../README.md`](../README.md) is the short version; this is the long one.
 
 Why the mod is built this way lives in [`adr/`](adr/), and what it is required to do lives in [`prd.md`](prd.md).
 
@@ -157,7 +157,7 @@ A watcher is an invisible tripwire held by the server. The tripwire arrow sets o
 
 ## Carried Payloads
 
-A carried payload is one item stack riding on an arrow's own item stack, as the `not-enough-arrows:courier_payload` data component. The courier arrow is the only arrow that carries one. Because the payload is part of the stack, it survives everything the stack survives: an inventory, a chest, a chunk unload, a restart, and being fired. [ADR 0043](adr/0043-a-courier-payload-rides-on-the-arrows-own-stack.md) covers why.
+A carried payload is one item stack riding on an arrow's own item stack, as the `volley:courier_payload` data component. The courier arrow is the only arrow that carries one. Because the payload is part of the stack, it survives everything the stack survives: an inventory, a chest, a chunk unload, a restart, and being fired. [ADR 0043](adr/0043-a-courier-payload-rides-on-the-arrows-own-stack.md) covers why.
 
 | Rule | Behaviour |
 |---|---|
@@ -460,7 +460,7 @@ Six arrows that tell you what is somewhere you cannot see: whether it is lit, wh
 | Torch | Placed only where the shooter could have placed one by hand: on a top or side face, into open air, never into water or over grass, never by a shooter in adventure mode, and never where the shooter may not build. A ceiling takes no torch, as a hand-placed torch takes none. Where it cannot go the arrow embeds silently and is recovered. `discovery.torch.enabled` off makes every torch arrow embed. The torch is an ordinary permanent torch, the one permanent light the mod places |
 | Beacon beam | The mod's own `beacon_beam` block: no collision, no light, no item form, no drop, and nothing to aim at, so it can be neither bumped into nor broken by hand, and building into it simply replaces it. It rises up to 64 blocks and stops at the first block that is not air, so it never replaces grass, flowers, snow or water, and never passes through a floor. It is a timed structure, so it is cut short where the shooter may not build and clears away after `discovery.beacon.lifetimeTicks`. It is drawn like a vanilla beacon beam, a straight bright core inside a fainter glow, both scrolling upward, and full bright so it reads at night. What tells it apart from a vanilla beam is not its colour: it is narrower, it rises from open ground with no beacon beneath it, and it clears away. One arrow raises at most one beam, so an arrow that raised one off a creature and pierces on into a wall is spent there. One that could not raise a beam off the creature tries again where it lands |
 | Reveal pulse | The prospector and sonar arrows each fire one pulse at their first impact, as Reveal Pulses above describes. The prospector's reach is `discovery.prospector.radius`, held for `discovery.prospector.durationTicks`. The sonar's reach is `discovery.sonar.radius`, held for `discovery.sonar.durationTicks`. A radius or duration is capped by its setting's maximum |
-| Prospector outline | Only blocks on `discovery.prospector.blocks` are outlined, nearest first, up to 512. The server sends that set once to every player who can see the impact point and to the shooter, and each client draws the edges through terrain, each shared edge once, and forgets them when the duration runs out or its player changes dimension. A player without the mod is sent nothing. An operator decides what counts as worth revealing with `/nea config discovery prospector blocks add`, `remove` and `clear` |
+| Prospector outline | Only blocks on `discovery.prospector.blocks` are outlined, nearest first, up to 512. The server sends that set once to every player who can see the impact point and to the shooter, and each client draws the edges through terrain, each shared edge once, and forgets them when the duration runs out or its player changes dimension. A player without the mod is sent nothing. An operator decides what counts as worth revealing with `/volley config discovery prospector blocks add`, `remove` and `clear` |
 | Sonar outline | Vanilla's glowing effect, the same one the glow ink arrow applies, so every player who can see the creature sees its outline, and its countdown and syncing are vanilla's. The shooter is never marked. Other players in range are, which is what a sonar is for |
 | Tracer path | The server records the positions the arrow actually passed through, up to 256 points and always ending where it landed, and sends them once when it lands to every player with the mod tracking the arrow and to the shooter. Each client draws a flat line along them, hidden by terrain like anything else, and forgets it when its lifetime ends or its player changes dimension. A client never guesses the path for itself. The path lives only in memory, so a tracer whose chunk unloads mid-flight draws only what it flew after its chunk came back |
 | Watcher | The tripwire arrow sets one watcher in the space in front of the face it struck, as Watchers above describes. A watcher needs open space, so a face whose next block is solid sets none, and the arrow is recovered. It lasts `discovery.tripwire.lifetimeTicks` |
@@ -511,7 +511,7 @@ Three arrows aimed at someone or something other than what the shooter is holdin
 | Snow golem | An ordinary vanilla snow golem, owned by nobody, built without its pumpkin so a twelve-arrow craft cannot be sheared back into twelve pumpkins. It fights and dies as any snow golem does. It melts after `social.snowGolem.lifetimeTicks`: its melting time is saved on the golem, so one that was unloaded past its time melts as soon as it loads, and a golem built by hand never melts. It is refused, and the arrow embeds to be picked back up, where a player could not build one: beyond the world border, outside the build limit, without two blocks of room, for a shooter in adventure mode, and inside spawn protection for anyone the server would not let build there (TOGETHER-7, TOGETHER-8) |
 | Magnet | Moves item entities and experience orbs only, never a creature, a vehicle or an arrow (TOGETHER-9). It sets their speed toward the shooter each tick for up to five seconds and stops each one dead when it arrives, so the shooter picks it up under vanilla's rules and a full inventory leaves it at their feet rather than flying past (TOGETHER-10). A pull is held in memory only, so a restart leaves pulled items where they were. A dispensed magnet arrow, with no shooter, pulls nothing (TOGETHER-11) |
 
-The courier, snow golem and magnet arrows play their own sounds, listed under Sounds. Each arrow has its own item sprite and flight texture: an ender chest, a carved pumpkin on a snowball, and a horseshoe magnet. A loaded courier arrow swaps to a second sprite with a tied bundle on the chest's lid, chosen by the `not-enough-arrows:loaded` item model predicate, so a player can see it is carrying something before they fire it.
+The courier, snow golem and magnet arrows play their own sounds, listed under Sounds. Each arrow has its own item sprite and flight texture: an ender chest, a carved pumpkin on a snowball, and a horseshoe magnet. A loaded courier arrow swaps to a second sprite with a tied bundle on the chest's lid, chosen by the `volley:loaded` item model predicate, so a player can see it is carrying something before they fire it.
 
 ## Ricochet Arrow
 
@@ -655,9 +655,9 @@ Like every arrow in the mod, each of the seven is craftable at a crafting table 
 
 ## Sounds
 
-The mod's sound assets live under `assets/not-enough-arrows/sounds/` and are declared in `assets/not-enough-arrows/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
+The mod's sound assets live under `assets/volley/sounds/` and are declared in `assets/volley/sounds.json`, keyed by the same path the `SoundEvent` is declared under in `ModSounds`. Adding a sound is one `REGISTRAR.declare("path")` line in `ModSounds` plus its `sounds.json` entry; `ModSoundsTest` fails if either side is missing the other or an entry has no subtitle.
 
-Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's pitch spread and the mod's shared loudness. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `not-enough-arrows:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
+Apart from the two client-side sounds below, every sound the mod plays is played server-side through `ModSoundPlayer`, which reaches every player in range. Explosions go through `ModExplosion`, which creates them silent and plays their sound the same way, at vanilla's pitch spread and the mod's shared loudness. Two kinds of sound start on the client. The fletching station's click is a menu sound only the clicking player hears. The shock arrow's flash is the mod's own `shock_bolt`, a vanilla lightning bolt under the mod's name, and each client swaps that bolt's thunder and impact for the mod's aliases, so ordinary lightning keeps vanilla's. Every sound carries a `volley:` identifier, even when what it plays is a vanilla sound, because that namespace is how each client recognises the mod's sounds and scales them by `sound.volume` and `client.modSoundVolume`. The scaling happens after vanilla clamps a sound's loudness, so turning the mod down makes it quieter without shortening how far it carries. Minecraft's sound categories are a fixed list with fixed sliders, so the namespace is the mod's category: turning either setting down quietens the mod and leaves every other sound alone. [ADR 0035](adr/0035-the-mods-sound-category-is-its-namespace.md) covers why.
 
 An arrow declares every sound its effect plays on its `ArrowDefinition`, which covers the impact sound IDENT-7 asks for. Two arrows may only share one if both declare the same shared system, which is how the three explosive tiers share the countdown beep and the blast (IDENT-9). The sound gametests fail when a declared sound is not registered or when two unrelated arrows share one. They check what an arrow declares, not what it plays, so an arrow that plays a new sound still has to declare it.
 
@@ -718,7 +718,7 @@ Every mod sound follows one rule, so the mod's own sliders, `sound.volume` and `
 
 - **One reach.** `SoundRegistrar` declares every sound with the same fixed reach of 48 blocks, so the server sends it that far whatever volume it is played at. That is three times vanilla's usual 16, so a player can hear an arrow's effect resolve out of sight (IDENT-7).
 - **One fade.** Every world sound's files in `sounds.json` carry an `attenuation_distance` of 48, so the client fades it out exactly where the server stops sending it.
-- **Never above full volume.** The client's `SoundSystemMixin` caps every `not-enough-arrows:` sound at volume one, whoever started it, the server or the client. Above one, the client would clamp volume times the category slider to one, so the sliders would stop turning the sound down, and the fade would stretch past the reach. `explosive.beepVolume` runs from zero to one for the same reason.
+- **Never above full volume.** The client's `SoundSystemMixin` caps every `volley:` sound at volume one, whoever started it, the server or the client. Above one, the client would clamp volume times the category slider to one, so the sliders would stop turning the sound down, and the fade would stretch past the reach. `explosive.beepVolume` runs from zero to one for the same reason.
 - **One loudness.** Every sound is mastered at or below the countdown beep. The mod's own assets are made that way, with the watcher's chirp the quietest of them so it does not startle in a cave. A sound backed by vanilla lists vanilla's own sound files rather than the event, because Minecraft ignores `attenuation_distance` on an event reference. Where a vanilla file is louder than the beep, its entry turns it down with a `volume` below one, and that includes explosions, wind bursts, lightning and the party arrow's records. Each trim is the vanilla file's volume scaled so its loudest 50 milliseconds and its loudest sample sit at 95 percent of the beep's.
 
 Because every sound shares the beep's reach, fade and loudness ceiling, no sound can drown the beep at any distance (A11Y-3). `ModSoundsTest` fails if any world sound fades anywhere but its reach, if an entry boosts a sound above full volume, or if a mod asset decodes louder than the beep. The fletching station's menu click is the one exception: it is an interface sound with no position, heard only by the player clicking.
@@ -729,7 +729,7 @@ Every sound asset is mono. Minecraft only applies distance attenuation and stere
 
 ## Textures
 
-Texture assets live under `assets/not-enough-arrows/textures/`, laid out so a texture sits in `item/`, `block/`, `entity/arrow/`, or `gui/container/` according to what draws it. The fletching station screen's texture is client-only, so it ships from the client resources rather than beside the rest. The PNG is the source of truth and the thing that gets edited.
+Texture assets live under `assets/volley/textures/`, laid out so a texture sits in `item/`, `block/`, `entity/arrow/`, or `gui/container/` according to what draws it. The fletching station screen's texture is client-only, so it ships from the client resources rather than beside the rest. The PNG is the source of truth and the thing that gets edited.
 
 | Texture | Used for |
 |---|---|
@@ -928,8 +928,8 @@ The mod keeps two separate stores, and which one a setting lives in decides who 
 
 | Store | Location | Owner | Reaches clients by |
 |---|---|---|---|
-| Server config | `<world>/not-enough-arrows/server-config.json` | Server operator, per world | Sync on join and on change |
-| Client state | `<config>/not-enough-arrows/client-state.json` | The player, per installation | Never sent anywhere |
+| Server config | `<world>/volley/server-config.json` | Server operator, per world | Sync on join and on change |
+| Client state | `<config>/volley/client-state.json` | The player, per installation | Never sent anywhere |
 
 Server config decides gameplay and is authoritative. It is written into the world save the moment it changes, so it survives a restart, and a second world on the same server carries its own settings rather than inheriting the first world's. Client state holds interface preferences only, so editing it changes nothing another player can observe. Either file falls back to defaults if it is missing or malformed, keeping a copy of the broken file beside it rather than overwriting it.
 
@@ -955,7 +955,7 @@ The server checks operator permission again when the update arrives, so a client
 
 ## Fletching Recipes
 
-The fletching table station has its own recipe type, `not-enough-arrows:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
+The fletching table station has its own recipe type, `volley:fletching`, so the station can offer this mod's arrows at a better exchange rate than a crafting table without ever replacing the crafting table route. Recipes are datapack driven, so a pack author changes the rates, or adds arrows of their own, without touching code.
 
 Station recipes stay out of the vanilla recipe book. The book only understands the recipe types vanilla ships, and a modded type reaching it produces a warning naming this mod once per recipe on every world join. The station is not the crafting table and its recipes were never craftable from the book, so they are declared as ignored by it, which is both the honest description and the thing that keeps a clean join log clean. Both recipe viewers read the recipes directly and are unaffected, and the crafting table route is untouched.
 
@@ -965,7 +965,7 @@ A recipe is an unordered list of ingredients, each with the count it demands, an
 
 ```json
 {
-"type": "not-enough-arrows:fletching",
+"type": "volley:fletching",
 "ingredients": [
 	{ "ingredient": { "item": "minecraft:arrow" }, "count": 4 },
 	{ "ingredient": { "item": "minecraft:tnt" } }
@@ -1006,8 +1006,8 @@ Every one of the sixty-three arrows has a station recipe. A tinted arrow has one
 | Redstone | `minecraft:arrow` | `minecraft:redstone` |
 | Wind | `minecraft:arrow` | `minecraft:wind_charge` |
 | Gunpowder | `minecraft:arrow` | `minecraft:gunpowder` |
-| TNT | `not-enough-arrows:gunpowder_arrow` | `minecraft:tnt` |
-| Fire charge | `not-enough-arrows:tnt_arrow` | `minecraft:fire_charge` |
+| TNT | `volley:gunpowder_arrow` | `minecraft:tnt` |
+| Fire charge | `volley:tnt_arrow` | `minecraft:fire_charge` |
 | Incendiary | `minecraft:arrow` | `minecraft:fire_charge` |
 | Gravity | `minecraft:arrow` | `minecraft:slime_ball` |
 | Drill | `minecraft:arrow` | `minecraft:iron_pickaxe` |
@@ -1023,7 +1023,7 @@ Every one of the sixty-three arrows has a station recipe. A tinted arrow has one
 | Shear | `minecraft:arrow` | `minecraft:shears` |
 | Bee | `minecraft:arrow` | `minecraft:honeycomb` |
 | Zipline | `minecraft:arrow` | `minecraft:chain` |
-| Tow | `not-enough-arrows:grapple_arrow` | `minecraft:fermented_spider_eye` |
+| Tow | `volley:grapple_arrow` | `minecraft:fermented_spider_eye` |
 | Updraft | `minecraft:arrow` | `minecraft:breeze_rod` |
 | Vine | `minecraft:arrow` | `minecraft:vine` |
 | Trampoline | `minecraft:arrow` | `minecraft:slime_block` |
@@ -1033,7 +1033,7 @@ Every one of the sixty-three arrows has a station recipe. A tinted arrow has one
 | Beacon | `minecraft:arrow` | `minecraft:glowstone` |
 | Prospector | `minecraft:arrow` | `minecraft:amethyst_shard` |
 | Sonar | `minecraft:arrow` | `minecraft:echo_shard` |
-| Tracer | `not-enough-arrows:glow_ink_arrow` | `minecraft:gunpowder` |
+| Tracer | `volley:glow_ink_arrow` | `minecraft:gunpowder` |
 | Tripwire | `minecraft:arrow` | `minecraft:sculk_sensor` |
 | Party | `minecraft:arrow` | Any of the nineteen music discs, one recipe each |
 | Chicken | `minecraft:arrow` | `minecraft:egg` |
@@ -1046,7 +1046,7 @@ Every one of the sixty-three arrows has a station recipe. A tinted arrow has one
 | Magnet | `minecraft:arrow` | `minecraft:iron_block` |
 | Ricochet | `minecraft:arrow` | `minecraft:iron_nugget` |
 | Ender pearl | `minecraft:arrow` | `minecraft:ender_pearl` |
-| Recall | `not-enough-arrows:ender_pearl_arrow` | `minecraft:fermented_spider_eye` |
+| Recall | `volley:ender_pearl_arrow` | `minecraft:fermented_spider_eye` |
 | Shock | `minecraft:arrow` | `minecraft:lightning_rod` |
 | Lifesteal | `minecraft:arrow` | `minecraft:ghast_tear` |
 | Rust | `minecraft:arrow` | `minecraft:oxidized_copper` |
@@ -1066,7 +1066,7 @@ Every one of the sixty-three arrows has a station recipe. A tinted arrow has one
 
 Because the ladder is discounted at every rung, the multiplier compounds. A TNT craft eats eight gunpowder arrows at either route, but at the station those eight cost two thirds of what the crafting table charges for them, on top of the TNT craft's own discount. Measured against the crafting table in raw materials, that puts the station at one and a half times on gunpowder arrows, two and a quarter times on TNT arrows, and three and three eighths times on fire charge arrows, so the deeper tiers gain most without any tier needing a rate of its own. The recall, tow and tracer arrows compound the same way, at two and a quarter times, because each is built from arrows that were themselves discounted.
 
-Station recipes live in `data/not-enough-arrows/recipe/fletching/` and crafting table recipes in `data/not-enough-arrows/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
+Station recipes live in `data/volley/recipe/fletching/` and crafting table recipes in `data/volley/recipe/`, so a datapack replaces either route by file name without disturbing the other. An arrow with no station recipe is not broken, it is simply not discounted, and [ADR 0002](adr/0002-crafting-table-always-works.md) explains why every arrow stays craftable at a crafting table regardless.
 
 ## Fletching Station
 
@@ -1126,7 +1126,7 @@ Scroll position, row hit-testing, and where the scroller sits along its travel a
 | `StationRecipes` | Every loaded station recipe, sorted by id so both viewers list them in one order |
 | `FletchingRecipeLayout` | Where the input slots, the arrow, and the result sit, so a recipe is laid out the same way in either viewer, per [ADR 0028](adr/0028-one-layout-drives-both-recipe-viewers.md) |
 | `en_us.json` | Every word a player reads |
-| `NotEnoughArrowsEmiPlugin` and `NotEnoughArrowsJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
+| `VolleyEmiPlugin` and `VolleyJeiPlugin` | The adapters that hand those pieces to each viewer, holding no content of their own |
 
 The info list is derived from registration rather than hand-written, so an arrow cannot ship without an entry. A tinted arrow's entry covers every one of its variants, and both viewers are told to tell those variants apart by the choice they carry, so each colour of paint arrow resolves to its own recipes. Each entry is the arrow's own description followed by a shared line about firing and recovery, which is true of every arrow and stated once.
 
