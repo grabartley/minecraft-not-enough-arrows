@@ -7,7 +7,7 @@
 
 This mod was scaffolded from a shared template and inherited the template's dependency block rather than one describing what it uses. Nothing since had checked that each declared dependency is real.
 
-A dependency is declared in four places that drift apart independently, and none of them is what a player reads:
+A dependency is declared in five places that drift apart independently, and none of them is what a player reads:
 
 | Location | What it controls |
 |---|---|
@@ -15,6 +15,7 @@ A dependency is declared in four places that drift apart independently, and none
 | `fabric.mod.json` `suggests` | Optional, surfaced to the player as a recommendation |
 | `build.gradle` dependencies | Whether the library is compiled against, present at runtime, or bundled |
 | `build.gradle` Modrinth block | What a launcher installs alongside the mod |
+| `build.gradle` CurseForge task | What a CurseForge launcher installs alongside the mod |
 
 The inherited block carried GeckoLib as a hard `depends`, as a `modImplementation`, as its own Maven repository, and as a `required.project` on Modrinth. The mod imports nothing from it and ships no `.geo.json` or `.animation.json`. Every player, and every dedicated server, was installing a rendering library the mod never touches.
 
@@ -28,9 +29,9 @@ A dependency is declared according to what its absence must do.
 
 **If the mod works fine without it, it is never a hard dependency, whatever the build needs to compile.** Mod Menu, JEI, and EMI are integrations: each is `modCompileOnly` so the compat classes build, and each sits in `suggests` so a player is told it exists. Each also carries a development runtime entry, Mod Menu unconditionally and the two viewers behind `-Precipe_viewers=true`, so a developer can launch with them without any of that reaching a player. None is bundled, and the build fails if any ever is.
 
-**A library nothing imports is removed outright**, from all four locations at once, rather than left because removing it feels riskier than keeping it. Keeping it is the risk: it is a hard requirement doing nothing.
+**A library nothing imports is removed outright**, from all five locations at once, rather than left because removing it feels riskier than keeping it. Keeping it is the risk: it is a hard requirement doing nothing.
 
-The Modrinth block mirrors `fabric.mod.json` rather than being maintained separately. What is hard there is `required.project`; what is suggested there is `optional.project`.
+The Modrinth block and the CurseForge task mirror `fabric.mod.json` rather than being maintained separately. What is hard there is `required.project` on one and `addRequirement` on the other; what is suggested is `optional.project` and `addOptional`.
 
 ## Consequences
 
@@ -40,6 +41,6 @@ Mod Menu now appears in `suggests`, which it did not while its integration shipp
 
 Removing GeckoLib removes a Maven repository, a runtime dependency, a loader requirement, and a launcher install. The mod's own jar is unchanged, because nothing in it ever referenced the library.
 
-Accepted drawback: the four locations still have to be edited together and nothing enforces that they agree. The rule above is what a reviewer checks against, and the smallest signal that they have drifted is a `depends` entry whose package never appears in `src/`. Enforcing it mechanically would mean a build step reading the loader metadata and grepping the source, which is worth doing if this ever drifts again rather than in anticipation.
+Accepted drawback: the five locations still have to be edited together and nothing enforces that they agree. The rule above is what a reviewer checks against, and the smallest signal that they have drifted is a `depends` entry whose package never appears in `src/`. Enforcing it mechanically would mean a build step reading the loader metadata and grepping the source, which is worth doing if this ever drifts again rather than in anticipation.
 
 Accepted drawback: an optional integration that a player does have installed is still compiled against a pinned API version, so a sufficiently old or new JEI can fail at runtime where the loader would have caught a version mismatch on a hard dependency. That is the price of the integration being optional, and it is the right trade for a library most players will not have.
