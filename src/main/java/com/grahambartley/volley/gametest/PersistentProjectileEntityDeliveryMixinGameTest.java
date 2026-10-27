@@ -97,8 +97,7 @@ public final class PersistentProjectileEntityDeliveryMixinGameTest implements Fa
     team.setFriendlyFireAllowed(false);
     scoreboard.addScoreHolderToTeam(shooter.getNameForScoreboard(), team);
     scoreboard.addScoreHolderToTeam(recipient.getNameForScoreboard(), team);
-    MockPlayerSupport.fireEastFromBow(context, shooter, SocialTestSupport.loadedCourier());
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    TerrainArrowTestSupport.fireFromBow(context, shooter, SocialTestSupport.loadedCourier());
 
     context.runAtTick(
         SocialTestSupport.SETTLED_TICK,

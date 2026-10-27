@@ -15,7 +15,6 @@ import net.minecraft.util.math.BlockPos;
 public final class AnchorServiceGameTest implements FabricGameTest {
   private static final String BATCH = "anchor-lifecycle";
   private static final String FORGET_BATCH = "anchor-forget";
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final BlockPos TARGET = new BlockPos(3, 3, 3);
   private static final int LONG_LIFETIME_TICKS = 400;
   private static final int SHORT_LIFETIME_TICKS = 10;
@@ -27,7 +26,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     AnchorService.forget();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anAnchorOnAValidTargetIsHeldForItsOwner(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -42,7 +41,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anInvalidTargetLeavesNoAnchorBehind(TestContext context) {
     final UUID owner = UUID.randomUUID();
 
@@ -55,7 +54,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aLifetimeOfZeroLeavesNoAnchorBehind(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -67,7 +66,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void breakingTheAnchoredBlockReleasesTheAnchor(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -84,7 +83,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void replacingTheAnchoredBlockReleasesTheAnchor(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -101,7 +100,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void anAnchorHoldsWhileItsBlockStandsAndItsLifetimeLasts(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -118,7 +117,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void anAnchorIsReleasedOnceItsLifetimeElapses(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -134,7 +133,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void twoOwnersAnchoredToTheSameBlockStayIndependent(TestContext context) {
     final UUID first = UUID.randomUUID();
     final UUID second = UUID.randomUUID();
@@ -159,7 +158,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anOwnerAnchoringAgainKeepsOnlyTheirNewestAnchor(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -175,7 +174,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anOwnerLeavingReleasesEveryAnchorTheyHeld(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);
@@ -189,7 +188,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void anOwnerWhoDiesReleasesEveryAnchorTheyHeld(TestContext context) {
     context.setBlockState(TARGET, Blocks.STONE);
     final ServerPlayerEntity owner = MockPlayerSupport.playerAt(context, OWNER_STAND);
@@ -208,7 +207,7 @@ public final class AnchorServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = FORGET_BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = FORGET_BATCH, tickLimit = 20)
   public void forgettingEverythingLeavesNoAnchorState(TestContext context) {
     final UUID owner = UUID.randomUUID();
     context.setBlockState(TARGET, Blocks.STONE);

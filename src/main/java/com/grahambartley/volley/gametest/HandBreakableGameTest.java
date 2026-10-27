@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 
 public final class HandBreakableGameTest implements FabricGameTest {
   private static final String BATCH = "hand-breakable";
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final BlockPos CANDIDATE = new BlockPos(3, 4, 3);
   private static final int TICK_LIMIT = 20;
   private static final int FAR_ABOVE_THE_BUILD_LIMIT = 40_000;
@@ -54,7 +53,7 @@ public final class HandBreakableGameTest implements FabricGameTest {
                 new TestFunction(
                     BATCH,
                     "volley.handbreakable." + candidate.name(),
-                    TEMPLATE,
+                    FiringRangeSupport.TEMPLATE,
                     TICK_LIMIT,
                     0L,
                     true,
@@ -62,7 +61,7 @@ public final class HandBreakableGameTest implements FabricGameTest {
         .toList();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aPositionOutsideTheBuildLimitNeverQualifies(TestContext context) {
     final BlockPos aboveTheWorld =
         context.getAbsolutePos(CANDIDATE).withY(FAR_ABOVE_THE_BUILD_LIMIT);

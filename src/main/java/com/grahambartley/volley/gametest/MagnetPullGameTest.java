@@ -97,7 +97,7 @@ public final class MagnetPullGameTest implements FabricGameTest {
   public void anItemTheShooterCannotPickUpSettlesAtTheirFeetRatherThanFlyingPast(
       TestContext context) {
     final ServerPlayerEntity shooter = shooter(context);
-    AgricultureTestSupport.fillInventory(shooter);
+    MockPlayerSupport.fillInventory(shooter);
     final ItemEntity item = itemAt(context, IMPACT.north());
 
     MagnetPull.pull(context.getWorld(), impact(context), shooter, RADIUS);

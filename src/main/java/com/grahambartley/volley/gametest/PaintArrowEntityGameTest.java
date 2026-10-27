@@ -26,7 +26,6 @@ public final class PaintArrowEntityGameTest implements FabricGameTest {
   private static final String SWITCHED_OFF_BATCH = "paint-arrow-off";
   private static final BlockPos OFF_TARGET_STAND = new BlockPos(5, 3, 3);
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
-  private static final int A_QUIVER = 8;
 
   @GameTest(
       templateName = TerrainArrowTestSupport.TEMPLATE,
@@ -110,7 +109,7 @@ public final class PaintArrowEntityGameTest implements FabricGameTest {
   private static ItemStack redQuiver() {
     final TintedArrowItem paint = (TintedArrowItem) ModArrows.PAINT_ARROW.item();
     final ItemStack quiver = paint.stackOf(paint.palette().resolve(new ArrowChoice("red")));
-    quiver.setCount(A_QUIVER);
+    quiver.setCount(MockPlayerSupport.A_QUIVER);
     return quiver;
   }
 

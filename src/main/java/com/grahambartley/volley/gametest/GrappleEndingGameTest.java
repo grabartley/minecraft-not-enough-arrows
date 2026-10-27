@@ -25,7 +25,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class GrappleEndingGameTest implements FabricGameTest {
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final String BATCH = "grapple-ending";
   private static final String NO_ARROW_RETURN_BATCH = "grapple-ending-no-arrow-return";
   private static final String NO_FALL_CANCEL_BATCH = "grapple-ending-no-fall-cancel";
@@ -73,7 +72,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
     ServerConfigHolder.reset();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void arrivingAtTheAnchorHandsTheArrowBackToTheShooter(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final GrappleArrowEntity arrow = plantedArrow(context);
@@ -94,7 +93,10 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = NO_ARROW_RETURN_BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = NO_ARROW_RETURN_BATCH,
+      tickLimit = 40)
   public void anOperatorWhoTurnsArrowReturnOffLeavesTheArrowWhereItLanded(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final GrappleArrowEntity arrow = plantedArrow(context);
@@ -112,7 +114,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void arrivingAtTheAnchorCancelsTheFallThePullCaused(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     startGrappleUnderfoot(context, shooter, null);
@@ -127,7 +129,10 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = NO_FALL_CANCEL_BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = NO_FALL_CANCEL_BATCH,
+      tickLimit = 40)
   public void anOperatorWhoTurnsFallCancellationOffLeavesTheFallStanding(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     startGrappleUnderfoot(context, shooter, null);
@@ -147,7 +152,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void losingTheAnchorLeavesThePlayerToTheirFallAndTheArrowWhereItIs(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -176,7 +181,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aPlayerWhoDiesMidPullTakesNoArrowWithThem(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -200,7 +205,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aPullOntoAnAnchorBelowIsHeldToItsDescentCap(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, CEILING_STAND);
     context.assertTrue(
@@ -222,7 +227,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void arrivingAtTheAnchorSparesTheLandingStillAhead(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     startGrappleUnderfoot(context, shooter, null);
@@ -237,7 +242,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aSparedPlayerWhoLandsSafelyIsOwedNothingFurther(TestContext context) {
     final ServerPlayerEntity grounded = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     grounded.setOnGround(true);
@@ -253,7 +258,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anArrowFiredInCreativeIsNeverHandedBack(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final GrappleArrowEntity arrow = plantedArrow(context);
@@ -268,7 +273,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anArrowAlreadyGoneIsNeverHandedBackTwice(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final GrappleArrowEntity arrow = plantedArrow(context);
@@ -282,7 +287,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSparedPlayerWalksAwayFromTheFallTheirPullCaused(TestContext context) {
     final PlayerEntity faller = MockPlayerSupport.mortalPlayerAt(context, PLAYER_STAND);
     final float before = faller.getHealth();
@@ -298,7 +303,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPlayerNobodySparedStillTakesTheirFall(TestContext context) {
     final PlayerEntity faller = MockPlayerSupport.mortalPlayerAt(context, PLAYER_STAND);
     final float before = faller.getHealth();
@@ -311,7 +316,7 @@ public final class GrappleEndingGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSparedPlayerIsSparedTheirLandingAndNothingElse(TestContext context) {
     final PlayerEntity spared = MockPlayerSupport.mortalPlayerAt(context, PLAYER_STAND);
     final float before = spared.getHealth();

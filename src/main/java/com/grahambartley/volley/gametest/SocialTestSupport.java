@@ -38,8 +38,7 @@ final class SocialTestSupport {
   static ServerPlayerEntity fireEast(final TestContext context, final ItemStack quiver) {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    MockPlayerSupport.fireEastFromBow(context, shooter, quiver);
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    TerrainArrowTestSupport.fireFromBow(context, shooter, quiver);
     return shooter;
   }
 
@@ -73,17 +72,5 @@ final class SocialTestSupport {
         .filter(payload -> payload.isOf(item))
         .map(payload -> payload.getCount() * stack.getCount())
         .orElse(0);
-  }
-
-  static int droppedNearby(final TestContext context, final Item item) {
-    return context
-        .getWorld()
-        .getEntitiesByClass(
-            ItemEntity.class,
-            context.getTestBox().expand(NEARBY),
-            drop -> drop.getStack().isOf(item))
-        .stream()
-        .mapToInt(drop -> drop.getStack().getCount())
-        .sum();
   }
 }

@@ -11,11 +11,10 @@ import net.minecraft.util.math.BlockPos;
 
 public final class FallingBlocksGameTest implements FabricGameTest {
   private static final String BATCH = "falling-blocks";
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final BlockPos CANDIDATE = new BlockPos(3, 4, 3);
   private static final int TICK_LIMIT = 20;
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aDroppedBlockLeavesItsPositionEmptyAndTakesItsStateWithIt(TestContext context) {
     context.setBlockState(CANDIDATE, Blocks.STONE);
     final BlockPos target = context.getAbsolutePos(CANDIDATE);

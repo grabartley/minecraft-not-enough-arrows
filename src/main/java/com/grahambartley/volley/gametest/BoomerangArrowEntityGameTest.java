@@ -22,7 +22,6 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "boomerang-arrow";
   private static final String DISABLED_BATCH = "boomerang-arrow-disabled";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
-  private static final int A_QUIVER = 8;
   private static final int SETTLED = 60;
   private static final int LIMIT = 80;
 
@@ -49,8 +48,9 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
         SETTLED,
         () -> {
           context.assertTrue(turned[0], "It should have turned back");
-          context.assertEquals(A_QUIVER, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
-          context.assertEquals(0, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+          context.assertEquals(
+              MockPlayerSupport.A_QUIVER, shooter.getInventory().count(BOOMERANG), "Held");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, BoomerangArrowEntity.class) == null,
               "The boomerang should be home");
@@ -68,8 +68,9 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
         SETTLED,
         () -> {
           context.assertTrue(cow.getHealth() < health, "The cow should be hurt");
-          context.assertEquals(A_QUIVER, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
-          context.assertEquals(0, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+          context.assertEquals(
+              MockPlayerSupport.A_QUIVER, shooter.getInventory().count(BOOMERANG), "Held");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
           context.complete();
         });
   }
@@ -78,13 +79,13 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
   public void aBoomerangArrowDropsAtTheFeetOfAShooterWithAFullInventory(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
     final ServerPlayerEntity shooter = fireInSurvival(context);
-    context.runAtTick(2, () -> AgricultureTestSupport.fillInventory(shooter));
+    context.runAtTick(2, () -> MockPlayerSupport.fillInventory(shooter));
 
     context.runAtTick(
         SETTLED,
         () -> {
-          context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
-          context.assertEquals(0, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
+          context.assertEquals(1, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+          context.assertEquals(0, shooter.getInventory().count(BOOMERANG), "Held");
           context.assertTrue(
               nearestDropTo(context, shooter) < 2.0, "It should drop at the shooter's feet");
           context.complete();
@@ -101,9 +102,9 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
         SETTLED,
         () -> {
           context.assertEquals(
-              A_QUIVER,
-              ChaosTestSupport.droppedNearby(context, BOOMERANG)
-                  + ChaosTestSupport.countOf(shooter, BOOMERANG),
+              MockPlayerSupport.A_QUIVER,
+              TerrainTestSupport.droppedNearby(context, BOOMERANG)
+                  + shooter.getInventory().count(BOOMERANG),
               "Every boomerang arrow is accounted for exactly once");
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, BoomerangArrowEntity.class) == null,
@@ -121,9 +122,11 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         SETTLED,
         () -> {
-          context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+          context.assertEquals(1, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
           context.assertEquals(
-              A_QUIVER - 1, ChaosTestSupport.countOf(shooter, BOOMERANG), "Left with them");
+              MockPlayerSupport.A_QUIVER - 1,
+              shooter.getInventory().count(BOOMERANG),
+              "Left with them");
           context.complete();
         });
   }
@@ -132,13 +135,15 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
   public void aCreativeShootersBoomerangReturnsWithoutMakingAnArrow(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
     final ServerPlayerEntity shooter =
-        TerrainArrowTestSupport.fireFromBow(context, new ItemStack(BOOMERANG, A_QUIVER));
+        TerrainArrowTestSupport.fireFromBow(
+            context, new ItemStack(BOOMERANG, MockPlayerSupport.A_QUIVER));
 
     context.runAtTick(
         SETTLED,
         () -> {
-          context.assertEquals(A_QUIVER, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
-          context.assertEquals(0, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+          context.assertEquals(
+              MockPlayerSupport.A_QUIVER, shooter.getInventory().count(BOOMERANG), "Held");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, BoomerangArrowEntity.class) == null,
               "The boomerang should be gone");
@@ -206,8 +211,8 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
   private static ServerPlayerEntity fireInSurvival(final TestContext context) {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    MockPlayerSupport.fireEastFromBow(context, shooter, new ItemStack(BOOMERANG, A_QUIVER));
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    TerrainArrowTestSupport.fireFromBow(
+        context, shooter, new ItemStack(BOOMERANG, MockPlayerSupport.A_QUIVER));
     return shooter;
   }
 

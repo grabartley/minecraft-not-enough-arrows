@@ -26,18 +26,18 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
 
     context.assertEquals(Outcome.GRANTED, resolve(context, shooter, true), "Outcome");
-    context.assertEquals(1, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
-    context.assertEquals(0, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.assertEquals(1, shooter.getInventory().count(BOOMERANG), "Held");
+    context.assertEquals(0, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
     context.complete();
   }
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aShooterWithAFullInventoryHasItDroppedAtTheirFeet(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
-    AgricultureTestSupport.fillInventory(shooter);
+    MockPlayerSupport.fillInventory(shooter);
 
     context.assertEquals(Outcome.DROPPED_AT_FEET, resolve(context, shooter, true), "Outcome");
-    context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.assertEquals(1, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
     context.complete();
   }
 
@@ -45,10 +45,10 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
   public void aFullCreativeShooterHasItDroppedAtTheirFeetRatherThanDeleted(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
     shooter.changeGameMode(net.minecraft.world.GameMode.CREATIVE);
-    AgricultureTestSupport.fillInventory(shooter);
+    MockPlayerSupport.fillInventory(shooter);
 
     context.assertEquals(Outcome.DROPPED_AT_FEET, resolve(context, shooter, true), "Outcome");
-    context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.assertEquals(1, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
     context.complete();
   }
 
@@ -61,7 +61,7 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
         BoomerangReturn.resolve(
             context.getWorld(), new ItemStack(BOOMERANG), shooter, farOff(context), true),
         "Outcome");
-    context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.assertEquals(1, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
     context.complete();
   }
 
@@ -71,14 +71,14 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
     shooter.kill();
 
     context.assertEquals(Outcome.DROPPED_WHERE_IT_FELL, resolve(context, shooter, true), "Outcome");
-    context.assertEquals(0, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
+    context.assertEquals(0, shooter.getInventory().count(BOOMERANG), "Held");
     context.complete();
   }
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void noShooterLeavesItWhereItFell(TestContext context) {
     context.assertEquals(Outcome.DROPPED_WHERE_IT_FELL, resolve(context, null, true), "Outcome");
-    context.assertEquals(1, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.assertEquals(1, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
     context.complete();
   }
 
@@ -87,8 +87,8 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
 
     context.assertEquals(Outcome.NOTHING_TO_RETURN, resolve(context, shooter, false), "Outcome");
-    context.assertEquals(0, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
-    context.assertEquals(0, ChaosTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
+    context.assertEquals(0, shooter.getInventory().count(BOOMERANG), "Held");
+    context.assertEquals(0, TerrainTestSupport.droppedNearby(context, BOOMERANG), "Dropped");
     context.complete();
   }
 

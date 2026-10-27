@@ -27,7 +27,6 @@ public final class FuseServiceGameTest implements FabricGameTest {
   private static final String FORGET_BATCH = "fuse-forget";
   private static final String MUTED_BEEP_BATCH = "fuse-muted-beep";
   private static final String TIER_DELAY_BATCH = "fuse-tier-delay";
-  private static final String TEMPLATE = "volley:fire_pad";
 
   private static final BlockPos IMPACT = new BlockPos(3, 2, 3);
   private static final BlockPos DRIFT = new BlockPos(5, 2, 5);
@@ -81,7 +80,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
     DETONATIONS.clear();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aFuseEmbeddedInABlockSignalsOnceItsDelayHasBurnedDown(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
 
@@ -106,7 +105,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aFuseStaysQuietUntilItsDelayHasBurnedDown(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
 
@@ -129,7 +128,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aFuseCarriedByAMobSignalsWhereThatMobEndedUp(TestContext context) {
     final PigEntity carrier = context.spawnEntity(EntityType.PIG, IMPACT);
     carrier.setAiDisabled(true);
@@ -149,7 +148,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aCarrierThatDiesMidCountdownTakesItsFuseWithIt(TestContext context) {
     final PigEntity carrier = context.spawnEntity(EntityType.PIG, IMPACT);
     carrier.setAiDisabled(true);
@@ -174,7 +173,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aFuseWhoseHostLeavesTheWorldHoldsRatherThanSignalling(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
 
@@ -200,7 +199,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aDelayOfZeroSignalsOnContact(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
 
@@ -214,7 +213,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MUTED_BEEP_BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = MUTED_BEEP_BATCH, tickLimit = 60)
   public void mutingTheBeepStillLetsTheFuseBurnDown(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
 
@@ -232,7 +231,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = TIER_DELAY_BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = TIER_DELAY_BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesHowLongATierBurnsFor(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
 
@@ -246,7 +245,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = FORGET_BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = FORGET_BATCH, tickLimit = 20)
   public void forgettingEveryFuseLeavesNothingBurning(TestContext context) {
     final ArrowEntity arrow = context.spawnEntity(EntityType.ARROW, IMPACT.up());
     FuseService.light(context.getWorld(), arrow, LONG_DELAY_TICKS);

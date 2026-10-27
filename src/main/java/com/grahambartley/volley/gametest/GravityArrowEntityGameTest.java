@@ -5,7 +5,6 @@ import com.grahambartley.volley.entity.GravityArrowEntity;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 
@@ -66,9 +65,6 @@ public final class GravityArrowEntityGameTest implements FabricGameTest {
   private static void fireAt(final TestContext context, final Block target) {
     context.setBlockState(PhysicsArrowTestSupport.LANDING_BLOCK, Blocks.AIR);
     context.setBlockState(FiringRangeSupport.BACKSTOP, target);
-    final ServerPlayerEntity shooter =
-        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.GRAVITY_ARROW.item());
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    TerrainArrowTestSupport.fireFromBow(context, ModArrows.GRAVITY_ARROW.item());
   }
 }

@@ -17,7 +17,6 @@ import net.minecraft.util.math.BlockPos;
 
 public final class CountdownBroadcasterGameTest implements FabricGameTest {
   private static final String BATCH = "countdown-broadcaster";
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final BlockPos CARRIER_POS = new BlockPos(3, 2, 3);
   private static final int LONG_FUSE_TICKS = 200;
 
@@ -62,7 +61,7 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aFuseLitOnACarrierIsAnnounced(TestContext context) {
     final PigEntity carrier = carrierIn(context);
 
@@ -77,7 +76,7 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void anExtinguishedFuseStopsBeingAnnounced(TestContext context) {
     final PigEntity carrier = carrierIn(context);
 
@@ -93,7 +92,7 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aCarrierThatLeavesStopsBeingAnnounced(TestContext context) {
     final PigEntity carrier = carrierIn(context);
 
@@ -109,7 +108,7 @@ public final class CountdownBroadcasterGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aFuseSurvivesTicksOfEveryOtherWorld(TestContext context) {
     final PigEntity carrier = carrierIn(context);
 

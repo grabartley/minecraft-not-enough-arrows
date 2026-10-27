@@ -21,7 +21,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class GrappleServiceGameTest implements FabricGameTest {
-  private static final String TEMPLATE = "volley:fire_pad";
 
   private static final BlockPos PLAYER_STAND = new BlockPos(0, 3, 0);
   private static final BlockPos SECOND_STAND = new BlockPos(2, 3, 0);
@@ -46,7 +45,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     AnchorService.forget();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 20)
   public void aGrappleWithinRangeStartsASessionAndTakesTheAnchor(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -64,7 +66,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 20)
   public void aGrappleBeyondTheConfiguredRangeStartsNothing(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -85,7 +90,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 20)
   public void aGrappleAtNothingSolidStartsNothing(TestContext context) {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
 
@@ -99,7 +107,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 20)
   public void grapplingAgainReplacesTheSessionRatherThanStackingASecond(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     context.setBlockState(SECOND_ANCHOR, Blocks.STONE);
@@ -119,7 +130,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 40)
   public void aPulledPlayerIsGivenVelocityTowardTheAnchor(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -145,7 +159,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 60)
   public void aPullBuildsSpeedRatherThanHoldingOneFlatSpeed(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -196,7 +213,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 40)
   public void aSessionEndsOnceThePlayerHasArrivedAtTheAnchor(TestContext context) {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
 
@@ -216,7 +236,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 40)
   public void aSessionEndsWhenTheAnchorBlockIsBroken(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -233,7 +256,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 120)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 120)
   public void aSessionEndsOnceItRunsOutOfTicks(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -258,7 +284,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 80)
   public void aPullThatStopsClosingOnItsAnchorEndsRatherThanStalling(TestContext context) {
     context.setBlockState(FAR_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -284,7 +313,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 20)
   public void releasingAGrappleGivesUpItsAnchorToo(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -299,7 +331,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 20)
   public void aPlayerWhoLeavesIsNoLongerPulledInAnyWorld(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -313,7 +348,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 40)
   public void twoPlayersPulledTowardTheSameBlockArePulledIndependently(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity first = MockPlayerSupport.playerAt(context, PLAYER_STAND);
@@ -337,7 +375,10 @@ public final class GrappleServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 40)
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = MockPlayerSupport.BATCH,
+      tickLimit = 40)
   public void aPulledPlayerIsNotCountedAsFloatingWhileTheyAreBeingPulled(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);

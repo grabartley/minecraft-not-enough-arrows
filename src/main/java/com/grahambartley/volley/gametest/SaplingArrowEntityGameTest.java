@@ -16,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 public final class SaplingArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "sapling-arrow";
   private static final BlockPos PLANTED = FiringRangeSupport.IMPACT_FACE;
-  private static final int A_QUIVER = 8;
 
   @GameTest(
       templateName = TerrainArrowTestSupport.TEMPLATE,
@@ -131,7 +130,7 @@ public final class SaplingArrowEntityGameTest implements FabricGameTest {
   private static ItemStack quiver(final String sapling) {
     final TintedArrowItem item = (TintedArrowItem) AgricultureArrows.SAPLING_ARROW.item();
     final ItemStack quiver = item.stackOf(item.palette().resolve(new ArrowChoice(sapling)));
-    quiver.setCount(A_QUIVER);
+    quiver.setCount(MockPlayerSupport.A_QUIVER);
     return quiver;
   }
 }

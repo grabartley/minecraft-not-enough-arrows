@@ -101,7 +101,7 @@ public final class DropGrantGameTest implements FabricGameTest {
       tickLimit = TerrainTestSupport.TICK_LIMIT)
   public void aCollectedDropWithNoRoomStaysOnTheGround(TestContext context) {
     final PlayerEntity receiver = context.createMockPlayer(GameMode.SURVIVAL);
-    AgricultureTestSupport.fillInventory(receiver);
+    MockPlayerSupport.fillInventory(receiver);
     final ItemEntity drop = context.spawnItem(Items.WHITE_WOOL, TerrainTestSupport.CENTER);
 
     DropGrant.collect(List.of(drop), receiver);
@@ -118,7 +118,7 @@ public final class DropGrantGameTest implements FabricGameTest {
       tickLimit = TerrainTestSupport.TICK_LIMIT)
   public void aCollectedDropThatPartlyFitsLeavesTheRestOnTheGround(TestContext context) {
     final PlayerEntity receiver = context.createMockPlayer(GameMode.SURVIVAL);
-    AgricultureTestSupport.fillInventory(receiver);
+    MockPlayerSupport.fillInventory(receiver);
     receiver.getInventory().main.set(0, new ItemStack(Items.WHITE_WOOL, 62));
     final ItemEntity drop = context.spawnItem(Items.WHITE_WOOL, TerrainTestSupport.CENTER);
     drop.setStack(new ItemStack(Items.WHITE_WOOL, 5));

@@ -33,7 +33,6 @@ import net.minecraft.world.poi.PointOfInterestTypes;
 
 public final class FletchingStationInteractionGameTest implements FabricGameTest {
   private static final String BATCH = "fletching-station-interaction";
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final int TICK_LIMIT = 40;
   private static final int SETTLE_TICKS = 20;
 
@@ -61,7 +60,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     ServerConfigService.update(world.getServer(), VolleyConfig.defaults());
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aFletchingTableOffersTheStation(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -72,7 +71,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void theOfferedStationOpensOntoTheTableItWasOfferedFrom(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -93,7 +92,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aDisabledStationIsNeverOffered(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -106,7 +105,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aDisabledStationLeavesTheTableDoingNothingAtAll(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -120,7 +119,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void reEnablingTheStationTakesEffectOnTheNextUseWithNoRestart(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -137,7 +136,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void sneakingWithABlockInHandPlacesAgainstTheTableRatherThanOpeningIt(
       TestContext context) {
     run(context, RESET_CONFIG);
@@ -160,7 +159,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void sneakingWithEmptyHandsStillOffersTheStation(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -172,7 +171,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void noOtherBlockIsEverMistakenForTheStation(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -184,7 +183,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void everyOtherBlockKeepsItsOwnInteractionUntouched(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -198,7 +197,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aClientThatCouldNotDrawTheStationIsNeverSentIt(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -216,7 +215,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void theStationLeavesAPlainVanillaFletchingTableBehind(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -232,7 +231,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void aUsedFletchingTableIsStillAFletcherJobSite(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -248,7 +247,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void anExistingFletcherKeepsItsProfessionWhenTheStationOpens(TestContext context) {
     run(context, RESET_CONFIG);
     final ServerPlayerEntity player = playerAtAFletchingTable(context);
@@ -275,7 +274,7 @@ public final class FletchingStationInteractionGameTest implements FabricGameTest
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = TICK_LIMIT)
   public void theStationSettingNeverChangesWhatACraftingTableProduces(TestContext context) {
     run(context, RESET_CONFIG);
 

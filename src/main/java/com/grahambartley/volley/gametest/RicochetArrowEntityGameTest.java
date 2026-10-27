@@ -8,6 +8,7 @@ import com.grahambartley.volley.entity.RicochetArrowEntity;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.passive.CowEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -204,8 +205,10 @@ public final class RicochetArrowEntityGameTest implements FabricGameTest {
 
   private static void fireEast(final TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, CORRIDOR_SHOOTER_STAND);
-    MockPlayerSupport.fireEastFromBow(context, shooter, ModArrows.RICOCHET_ARROW.item());
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    TerrainArrowTestSupport.fireFromBow(
+        context,
+        shooter,
+        new ItemStack(ModArrows.RICOCHET_ARROW.item(), MockPlayerSupport.A_QUIVER));
   }
 
   private static void raiseWalls(final TestContext context) {

@@ -15,7 +15,6 @@ import net.minecraft.util.math.BlockPos;
 
 public final class FirePatchServiceGameTest implements FabricGameTest {
   private static final String BATCH = "fire-patch-lifecycle";
-  private static final String TEMPLATE = "volley:fire_pad";
   private static final BlockPos CENTRE = new BlockPos(3, 3, 3);
   private static final int RADIUS = 2;
   private static final int SHORT_DURATION_TICKS = 10;
@@ -26,7 +25,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
     FirePatchService.forget();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aPatchStopsBurningOnceItsDurationElapses(TestContext context) {
     context.runAtTick(
         5,
@@ -46,7 +45,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aPatchKeepsBurningUntilItsDurationElapses(TestContext context) {
     context.runAtTick(
         5,
@@ -65,7 +64,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aDurationOfZeroLightsNothingAtAll(TestContext context) {
     context.assertTrue(
         ignite(context, RADIUS, 0).isEmpty(), "A zero duration should light nothing");
@@ -73,7 +72,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aRadiusOfZeroLightsNothingAtAll(TestContext context) {
     context.assertTrue(
         ignite(context, 0, LONG_DURATION_TICKS).isEmpty(), "A zero radius should light nothing");
@@ -81,7 +80,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesHowBigAPatchIs(TestContext context) {
     final BlockPos centre = context.getAbsolutePos(CENTRE);
     final List<BlockPos> placed =
@@ -96,7 +95,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigCanSwitchFirePatchesOff(TestContext context) {
     final List<BlockPos> placed =
         ConfigOverrides.during(

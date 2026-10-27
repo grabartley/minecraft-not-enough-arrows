@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 
 final class FletchingTestSupport {
   static final int TICK_LIMIT = 10;
-  static final String TEMPLATE = "volley:fire_pad";
+  static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
 
   static final Identifier TEST_RECIPE_ID = Identifier.of(Volley.MOD_ID, "gametest_fletching");
   static final int ARROWS_CONSUMED = 4;

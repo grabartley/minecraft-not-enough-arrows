@@ -76,7 +76,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
               PAYLOAD_COUNT,
               recipient.getInventory().count(PAYLOAD_ITEM),
               "Diamonds in the recipient's inventory");
-          context.assertEquals(0, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
           assertConserved(context, List.of(recipient, shooter));
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, CourierArrowEntity.class) == null,
@@ -110,7 +110,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
       tickLimit = SocialTestSupport.TICK_LIMIT)
   public void aFullRecipientFindsThePayloadAtTheirFeet(TestContext context) {
     final ServerPlayerEntity recipient = recipientAt(context);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
     final ServerPlayerEntity shooter =
         SocialTestSupport.fireEast(context, SocialTestSupport.loadedCourier());
 
@@ -135,7 +135,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
       tickLimit = SocialTestSupport.TICK_LIMIT)
   public void aRecipientWithSomeRoomKeepsWhatFitsAndFindsTheRestAtTheirFeet(TestContext context) {
     final ServerPlayerEntity recipient = recipientAt(context);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
     recipient.getInventory().setStack(0, new ItemStack(PAYLOAD_ITEM, 60));
     final ServerPlayerEntity shooter =
         SocialTestSupport.fireEast(context, SocialTestSupport.loadedCourier());
@@ -147,7 +147,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
               64, recipient.getInventory().count(PAYLOAD_ITEM), "Diamonds that fit");
           context.assertEquals(
               60 + PAYLOAD_COUNT - 64,
-              SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM),
+              TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM),
               "Diamonds at the recipient's feet");
           context.complete();
         });
@@ -193,7 +193,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
         SocialTestSupport.SETTLED_TICK,
         () -> {
           context.assertEquals(
-              PAYLOAD_COUNT, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+              PAYLOAD_COUNT, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
           context.assertEquals(health, cow.getHealth(), "The cow's health");
           assertConserved(context, List.of(shooter));
           context.complete();
@@ -222,7 +222,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
     arrow.kill();
 
     context.assertEquals(
-        PAYLOAD_COUNT, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+        PAYLOAD_COUNT, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
     assertConserved(context, List.of());
     context.complete();
   }
@@ -291,7 +291,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
 
     arrow.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK);
 
-    context.assertEquals(0, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+    context.assertEquals(0, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
     context.assertTrue(arrow.isLoaded(), "The unloaded arrow still carries its payload");
     context.complete();
   }
@@ -375,7 +375,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         SocialTestSupport.SETTLED_TICK,
         () -> {
-          context.assertEquals(0, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
           context.assertEquals(
               PAYLOAD_COUNT,
               SocialTestSupport.accountedFor(context, PAYLOAD_ITEM, List.of(shooter)),

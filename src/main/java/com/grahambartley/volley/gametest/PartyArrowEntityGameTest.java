@@ -20,7 +20,6 @@ public final class PartyArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "party-arrow";
   private static final String DISABLED_BATCH = "party-arrow-disabled";
   private static final BlockPos TARGET_STAND = new BlockPos(5, 3, 3);
-  private static final int A_QUIVER = 8;
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchThePartyOffBeforeBatch(ServerWorld world) {
@@ -111,7 +110,7 @@ public final class PartyArrowEntityGameTest implements FabricGameTest {
   private static ItemStack quiverOf(final String disc) {
     final TintedArrowItem party = (TintedArrowItem) ChaosArrows.PARTY_ARROW.item();
     final ItemStack quiver = party.stackOf(party.palette().resolve(new ArrowChoice(disc)));
-    quiver.setCount(A_QUIVER);
+    quiver.setCount(MockPlayerSupport.A_QUIVER);
     return quiver;
   }
 }
