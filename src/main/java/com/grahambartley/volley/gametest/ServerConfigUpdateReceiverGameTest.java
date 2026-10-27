@@ -2,6 +2,7 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.ConfigFile;
 import com.grahambartley.volley.config.ConfigPaths;
+import com.grahambartley.volley.config.ConfigPermissions;
 import com.grahambartley.volley.config.GrappleArrowConfig;
 import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
@@ -55,7 +56,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void aNonOperatorsUpdateIsRejected(TestContext context) {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
-    final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity bystander = MockPlayerSupport.player(context);
 
     final Outcome outcome =
         ServerConfigUpdateReceiver.apply(bystander, Optional.of(configWithRange(CHANGED_RANGE)));
@@ -69,7 +70,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void aNonOperatorsUpdateLeavesTheLiveConfigAlone(TestContext context) {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
-    final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity bystander = MockPlayerSupport.player(context);
 
     ServerConfigUpdateReceiver.apply(bystander, Optional.of(configWithRange(CHANGED_RANGE)));
 
@@ -134,15 +135,13 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   }
 
   private static ServerPlayerEntity operator(final TestContext context) {
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player = MockPlayerSupport.player(context);
     context
         .getWorld()
         .getServer()
         .getPlayerManager()
         .getOpList()
-        .add(
-            new OperatorEntry(
-                player.getGameProfile(), ServerConfigService.OP_PERMISSION_LEVEL, false));
+        .add(new OperatorEntry(player.getGameProfile(), ConfigPermissions.OPERATOR_LEVEL, false));
     return player;
   }
 

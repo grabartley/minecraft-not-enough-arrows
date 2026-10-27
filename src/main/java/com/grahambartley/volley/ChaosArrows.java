@@ -11,11 +11,7 @@ import com.grahambartley.volley.entity.PartyArrowEntity;
 import com.grahambartley.volley.entity.PolymorphArrowEntity;
 import com.grahambartley.volley.entity.PufferArrowEntity;
 import com.grahambartley.volley.entity.StinkArrowEntity;
-import java.util.List;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public final class ChaosArrows {
   public static final int BOOMERANG_TRACKING_TICK_INTERVAL = 1;
@@ -26,7 +22,7 @@ public final class ChaosArrows {
               ArrowDefinition.tinted(
                   "party_arrow",
                   PartyArrowEntity::new,
-                  ChaosArrows::partyArrow,
+                  PartyArrowEntity::new,
                   DiscPalette.create()));
 
   public static final RegisteredArrow<ChickenArrowEntity> CHICKEN_ARROW =
@@ -35,7 +31,7 @@ public final class ChaosArrows {
               ArrowDefinition.of(
                   "chicken_arrow",
                   ChickenArrowEntity::new,
-                  ChaosArrows::chickenArrow,
+                  ChickenArrowEntity::new,
                   ArrowSound.own(ModSounds.CHICKEN_ARROW_HATCH.getId())));
 
   public static final RegisteredArrow<PufferArrowEntity> PUFFER_ARROW =
@@ -44,7 +40,7 @@ public final class ChaosArrows {
               ArrowDefinition.of(
                   "puffer_arrow",
                   PufferArrowEntity::new,
-                  ChaosArrows::pufferArrow,
+                  PufferArrowEntity::new,
                   ArrowSound.own(ModSounds.PUFFER_ARROW_INFLATE.getId()),
                   ArrowSound.own(ModSounds.PUFFER_ARROW_DEFLATE.getId())));
 
@@ -54,22 +50,19 @@ public final class ChaosArrows {
               ArrowDefinition.<StinkArrowEntity>of(
                       "stink_arrow",
                       StinkArrowEntity::new,
-                      ChaosArrows::stinkArrow,
+                      StinkArrowEntity::new,
                       ArrowSound.own(ModSounds.STINK_ARROW_RELEASE.getId()))
                   .applying(ArrowEffect.overArea(StatusEffects.NAUSEA)));
 
   public static final RegisteredArrow<BoomerangArrowEntity> BOOMERANG_ARROW =
       ModArrows.registrar()
           .register(
-              new ArrowDefinition<>(
-                  "boomerang_arrow",
-                  BoomerangArrowEntity::new,
-                  ChaosArrows::boomerangArrow,
-                  ArrowDefinition.DEFAULT_SIZE,
-                  ArrowDefinition.DEFAULT_SIZE,
-                  ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
-                  BOOMERANG_TRACKING_TICK_INTERVAL,
-                  List.of(ArrowSound.own(ModSounds.BOOMERANG_ARROW_RETURN.getId()))));
+              ArrowDefinition.<BoomerangArrowEntity>of(
+                      "boomerang_arrow",
+                      BoomerangArrowEntity::new,
+                      BoomerangArrowEntity::new,
+                      ArrowSound.own(ModSounds.BOOMERANG_ARROW_RETURN.getId()))
+                  .trackedEvery(BOOMERANG_TRACKING_TICK_INTERVAL));
 
   public static final RegisteredArrow<PolymorphArrowEntity> POLYMORPH_ARROW =
       ModArrows.registrar()
@@ -77,7 +70,7 @@ public final class ChaosArrows {
               ArrowDefinition.of(
                   "polymorph_arrow",
                   PolymorphArrowEntity::new,
-                  ChaosArrows::polymorphArrow,
+                  PolymorphArrowEntity::new,
                   ArrowSound.own(ModSounds.POLYMORPH_ARROW_CHANGE.getId()),
                   ArrowSound.own(ModSounds.POLYMORPH_ARROW_RESTORE.getId())));
 
@@ -85,65 +78,5 @@ public final class ChaosArrows {
 
   static void register() {
     Volley.LOGGER.debug("Registered the chaos arrows");
-  }
-
-  private static PartyArrowEntity partyArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new PartyArrowEntity(PARTY_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static ChickenArrowEntity chickenArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new ChickenArrowEntity(CHICKEN_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static PufferArrowEntity pufferArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new PufferArrowEntity(PUFFER_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static StinkArrowEntity stinkArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new StinkArrowEntity(STINK_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static BoomerangArrowEntity boomerangArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new BoomerangArrowEntity(BOOMERANG_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static PolymorphArrowEntity polymorphArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new PolymorphArrowEntity(POLYMORPH_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

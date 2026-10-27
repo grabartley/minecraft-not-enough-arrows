@@ -1,10 +1,10 @@
 package com.grahambartley.volley.social;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import com.grahambartley.volley.world.ExpiringLedger;
+import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
+import com.grahambartley.volley.world.Reach;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -12,17 +12,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class MagnetPull {
   private static final double AIM_ABOVE_FEET = 0.5;
 
-  private static final Map<RegistryKey<World>, Map<UUID, Pull>> PULLS = new HashMap<>();
+  private static final PerWorld<ExpiringLedger<UUID>> PULLS = new PerWorld<>(ExpiringLedger::new);
 
   private MagnetPull() {}
 
@@ -50,61 +48,49 @@ public final class MagnetPull {
             entity ->
                 entity.isAlive()
                     && isPullable(entity)
-                    && MagnetSteering.isWithinReach(entity.getPos(), impact, radius));
-    final Map<UUID, Pull> pulls =
-        PULLS.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashMap<>());
+                    && Reach.isWithin(entity.getPos(), impact, radius));
+    final ExpiringLedger<UUID> pulls = PULLS.of(world);
     final long until = world.getTime() + MagnetSteering.MAX_PULL_TICKS;
     for (final Entity entity : caught) {
-      pulls.put(entity.getUuid(), new Pull(shooter.getUuid(), until));
+      pulls.put(entity.getUuid(), shooter.getUuid(), until);
       steer(entity, shooter);
     }
     return List.copyOf(caught);
   }
 
   public static boolean isPulling(final ServerWorld world, final UUID id) {
-    final Map<UUID, Pull> pulls = PULLS.get(world.getRegistryKey());
-    return pulls != null && pulls.containsKey(id);
+    final ExpiringLedger<UUID> pulls = PULLS.in(world);
+    return pulls != null && pulls.contains(id);
   }
 
   private static void tick(final ServerWorld world) {
-    final Map<UUID, Pull> pulls = PULLS.get(world.getRegistryKey());
+    final ExpiringLedger<UUID> pulls = PULLS.in(world);
     if (pulls == null || pulls.isEmpty()) {
       return;
     }
-    final long now = world.getTime();
-    final List<UUID> finished = new ArrayList<>();
-    for (final Map.Entry<UUID, Pull> entry : pulls.entrySet()) {
-      final Entity pulled = world.getEntity(entry.getKey());
-      final Entity shooter = world.getEntity(entry.getValue().shooter());
-      if (now >= entry.getValue().until()
-          || pulled == null
+    pulls.removeExpired(world.getTime());
+    for (final UUID id : pulls.ids()) {
+      final Entity pulled = world.getEntity(id);
+      final Entity shooter = pulls.get(id).map(world::getEntity).orElse(null);
+      if (pulled == null
           || !pulled.isAlive()
           || !(shooter instanceof LivingEntity living)
           || !living.isAlive()) {
-        finished.add(entry.getKey());
+        pulls.remove(id);
       } else if (MagnetSteering.hasArrived(pulled.getPos(), aimAt(living))) {
-        settle(pulled);
-        finished.add(entry.getKey());
+        Propel.drive(pulled, Vec3d.ZERO);
+        pulls.remove(id);
       } else {
         steer(pulled, living);
       }
     }
-    finished.forEach(pulls::remove);
   }
 
   private static void steer(final Entity pulled, final LivingEntity shooter) {
-    pulled.setVelocity(MagnetSteering.velocityToward(pulled.getPos(), aimAt(shooter)));
-    pulled.velocityModified = true;
-  }
-
-  private static void settle(final Entity pulled) {
-    pulled.setVelocity(Vec3d.ZERO);
-    pulled.velocityModified = true;
+    Propel.drive(pulled, MagnetSteering.velocityToward(pulled.getPos(), aimAt(shooter)));
   }
 
   private static Vec3d aimAt(final LivingEntity shooter) {
     return shooter.getPos().add(0.0, AIM_ABOVE_FEET, 0.0);
   }
-
-  private record Pull(UUID shooter, long until) {}
 }

@@ -1,20 +1,13 @@
 package com.grahambartley.volley.config.option;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.grahambartley.volley.config.VolleyConfig;
 import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ControlOptionsTest {
-
-  private static Stream<ConfigOption<VolleyConfig>> options() {
-    return ControlOptions.options().stream();
-  }
 
   @Test
   void listsEverySettingInTheOrderTheStatusOutputUses() {
@@ -42,24 +35,23 @@ class ControlOptionsTest {
   }
 
   @ParameterizedTest(name = "{0}")
-  @MethodSource("options")
-  void writingAnOptionChangesThatOptionsValue(final ConfigOption<VolleyConfig> option) {
-    final VolleyConfig before = VolleyConfig.defaults();
-    final VolleyConfig after = OptionMutations.toDifferentValue(option, before);
+  @ValueSource(
+      strings = {
+        "control.targeting.tauntRadius",
+        "control.targeting.repelRadius",
+        "control.targeting.repelDistance",
+        "control.allegiance.defendRadius",
+        "control.smoke.radius",
+        "control.disarm.throwDistance"
+      })
+  void stepsInTheSameIncrementAsEveryOtherSettingOfItsKind(final String id) {
+    final FloatOption<?> option =
+        (FloatOption<?>)
+            ControlOptions.options().stream()
+                .filter(o -> o.id().equals(id))
+                .findFirst()
+                .orElseThrow();
 
-    assertNotEquals(option.displayValue(before), option.displayValue(after));
-  }
-
-  @ParameterizedTest(name = "{0}")
-  @MethodSource("options")
-  void writingAnOptionLeavesEveryOtherSettingAlone(final ConfigOption<VolleyConfig> option) {
-    final VolleyConfig before = VolleyConfig.defaults();
-    final VolleyConfig after = OptionMutations.toDifferentValue(option, before);
-
-    for (final ConfigOption<VolleyConfig> other : ServerConfigOptions.all()) {
-      if (!other.id().equals(option.id())) {
-        assertEquals(other.displayValue(before), other.displayValue(after), other.id());
-      }
-    }
+    assertEquals(0.5f, option.step());
   }
 }

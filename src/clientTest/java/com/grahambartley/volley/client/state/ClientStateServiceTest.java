@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ClientStateServiceTest {
 
@@ -18,7 +20,7 @@ class ClientStateServiceTest {
 
   @AfterEach
   void tearDown() {
-    ClientStateHolder.reset();
+    ClientStateService.reset();
   }
 
   @Test
@@ -36,7 +38,6 @@ class ClientStateServiceTest {
     ClientStateService.loadFromConfigDir(configDir);
 
     assertEquals(1.5f, ClientStateService.get().countdownRingScale());
-    assertEquals(ClientStateHolder.get(), ClientStateService.get());
   }
 
   @Test
@@ -64,7 +65,7 @@ class ClientStateServiceTest {
 
     assertTrue(ClientStateService.updateInConfigDir(configDir, updated));
 
-    ClientStateHolder.reset();
+    ClientStateService.reset();
     assertEquals(updated, ClientStateService.loadFromConfigDir(configDir));
   }
 
@@ -99,12 +100,22 @@ class ClientStateServiceTest {
   }
 
   private Path statePath() {
-    return new ClientStatePaths(configDir).getClientStatePath();
+    return ClientStateService.statePath(configDir);
   }
 
   private void write(final String contents) throws IOException {
     final Path path = statePath();
     Files.createDirectories(path.getParent());
     Files.writeString(path, contents, StandardCharsets.UTF_8);
+  }
+
+  @ParameterizedTest(name = "config folder \"{0}\"")
+  @ValueSource(strings = {"config", "instances/main/config", "my config"})
+  void keepsTheStateInTheModFolderOfTheClientConfigNotInAWorldSave(final String folder) {
+    final Path config = configDir.resolve(folder);
+
+    assertEquals(
+        config.resolve("volley").resolve("client-state.json"),
+        ClientStateService.statePath(config));
   }
 }

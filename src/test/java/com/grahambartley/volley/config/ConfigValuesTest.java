@@ -12,6 +12,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ConfigValuesTest {
 
@@ -92,6 +93,18 @@ class ConfigValuesTest {
     assertEquals(List.of(atCap), ConfigValues.normalizeIdentifiers(List.of(atCap, overCap)));
   }
 
+  @ParameterizedTest
+  @CsvSource({"coal_ore, minecraft:coal_ore", "Volley:Rope, volley:rope"})
+  void storesEveryIdentifierWithItsNamespace(final String raw, final String stored) {
+    assertEquals(List.of(stored), ConfigValues.normalizeIdentifiers(List.of(raw)));
+  }
+
+  @ParameterizedTest
+  @ValueSource(strings = {"bad id!", "minecraft:Stone Block", "a:b:c"})
+  void dropsAnEntryThatIsNotAValidIdentifier(final String raw) {
+    assertEquals(List.of(), ConfigValues.normalizeIdentifiers(List.of(raw)));
+  }
+
   @Test
   void treatsANullIdentifierListAsEmpty() {
     assertEquals(List.of(), ConfigValues.normalizeIdentifiers(null));
@@ -147,12 +160,16 @@ class ConfigValuesTest {
 
   @Test
   void findsAVanillaIdentifierListedWithoutItsNamespace() {
-    assertTrue(ConfigValues.containsIdentifier(List.of("stone"), "minecraft:stone"));
+    assertTrue(
+        ConfigValues.containsIdentifier(
+            ConfigValues.normalizeIdentifiers(List.of("stone")), "minecraft:stone"));
   }
 
   @Test
   void doesNotStripAModdedNamespace() {
-    assertFalse(ConfigValues.containsIdentifier(List.of("stone"), "volley:stone"));
+    assertFalse(
+        ConfigValues.containsIdentifier(
+            ConfigValues.normalizeIdentifiers(List.of("stone")), "volley:stone"));
   }
 
   @Test

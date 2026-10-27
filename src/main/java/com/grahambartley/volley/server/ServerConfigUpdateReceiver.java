@@ -1,5 +1,6 @@
 package com.grahambartley.volley.server;
 
+import com.grahambartley.volley.config.ConfigPermissions;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.network.ServerConfigPayloads.UpdateServerConfigC2SPayload;
 import java.util.Optional;
@@ -41,7 +42,7 @@ public final class ServerConfigUpdateReceiver {
     if (player == null) {
       return Outcome.FAILED;
     }
-    if (!player.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL)) {
+    if (!ConfigPermissions.canEdit(player::hasPermissionLevel)) {
       LOGGER.warn(
           "Rejected a Volley config update from {}, who is not an operator",
           player.getGameProfile().getName());

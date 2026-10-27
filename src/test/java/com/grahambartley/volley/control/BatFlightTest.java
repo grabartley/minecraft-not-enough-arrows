@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class BatFlightTest {
   private static final double TOLERANCE = 1.0e-9;
@@ -45,5 +47,13 @@ class BatFlightTest {
     final Vec3d steered = BatFlight.steered(new Vec3d(0.2, 0.0, -0.2), Vec3d.ZERO);
     assertEquals(0.18, steered.x, TOLERANCE);
     assertEquals(-0.18, steered.z, TOLERANCE);
+  }
+
+  @ParameterizedTest(name = "toward ({0}, {1})")
+  @CsvSource({"12.0, 0.0", "-12.0, 0.0", "0.0, 12.0", "0.0, -12.0", "5.0, 5.0", "-3.0, 4.0"})
+  void pullsAtTheSameHorizontalSpeedWhicheverWayItHeads(final double x, final double z) {
+    final Vec3d steered = BatFlight.steered(Vec3d.ZERO, new Vec3d(x, 0.0, z));
+
+    assertEquals(0.05, Math.hypot(steered.x, steered.z), TOLERANCE);
   }
 }

@@ -5,23 +5,24 @@ import com.grahambartley.volley.anchor.AnchorSite;
 import com.grahambartley.volley.config.GrappleArrowConfig;
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
 import com.grahambartley.volley.world.Reach;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.SessionTracker;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class GrappleService {
-  private static final Map<RegistryKey<World>, GrappleTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<SessionTracker<GrappleSession>> TRACKERS =
+      new PerWorld<>(
+          () -> new SessionTracker<>(GrappleSession::playerId, GrappleSession::hasExpired));
 
   private GrappleService() {}
 
@@ -62,15 +63,14 @@ public final class GrappleService {
             GrapplePull.lifetimeTicks(
                 origin, target, config.pullSpeed(), config.pullAcceleration()),
             Reach.between(origin, target));
-    trackerFor(world).add(session);
+    TRACKERS.of(world).add(session);
     return session;
   }
 
   @Nullable
   public static GrappleSession sessionOf(
       @Nullable final ServerWorld world, @Nullable final UUID playerId) {
-    final GrappleTracker tracker = trackerIn(world);
-    return tracker == null ? null : tracker.sessionOf(playerId);
+    return TRACKERS.map(world, tracker -> tracker.get(playerId), null);
   }
 
   @Nullable
@@ -78,12 +78,11 @@ public final class GrappleService {
       @Nullable final ServerWorld world,
       @Nullable final UUID playerId,
       final GrappleEnding ending) {
-    final GrappleTracker tracker = trackerIn(world);
-    return tracker == null ? null : endIn(world, tracker, playerId, ending);
+    return TRACKERS.map(world, tracker -> endIn(world, tracker, playerId, ending), null);
   }
 
   public static void stopPullingEverywhere(@Nullable final UUID playerId) {
-    TRACKERS.values().forEach(tracker -> endEverywhereFor(tracker, playerId));
+    TRACKERS.all().forEach(tracker -> endEverywhereFor(tracker, playerId));
   }
 
   public static void forget() {
@@ -93,7 +92,7 @@ public final class GrappleService {
   @Nullable
   private static GrappleSession endIn(
       final ServerWorld world,
-      final GrappleTracker tracker,
+      final SessionTracker<GrappleSession> tracker,
       @Nullable final UUID playerId,
       final GrappleEnding ending) {
     final GrappleSession ended = tracker.remove(playerId);
@@ -106,20 +105,20 @@ public final class GrappleService {
   }
 
   private static void endEverywhereFor(
-      final GrappleTracker tracker, @Nullable final UUID playerId) {
+      final SessionTracker<GrappleSession> tracker, @Nullable final UUID playerId) {
     if (tracker.remove(playerId) != null) {
       AnchorService.releaseEverywhere(playerId);
     }
   }
 
   private static void pullGrapplesIn(final ServerWorld world) {
-    final GrappleTracker tracker = trackerIn(world);
+    final SessionTracker<GrappleSession> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
 
     final GrappleArrowConfig config = ServerConfigService.get().grapple();
-    for (final GrappleSession session : tracker.sessions()) {
+    for (final GrappleSession session : tracker.all()) {
       final GrappleEnding ending = pullOnce(world, tracker, session, config);
       if (ending != null) {
         endIn(world, tracker, session.playerId(), ending);
@@ -130,7 +129,7 @@ public final class GrappleService {
   @Nullable
   private static GrappleEnding pullOnce(
       final ServerWorld world,
-      final GrappleTracker tracker,
+      final SessionTracker<GrappleSession> tracker,
       final GrappleSession session,
       final GrappleArrowConfig config) {
     if (!(world.getEntity(session.playerId()) instanceof ServerPlayerEntity player)
@@ -165,22 +164,12 @@ public final class GrappleService {
 
   private static void pullTowardAnchor(
       final ServerPlayerEntity player, final Vec3d target, final double pullSpeed) {
-    player.setVelocity(
+    Propel.carry(
+        player,
         GrapplePull.velocity(pullOrigin(player), target, pullSpeed, player.getFinalGravity()));
-    player.velocityModified = true;
-    GrappleFlightCheck.clearFloatingCountFor(player);
   }
 
   private static Vec3d pullOrigin(final PlayerEntity player) {
     return player.getBoundingBox().getCenter();
-  }
-
-  @Nullable
-  private static GrappleTracker trackerIn(@Nullable final ServerWorld world) {
-    return world == null ? null : TRACKERS.get(world.getRegistryKey());
-  }
-
-  private static GrappleTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new GrappleTracker());
   }
 }

@@ -1,6 +1,7 @@
 package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.arrow.ArrowImpact;
+import com.grahambartley.volley.arrow.FaceClearance;
 import com.grahambartley.volley.redstone.RedstoneChargeService;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -31,7 +32,7 @@ public class RedstoneArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
-    final BlockPos chargePos = blockHitResult.getBlockPos().offset(blockHitResult.getSide());
+    final BlockPos chargePos = FaceClearance.blockInFrontOf(blockHitResult);
     RedstoneChargeService.charge(world, chargePos, shootingPlayer().orElse(null));
     return ArrowImpact.DEFAULT;
   }

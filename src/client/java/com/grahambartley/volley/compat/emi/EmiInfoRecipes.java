@@ -2,7 +2,7 @@ package com.grahambartley.volley.compat.emi;
 
 import com.grahambartley.volley.Volley;
 import com.grahambartley.volley.compat.info.InfoEntry;
-import com.grahambartley.volley.item.BaseArrowItem;
+import com.grahambartley.volley.compat.info.RecipeViewerInfo;
 import dev.emi.emi.api.recipe.EmiInfoRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiIngredient;
@@ -10,7 +10,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -45,11 +44,7 @@ public final class EmiInfoRecipes {
   private static EmiRecipe infoRecipe(
       final List<Identifier> itemIds, final List<Text> text, final Identifier id) {
     final List<EmiIngredient> stacks =
-        itemIds.stream()
-            .map(Registries.ITEM::get)
-            .flatMap(item -> BaseArrowItem.variantsOf(item).stream())
-            .<EmiIngredient>map(EmiStack::of)
-            .toList();
+        RecipeViewerInfo.stacksOf(itemIds).stream().<EmiIngredient>map(EmiStack::of).toList();
     return new EmiInfoRecipe(stacks, text, id);
   }
 

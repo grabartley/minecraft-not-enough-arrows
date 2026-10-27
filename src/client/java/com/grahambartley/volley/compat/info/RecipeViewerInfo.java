@@ -2,12 +2,15 @@ package com.grahambartley.volley.compat.info;
 
 import com.grahambartley.volley.ModArrows;
 import com.grahambartley.volley.arrow.RegisteredArrow;
+import com.grahambartley.volley.item.BaseArrowItem;
 import com.grahambartley.volley.item.InfoKeys;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 public final class RecipeViewerInfo {
@@ -28,6 +31,13 @@ public final class RecipeViewerInfo {
       }
     }
     return unique.stream().map(RecipeViewerInfo::entry).toList();
+  }
+
+  public static List<ItemStack> stacksOf(final List<Identifier> itemIds) {
+    return itemIds.stream()
+        .map(Registries.ITEM::get)
+        .flatMap(item -> BaseArrowItem.variantsOf(item).stream())
+        .toList();
   }
 
   private static InfoEntry entry(final Identifier itemId) {

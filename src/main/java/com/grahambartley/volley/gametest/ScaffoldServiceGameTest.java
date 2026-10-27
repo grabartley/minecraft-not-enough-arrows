@@ -103,7 +103,7 @@ public final class ScaffoldServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aScaffoldNeverRisesWhereTheShooterMayNotBuild(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final List<BlockPos>[] column = new List[1];
 
     TraversalTestSupport.withTheBorderEastEdgeAt(

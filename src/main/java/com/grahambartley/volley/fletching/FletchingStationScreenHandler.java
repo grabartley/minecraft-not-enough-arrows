@@ -25,7 +25,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 public final class FletchingStationScreenHandler extends ScreenHandler {
-  public static final int NO_SELECTION = -1;
 
   private final ScreenHandlerContext context;
   private final World world;
@@ -47,7 +46,7 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     this.context = context;
     this.world = playerInventory.player.getWorld();
     this.player = playerInventory.player;
-    this.selectedRecipe.set(NO_SELECTION);
+    this.selectedRecipe.set(FletchingRecipeSelection.NO_SELECTION);
     this.input.addListener(changed -> onInputChanged());
 
     addInputSlots();
@@ -209,7 +208,9 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
   private void updateAvailableRecipes() {
     final Identifier previous = selectedRecipeId();
     availableRecipes = input.isEmpty() ? List.of() : matchingRecipes(recipeInput());
-    selectedRecipe.set(reselect(previous));
+    selectedRecipe.set(
+        FletchingRecipeSelection.reselect(
+            availableRecipes.stream().map(RecipeEntry::id).toList(), previous));
   }
 
   private List<RecipeEntry<FletchingRecipe>> matchingRecipes(final FletchingRecipeInput inputs) {
@@ -219,21 +220,6 @@ public final class FletchingStationScreenHandler extends ScreenHandler {
     matches.addAll(
         CourierStationRecipes.matching(inputs, ServerConfigService.get().social().courier()));
     return List.copyOf(matches);
-  }
-
-  private int reselect(final Identifier previous) {
-    if (availableRecipes.isEmpty()) {
-      return NO_SELECTION;
-    }
-    if (availableRecipes.size() == 1) {
-      return 0;
-    }
-    for (int index = 0; index < availableRecipes.size(); index++) {
-      if (availableRecipes.get(index).id().equals(previous)) {
-        return index;
-      }
-    }
-    return NO_SELECTION;
   }
 
   private Identifier selectedRecipeId() {

@@ -1,0 +1,16 @@
+volley config physics gravityimpactradius 0,true
+volley config physics gravityimpactradius 8,true
+volley config physics gravityimpactradius 9,false
+volley config physics gravityimpactradius -1,false
+volley config physics ricochetbouncecount 0,true
+volley config physics ricochetbouncecount 16,true
+volley config physics ricochetbouncecount 17,false
+volley config physics ricochetretainsdamage true,true
+volley config physics ricochetretainsdamage yes,false
+volley config physics gravityblockexclusions add minecraft:sand,true
+volley config physics gravityblockexclusions add sand,true
+volley config physics gravityblockexclusions remove minecraft:sand,true
+volley config physics gravityblockexclusions clear,true
+volley config physics gravityblockexclusions add,false
+volley config physics gravityblockexclusions clear extra,false
+volley config physics gravityblockexclusions add minecraft:Sand,false

@@ -216,8 +216,7 @@ public final class TowServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 20)
   public void aPlayerIsNotTowedWhereTheRecallSettingKeepsPlayersPut(TestContext context) {
     final ServerPlayerEntity shooter = shooter(context);
-    final ServerPlayerEntity target = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, target, Vec3d.ofBottomCenter(FAR_TARGET));
+    final ServerPlayerEntity target = MockPlayerSupport.playerAt(context, FAR_TARGET);
 
     context.assertFalse(
         TowService.start(
@@ -235,8 +234,7 @@ public final class TowServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 20)
   public void aPlayerIsTowedWhereRecallMovesPlayersAndLosesAnyGrappleOrRide(TestContext context) {
     final ServerPlayerEntity shooter = shooter(context);
-    final ServerPlayerEntity target = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, target, Vec3d.ofBottomCenter(FAR_TARGET));
+    final ServerPlayerEntity target = MockPlayerSupport.playerAt(context, FAR_TARGET);
     context.setBlockState(FAR_TARGET.up(3), Blocks.STONE);
     GrappleService.start(
         context.getWorld(), target, context.getAbsolutePos(FAR_TARGET.up(3)), null);
@@ -258,8 +256,7 @@ public final class TowServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 20)
   public void aTowedPlayerIsNotCountedAsFloating(TestContext context) {
     final ServerPlayerEntity shooter = shooter(context);
-    final ServerPlayerEntity target = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, target, Vec3d.ofBottomCenter(FAR_TARGET));
+    final ServerPlayerEntity target = MockPlayerSupport.playerAt(context, FAR_TARGET);
     TowService.start(
         context.getWorld(),
         shooter,
@@ -336,7 +333,7 @@ public final class TowServiceGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity shooter(final TestContext context) {
-    return TraversalTestSupport.playerAt(context, SHOOTER_STAND);
+    return MockPlayerSupport.playerAt(context, SHOOTER_STAND);
   }
 
   private static boolean start(

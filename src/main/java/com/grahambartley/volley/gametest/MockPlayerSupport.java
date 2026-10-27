@@ -3,6 +3,7 @@ package com.grahambartley.volley.gametest;
 import com.mojang.authlib.GameProfile;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.UUID;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
@@ -21,10 +22,11 @@ import net.minecraft.world.GameMode;
 final class MockPlayerSupport {
   static final String BATCH = "grapple";
 
-  private static final float EASTWARD_YAW = 270.0f;
-  private static final float LEVEL_PITCH = 0.0f;
+  static final float EASTWARD_YAW = 270.0f;
+  static final float LEVEL_PITCH = 0.0f;
+  static final int A_QUIVER = 8;
+
   private static final int FULLY_DRAWN = 0;
-  private static final int A_QUIVER = 8;
   private static final float NO_ROLL = 0.0f;
   private static final float BOW_SPEED = 3.0f;
   private static final float NO_DIVERGENCE = 0.0f;
@@ -60,12 +62,20 @@ final class MockPlayerSupport {
     shooter.setYaw(EASTWARD_YAW);
     shooter.setPitch(LEVEL_PITCH);
 
+    launch(context, shooter, arrow, null).setCritical(true);
+  }
+
+  static PersistentProjectileEntity launch(
+      final TestContext context,
+      final LivingEntity shooter,
+      final Item arrow,
+      final ItemStack weapon) {
     final PersistentProjectileEntity projectile =
-        ((ArrowItem) arrow).createArrow(context.getWorld(), new ItemStack(arrow), shooter, null);
+        ((ArrowItem) arrow).createArrow(context.getWorld(), new ItemStack(arrow), shooter, weapon);
     projectile.setVelocity(
         shooter, shooter.getPitch(), shooter.getYaw(), NO_ROLL, BOW_SPEED, NO_DIVERGENCE);
-    projectile.setCritical(true);
     context.getWorld().spawnEntity(projectile);
+    return projectile;
   }
 
   static void fireEastFromBow(
@@ -82,10 +92,17 @@ final class MockPlayerSupport {
     Items.BOW.onStoppedUsing(new ItemStack(Items.BOW), context.getWorld(), shooter, FULLY_DRAWN);
   }
 
+  static ServerPlayerEntity player(final TestContext context) {
+    return LeavesWhenTestEnds.register(context, context.createMockCreativeServerPlayerInWorld());
+  }
+
   static ServerPlayerEntity playerAt(final TestContext context, final BlockPos relativePos) {
-    final ServerPlayerEntity player =
-        LeavesWhenTestEnds.register(context, context.createMockCreativeServerPlayerInWorld());
-    moveTo(context, player, Vec3d.ofBottomCenter(relativePos));
+    return playerAt(context, Vec3d.ofBottomCenter(relativePos));
+  }
+
+  static ServerPlayerEntity playerAt(final TestContext context, final Vec3d relativePos) {
+    final ServerPlayerEntity player = player(context);
+    moveTo(context, player, relativePos);
     return player;
   }
 
@@ -113,5 +130,11 @@ final class MockPlayerSupport {
     final PlayerEntity player = context.createMockPlayer(GameMode.SURVIVAL);
     moveTo(context, player, Vec3d.ofBottomCenter(relativePos));
     return player;
+  }
+
+  static void fillInventory(final PlayerEntity player) {
+    for (int slot = 0; slot < player.getInventory().main.size(); slot++) {
+      player.getInventory().main.set(slot, new ItemStack(Items.STONE, Items.STONE.getMaxCount()));
+    }
   }
 }

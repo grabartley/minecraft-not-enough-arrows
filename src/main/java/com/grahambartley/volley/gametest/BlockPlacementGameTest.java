@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class BlockPlacementGameTest implements FabricGameTest {
   private static final String BATCH = "block-placement";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos OPEN_AIR = new BlockPos(3, 4, 3);
   private static final BlockPos FAR_OUTSIDE_THE_BORDER =
       new BlockPos(Integer.MAX_VALUE, 4, Integer.MAX_VALUE);

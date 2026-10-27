@@ -3,7 +3,6 @@ package com.grahambartley.volley.compat.jei;
 import com.grahambartley.volley.Volley;
 import com.grahambartley.volley.compat.info.InfoEntry;
 import com.grahambartley.volley.compat.info.RecipeViewerInfo;
-import com.grahambartley.volley.item.BaseArrowItem;
 import com.grahambartley.volley.item.TintedArrowItem;
 import com.grahambartley.volley.item.TintedArrowItems;
 import com.grahambartley.volley.recipe.FletchingRecipe;
@@ -21,7 +20,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeEntry;
-import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -60,7 +58,8 @@ public final class VolleyJeiPlugin implements IModPlugin {
     registration.addRecipes(FletchingJeiCategory.RECIPE_TYPE, loadedStationRecipes());
 
     for (final InfoEntry entry : RecipeViewerInfo.arrowEntries()) {
-      registration.addItemStackInfo(stacksOf(entry), entry.texts().toArray(Text[]::new));
+      registration.addItemStackInfo(
+          RecipeViewerInfo.stacksOf(entry.itemIds()), entry.texts().toArray(Text[]::new));
     }
   }
 
@@ -77,12 +76,5 @@ public final class VolleyJeiPlugin implements IModPlugin {
       return List.of();
     }
     return StationRecipes.from(world.getRecipeManager());
-  }
-
-  private static List<ItemStack> stacksOf(final InfoEntry entry) {
-    return entry.itemIds().stream()
-        .map(Registries.ITEM::get)
-        .flatMap(item -> BaseArrowItem.variantsOf(item).stream())
-        .toList();
   }
 }

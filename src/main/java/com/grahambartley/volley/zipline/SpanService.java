@@ -6,9 +6,8 @@ import com.grahambartley.volley.structure.StructureBlockSource;
 import com.grahambartley.volley.structure.StructureBudget;
 import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -16,14 +15,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.PillarBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class SpanService {
-  private static final Map<RegistryKey<World>, SpanTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<SpanTracker> TRACKERS = new PerWorld<>(SpanTracker::new);
 
   private SpanService() {}
 
@@ -65,20 +62,19 @@ public final class SpanService {
       TimedStructureService.dismantle(world, span.id());
       return SpanResult.refused(SpanRefusal.NOT_STRUNG);
     }
-    trackerFor(world).add(span);
+    TRACKERS.of(world).add(span);
     return SpanResult.strung(span);
   }
 
   public static Optional<Span> spanAt(final ServerWorld world, final BlockPos pos) {
-    final SpanTracker tracker = trackerIn(world);
+    final SpanTracker tracker = TRACKERS.in(world);
     return tracker == null
         ? Optional.empty()
         : tracker.at(pos).filter(span -> isIntact(world, span));
   }
 
   public static Optional<Span> find(final ServerWorld world, final UUID id) {
-    final SpanTracker tracker = trackerIn(world);
-    return tracker == null ? Optional.empty() : tracker.find(id);
+    return TRACKERS.map(world, tracker -> tracker.find(id), Optional.empty());
   }
 
   public static boolean isIntact(final ServerWorld world, final Span span) {
@@ -96,18 +92,9 @@ public final class SpanService {
   }
 
   private static void forgetExpiredIn(final ServerWorld world) {
-    final SpanTracker tracker = trackerIn(world);
+    final SpanTracker tracker = TRACKERS.in(world);
     if (tracker != null && !tracker.isEmpty()) {
       tracker.removeExpired(world.getTime());
     }
-  }
-
-  @Nullable
-  private static SpanTracker trackerIn(@Nullable final ServerWorld world) {
-    return world == null ? null : TRACKERS.get(world.getRegistryKey());
-  }
-
-  private static SpanTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new SpanTracker());
   }
 }

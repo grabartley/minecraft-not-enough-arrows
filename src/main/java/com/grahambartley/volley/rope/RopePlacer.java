@@ -2,9 +2,7 @@ package com.grahambartley.volley.rope;
 
 import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.world.BlockPlacement;
-import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -21,15 +19,7 @@ public final class RopePlacer {
       return List.of();
     }
 
-    final List<BlockPos> placed = new ArrayList<>(column.size());
-    for (final BlockPos pos : column) {
-      if (!canPlaceAt(world, pos, placer)
-          || !world.setBlockState(pos, ropeState(), Block.NOTIFY_ALL)) {
-        break;
-      }
-      placed.add(pos.toImmutable());
-    }
-    return List.copyOf(placed);
+    return BlockPlacement.placeUntilBlocked(world, column, ropeState(), placer);
   }
 
   public static boolean canPlaceAt(

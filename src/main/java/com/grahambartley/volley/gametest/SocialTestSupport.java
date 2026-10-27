@@ -1,13 +1,9 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.SocialArrows;
-import com.grahambartley.volley.config.ServerConfigHolder;
-import com.grahambartley.volley.config.SocialArrowConfig;
-import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.entity.CourierArrowEntity;
 import com.grahambartley.volley.social.CourierPayloads;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -27,11 +23,6 @@ final class SocialTestSupport {
 
   private SocialTestSupport() {}
 
-  static void useSocial(final UnaryOperator<SocialArrowConfig> change) {
-    final VolleyConfig defaults = VolleyConfig.defaults();
-    ServerConfigHolder.set(defaults.withSocial(change.apply(defaults.social())));
-  }
-
   static ItemStack emptyCourier() {
     return new ItemStack(SocialArrows.COURIER_ARROW.item());
   }
@@ -46,10 +37,8 @@ final class SocialTestSupport {
 
   static ServerPlayerEntity fireEast(final TestContext context, final ItemStack quiver) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    shooter.getInventory().clear();
-    MockPlayerSupport.fireEastFromBow(context, shooter, quiver);
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
+    TerrainArrowTestSupport.fireFromBow(context, shooter, quiver);
     return shooter;
   }
 
@@ -83,17 +72,5 @@ final class SocialTestSupport {
         .filter(payload -> payload.isOf(item))
         .map(payload -> payload.getCount() * stack.getCount())
         .orElse(0);
-  }
-
-  static int droppedNearby(final TestContext context, final Item item) {
-    return context
-        .getWorld()
-        .getEntitiesByClass(
-            ItemEntity.class,
-            context.getTestBox().expand(NEARBY),
-            drop -> drop.getStack().isOf(item))
-        .stream()
-        .mapToInt(drop -> drop.getStack().getCount())
-        .sum();
   }
 }

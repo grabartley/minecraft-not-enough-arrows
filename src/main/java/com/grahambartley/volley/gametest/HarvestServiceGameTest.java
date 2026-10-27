@@ -80,7 +80,7 @@ public final class HarvestServiceGameTest implements FabricGameTest {
   public void aFullInventoryLosesNoPartOfTheHarvest(TestContext context) {
     AgricultureTestSupport.plantWheat(context, CENTER, CropBlock.MAX_AGE);
     final PlayerEntity shooter = context.createMockPlayer(GameMode.SURVIVAL);
-    AgricultureTestSupport.fillInventory(shooter);
+    MockPlayerSupport.fillInventory(shooter);
 
     harvest(context, shooter, 0);
 

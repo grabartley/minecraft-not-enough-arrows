@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class ControlOptions {
-  public static final float DISTANCE_STEP = 0.5f;
 
   private ControlOptions() {}
 
@@ -47,7 +46,7 @@ public final class ControlOptions {
             ConfigSettings.CONTROL_TARGETING_TAUNT_RADIUS,
             TargetingArrowConfig.RADIUS_MIN,
             TargetingArrowConfig.RADIUS_MAX,
-            DISTANCE_STEP,
+            CombatOptions.DISTANCE_STEP,
             config -> config.control().targeting().tauntRadius(),
             (config, value) -> targeting(config, it -> it.withTauntRadius(value))),
         new IntOption<>(
@@ -60,7 +59,7 @@ public final class ControlOptions {
             ConfigSettings.CONTROL_TARGETING_REPEL_RADIUS,
             TargetingArrowConfig.RADIUS_MIN,
             TargetingArrowConfig.RADIUS_MAX,
-            DISTANCE_STEP,
+            CombatOptions.DISTANCE_STEP,
             config -> config.control().targeting().repelRadius(),
             (config, value) -> targeting(config, it -> it.withRepelRadius(value))),
         new IntOption<>(
@@ -73,7 +72,7 @@ public final class ControlOptions {
             ConfigSettings.CONTROL_TARGETING_REPEL_DISTANCE,
             TargetingArrowConfig.DISTANCE_MIN,
             TargetingArrowConfig.DISTANCE_MAX,
-            DISTANCE_STEP,
+            CombatOptions.DISTANCE_STEP,
             config -> config.control().targeting().repelDistance(),
             (config, value) -> targeting(config, it -> it.withRepelDistance(value))),
         new IntOption<>(
@@ -86,14 +85,14 @@ public final class ControlOptions {
             ConfigSettings.CONTROL_ALLEGIANCE_DEFEND_RADIUS,
             AllegianceArrowConfig.DEFEND_RADIUS_MIN,
             AllegianceArrowConfig.DEFEND_RADIUS_MAX,
-            DISTANCE_STEP,
+            CombatOptions.DISTANCE_STEP,
             config -> config.control().allegiance().defendRadius(),
             (config, value) -> allegiance(config, it -> it.withDefendRadius(value))),
         new FloatOption<>(
             ConfigSettings.CONTROL_SMOKE_RADIUS,
             SmokeArrowConfig.RADIUS_MIN,
             SmokeArrowConfig.RADIUS_MAX,
-            DISTANCE_STEP,
+            CombatOptions.DISTANCE_STEP,
             config -> config.control().smoke().radius(),
             (config, value) -> smoke(config, it -> it.withRadius(value))),
         new IntOption<>(
@@ -110,7 +109,7 @@ public final class ControlOptions {
             ConfigSettings.CONTROL_DISARM_THROW_DISTANCE,
             DisarmArrowConfig.THROW_DISTANCE_MIN,
             DisarmArrowConfig.THROW_DISTANCE_MAX,
-            DISTANCE_STEP,
+            CombatOptions.DISTANCE_STEP,
             config -> config.control().disarm().throwDistance(),
             (config, value) -> disarm(config, it -> it.withThrowDistance(value))));
   }

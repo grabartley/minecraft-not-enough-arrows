@@ -20,7 +20,6 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
   private static final BlockPos STANDING_ON = new BlockPos(0, 2, 0);
   private static final int WEAPON_SLOT = 0;
   private static final int QUIVER_SLOT = 1;
-  private static final int A_QUIVER = 8;
 
   @CustomTestProvider
   public Collection<TestFunction> aDrawnBowReportsTheArrowItWillFire() {
@@ -104,7 +103,7 @@ public final class NockedBowArrowGameTest implements FabricGameTest {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, STANDING_ON);
     player.getInventory().clear();
     player.getInventory().selectedSlot = WEAPON_SLOT;
-    player.getInventory().setStack(QUIVER_SLOT, new ItemStack(arrow, A_QUIVER));
+    player.getInventory().setStack(QUIVER_SLOT, new ItemStack(arrow, MockPlayerSupport.A_QUIVER));
     return player;
   }
 

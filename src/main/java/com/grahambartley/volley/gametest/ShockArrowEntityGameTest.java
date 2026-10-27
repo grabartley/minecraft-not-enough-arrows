@@ -11,6 +11,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.world.GameMode;
 
 public final class ShockArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "shock-arrow";
@@ -98,6 +99,28 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
               bystander.getHealth() < before,
               "The bolt lands where the arrow lands, so a wall hit still jumps to the nearest"
                   + " living thing in reach");
+          context.complete();
+        });
+  }
+
+  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  public void aSpectatorNearerTheHitDoesNotSoakUpTheBolt(TestContext context) {
+    FiringRangeSupport.raiseBackstop(context);
+    final ServerPlayerEntity spectator = MockPlayerSupport.survivalPlayerAt(context, TARGET_STAND);
+    spectator.changeGameMode(GameMode.SPECTATOR);
+    final CowEntity bystander = FiringRangeSupport.liveTargetOnPedestalAt(context, NEIGHBOUR_STAND);
+    final float before = bystander.getHealth();
+    MockPlayerSupport.fireEastFromBow(
+        context,
+        MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND),
+        ModArrows.SHOCK_ARROW.item());
+
+    context.runAtTick(
+        FiringRangeSupport.LANDING_TICK + SETTLED,
+        () -> {
+          context.assertTrue(
+              bystander.getHealth() < before,
+              "A spectator cannot be hurt, so the bolt must skip it and reach the cow");
           context.complete();
         });
   }

@@ -1,9 +1,9 @@
 package com.grahambartley.volley.gametest;
 
+import com.grahambartley.volley.structure.OpenRun;
 import com.grahambartley.volley.structure.StructureBlockSource;
 import com.grahambartley.volley.structure.StructureBudget;
 import com.grahambartley.volley.structure.TimedStructureService;
-import com.grahambartley.volley.traversal.OpenRun;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.BlockState;

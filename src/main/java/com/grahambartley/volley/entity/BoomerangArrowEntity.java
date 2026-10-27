@@ -6,6 +6,7 @@ import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.chaos.BoomerangFlight;
 import com.grahambartley.volley.chaos.BoomerangReturn;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -100,8 +101,7 @@ public class BoomerangArrowEntity extends BaseArrowEntity {
       land(world, shooter);
       return;
     }
-    setVelocity(BoomerangFlight.steer(getVelocity(), getPos(), shooter.getEyePos()));
-    velocityModified = true;
+    Propel.drive(this, BoomerangFlight.steer(getVelocity(), getPos(), shooter.getEyePos()));
   }
 
   @Override
@@ -133,8 +133,7 @@ public class BoomerangArrowEntity extends BaseArrowEntity {
 
   private void startReturn() {
     fly();
-    setVelocity(BoomerangFlight.turnBack(getVelocity()));
-    velocityModified = true;
+    Propel.drive(this, BoomerangFlight.turnBack(getVelocity()));
   }
 
   private void fly() {

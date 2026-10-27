@@ -2,9 +2,8 @@ package com.grahambartley.volley.traversal;
 
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.BlockPlacement;
-import java.util.ArrayList;
+import com.grahambartley.volley.world.VerticalRun;
 import java.util.List;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.VineBlock;
@@ -37,15 +36,8 @@ public final class VineService {
       return List.of();
     }
     final BlockState vine = vineFacing(face.getOpposite());
-    final List<BlockPos> grown = new ArrayList<>();
-    for (final BlockPos pos : VerticalRun.upFrom(struck.offset(face), lengthBlocks)) {
-      if (!BlockPlacement.canPlace(world, pos, vine, shooter)
-          || !world.setBlockState(pos, vine, Block.NOTIFY_ALL)) {
-        break;
-      }
-      grown.add(pos.toImmutable());
-    }
-    return List.copyOf(grown);
+    return BlockPlacement.placeUntilBlocked(
+        world, VerticalRun.upFrom(struck.offset(face), lengthBlocks), vine, shooter);
   }
 
   public static BlockState vineFacing(final Direction towardWall) {

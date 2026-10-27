@@ -24,8 +24,4 @@ public final class MagnetSteering {
   public static boolean hasArrived(final Vec3d position, final Vec3d destination) {
     return position.squaredDistanceTo(destination) <= ARRIVAL_DISTANCE * ARRIVAL_DISTANCE;
   }
-
-  public static boolean isWithinReach(final Vec3d position, final Vec3d impact, final int radius) {
-    return radius > 0 && position.squaredDistanceTo(impact) <= (double) radius * radius;
-  }
 }

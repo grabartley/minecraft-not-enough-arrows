@@ -27,7 +27,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aHeldAnchorRecordsWhereAndWhatItHolds(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     final UUID arrow = UUID.randomUUID();
 
     final PendingAnchor anchor = hold(context, owner, arrow, WINDOW_TICKS);
@@ -42,7 +42,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void claimingAnAnchorHandsItOverOnce(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     final PendingAnchor anchor = hold(context, owner, UUID.randomUUID(), WINDOW_TICKS);
 
     context.assertEquals(
@@ -55,7 +55,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anAnchorWhoseBlockChangedCannotBeClaimed(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     hold(context, owner, UUID.randomUUID(), WINDOW_TICKS);
 
     context.setBlockState(ANCHOR, Blocks.GLASS);
@@ -69,7 +69,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 30)
   public void anAnchorIsDiscardedWhenItsWindowCloses(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     hold(context, owner, UUID.randomUUID(), SHORT_WINDOW_TICKS);
 
     context.runAtTick(
@@ -84,7 +84,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPlayerWhoDiesLosesTheirPendingAnchor(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     hold(context, owner, UUID.randomUUID(), WINDOW_TICKS);
 
     ServerLivingEntityEvents.AFTER_DEATH
@@ -100,7 +100,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPlayerWhoLeavesLosesTheirPendingAnchor(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     hold(context, owner, UUID.randomUUID(), WINDOW_TICKS);
 
     PendingAnchorService.discard(owner.getUuid());
@@ -114,7 +114,7 @@ public final class PendingAnchorServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void noWindowHoldsNothing(TestContext context) {
     context.setBlockState(ANCHOR, Blocks.STONE);
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
 
     context.assertTrue(
         PendingAnchorService.hold(

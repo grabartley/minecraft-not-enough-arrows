@@ -3,6 +3,7 @@ package com.grahambartley.volley.entity;
 import com.grahambartley.volley.combat.RailgunFlight;
 import com.grahambartley.volley.config.RailgunArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
@@ -65,8 +66,7 @@ public class RailgunArrowEntity extends BaseArrowEntity {
     if (launched || inGround) {
       return;
     }
-    setVelocity(RailgunFlight.launchVelocity(getVelocity(), railgun.speedMultiplier()));
-    velocityModified = true;
+    Propel.drive(this, RailgunFlight.launchVelocity(getVelocity(), railgun.speedMultiplier()));
     launched = true;
   }
 

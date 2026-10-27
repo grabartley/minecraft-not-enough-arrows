@@ -1,11 +1,10 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.fire.FirePatchService;
 import com.grahambartley.volley.fire.FirePatchShape;
-import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.structure.TimedStructureService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -17,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class FirePatchServiceGameTest implements FabricGameTest {
   private static final String BATCH = "fire-patch-lifecycle";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CENTRE = new BlockPos(3, 3, 3);
   private static final int RADIUS = 2;
   private static final int SHORT_DURATION_TICKS = 10;
@@ -25,7 +24,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = BATCH)
   public void forgetPatchesBeforeBatch(ServerWorld world) {
-    FirePatchService.forget();
+    TimedStructureService.forget();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
@@ -86,14 +85,10 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesHowBigAPatchIs(TestContext context) {
     final BlockPos centre = context.getAbsolutePos(CENTRE);
-    final VolleyConfig previous = ServerConfigService.get();
-    final List<BlockPos> placed;
-    try {
-      ServerConfigHolder.set(configWithFirePatch(1, LONG_DURATION_TICKS));
-      placed = FirePatchService.ignite(context.getWorld(), centre, null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final List<BlockPos> placed =
+        ConfigOverrides.during(
+            configWithFirePatch(1, LONG_DURATION_TICKS),
+            () -> FirePatchService.ignite(context.getWorld(), centre, null));
 
     context.assertEquals(
         placed.size(),
@@ -104,14 +99,11 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigCanSwitchFirePatchesOff(TestContext context) {
-    final VolleyConfig previous = ServerConfigService.get();
-    final List<BlockPos> placed;
-    try {
-      ServerConfigHolder.set(configWithFirePatch(RADIUS, 0));
-      placed = FirePatchService.ignite(context.getWorld(), context.getAbsolutePos(CENTRE), null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final List<BlockPos> placed =
+        ConfigOverrides.during(
+            configWithFirePatch(RADIUS, 0),
+            () ->
+                FirePatchService.ignite(context.getWorld(), context.getAbsolutePos(CENTRE), null));
 
     context.assertTrue(placed.isEmpty(), "A configured duration of zero should light nothing");
     context.expectBlock(Blocks.AIR, CENTRE);

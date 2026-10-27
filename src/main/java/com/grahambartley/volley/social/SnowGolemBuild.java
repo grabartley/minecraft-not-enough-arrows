@@ -1,5 +1,6 @@
 package com.grahambartley.volley.social;
 
+import com.grahambartley.volley.world.MobSpawn;
 import com.grahambartley.volley.world.SpawnPermission;
 import java.util.Optional;
 import net.minecraft.entity.EntityType;
@@ -13,26 +14,21 @@ public final class SnowGolemBuild {
 
   private SnowGolemBuild() {}
 
-  public static boolean allows(
-      final ServerWorld world, final Vec3d at, @Nullable final PlayerEntity shooter) {
-    return SpawnPermission.allows(world, EntityType.SNOW_GOLEM, at, shooter);
-  }
-
   public static Optional<SnowGolemEntity> build(
       final ServerWorld world,
       final Vec3d at,
       @Nullable final PlayerEntity shooter,
       final int lifetimeTicks) {
-    if (!allows(world, at, shooter)) {
+    if (!SpawnPermission.allows(world, EntityType.SNOW_GOLEM, at, shooter)) {
       return Optional.empty();
     }
-    final SnowGolemEntity golem = EntityType.SNOW_GOLEM.create(world);
-    if (golem == null) {
-      return Optional.empty();
-    }
-    golem.refreshPositionAndAngles(at.x, at.y, at.z, world.random.nextFloat() * 360f, 0f);
-    golem.setHasPumpkin(false);
-    SnowGolemMelt.schedule(golem, world.getTime() + lifetimeTicks);
-    return world.spawnEntity(golem) ? Optional.of(golem) : Optional.empty();
+    return MobSpawn.at(
+        world,
+        EntityType.SNOW_GOLEM,
+        at,
+        golem -> {
+          golem.setHasPumpkin(false);
+          SnowGolemMelt.schedule(golem, world.getTime() + lifetimeTicks);
+        });
   }
 }

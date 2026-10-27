@@ -14,7 +14,8 @@ import org.junit.jupiter.api.Test;
 class ArrowCatalogTest {
   private static final EntityType.EntityFactory<BaseArrowEntity> ENTITY_FACTORY =
       (type, world) -> null;
-  private static final ArrowEntityFactory SPAWN_FACTORY = (world, x, y, z, stack, weapon) -> null;
+  private static final PositionedArrowConstructor<BaseArrowEntity> CONSTRUCTOR =
+      (type, world, x, y, z, stack, weapon) -> null;
 
   private ArrowCatalog catalog;
 
@@ -98,6 +99,6 @@ class ArrowCatalogTest {
   }
 
   private static ArrowDefinition<BaseArrowEntity> definition(final String path) {
-    return ArrowDefinition.of(path, ENTITY_FACTORY, SPAWN_FACTORY);
+    return ArrowDefinition.of(path, ENTITY_FACTORY, CONSTRUCTOR);
   }
 }

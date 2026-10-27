@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ServerConfigServiceTest {
 
@@ -25,16 +27,14 @@ class ServerConfigServiceTest {
     ServerConfigHolder.reset();
   }
 
-  @Test
-  void gatesMutationBehindOperatorPermissionLevelTwo() {
-    assertEquals(2, ServerConfigService.OP_PERMISSION_LEVEL);
-  }
+  @ParameterizedTest(name = "world folder \"{0}\"")
+  @ValueSource(strings = {"world", "saves/My World", "saves/./nested/../world"})
+  void writesDefaultsOutWhenTheWorldHasNoConfigYet(final String folder) {
+    final Path world = worldRoot.resolve(folder);
 
-  @Test
-  void writesDefaultsOutWhenTheWorldHasNoConfigYet() {
-    ServerConfigService.loadFromWorldRoot(worldRoot);
+    ServerConfigService.loadFromWorldRoot(world);
 
-    assertTrue(Files.exists(new ConfigPaths(worldRoot).getServerConfigPath()));
+    assertTrue(Files.exists(new ConfigPaths(world.normalize()).getServerConfigPath()));
   }
 
   @Test

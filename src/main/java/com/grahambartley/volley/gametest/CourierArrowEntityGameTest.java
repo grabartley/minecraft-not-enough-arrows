@@ -39,7 +39,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = UNDELIVERABLE_BATCH)
   public void makeDiamondsUndeliverableBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social ->
             social.withCourier(social.courier().withUndeliverable(List.of("minecraft:diamond"))));
   }
@@ -51,7 +51,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = SMALL_CAP_BATCH)
   public void lowerThePayloadCapBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social -> social.withCourier(social.courier().withMaxPayload(SMALL_CAP)));
   }
 
@@ -76,7 +76,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
               PAYLOAD_COUNT,
               recipient.getInventory().count(PAYLOAD_ITEM),
               "Diamonds in the recipient's inventory");
-          context.assertEquals(0, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
           assertConserved(context, List.of(recipient, shooter));
           context.assertTrue(
               FiringRangeSupport.firedArrow(context, CourierArrowEntity.class) == null,
@@ -110,7 +110,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
       tickLimit = SocialTestSupport.TICK_LIMIT)
   public void aFullRecipientFindsThePayloadAtTheirFeet(TestContext context) {
     final ServerPlayerEntity recipient = recipientAt(context);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
     final ServerPlayerEntity shooter =
         SocialTestSupport.fireEast(context, SocialTestSupport.loadedCourier());
 
@@ -135,7 +135,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
       tickLimit = SocialTestSupport.TICK_LIMIT)
   public void aRecipientWithSomeRoomKeepsWhatFitsAndFindsTheRestAtTheirFeet(TestContext context) {
     final ServerPlayerEntity recipient = recipientAt(context);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
     recipient.getInventory().setStack(0, new ItemStack(PAYLOAD_ITEM, 60));
     final ServerPlayerEntity shooter =
         SocialTestSupport.fireEast(context, SocialTestSupport.loadedCourier());
@@ -147,7 +147,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
               64, recipient.getInventory().count(PAYLOAD_ITEM), "Diamonds that fit");
           context.assertEquals(
               60 + PAYLOAD_COUNT - 64,
-              SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM),
+              TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM),
               "Diamonds at the recipient's feet");
           context.complete();
         });
@@ -193,7 +193,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
         SocialTestSupport.SETTLED_TICK,
         () -> {
           context.assertEquals(
-              PAYLOAD_COUNT, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+              PAYLOAD_COUNT, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
           context.assertEquals(health, cow.getHealth(), "The cow's health");
           assertConserved(context, List.of(shooter));
           context.complete();
@@ -222,7 +222,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
     arrow.kill();
 
     context.assertEquals(
-        PAYLOAD_COUNT, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+        PAYLOAD_COUNT, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
     assertConserved(context, List.of());
     context.complete();
   }
@@ -230,8 +230,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aCourierArrowLostToTheVoidReturnsItsPayloadToTheShooter(TestContext context) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    shooter.getInventory().clear();
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     final CourierArrowEntity arrow = loadedArrowInMidAir(context);
     arrow.setOwner(shooter);
     arrow.setPosition(arrow.getX(), context.getWorld().getBottomY() - 70.0, arrow.getZ());
@@ -265,8 +264,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPayloadLostToTheVoidReachesAShooterInAnotherDimension(TestContext context) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    shooter.getInventory().clear();
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     final CourierArrowEntity arrow = loadedArrowInMidAir(context);
     arrow.setOwner(shooter);
     shooter.teleport(
@@ -293,7 +291,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
 
     arrow.remove(Entity.RemovalReason.UNLOADED_TO_CHUNK);
 
-    context.assertEquals(0, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+    context.assertEquals(0, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
     context.assertTrue(arrow.isLoaded(), "The unloaded arrow still carries its payload");
     context.complete();
   }
@@ -377,7 +375,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
     context.runAtTick(
         SocialTestSupport.SETTLED_TICK,
         () -> {
-          context.assertEquals(0, SocialTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
+          context.assertEquals(0, TerrainTestSupport.droppedNearby(context, PAYLOAD_ITEM), "Drops");
           context.assertEquals(
               PAYLOAD_COUNT,
               SocialTestSupport.accountedFor(context, PAYLOAD_ITEM, List.of(shooter)),
@@ -387,10 +385,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity recipientAt(final TestContext context) {
-    final ServerPlayerEntity recipient =
-        ChaosTestSupport.survivalPlayerAt(context, RECIPIENT_STAND);
-    recipient.getInventory().clear();
-    return recipient;
+    return MockPlayerSupport.survivalPlayerAt(context, RECIPIENT_STAND);
   }
 
   private static CourierArrowEntity loadedArrowInMidAir(final TestContext context) {

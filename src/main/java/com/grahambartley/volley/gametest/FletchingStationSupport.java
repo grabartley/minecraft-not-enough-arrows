@@ -6,6 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,6 +23,15 @@ final class FletchingStationSupport {
       final TestContext context, final ServerPlayerEntity player) {
     context.setBlockState(TABLE, Blocks.FLETCHING_TABLE);
     return new FletchingStationScreenHandler(
+        FIRST_SYNC_ID,
+        player.getInventory(),
+        ScreenHandlerContext.create(context.getWorld(), context.getAbsolutePos(TABLE)));
+  }
+
+  static CraftingScreenHandler openCraftingTable(
+      final TestContext context, final ServerPlayerEntity player) {
+    context.setBlockState(TABLE, Blocks.CRAFTING_TABLE);
+    return new CraftingScreenHandler(
         FIRST_SYNC_ID,
         player.getInventory(),
         ScreenHandlerContext.create(context.getWorld(), context.getAbsolutePos(TABLE)));

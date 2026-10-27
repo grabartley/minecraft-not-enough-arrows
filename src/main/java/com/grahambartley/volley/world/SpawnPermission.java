@@ -16,16 +16,20 @@ public final class SpawnPermission {
       final EntityType<?> type,
       final Vec3d at,
       @Nullable final PlayerEntity shooter) {
-    if (world == null || type == null || at == null) {
+    return type != null
+        && mayChange(world, at, shooter)
+        && world.isSpaceEmpty(type.getSpawnBox(at.x, at.y, at.z));
+  }
+
+  public static boolean mayChange(
+      final ServerWorld world, final Vec3d at, @Nullable final PlayerEntity shooter) {
+    if (world == null || at == null) {
       return false;
     }
     final BlockPos pos = BlockPos.ofFloored(at);
     if (!world.isInBuildLimit(pos) || !world.getWorldBorder().contains(pos)) {
       return false;
     }
-    if (shooter != null && (!shooter.canModifyBlocks() || !world.canPlayerModifyAt(shooter, pos))) {
-      return false;
-    }
-    return world.isSpaceEmpty(type.getSpawnBox(at.x, at.y, at.z));
+    return shooter == null || (shooter.canModifyBlocks() && world.canPlayerModifyAt(shooter, pos));
   }
 }

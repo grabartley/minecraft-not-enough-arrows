@@ -7,7 +7,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,21 +47,7 @@ final class ConfigOptionRow extends ConfigOptionListWidget.OptionEntry {
         layout.labelY(),
         ConfigRowText.LABEL_COLOUR,
         true);
-    final List<OrderedText> lines =
-        ConfigRowText.wrapped(
-            textRenderer,
-            description,
-            layout.descriptionWidth(),
-            OptionRowLayout.MAX_DESCRIPTION_LINES);
-    for (int line = 0; line < lines.size(); line++) {
-      context.drawText(
-          textRenderer,
-          lines.get(line),
-          layout.textX(),
-          layout.descriptionLineY(line),
-          ConfigRowText.DESCRIPTION_COLOUR,
-          true);
-    }
+    ConfigRowText.drawDescriptionLeft(context, textRenderer, description, layout, layout.textX());
     if (control != null) {
       control.setPosition(layout.controlX(), layout.controlY());
       control.render(context, mouseX, mouseY, tickDelta);

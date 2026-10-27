@@ -17,10 +17,6 @@ public record ExplosiveTierConfig(int delayTicks, float power) {
     power = ConfigValues.clampFloat(power, POWER_MIN, POWER_MAX);
   }
 
-  public boolean detonatesOnContact() {
-    return delayTicks == DELAY_TICKS_MIN;
-  }
-
   public ExplosiveTierConfig withDelayTicks(final int value) {
     return new ExplosiveTierConfig(value, power);
   }

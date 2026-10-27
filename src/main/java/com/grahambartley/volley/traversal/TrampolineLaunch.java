@@ -3,6 +3,7 @@ package com.grahambartley.volley.traversal;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
@@ -18,8 +19,7 @@ public final class TrampolineLaunch {
 
   public static void launch(final Entity entity) {
     final float strength = ServerConfigService.get().traversal().trampoline().strength();
-    entity.setVelocity(velocity(entity.getVelocity(), strength));
-    entity.velocityModified = true;
+    Propel.drive(entity, velocity(entity.getVelocity(), strength));
     if (strength > 0.0f) {
       ModSoundPlayer.playFrom(
           entity, ModSounds.TRAMPOLINE_ARROW_LAUNCH, LAUNCH_VOLUME, LAUNCH_PITCH);

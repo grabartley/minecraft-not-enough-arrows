@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Set;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ArrowSoundAuditTest {
 
@@ -183,5 +185,30 @@ class ArrowSoundAuditTest {
             "wind_arrow", ArrowSound.own(id("blast")));
 
     assertEquals(List.of(id("blast")), ArrowSoundAudit.sharedWithoutASystem(declared));
+  }
+
+  @ParameterizedTest(name = "{0} and {1} clash = {2}")
+  @CsvSource({
+    "own, own, true",
+    "explosive_fuse, explosive_fuse, false",
+    "explosive_fuse, ender_teleport, true",
+    "own, explosive_fuse, true"
+  })
+  void twoArrowsMayShareASoundOnlyThroughTheSameSystem(
+      final String firstSystem, final String secondSystem, final boolean clashes) {
+    final Identifier shared = id("shared_sound");
+    final Map<Identifier, List<ArrowSound>> declared =
+        declared(
+            "first_arrow",
+            soundOf(firstSystem, shared),
+            "second_arrow",
+            soundOf(secondSystem, shared));
+
+    assertEquals(
+        clashes ? List.of(shared) : List.of(), ArrowSoundAudit.sharedWithoutASystem(declared));
+  }
+
+  private static ArrowSound soundOf(final String system, final Identifier sound) {
+    return system.equals("own") ? ArrowSound.own(sound) : ArrowSound.sharedBy(system, sound);
   }
 }

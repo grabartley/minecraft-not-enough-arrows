@@ -38,13 +38,16 @@ public final class ArrowRegistrar {
             Registries.ENTITY_TYPE,
             id,
             EntityType.Builder.create(definition.entityFactory(), SpawnGroup.MISC)
-                .dimensions(definition.width(), definition.height())
-                .maxTrackingRange(definition.maxTrackingRange())
+                .dimensions(ArrowDefinition.SIZE, ArrowDefinition.SIZE)
+                .maxTrackingRange(ArrowDefinition.MAX_TRACKING_RANGE)
                 .trackingTickInterval(definition.trackingTickInterval())
                 .build(id.toString()));
     final BaseArrowItem item =
         Registry.register(
-            Registries.ITEM, id, itemFactory.apply(new Item.Settings(), definition.spawnFactory()));
+            Registries.ITEM,
+            id,
+            itemFactory.apply(
+                new Item.Settings(), definition.positionedConstructor().boundTo(entityType)));
 
     DispenserBlock.registerProjectileBehavior(item);
 

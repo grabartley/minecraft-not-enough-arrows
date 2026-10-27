@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class GravityServiceGameTest implements FabricGameTest {
   private static final String BATCH = "gravity-service";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos STRUCK = new BlockPos(3, 4, 3);
   private static final BlockPos NEIGHBOUR = new BlockPos(4, 4, 3);
   private static final String STONE_ID = "minecraft:stone";

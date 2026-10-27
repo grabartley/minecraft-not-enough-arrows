@@ -30,6 +30,10 @@ public final class ExpiringLedger<V> {
     return Optional.ofNullable(entries.remove(id)).map(Entry::value);
   }
 
+  public List<UUID> ids() {
+    return List.copyOf(entries.keySet());
+  }
+
   public List<UUID> removeExpired(final long tick) {
     final List<UUID> expired = new ArrayList<>();
     final Iterator<Map.Entry<UUID, Entry<V>>> remaining = entries.entrySet().iterator();

@@ -1,6 +1,6 @@
 package com.grahambartley.volley.screen;
 
-import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.config.ConfigPermissions;
 import java.util.Optional;
 import net.minecraft.client.MinecraftClient;
 
@@ -36,6 +36,6 @@ public enum ServerConfigAccess {
     if (client == null || client.player == null) {
       return NOT_IN_WORLD;
     }
-    return of(true, client.player.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL));
+    return of(true, ConfigPermissions.canEdit(client.player::hasPermissionLevel));
   }
 }

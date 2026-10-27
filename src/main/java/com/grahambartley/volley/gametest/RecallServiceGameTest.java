@@ -1,7 +1,6 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.EnderArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.ender.RecallService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -193,14 +192,10 @@ public final class RecallServiceGameTest implements FabricGameTest {
   public void theLiveServerConfigDecidesWhetherPlayersMove(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final ServerPlayerEntity struck = MockPlayerSupport.playerAt(context, TARGET_STAND);
-    final VolleyConfig previous = ServerConfigHolder.get();
-    final boolean recalled;
-    try {
-      ServerConfigHolder.set(VolleyConfig.defaults().withEnder(refusingPlayers()));
-      recalled = RecallService.recall(context.getWorld(), shooter, struck);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final boolean recalled =
+        ConfigOverrides.during(
+            VolleyConfig.defaults().withEnder(refusingPlayers()),
+            () -> RecallService.recall(context.getWorld(), shooter, struck));
 
     context.assertFalse(recalled, "The live config should be what decides a player recall");
     context.complete();

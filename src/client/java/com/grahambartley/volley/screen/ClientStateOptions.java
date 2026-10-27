@@ -5,6 +5,7 @@ import com.grahambartley.volley.config.option.BooleanOption;
 import com.grahambartley.volley.config.option.ConfigOption;
 import com.grahambartley.volley.config.option.ConfigSection;
 import com.grahambartley.volley.config.option.FloatOption;
+import com.grahambartley.volley.config.option.SoundOptions;
 import java.util.List;
 
 public final class ClientStateOptions {
@@ -14,7 +15,6 @@ public final class ClientStateOptions {
   public static final String COUNTDOWN_RING_SCALE = SECTION + ".countdownRingScale";
   public static final String MOD_SOUND_VOLUME = SECTION + ".modSoundVolume";
   public static final float COUNTDOWN_RING_SCALE_STEP = 0.05f;
-  public static final float MOD_SOUND_VOLUME_STEP = 0.05f;
 
   private static final List<ConfigOption<ClientState>> OPTIONS = buildOptions();
   private static final ConfigSection<ClientState> CLIENT_SECTION =
@@ -51,7 +51,7 @@ public final class ClientStateOptions {
             MOD_SOUND_VOLUME,
             ClientState.MOD_SOUND_VOLUME_MIN,
             ClientState.MOD_SOUND_VOLUME_MAX,
-            MOD_SOUND_VOLUME_STEP,
+            SoundOptions.VOLUME_STEP,
             ClientState::modSoundVolume,
             ClientState::withModSoundVolume));
   }

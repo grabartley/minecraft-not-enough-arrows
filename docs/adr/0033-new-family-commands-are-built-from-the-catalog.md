@@ -1,6 +1,7 @@
 # ADR 0033: Family command trees are built from the option catalog
 
 - **Status:** Accepted
+- **Revised by:** Revised by [ADR 0046](0046-the-command-tree-is-built-from-the-catalog-alone.md): the family builder classes are gone and the literal checks moved to CSV files.
 - **Date:** 2026-09-27
 
 ## Context

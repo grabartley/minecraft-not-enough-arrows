@@ -3,8 +3,8 @@ package com.grahambartley.volley.disguise;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.world.ExpiringLedger;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.ParticleBursts;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.Optional;
 import java.util.UUID;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -14,16 +14,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 
 public final class DisguiseService {
 
   private static final int RESTORE_PUFFS = 12;
-  private static final Map<RegistryKey<World>, ExpiringLedger<Identifier>> LEDGERS =
-      new HashMap<>();
+  private static final PerWorld<ExpiringLedger<Identifier>> LEDGERS =
+      new PerWorld<>(ExpiringLedger::new);
 
   private DisguiseService() {}
 
@@ -45,7 +43,7 @@ public final class DisguiseService {
     if (world == null || durationTicks <= 0 || !DisguiseEligibility.canDisguise(target)) {
       return false;
     }
-    final ExpiringLedger<Identifier> ledger = ledgerFor(world);
+    final ExpiringLedger<Identifier> ledger = LEDGERS.of(world);
     final long expiry = world.getTime() + durationTicks;
     final Optional<Identifier> worn = ledger.get(target.getUuid());
     if (worn.isPresent()) {
@@ -60,7 +58,7 @@ public final class DisguiseService {
   }
 
   public static boolean revert(final ServerWorld world, final Entity target) {
-    final ExpiringLedger<Identifier> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Identifier> ledger = LEDGERS.in(world);
     if (ledger == null || ledger.remove(target.getUuid()).isEmpty()) {
       return false;
     }
@@ -74,17 +72,11 @@ public final class DisguiseService {
   }
 
   public static Optional<Identifier> formOf(final ServerWorld world, final UUID id) {
-    final ExpiringLedger<Identifier> ledger = LEDGERS.get(world.getRegistryKey());
-    return ledger == null ? Optional.empty() : ledger.get(id);
-  }
-
-  public static int liveDisguises(final ServerWorld world) {
-    final ExpiringLedger<Identifier> ledger = LEDGERS.get(world.getRegistryKey());
-    return ledger == null ? 0 : ledger.size();
+    return LEDGERS.map(world, ledger -> ledger.get(id), Optional.empty());
   }
 
   private static void tick(final ServerWorld world) {
-    final ExpiringLedger<Identifier> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Identifier> ledger = LEDGERS.in(world);
     if (ledger == null || ledger.isEmpty()) {
       return;
     }
@@ -98,20 +90,7 @@ public final class DisguiseService {
   }
 
   private static void showRestore(final ServerWorld world, final Entity entity) {
-    world.spawnParticles(
-        ParticleTypes.POOF,
-        entity.getX(),
-        entity.getBodyY(0.5),
-        entity.getZ(),
-        RESTORE_PUFFS,
-        entity.getWidth() / 2.0,
-        entity.getHeight() / 2.0,
-        entity.getWidth() / 2.0,
-        0.02);
+    ParticleBursts.aroundBody(world, entity, ParticleTypes.POOF, RESTORE_PUFFS, 0.02);
     ModSoundPlayer.playFrom(entity, ModSounds.POLYMORPH_ARROW_RESTORE);
-  }
-
-  private static ExpiringLedger<Identifier> ledgerFor(final ServerWorld world) {
-    return LEDGERS.computeIfAbsent(world.getRegistryKey(), key -> new ExpiringLedger<>());
   }
 }

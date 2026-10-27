@@ -2,11 +2,11 @@ package com.grahambartley.volley.traversal;
 
 import com.grahambartley.volley.config.ScaffoldArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.structure.OpenRun;
 import com.grahambartley.volley.structure.StructureBlock;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
 import com.grahambartley.volley.world.LoadedGround;
+import com.grahambartley.volley.world.VerticalRun;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -44,15 +44,8 @@ public final class ScaffoldService {
     final List<BlockPos> column =
         OpenRun.leading(
             world, VerticalRun.upFrom(footing.get(), scaffold.heightBlocks()), MATERIAL);
-    return TimedStructureService.build(
-            world,
-            shooter,
-            column,
-            ScaffoldService::standingScaffold,
-            StructureBudget.of(column.size()),
-            scaffold.lifetimeTicks())
-        .map(TimedStructure::positions)
-        .orElse(List.of());
+    return TimedStructureService.placeAll(
+        world, shooter, column, ScaffoldService::standingScaffold, scaffold.lifetimeTicks());
   }
 
   public static Optional<BlockPos> footing(

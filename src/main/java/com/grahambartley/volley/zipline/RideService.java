@@ -2,29 +2,28 @@ package com.grahambartley.volley.zipline;
 
 import com.grahambartley.volley.grapple.GrappleEnding;
 import com.grahambartley.volley.grapple.GrappleFallGuard;
-import com.grahambartley.volley.grapple.GrappleFlightCheck;
 import com.grahambartley.volley.grapple.GrappleService;
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.tow.TowEnding;
 import com.grahambartley.volley.tow.TowService;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
+import com.grahambartley.volley.world.SessionTracker;
 import java.util.Optional;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class RideService {
   public static final int LET_GO_GRACE_TICKS = 5;
-  private static final Map<RegistryKey<World>, RideTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<SessionTracker<RideSession>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(RideSession::riderId, RideSession::hasExpired));
 
   private RideService() {}
 
@@ -52,7 +51,8 @@ public final class RideService {
     end(world, rider.getUuid(), RideEnding.REPLACED);
     GrappleService.end(world, rider.getUuid(), GrappleEnding.CANCELLED);
     TowService.end(world, rider.getUuid(), TowEnding.REPLACED);
-    trackerFor(world)
+    TRACKERS
+        .of(world)
         .add(
             RideSession.toTheFarEnd(
                 rider.getUuid(),
@@ -66,14 +66,13 @@ public final class RideService {
   @Nullable
   public static RideSession rideOf(
       @Nullable final ServerWorld world, @Nullable final UUID riderId) {
-    final RideTracker tracker = trackerIn(world);
-    return tracker == null ? null : tracker.rideOf(riderId);
+    return TRACKERS.map(world, tracker -> tracker.get(riderId), null);
   }
 
   @Nullable
   public static RideSession end(
       @Nullable final ServerWorld world, @Nullable final UUID riderId, final RideEnding ending) {
-    final RideTracker tracker = trackerIn(world);
+    final SessionTracker<RideSession> tracker = TRACKERS.in(world);
     if (tracker == null) {
       return null;
     }
@@ -91,7 +90,7 @@ public final class RideService {
   }
 
   public static void stopRidingEverywhere(@Nullable final UUID riderId) {
-    TRACKERS.values().forEach(tracker -> tracker.remove(riderId));
+    TRACKERS.all().forEach(tracker -> tracker.remove(riderId));
   }
 
   public static void forget() {
@@ -99,12 +98,12 @@ public final class RideService {
   }
 
   private static void rideIn(final ServerWorld world) {
-    final RideTracker tracker = trackerIn(world);
+    final SessionTracker<RideSession> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
     final double topSpeed = ServerConfigService.get().traversal().zipline().rideSpeed();
-    for (final RideSession session : tracker.rides()) {
+    for (final RideSession session : tracker.all()) {
       final RideEnding ending = rideOnce(world, tracker, session, topSpeed);
       if (ending != null) {
         end(world, session.riderId(), ending);
@@ -115,7 +114,7 @@ public final class RideService {
   @Nullable
   private static RideEnding rideOnce(
       final ServerWorld world,
-      final RideTracker tracker,
+      final SessionTracker<RideSession> tracker,
       final RideSession session,
       final double topSpeed) {
     if (!(world.getEntity(session.riderId()) instanceof ServerPlayerEntity rider)
@@ -158,11 +157,10 @@ public final class RideService {
       final RideSession session,
       final Vec3d grip,
       final double speed) {
-    rider.setVelocity(
+    Propel.carry(
+        rider,
         RidePath.velocity(session.from(), session.to(), grip, speed, rider.getFinalGravity()));
-    rider.velocityModified = true;
     rider.fallDistance = 0.0f;
-    GrappleFlightCheck.clearFloatingCountFor(rider);
   }
 
   private static boolean canHoldOn(final ServerPlayerEntity rider) {
@@ -171,14 +169,5 @@ public final class RideService {
 
   private static Vec3d gripOf(final ServerPlayerEntity rider) {
     return RidePath.gripOf(rider.getBoundingBox().getCenter());
-  }
-
-  @Nullable
-  private static RideTracker trackerIn(@Nullable final ServerWorld world) {
-    return world == null ? null : TRACKERS.get(world.getRegistryKey());
-  }
-
-  private static RideTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new RideTracker());
   }
 }

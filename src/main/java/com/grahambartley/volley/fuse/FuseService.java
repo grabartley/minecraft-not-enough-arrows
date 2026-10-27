@@ -3,9 +3,9 @@ package com.grahambartley.volley.fuse;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.server.ServerConfigService;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.SessionTracker;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
@@ -13,16 +13,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.Entity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class FuseService {
   private static final float BEEP_PITCH = 1.0f;
 
-  private static final Map<RegistryKey<World>, FuseTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<SessionTracker<Fuse>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(Fuse::hostId, Fuse::hasExpired));
   private static final List<FuseExpiry> LISTENERS = new CopyOnWriteArrayList<>();
 
   private FuseService() {}
@@ -55,7 +54,7 @@ public final class FuseService {
       return null;
     }
 
-    trackerFor(world).add(fuse);
+    TRACKERS.of(world).add(fuse);
     if (fuse.beepsNow()) {
       beep(world, host);
     }
@@ -64,23 +63,20 @@ public final class FuseService {
 
   @Nullable
   public static Fuse fuseOn(@Nullable final ServerWorld world, @Nullable final UUID hostId) {
-    final FuseTracker tracker = trackerIn(world);
-    return tracker == null ? null : tracker.fuseOn(hostId);
+    return TRACKERS.map(world, tracker -> tracker.get(hostId), null);
   }
 
   @Nullable
   public static Fuse extinguish(@Nullable final ServerWorld world, @Nullable final UUID hostId) {
-    final FuseTracker tracker = trackerIn(world);
-    return tracker == null ? null : tracker.remove(hostId);
+    return TRACKERS.map(world, tracker -> tracker.remove(hostId), null);
   }
 
   public static void extinguishEverywhere(@Nullable final UUID hostId) {
-    TRACKERS.values().forEach(tracker -> tracker.remove(hostId));
+    TRACKERS.all().forEach(tracker -> tracker.remove(hostId));
   }
 
   public static List<Fuse> fusesIn(@Nullable final ServerWorld world) {
-    final FuseTracker tracker = trackerIn(world);
-    return tracker == null ? List.of() : tracker.fuses();
+    return TRACKERS.map(world, tracker -> tracker.all(), List.of());
   }
 
   public static void forget() {
@@ -88,13 +84,13 @@ public final class FuseService {
   }
 
   private static void burnDownFusesIn(final ServerWorld world) {
-    final FuseTracker tracker = trackerIn(world);
+    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
 
-    for (final Fuse snapshot : tracker.fuses()) {
-      final Fuse fuse = tracker.fuseOn(snapshot.hostId());
+    for (final Fuse snapshot : tracker.all()) {
+      final Fuse fuse = tracker.get(snapshot.hostId());
       if (fuse == null) {
         continue;
       }
@@ -108,7 +104,10 @@ public final class FuseService {
   }
 
   private static void burnDown(
-      final ServerWorld world, final FuseTracker tracker, final Entity host, final Fuse fuse) {
+      final ServerWorld world,
+      final SessionTracker<Fuse> tracker,
+      final Entity host,
+      final Fuse fuse) {
     final Fuse burned = fuse.burned();
     if (burned.hasExpired()) {
       tracker.remove(burned.hostId());
@@ -122,7 +121,7 @@ public final class FuseService {
     }
   }
 
-  private static void holdWithoutHost(final FuseTracker tracker, final Fuse fuse) {
+  private static void holdWithoutHost(final SessionTracker<Fuse> tracker, final Fuse fuse) {
     final Fuse held = fuse.lost();
     if (held.isAbandoned()) {
       tracker.remove(held.hostId());
@@ -143,14 +142,5 @@ public final class FuseService {
 
   private static void dispatchExpiry(final ServerWorld world, final Entity host, final Fuse fuse) {
     LISTENERS.forEach(listener -> listener.onFuseExpired(world, host, fuse));
-  }
-
-  @Nullable
-  private static FuseTracker trackerIn(@Nullable final ServerWorld world) {
-    return world == null ? null : TRACKERS.get(world.getRegistryKey());
-  }
-
-  private static FuseTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new FuseTracker());
   }
 }

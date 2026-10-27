@@ -1,10 +1,10 @@
 package com.grahambartley.volley.reveal;
 
 import com.grahambartley.volley.network.RevealPayloads.BlockOutlineS2CPayload;
+import com.grahambartley.volley.server.ModdedClients;
 import com.grahambartley.volley.world.LoadedGround;
 import java.util.List;
 import java.util.function.Predicate;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
@@ -27,9 +27,7 @@ public final class BlockRevealPulse {
       return found;
     }
     final BlockOutlineS2CPayload payload = new BlockOutlineS2CPayload(found, durationTicks);
-    RevealAudience.around(world, center, shooter).stream()
-        .filter(player -> ServerPlayNetworking.canSend(player, BlockOutlineS2CPayload.ID))
-        .forEach(player -> ServerPlayNetworking.send(player, payload));
+    ModdedClients.sendAll(RevealAudience.around(world, center, shooter), payload);
     return found;
   }
 

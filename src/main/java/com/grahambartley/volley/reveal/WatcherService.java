@@ -3,26 +3,23 @@ package com.grahambartley.volley.reveal;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.world.LoadedGround;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class WatcherService {
-  private static final Map<RegistryKey<World>, WatcherLedger> LEDGERS = new HashMap<>();
+  private static final PerWorld<WatcherLedger> LEDGERS = new PerWorld<>(WatcherLedger::new);
   private static final float ALERT_VOLUME = 1.0f;
   private static final float ALERT_PITCH = 1.0f;
 
@@ -46,18 +43,17 @@ public final class WatcherService {
             world.getTime(),
             lifetimeTicks,
             reportIntervalTicks);
-    LEDGERS.computeIfAbsent(world.getRegistryKey(), key -> new WatcherLedger()).add(watcher);
+    LEDGERS.of(world).add(watcher);
     return watcher;
   }
 
   public static List<Watcher> in(final ServerWorld world) {
-    final WatcherLedger ledger = LEDGERS.get(world.getRegistryKey());
-    return ledger == null ? List.of() : ledger.all();
+    return LEDGERS.map(world, ledger -> ledger.all(), List.of());
   }
 
   public static List<WatcherAlarm> sweep(
       final ServerWorld world, final long tick, final Predicate<BlockPos> isLoaded) {
-    final WatcherLedger ledger = LEDGERS.get(world.getRegistryKey());
+    final WatcherLedger ledger = LEDGERS.in(world);
     if (ledger == null || ledger.isEmpty()) {
       return List.of();
     }

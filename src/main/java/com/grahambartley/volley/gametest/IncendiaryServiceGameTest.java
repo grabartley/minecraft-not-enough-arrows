@@ -2,15 +2,12 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.config.IncendiaryArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.incendiary.IncendiaryService;
-import com.grahambartley.volley.server.ServerConfigService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -19,7 +16,7 @@ import net.minecraft.util.math.Vec3d;
 
 public final class IncendiaryServiceGameTest implements FabricGameTest {
   private static final String BATCH = "incendiary";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final Vec3d CENTRE = new Vec3d(3.5, 3.0, 3.5);
   private static final BlockPos NEARBY_STAND = new BlockPos(4, 3, 3);
   private static final BlockPos DISTANT_STAND = new BlockPos(6, 3, 6);
@@ -29,7 +26,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityInsideTheRadiusCatchesFire(TestContext context) {
-    final CowEntity cow = cowAt(context, NEARBY_STAND);
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
     final List<Entity> burned = ignite(context, RADIUS, IGNITE_SECONDS, false);
 
@@ -40,7 +37,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityBeyondTheRadiusIsLeftAlone(TestContext context) {
-    final CowEntity cow = cowAt(context, DISTANT_STAND);
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, DISTANT_STAND);
 
     final List<Entity> burned = ignite(context, RADIUS, IGNITE_SECONDS, false);
 
@@ -59,7 +56,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void noFireIsLaidWhenBlockIgnitionIsOff(TestContext context) {
-    final CowEntity cow = cowAt(context, NEARBY_STAND);
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
     final List<Entity> burned = ignite(context, RADIUS, IGNITE_SECONDS, false);
 
@@ -71,7 +68,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aRadiusOfZeroBurnsNothingAtAll(TestContext context) {
-    final CowEntity cow = cowAt(context, NEARBY_STAND);
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
     final List<Entity> burned = ignite(context, 0, IGNITE_SECONDS, true);
 
@@ -83,7 +80,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anIgniteTimeOfZeroLaysFireWithoutBurningEntities(TestContext context) {
-    final CowEntity cow = cowAt(context, NEARBY_STAND);
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
     final List<Entity> burned = ignite(context, RADIUS, 0, true);
 
@@ -95,23 +92,19 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheBurn(TestContext context) {
-    final CowEntity cow = cowAt(context, NEARBY_STAND);
-    final VolleyConfig previous = ServerConfigService.get();
-    final List<Entity> burned;
-    try {
-      ServerConfigHolder.set(
-          VolleyConfig.defaults()
-              .withExplosive(
-                  ExplosiveArrowConfig.defaults()
-                      .withIncendiary(
-                          IncendiaryArrowConfig.defaults()
-                              .withBurnRadius(0)
-                              .withIgnitesBlocks(false))));
-      burned =
-          IncendiaryService.ignite(context.getWorld(), context.getAbsolute(CENTRE), null, null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
+    final List<Entity> burned =
+        ConfigOverrides.during(
+            VolleyConfig.defaults()
+                .withExplosive(
+                    ExplosiveArrowConfig.defaults()
+                        .withIncendiary(
+                            IncendiaryArrowConfig.defaults()
+                                .withBurnRadius(0)
+                                .withIgnitesBlocks(false))),
+            () ->
+                IncendiaryService.ignite(
+                    context.getWorld(), context.getAbsolute(CENTRE), null, null));
 
     context.assertTrue(burned.isEmpty(), "A configured radius of zero should burn nothing");
     context.assertFalse(cow.isOnFire(), "A configured radius of zero should leave a cow unburnt");
@@ -132,11 +125,5 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
         igniteSeconds,
         ignitesBlocks,
         FIRE_PATCH_TICKS);
-  }
-
-  private static CowEntity cowAt(final TestContext context, final BlockPos relativePos) {
-    final CowEntity cow = context.spawnEntity(EntityType.COW, relativePos);
-    cow.setAiDisabled(true);
-    return cow;
   }
 }

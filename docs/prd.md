@@ -121,7 +121,7 @@ Out of the first release, deliberately.
 | Term | Definition |
 |---|---|
 | **Arrow** | An item in the `minecraft:arrows` item tag, and an entity type registered under the same identifier as that item. The shared identifier is load-bearing: an arrow's dropped stack and its texture are both derived from it ([ADR 0006](adr/0006-arrow-identity-is-shared-by-item-and-entity.md)) |
-| **Arrow family** | A grouping of arrows sharing a subsystem and a configuration sub-record. The families are explosive, grapple, utility, physics, ender, traversal, terrain, agriculture, discovery, control, combat, chaos, and social. Each has its own sub-record and its own command builder, so adding a family grows neither a shared record nor a shared command class (CONFIG-10) |
+| **Arrow family** | A grouping of arrows sharing a subsystem and a configuration sub-record. The families are explosive, grapple, utility, physics, ender, traversal, terrain, agriculture, discovery, control, combat, chaos, and social. Each has its own sub-record and its own section of the option catalog, and the command tree is built from that catalog, so adding a family grows neither a shared record nor a shared command class (CONFIG-10, [ADR 0046](adr/0046-the-command-tree-is-built-from-the-catalog-alone.md)) |
 | **Shooter** | The entity that fired an arrow, where there is one. An arrow fired by a dispenser has no shooter, and every effect that depends on one must define what it does without one |
 | **Embed** | Vanilla's resolution of an arrow's block hit: the arrow comes to rest in the block, plays its hit sound, and becomes recoverable |
 | **Spent** | An arrow that is consumed by its own effect rather than embedding, so it is not recoverable |
@@ -973,7 +973,7 @@ An operator on a headless box changes a setting over SSH and it takes effect imm
 | CONFIG-7 | Configuration changes take effect immediately, with no restart, and sync to every connected client |
 | CONFIG-8 | The settings screen and the status output are both built from one option catalog, so a setting cannot appear in one surface and be missing from the other |
 | CONFIG-9 | Setting names are reported in the same `family.option` form the command tree uses, so a reported name maps directly onto the command that changes it |
-| CONFIG-10 | The configuration record nests a sub-record per arrow family, and the command tree is composed from per-family builders, so adding a family grows neither a shared record nor a shared command class |
+| CONFIG-10 | The configuration record nests a sub-record per arrow family, and the command tree is built from the option catalog one section per family, so adding a family grows neither a shared record nor a shared command class ([ADR 0046](adr/0046-the-command-tree-is-built-from-the-catalog-alone.md)) |
 | CONFIG-11 | Every identifier list, the gravity exclusions, the prospector blocks, and the courier's undeliverable items, is edited rather than replaced, with add, remove, and clear operations |
 | CONFIG-12 | A reset command restores every setting to its default |
 | CONFIG-13 | Client preferences live in a separate store, in the client configuration directory, and are never sent anywhere. Editing them changes nothing another player can observe |

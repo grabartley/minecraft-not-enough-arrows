@@ -53,6 +53,7 @@ Shared engineering standards across all the mods in this family live in [`../sta
 | [0043](0043-a-courier-payload-rides-on-the-arrows-own-stack.md) | A courier payload rides on the arrow's own stack |
 | [0044](0044-a-linter-forbids-comments-rather-than-a-formatter-stripping-them.md) | A linter forbids comments rather than a formatter stripping them |
 | [0045](0045-the-rename-to-volley-is-a-clean-break.md) | The rename to Volley is a clean break |
+| [0046](0046-the-command-tree-is-built-from-the-catalog-alone.md) | The command tree is built from the option catalog alone |
 
 ## Writing A New Record
 

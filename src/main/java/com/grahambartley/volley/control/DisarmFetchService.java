@@ -1,6 +1,6 @@
 package com.grahambartley.volley.control;
 
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,16 +12,15 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
 
 public final class DisarmFetchService {
   public static final int FETCH_WINDOW_TICKS = 600;
   public static final double FETCH_SPEED = 1.2;
 
-  private static final Map<RegistryKey<World>, Map<UUID, DisarmFetch>> ERRANDS = new HashMap<>();
+  private static final PerWorld<Map<UUID, DisarmFetch>> ERRANDS =
+      new PerWorld<>(LinkedHashMap::new);
 
   private DisarmFetchService() {}
 
@@ -41,21 +40,21 @@ public final class DisarmFetchService {
             thrown.getUuid(),
             mob.getDropChance(EquipmentSlot.MAINHAND),
             world.getTime() + FETCH_WINDOW_TICKS);
-    errandsIn(world).put(mob.getUuid(), fetch);
+    ERRANDS.of(world).put(mob.getUuid(), fetch);
     mob.setAttached(ControlPersistence.FETCH, fetch);
   }
 
   static void resume(final ServerWorld world, final DisarmFetch fetch) {
-    errandsIn(world).put(fetch.mobId(), fetch);
+    ERRANDS.of(world).put(fetch.mobId(), fetch);
   }
 
   public static boolean isFetching(final ServerWorld world, final LivingEntity target) {
-    final Map<UUID, DisarmFetch> open = ERRANDS.get(world.getRegistryKey());
+    final Map<UUID, DisarmFetch> open = ERRANDS.in(world);
     return open != null && open.containsKey(target.getUuid());
   }
 
   public static void endErrandNow(final ServerWorld world, final LivingEntity target) {
-    final Map<UUID, DisarmFetch> open = ERRANDS.get(world.getRegistryKey());
+    final Map<UUID, DisarmFetch> open = ERRANDS.in(world);
     final DisarmFetch fetch = open == null ? null : open.remove(target.getUuid());
     if (fetch != null) {
       target.removeAttached(ControlPersistence.FETCH);
@@ -64,7 +63,7 @@ public final class DisarmFetchService {
   }
 
   private static void tick(final ServerWorld world) {
-    final Map<UUID, DisarmFetch> open = ERRANDS.get(world.getRegistryKey());
+    final Map<UUID, DisarmFetch> open = ERRANDS.in(world);
     if (open == null || open.isEmpty()) {
       return;
     }
@@ -100,9 +99,7 @@ public final class DisarmFetchService {
       MobSteering.halt(mob);
       return true;
     }
-    if (!MobSteering.isUnderway(mob)
-        || MobSteering.steersItself(mob)
-        || MobSteering.hasWanderedOffCourse(mob, thrown.getPos())) {
+    if (MobSteering.needsNewCourse(mob, thrown.getPos())) {
       MobSteering.moveTo(mob, thrown.getPos(), FETCH_SPEED);
     }
     MobSteering.closeTheLastGap(mob, thrown.getPos(), FETCH_SPEED);
@@ -123,9 +120,5 @@ public final class DisarmFetchService {
         && mob.getDropChance(EquipmentSlot.MAINHAND) != fetch.mainHandDropChance()) {
       mob.setEquipmentDropChance(EquipmentSlot.MAINHAND, fetch.mainHandDropChance());
     }
-  }
-
-  private static Map<UUID, DisarmFetch> errandsIn(final ServerWorld world) {
-    return ERRANDS.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashMap<>());
   }
 }

@@ -22,20 +22,20 @@ public final class StackHandoverGameTest implements FabricGameTest {
     StackHandover.handTo(recipient, new ItemStack(Items.DIAMOND, 40));
 
     context.assertEquals(40, recipient.getInventory().count(Items.DIAMOND), "Diamonds held");
-    context.assertEquals(0, SocialTestSupport.droppedNearby(context, Items.DIAMOND), "Drops");
+    context.assertEquals(0, TerrainTestSupport.droppedNearby(context, Items.DIAMOND), "Drops");
     context.complete();
   }
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void dropsWhatDoesNotFitAtTheRecipientsFeet(TestContext context) {
     final ServerPlayerEntity recipient = recipient(context);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
     recipient.getInventory().setStack(0, new ItemStack(Items.DIAMOND, 50));
 
     StackHandover.handTo(recipient, new ItemStack(Items.DIAMOND, 40));
 
     context.assertEquals(64, recipient.getInventory().count(Items.DIAMOND), "Diamonds held");
-    context.assertEquals(26, SocialTestSupport.droppedNearby(context, Items.DIAMOND), "Drops");
+    context.assertEquals(26, TerrainTestSupport.droppedNearby(context, Items.DIAMOND), "Drops");
     context.complete();
   }
 
@@ -43,13 +43,13 @@ public final class StackHandoverGameTest implements FabricGameTest {
   public void aFullCreativeRecipientLosesNothing(TestContext context) {
     final ServerPlayerEntity recipient = recipient(context);
     recipient.changeGameMode(GameMode.CREATIVE);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
 
     StackHandover.handTo(recipient, new ItemStack(Items.DIAMOND, 40));
 
     context.assertEquals(
         40,
-        SocialTestSupport.droppedNearby(context, Items.DIAMOND),
+        TerrainTestSupport.droppedNearby(context, Items.DIAMOND),
         "Vanilla would delete a creative player's overflow; the courier drops it");
     context.complete();
   }
@@ -57,7 +57,7 @@ public final class StackHandoverGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void grantingReturnsWhatDidNotFit(TestContext context) {
     final ServerPlayerEntity recipient = recipient(context);
-    AgricultureTestSupport.fillInventory(recipient);
+    MockPlayerSupport.fillInventory(recipient);
     recipient.getInventory().setStack(0, new ItemStack(Items.DIAMOND, 60));
 
     final ItemStack left =
@@ -92,13 +92,11 @@ public final class StackHandoverGameTest implements FabricGameTest {
 
     StackHandover.drop(context.getWorld(), at, new ItemStack(Items.DIAMOND, 7));
 
-    context.assertEquals(7, SocialTestSupport.droppedNearby(context, Items.DIAMOND), "Drops");
+    context.assertEquals(7, TerrainTestSupport.droppedNearby(context, Items.DIAMOND), "Drops");
     context.complete();
   }
 
   private static ServerPlayerEntity recipient(final TestContext context) {
-    final ServerPlayerEntity recipient = ChaosTestSupport.survivalPlayerAt(context, STAND);
-    recipient.getInventory().clear();
-    return recipient;
+    return MockPlayerSupport.survivalPlayerAt(context, STAND);
   }
 }

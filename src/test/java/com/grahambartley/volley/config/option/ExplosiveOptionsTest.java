@@ -1,20 +1,13 @@
 package com.grahambartley.volley.config.option;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import com.grahambartley.volley.config.VolleyConfig;
 import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ExplosiveOptionsTest {
-
-  private static Stream<ConfigOption<VolleyConfig>> options() {
-    return ExplosiveOptions.options().stream();
-  }
 
   @Test
   void listsEverySettingInTheOrderTheStatusOutputUses() {
@@ -43,24 +36,15 @@ class ExplosiveOptionsTest {
   }
 
   @ParameterizedTest(name = "{0}")
-  @MethodSource("options")
-  void writingAnOptionChangesThatOptionsValue(final ConfigOption<VolleyConfig> option) {
-    final VolleyConfig before = VolleyConfig.defaults();
-    final VolleyConfig after = OptionMutations.toDifferentValue(option, before);
+  @ValueSource(strings = {"explosive.beepVolume"})
+  void stepsInTheSameIncrementAsEveryOtherSettingOfItsKind(final String id) {
+    final FloatOption<?> option =
+        (FloatOption<?>)
+            ExplosiveOptions.options().stream()
+                .filter(o -> o.id().equals(id))
+                .findFirst()
+                .orElseThrow();
 
-    assertNotEquals(option.displayValue(before), option.displayValue(after));
-  }
-
-  @ParameterizedTest(name = "{0}")
-  @MethodSource("options")
-  void writingAnOptionLeavesEveryOtherSettingAlone(final ConfigOption<VolleyConfig> option) {
-    final VolleyConfig before = VolleyConfig.defaults();
-    final VolleyConfig after = OptionMutations.toDifferentValue(option, before);
-
-    for (final ConfigOption<VolleyConfig> other : ServerConfigOptions.all()) {
-      if (!other.id().equals(option.id())) {
-        assertEquals(other.displayValue(before), other.displayValue(after), other.id());
-      }
-    }
+    assertEquals(0.05f, option.step());
   }
 }

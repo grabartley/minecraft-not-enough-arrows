@@ -4,8 +4,6 @@ import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.config.TrampolineArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.structure.StructureBlock;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -33,15 +31,8 @@ public final class TrampolineService {
       return List.of();
     }
     final List<BlockPos> pad = TrampolinePad.around(center);
-    return TimedStructureService.build(
-            world,
-            shooter,
-            pad,
-            TrampolineService::padBlock,
-            StructureBudget.of(pad.size()),
-            trampoline.lifetimeTicks())
-        .map(TimedStructure::positions)
-        .orElse(List.of());
+    return TimedStructureService.placeAll(
+        world, shooter, pad, TrampolineService::padBlock, trampoline.lifetimeTicks());
   }
 
   @Nullable

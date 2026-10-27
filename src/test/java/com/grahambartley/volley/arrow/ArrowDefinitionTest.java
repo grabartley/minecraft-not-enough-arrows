@@ -15,7 +15,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ArrowDefinitionTest {
@@ -23,12 +22,15 @@ class ArrowDefinitionTest {
       (type, world) -> null;
   private static final EntityType.EntityFactory<TintedArrowEntity> TINTED_FACTORY =
       (type, world) -> null;
-  private static final ArrowEntityFactory SPAWN_FACTORY = (world, x, y, z, stack, weapon) -> null;
+  private static final PositionedArrowConstructor<BaseArrowEntity> CONSTRUCTOR =
+      (type, world, x, y, z, stack, weapon) -> null;
+  private static final PositionedArrowConstructor<TintedArrowEntity> TINTED_CONSTRUCTOR =
+      (type, world, x, y, z, stack, weapon) -> null;
 
   @ParameterizedTest
   @ValueSource(strings = {"tnt_arrow", "arrow", "arrow2", "a", "wind_arrow_mk2"})
   void acceptsLowercaseSnakeCasePaths(final String path) {
-    assertEquals(path, ArrowDefinition.of(path, ENTITY_FACTORY, SPAWN_FACTORY).path());
+    assertEquals(path, ArrowDefinition.of(path, ENTITY_FACTORY, CONSTRUCTOR).path());
   }
 
   @ParameterizedTest
@@ -37,58 +39,45 @@ class ArrowDefinitionTest {
   void rejectsPathsThatAreNotLowercaseSnakeCase(final String path) {
     assertThrows(
         IllegalArgumentException.class,
-        () -> ArrowDefinition.of(path, ENTITY_FACTORY, SPAWN_FACTORY));
+        () -> ArrowDefinition.of(path, ENTITY_FACTORY, CONSTRUCTOR));
   }
 
   @ParameterizedTest
-  @CsvSource({"0, 0.5", "0.5, 0", "-1, 0.5", "0.5, -1", "0, 0"})
-  void rejectsNonPositiveDimensions(final float width, final float height) {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ArrowDefinition<>(
-                "tnt_arrow",
-                ENTITY_FACTORY,
-                SPAWN_FACTORY,
-                width,
-                height,
-                ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
-                ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
-                List.of()));
+  @ValueSource(ints = {0, -1, -20})
+  void rejectsANonPositiveTrackingInterval(final int ticks) {
+    final ArrowDefinition<BaseArrowEntity> definition =
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR);
+
+    assertThrows(IllegalArgumentException.class, () -> definition.trackedEvery(ticks));
   }
 
   @ParameterizedTest
-  @CsvSource({"0, 20", "-4, 20", "4, 0", "4, -20"})
-  void rejectsNonPositiveTrackingSettings(
-      final int maxTrackingRange, final int trackingTickInterval) {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ArrowDefinition<>(
-                "tnt_arrow",
-                ENTITY_FACTORY,
-                SPAWN_FACTORY,
-                ArrowDefinition.DEFAULT_SIZE,
-                ArrowDefinition.DEFAULT_SIZE,
-                maxTrackingRange,
-                trackingTickInterval,
-                List.of()));
+  @ValueSource(ints = {1, 5, 20})
+  void tracksAtTheIntervalItIsGivenAndKeepsEverythingElse(final int ticks) {
+    final ArrowDefinition<BaseArrowEntity> plain =
+        ArrowDefinition.of("boomerang_arrow", ENTITY_FACTORY, CONSTRUCTOR);
+
+    final ArrowDefinition<BaseArrowEntity> tracked = plain.trackedEvery(ticks);
+
+    assertEquals(ticks, tracked.trackingTickInterval());
+    assertEquals(plain.path(), tracked.path());
+    assertEquals(plain.sounds(), tracked.sounds());
   }
 
   @Test
   void rejectsANullPath() {
     assertThrows(
-        NullPointerException.class, () -> ArrowDefinition.of(null, ENTITY_FACTORY, SPAWN_FACTORY));
+        NullPointerException.class, () -> ArrowDefinition.of(null, ENTITY_FACTORY, CONSTRUCTOR));
   }
 
   @Test
   void rejectsANullEntityFactory() {
     assertThrows(
-        NullPointerException.class, () -> ArrowDefinition.of("tnt_arrow", null, SPAWN_FACTORY));
+        NullPointerException.class, () -> ArrowDefinition.of("tnt_arrow", null, CONSTRUCTOR));
   }
 
   @Test
-  void rejectsANullSpawnFactory() {
+  void rejectsANullPositionedConstructor() {
     assertThrows(
         NullPointerException.class, () -> ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, null));
   }
@@ -96,27 +85,24 @@ class ArrowDefinitionTest {
   @Test
   void appliesVanillaArrowDefaults() {
     final ArrowDefinition<BaseArrowEntity> definition =
-        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR);
 
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.width());
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.height());
-    assertEquals(ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE, definition.maxTrackingRange());
     assertEquals(ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL, definition.trackingTickInterval());
   }
 
   @Test
   void keepsTheFactoriesItWasGiven() {
     final ArrowDefinition<BaseArrowEntity> definition =
-        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR);
 
     assertSame(ENTITY_FACTORY, definition.entityFactory());
-    assertSame(SPAWN_FACTORY, definition.spawnFactory());
+    assertSame(CONSTRUCTOR, definition.positionedConstructor());
   }
 
   @Test
   void namespacesItsIdentifierUnderTheModId() {
     final ArrowDefinition<BaseArrowEntity> definition =
-        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR);
 
     assertEquals(Volley.MOD_ID, definition.id().getNamespace());
     assertEquals("tnt_arrow", definition.id().getPath());
@@ -124,7 +110,7 @@ class ArrowDefinitionTest {
 
   @Test
   void declaresNoSoundUnlessAsked() {
-    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).sounds().isEmpty());
+    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR).sounds().isEmpty());
   }
 
   @Test
@@ -132,7 +118,7 @@ class ArrowDefinitionTest {
     final ArrowSound sound = ArrowSound.own(Identifier.of(Volley.MOD_ID, "smoke_arrow_impact"));
 
     final ArrowDefinition<BaseArrowEntity> definition =
-        ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, SPAWN_FACTORY, sound);
+        ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, CONSTRUCTOR, sound);
 
     assertEquals(List.of(sound), definition.sounds());
   }
@@ -140,21 +126,18 @@ class ArrowDefinitionTest {
   @Test
   void declaringASoundKeepsTheDefaultsOfAPlainArrow() {
     final ArrowDefinition<BaseArrowEntity> plain =
-        ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, SPAWN_FACTORY);
+        ArrowDefinition.of("smoke_arrow", ENTITY_FACTORY, CONSTRUCTOR);
 
     final ArrowDefinition<BaseArrowEntity> voiced =
         ArrowDefinition.of(
             "smoke_arrow",
             ENTITY_FACTORY,
-            SPAWN_FACTORY,
+            CONSTRUCTOR,
             ArrowSound.own(Identifier.of(Volley.MOD_ID, "smoke_arrow_impact")));
 
     assertEquals(plain.path(), voiced.path());
     assertSame(plain.entityFactory(), voiced.entityFactory());
-    assertSame(plain.spawnFactory(), voiced.spawnFactory());
-    assertEquals(plain.width(), voiced.width());
-    assertEquals(plain.height(), voiced.height());
-    assertEquals(plain.maxTrackingRange(), voiced.maxTrackingRange());
+    assertSame(plain.positionedConstructor(), voiced.positionedConstructor());
     assertEquals(plain.trackingTickInterval(), voiced.trackingTickInterval());
   }
 
@@ -165,14 +148,14 @@ class ArrowDefinitionTest {
 
     assertEquals(
         List.of(crack, thaw),
-        ArrowDefinition.of("frost_arrow", ENTITY_FACTORY, SPAWN_FACTORY, crack, thaw).sounds());
+        ArrowDefinition.of("frost_arrow", ENTITY_FACTORY, CONSTRUCTOR, crack, thaw).sounds());
   }
 
   @Test
   void rejectsANullSound() {
     assertThrows(
         NullPointerException.class,
-        () -> ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY, (ArrowSound) null));
+        () -> ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR, (ArrowSound) null));
   }
 
   @Test
@@ -183,17 +166,16 @@ class ArrowDefinitionTest {
             new ArrowDefinition<>(
                 "tnt_arrow",
                 ENTITY_FACTORY,
-                SPAWN_FACTORY,
-                ArrowDefinition.DEFAULT_SIZE,
-                ArrowDefinition.DEFAULT_SIZE,
-                ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
+                CONSTRUCTOR,
                 ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
-                null));
+                null,
+                java.util.Optional.empty(),
+                List.of()));
   }
 
   @Test
   void isNotTintedUnlessAsked() {
-    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).palette().isEmpty());
+    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR).palette().isEmpty());
   }
 
   @Test
@@ -201,7 +183,7 @@ class ArrowDefinitionTest {
     final TintPalette palette = DyePalette.create();
 
     final ArrowDefinition<TintedArrowEntity> definition =
-        ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, palette);
+        ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, TINTED_CONSTRUCTOR, palette);
 
     assertSame(palette, definition.palette().orElseThrow());
   }
@@ -212,14 +194,11 @@ class ArrowDefinitionTest {
 
     final ArrowDefinition<TintedArrowEntity> definition =
         ArrowDefinition.tinted(
-            "paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, DyePalette.create(), sound);
+            "paint_arrow", TINTED_FACTORY, TINTED_CONSTRUCTOR, DyePalette.create(), sound);
 
     assertEquals("paint_arrow", definition.path());
     assertSame(TINTED_FACTORY, definition.entityFactory());
-    assertSame(SPAWN_FACTORY, definition.spawnFactory());
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.width());
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.height());
-    assertEquals(ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE, definition.maxTrackingRange());
+    assertSame(TINTED_CONSTRUCTOR, definition.positionedConstructor());
     assertEquals(ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL, definition.trackingTickInterval());
     assertEquals(List.of(sound), definition.sounds());
   }
@@ -228,14 +207,15 @@ class ArrowDefinitionTest {
   void rejectsATintedArrowWithoutAPalette() {
     assertThrows(
         NullPointerException.class,
-        () -> ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, null));
+        () -> ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, TINTED_CONSTRUCTOR, null));
   }
 
   @Test
   void appliesNoEffectUnlessDeclared() {
-    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY).effects().isEmpty());
+    assertTrue(ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR).effects().isEmpty());
     assertTrue(
-        ArrowDefinition.tinted("paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, DyePalette.create())
+        ArrowDefinition.tinted(
+                "paint_arrow", TINTED_FACTORY, TINTED_CONSTRUCTOR, DyePalette.create())
             .effects()
             .isEmpty());
   }
@@ -246,7 +226,7 @@ class ArrowDefinitionTest {
         new ArrowEffect(Identifier.ofVanilla("glowing"), ArrowEffect.Delivery.STRUCK_TARGET);
 
     final ArrowDefinition<BaseArrowEntity> definition =
-        ArrowDefinition.of("glow_ink_arrow", ENTITY_FACTORY, SPAWN_FACTORY).applying(glowing);
+        ArrowDefinition.of("glow_ink_arrow", ENTITY_FACTORY, CONSTRUCTOR).applying(glowing);
 
     assertEquals(List.of(glowing), definition.effects());
   }
@@ -256,14 +236,14 @@ class ArrowDefinitionTest {
     final ArrowSound sound = ArrowSound.own(Identifier.of(Volley.MOD_ID, "puff"));
     final ArrowDefinition<TintedArrowEntity> plain =
         ArrowDefinition.tinted(
-            "paint_arrow", TINTED_FACTORY, SPAWN_FACTORY, DyePalette.create(), sound);
+            "paint_arrow", TINTED_FACTORY, TINTED_CONSTRUCTOR, DyePalette.create(), sound);
 
     final ArrowDefinition<TintedArrowEntity> declared =
         plain.applying(new ArrowEffect(Identifier.ofVanilla("nausea"), ArrowEffect.Delivery.AREA));
 
     assertEquals(plain.path(), declared.path());
     assertSame(plain.entityFactory(), declared.entityFactory());
-    assertSame(plain.spawnFactory(), declared.spawnFactory());
+    assertSame(plain.positionedConstructor(), declared.positionedConstructor());
     assertEquals(plain.sounds(), declared.sounds());
     assertEquals(plain.palette(), declared.palette());
     assertEquals(plain.trackingTickInterval(), declared.trackingTickInterval());
@@ -274,7 +254,7 @@ class ArrowDefinitionTest {
     assertThrows(
         NullPointerException.class,
         () ->
-            ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, SPAWN_FACTORY)
+            ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR)
                 .applying((ArrowEffect[]) null));
   }
 }

@@ -1,6 +1,7 @@
 package com.grahambartley.volley.chaos;
 
 import com.grahambartley.volley.cloud.TimedCloud;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -39,8 +40,7 @@ public final class StinkRepel {
 
   private static void pushOut(final MobEntity mob, final TimedCloud cloud) {
     final Vec3d away = awayFrom(cloud.center(), mob.getPos(), mob.getRandom().nextDouble());
-    mob.addVelocity(away.x * PUSH, 0.0, away.z * PUSH);
-    mob.velocityModified = true;
+    Propel.drive(mob, mob.getVelocity().add(away.x * PUSH, 0.0, away.z * PUSH));
   }
 
   static Vec3d awayFrom(final Vec3d center, final Vec3d position, final double tieBreak) {

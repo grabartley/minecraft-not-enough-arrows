@@ -1,9 +1,8 @@
 package com.grahambartley.volley.structure;
 
 import com.grahambartley.volley.world.LoadedGround;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -12,16 +11,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 
 public final class TimedStructureService {
-  private static final Map<RegistryKey<World>, StructureLedger> LEDGERS = new HashMap<>();
+  private static final PerWorld<StructureLedger> LEDGERS = new PerWorld<>(StructureLedger::new);
   private static final StaleMarkSweep STALE = new StaleMarkSweep();
 
   private TimedStructureService() {}
@@ -32,6 +29,18 @@ public final class TimedStructureService {
     ServerTickEvents.END_WORLD_TICK.register(TimedStructureService::tick);
     ServerLifecycleEvents.SERVER_STOPPING.register(TimedStructureService::clearEverything);
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
+  }
+
+  public static List<BlockPos> placeAll(
+      final ServerWorld world,
+      @Nullable final PlayerEntity owner,
+      final List<BlockPos> candidates,
+      final StructureBlockSource source,
+      final int lifetimeTicks) {
+    return build(
+            world, owner, candidates, source, StructureBudget.of(candidates.size()), lifetimeTicks)
+        .map(TimedStructure::positions)
+        .orElse(List.of());
   }
 
   public static Optional<TimedStructure> build(
@@ -50,7 +59,7 @@ public final class TimedStructureService {
       return Optional.empty();
     }
 
-    final StructureLedger ledger = ledgerFor(world);
+    final StructureLedger ledger = LEDGERS.of(world);
     final UUID id = UUID.randomUUID();
     final List<StructureBlock> placed =
         StructurePlacer.place(world, id, candidates, source, owner, budget, ledger::holds);
@@ -69,12 +78,11 @@ public final class TimedStructureService {
   }
 
   public static Optional<TimedStructure> find(final ServerWorld world, final UUID id) {
-    final StructureLedger ledger = world == null ? null : LEDGERS.get(world.getRegistryKey());
-    return ledger == null ? Optional.empty() : ledger.find(id);
+    return LEDGERS.map(world, ledger -> ledger.find(id), Optional.empty());
   }
 
   public static boolean dismantle(final ServerWorld world, final UUID id) {
-    final StructureLedger ledger = world == null ? null : LEDGERS.get(world.getRegistryKey());
+    final StructureLedger ledger = LEDGERS.in(world);
     if (ledger == null) {
       return false;
     }
@@ -89,13 +97,13 @@ public final class TimedStructureService {
   }
 
   public static boolean holds(final ServerWorld world, final BlockPos pos) {
-    final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
+    final StructureLedger ledger = LEDGERS.in(world);
     return ledger != null && ledger.holds(pos);
   }
 
   public static void expireIn(
       final ServerWorld world, final long tick, final Predicate<BlockPos> isLoaded) {
-    final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
+    final StructureLedger ledger = LEDGERS.in(world);
     if (ledger == null || ledger.isEmpty()) {
       return;
     }
@@ -106,7 +114,7 @@ public final class TimedStructureService {
 
   public static void clearAll(final ServerWorld world) {
     STALE.clearIn(world);
-    final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
+    final StructureLedger ledger = LEDGERS.in(world);
     if (ledger == null) {
       return;
     }
@@ -115,7 +123,7 @@ public final class TimedStructureService {
   }
 
   public static void onChunkLoad(final ServerWorld world, final WorldChunk chunk) {
-    final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
+    final StructureLedger ledger = LEDGERS.in(world);
     final long tick = world.getTime();
     STALE.notice(world, chunk, mark -> ledger != null && ledger.isLive(mark.structure(), tick));
   }
@@ -127,7 +135,7 @@ public final class TimedStructureService {
       return;
     }
     StructureChunkMarks.unmark(chunk, pos);
-    final StructureLedger ledger = LEDGERS.get(world.getRegistryKey());
+    final StructureLedger ledger = LEDGERS.in(world);
     if (ledger != null) {
       ledger.release(pos);
     }
@@ -147,9 +155,5 @@ public final class TimedStructureService {
     if (server != null) {
       server.getWorlds().forEach(TimedStructureService::clearAll);
     }
-  }
-
-  private static StructureLedger ledgerFor(final ServerWorld world) {
-    return LEDGERS.computeIfAbsent(world.getRegistryKey(), key -> new StructureLedger());
   }
 }

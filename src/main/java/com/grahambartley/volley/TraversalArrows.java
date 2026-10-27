@@ -10,9 +10,6 @@ import com.grahambartley.volley.entity.TrampolineArrowEntity;
 import com.grahambartley.volley.entity.UpdraftArrowEntity;
 import com.grahambartley.volley.entity.VineArrowEntity;
 import com.grahambartley.volley.entity.ZiplineArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public final class TraversalArrows {
 
@@ -22,13 +19,12 @@ public final class TraversalArrows {
               ArrowDefinition.of(
                   "zipline_arrow",
                   ZiplineArrowEntity::new,
-                  TraversalArrows::ziplineArrow,
+                  ZiplineArrowEntity::new,
                   ArrowSound.own(ModSounds.ZIPLINE_ARROW_STRING.getId())));
 
   public static final RegisteredArrow<TowArrowEntity> TOW_ARROW =
       ModArrows.registrar()
-          .register(
-              ArrowDefinition.of("tow_arrow", TowArrowEntity::new, TraversalArrows::towArrow));
+          .register(ArrowDefinition.of("tow_arrow", TowArrowEntity::new, TowArrowEntity::new));
 
   public static final RegisteredArrow<UpdraftArrowEntity> UPDRAFT_ARROW =
       ModArrows.registrar()
@@ -36,13 +32,12 @@ public final class TraversalArrows {
               ArrowDefinition.of(
                   "updraft_arrow",
                   UpdraftArrowEntity::new,
-                  TraversalArrows::updraftArrow,
+                  UpdraftArrowEntity::new,
                   ArrowSound.own(ModSounds.UPDRAFT_ARROW_OPEN.getId())));
 
   public static final RegisteredArrow<VineArrowEntity> VINE_ARROW =
       ModArrows.registrar()
-          .register(
-              ArrowDefinition.of("vine_arrow", VineArrowEntity::new, TraversalArrows::vineArrow));
+          .register(ArrowDefinition.of("vine_arrow", VineArrowEntity::new, VineArrowEntity::new));
 
   public static final RegisteredArrow<TrampolineArrowEntity> TRAMPOLINE_ARROW =
       ModArrows.registrar()
@@ -50,94 +45,23 @@ public final class TraversalArrows {
               ArrowDefinition.of(
                   "trampoline_arrow",
                   TrampolineArrowEntity::new,
-                  TraversalArrows::trampolineArrow,
+                  TrampolineArrowEntity::new,
                   ArrowSound.own(ModSounds.TRAMPOLINE_ARROW_LAUNCH.getId())));
 
   public static final RegisteredArrow<ScaffoldArrowEntity> SCAFFOLD_ARROW =
       ModArrows.registrar()
           .register(
               ArrowDefinition.of(
-                  "scaffold_arrow", ScaffoldArrowEntity::new, TraversalArrows::scaffoldArrow));
+                  "scaffold_arrow", ScaffoldArrowEntity::new, ScaffoldArrowEntity::new));
 
   public static final RegisteredArrow<BridgeArrowEntity> BRIDGE_ARROW =
       ModArrows.registrar()
           .register(
-              ArrowDefinition.of(
-                  "bridge_arrow", BridgeArrowEntity::new, TraversalArrows::bridgeArrow));
+              ArrowDefinition.of("bridge_arrow", BridgeArrowEntity::new, BridgeArrowEntity::new));
 
   private TraversalArrows() {}
 
   static void register() {
     Volley.LOGGER.debug("Registered the traversal arrows");
-  }
-
-  private static ZiplineArrowEntity ziplineArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new ZiplineArrowEntity(ZIPLINE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static TowArrowEntity towArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TowArrowEntity(TOW_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static UpdraftArrowEntity updraftArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new UpdraftArrowEntity(UPDRAFT_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static VineArrowEntity vineArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new VineArrowEntity(VINE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static TrampolineArrowEntity trampolineArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TrampolineArrowEntity(TRAMPOLINE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static ScaffoldArrowEntity scaffoldArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new ScaffoldArrowEntity(SCAFFOLD_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static BridgeArrowEntity bridgeArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new BridgeArrowEntity(BRIDGE_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

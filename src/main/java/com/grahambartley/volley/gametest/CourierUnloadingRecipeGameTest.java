@@ -109,11 +109,11 @@ public final class CourierUnloadingRecipeGameTest implements FabricGameTest {
         () -> {
           context.assertEquals(
               SocialTestSupport.PAYLOAD_COUNT,
-              SocialTestSupport.droppedNearby(context, SocialTestSupport.PAYLOAD_ITEM),
+              TerrainTestSupport.droppedNearby(context, SocialTestSupport.PAYLOAD_ITEM),
               "Diamonds ejected");
           context.assertEquals(
               1,
-              SocialTestSupport.droppedNearby(context, SocialArrows.COURIER_ARROW.item()),
+              TerrainTestSupport.droppedNearby(context, SocialArrows.COURIER_ARROW.item()),
               "Empty arrows ejected");
           context.assertEquals(1, crafter.getStack(0).getCount(), "Loaded arrows left inside");
           context.assertTrue(CourierPayloads.isLoaded(crafter.getStack(0)), "still loaded");

@@ -1,9 +1,12 @@
 package com.grahambartley.volley.command;
 
+import com.grahambartley.volley.config.ConfigPermissions;
 import com.grahambartley.volley.config.ConfigSettings;
 import com.grahambartley.volley.config.VolleyConfig;
+import com.grahambartley.volley.config.option.ServerConfigOptions;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
 import java.util.Arrays;
@@ -24,33 +27,21 @@ public final class VolleyCommand {
   private VolleyCommand() {}
 
   public static void register(final CommandDispatcher<ServerCommandSource> dispatcher) {
+    final LiteralArgumentBuilder<ServerCommandSource> config =
+        CommandManager.literal(CONFIG)
+            .requires(VolleyCommand::isOperator)
+            .then(CommandManager.literal(RESET).executes(VolleyCommand::reset));
+    ServerConfigOptions.sections()
+        .forEach(section -> config.then(OptionCommandNodes.section(section)));
     dispatcher.register(
         CommandManager.literal(ROOT)
             .executes(VolleyCommand::help)
             .then(CommandManager.literal(STATUS).executes(VolleyCommand::status))
-            .then(
-                CommandManager.literal(CONFIG)
-                    .requires(VolleyCommand::isOperator)
-                    .then(CommandManager.literal(RESET).executes(VolleyCommand::reset))
-                    .then(ExplosiveCommandNodes.build())
-                    .then(GrappleCommandNodes.build())
-                    .then(UtilityCommandNodes.build())
-                    .then(PhysicsCommandNodes.build())
-                    .then(EnderCommandNodes.build())
-                    .then(CombatCommandNodes.build())
-                    .then(ControlCommandNodes.build())
-                    .then(TraversalCommandNodes.build())
-                    .then(TerrainCommandNodes.build())
-                    .then(AgricultureCommandNodes.build())
-                    .then(DiscoveryCommandNodes.build())
-                    .then(ChaosCommandNodes.build())
-                    .then(SocialCommandNodes.build())
-                    .then(FletchingCommandNodes.build())
-                    .then(SoundCommandNodes.build())));
+            .then(config));
   }
 
   public static boolean isOperator(final ServerCommandSource source) {
-    return source.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL);
+    return ConfigPermissions.canEdit(source::hasPermissionLevel);
   }
 
   private static int status(final CommandContext<ServerCommandSource> context) {

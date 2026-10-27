@@ -28,8 +28,7 @@ public final class StinkRepelGameTest implements FabricGameTest {
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = WATCH + 20)
   public void aZombieHuntingAPlayerAcrossACloudNeverWalksIntoIt(TestContext context) {
     final ServerPlayerEntity prey = MobArena.player(context);
-    final ZombieEntity hunter =
-        ChaosTestSupport.shaded(context.spawnEntity(EntityType.ZOMBIE, HUNTER));
+    final ZombieEntity hunter = MobArena.helmeted(context.spawnEntity(EntityType.ZOMBIE, HUNTER));
     final TimedCloud cloud = open(context);
     for (int provoking = 1; provoking < 10; provoking++) {
       context.runAtTick(provoking, () -> MobAggression.aim(hunter, prey));
@@ -52,8 +51,7 @@ public final class StinkRepelGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 100)
   public void aZombieCaughtInsideACloudIsPushedOut(TestContext context) {
-    final ZombieEntity zombie =
-        ChaosTestSupport.shaded(context.spawnEntity(EntityType.ZOMBIE, CLOUD));
+    final ZombieEntity zombie = MobArena.helmeted(context.spawnEntity(EntityType.ZOMBIE, CLOUD));
     final TimedCloud cloud = open(context);
 
     context.runAtTick(

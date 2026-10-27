@@ -33,7 +33,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aFirstShotSetsAPendingAnchorAndStringsNothing(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     final ZiplineOutcome outcome =
         shoot(context, shooter, ZiplineTestSupport.WEST_ANCHOR, arrow(context));
@@ -50,7 +50,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSecondShotStringsTheSpanAndConsumesTheFirstArrow(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final ZiplineArrowEntity first = arrow(context);
     shoot(context, shooter, ZiplineTestSupport.WEST_ANCHOR, first);
 
@@ -70,7 +70,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aFirstArrowPickedBackUpLeavesNothingToStringTo(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final ZiplineArrowEntity first = arrow(context);
     shoot(context, shooter, ZiplineTestSupport.WEST_ANCHOR, first);
     first.discard();
@@ -90,7 +90,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSecondShotTooFarAwayReplacesThePendingAnchor(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final ZiplineArrowConfig tight =
         ZiplineTestSupport.zipline(ZiplineArrowConfig.MAX_SPAN_BLOCKS_MIN, 2000);
     ZiplineService.shoot(
@@ -119,7 +119,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aZiplineWithNoLifetimeAnchorsNothingRatherThanClaimingABlockage(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     context.assertEquals(
         ZiplineOutcome.NOTHING,
@@ -148,7 +148,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   public void aShotIntoSomethingThatIsNotAnAnchorSiteAnchorsNothing(TestContext context) {
     context.setBlockState(ZiplineTestSupport.WEST_ANCHOR.down(), Blocks.DIRT);
     context.setBlockState(ZiplineTestSupport.WEST_ANCHOR, Blocks.SHORT_GRASS);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     context.assertEquals(
         ZiplineOutcome.NOTHING,
@@ -162,7 +162,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aPendingAnchorOutsideItsWindowIsDiscardedAndNotPairedWith(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final ZiplineArrowConfig narrow =
         new ZiplineArrowConfig(
             ZiplineArrowConfig.DEFAULT_MAX_SPAN_BLOCKS,
@@ -201,7 +201,7 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPendingAnchorWhoseBlockWasReplacedIsNotPairedWith(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     shoot(context, shooter, ZiplineTestSupport.WEST_ANCHOR, arrow(context));
     context.setBlockState(ZiplineTestSupport.WEST_ANCHOR, Blocks.COBBLESTONE);
 
@@ -215,8 +215,8 @@ public final class ZiplineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void oneShootersPendingAnchorIsNeverPairedWithAnothersShot(TestContext context) {
     ZiplineTestSupport.raiseAnchors(context);
-    final ServerPlayerEntity first = context.createMockCreativeServerPlayerInWorld();
-    final ServerPlayerEntity second = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity first = MockPlayerSupport.player(context);
+    final ServerPlayerEntity second = MockPlayerSupport.player(context);
     shoot(context, first, ZiplineTestSupport.WEST_ANCHOR, arrow(context));
 
     context.assertEquals(

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class ControlSteeringTest {
 
@@ -66,15 +68,17 @@ class ControlSteeringTest {
     assertFalse(ControlSteering.DEFENDING.navigates());
   }
 
-  @Test
-  void eachSteeringCarriesTheTargetingItsArrowPromises() {
-    assertEquals(TargetPolicy.AIM_AT_SUBJECT, ControlSteering.DRAWN.targetPolicy());
-    assertEquals(TargetPolicy.DROP_UNLESS_CORNERED, ControlSteering.FLEEING.targetPolicy());
-    assertEquals(TargetPolicy.DEFEND_SUBJECT, ControlSteering.DEFENDING.targetPolicy());
+  @ParameterizedTest
+  @CsvSource({"DRAWN, true", "DEFENDING, true", "FLEEING, false"})
+  void onlyAFleeingMobLeavesItsTargetAloneEachTick(
+      final ControlSteering steering, final boolean retargets) {
+    assertEquals(retargets, steering.retargetsEveryTick());
   }
 
-  @Test
-  void aRepelledMobDropsItsTargetOnlyWhileItHasSomewhereToRun() {
-    assertEquals(TargetPolicy.DROP_UNLESS_CORNERED, ControlSteering.FLEEING.targetPolicy());
+  @ParameterizedTest
+  @CsvSource({"DRAWN, 1.1", "FLEEING, 1.5", "DEFENDING, 1.1"})
+  void onlyAFleeingMobRunsFasterThanItIsSteered(
+      final ControlSteering steering, final double speed) {
+    assertEquals(speed, steering.speed());
   }
 }

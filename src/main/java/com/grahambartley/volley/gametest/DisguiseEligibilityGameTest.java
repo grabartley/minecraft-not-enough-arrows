@@ -49,7 +49,7 @@ public final class DisguiseEligibilityGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void noPlayerVillagerPetOrAnimalCanBeDisguised(TestContext context) {
-    final ServerPlayerEntity player = ChaosTestSupport.survivalPlayerAt(context, STAND.west(3));
+    final ServerPlayerEntity player = MockPlayerSupport.survivalPlayerAt(context, STAND.west(3));
     final WolfEntity pet = (WolfEntity) still(context, EntityType.WOLF);
     pet.setOwner(player);
 

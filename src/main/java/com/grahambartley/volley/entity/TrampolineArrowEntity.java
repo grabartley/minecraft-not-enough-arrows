@@ -1,6 +1,7 @@
 package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.arrow.ArrowImpact;
+import com.grahambartley.volley.arrow.FaceClearance;
 import com.grahambartley.volley.traversal.TrampolineService;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -31,9 +32,7 @@ public class TrampolineArrowEntity extends BaseArrowEntity {
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
     return TrampolineService.place(
-                world,
-                blockHitResult.getBlockPos().offset(blockHitResult.getSide()),
-                shootingPlayer().orElse(null))
+                world, FaceClearance.blockInFrontOf(blockHitResult), shootingPlayer().orElse(null))
             .isEmpty()
         ? ArrowImpact.DEFAULT
         : ArrowImpact.DISCARD;

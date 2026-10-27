@@ -29,7 +29,7 @@ public final class PolymorphArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchThePolymorphOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withPolymorph(chaos.polymorph().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withPolymorph(chaos.polymorph().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)
@@ -90,7 +90,7 @@ public final class PolymorphArrowEntityGameTest implements FabricGameTest {
       tickLimit = TerrainArrowTestSupport.TICK_LIMIT)
   public void aPolymorphArrowDoesNothingAtAllToAPlayer(TestContext context) {
     context.setBlockState(TARGET_STAND.down(), Blocks.STONE);
-    final ServerPlayerEntity struck = ChaosTestSupport.survivalPlayerAt(context, TARGET_STAND);
+    final ServerPlayerEntity struck = MockPlayerSupport.survivalPlayerAt(context, TARGET_STAND);
     assertUntouched(context, struck);
   }
 

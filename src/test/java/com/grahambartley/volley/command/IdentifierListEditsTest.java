@@ -1,7 +1,6 @@
 package com.grahambartley.volley.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -61,7 +60,9 @@ class IdentifierListEditsTest {
 
   @Test
   void aNullIdentifierIsRejectedRatherThanThrowing() {
-    assertNull(IdentifierListEdits.normalize(null));
+    assertEquals(
+        IdentifierListEdits.Outcome.INVALID_ID,
+        IdentifierListEdits.add(List.of(), null, MAX_ENTRIES).outcome());
   }
 
   @Test

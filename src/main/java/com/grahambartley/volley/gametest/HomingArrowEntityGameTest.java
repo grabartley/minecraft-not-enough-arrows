@@ -16,7 +16,7 @@ public final class HomingArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
   public void anArrowCurvesTowardAHostileMobAheadOfIt(TestContext context) {
-    CombatTestSupport.stillZombieAt(context, CombatTestSupport.LONG_RANGE_FAR_STAND);
+    ControlTestSupport.stillZombieAt(context, CombatTestSupport.LONG_RANGE_FAR_STAND);
     CombatTestSupport.fireDownTheLongRange(context, ModArrows.HOMING_ARROW.item());
 
     context.runAtTick(
@@ -84,7 +84,7 @@ public final class HomingArrowEntityGameTest implements FabricGameTest {
 
   @GameTest(templateName = CombatTestSupport.LONG_RANGE, batchId = BATCH, tickLimit = 60)
   public void anArrowIgnoresAHostileMobBehindIt(TestContext context) {
-    CombatTestSupport.stillZombieAt(context, BESIDE_THE_SHOOTER);
+    ControlTestSupport.stillZombieAt(context, BESIDE_THE_SHOOTER);
     CombatTestSupport.fireDownTheLongRange(context, ModArrows.HOMING_ARROW.item());
 
     context.runAtTick(

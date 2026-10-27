@@ -19,6 +19,13 @@ public final class RecallTargets {
     return entity instanceof LivingEntity || entity instanceof VehicleEntity;
   }
 
+  public static boolean mayMove(@Nullable final Entity entity, final boolean playersMove) {
+    if (!isRecallable(entity) || entity.isSpectator()) {
+      return false;
+    }
+    return playersMove || !carriesAPlayer(entity);
+  }
+
   public static boolean carriesAPlayer(@Nullable final Entity entity) {
     if (entity == null) {
       return false;

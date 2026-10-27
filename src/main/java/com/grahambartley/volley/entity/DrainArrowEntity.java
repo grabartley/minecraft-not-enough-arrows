@@ -1,21 +1,19 @@
 package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.ModSounds;
-import com.grahambartley.volley.arrow.ArrowImpact;
-import com.grahambartley.volley.audio.ModSoundPlayer;
-import com.grahambartley.volley.config.DrainArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.terrain.DrainService;
+import java.util.List;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class DrainArrowEntity extends BaseArrowEntity {
+public class DrainArrowEntity extends BlockAreaArrowEntity {
 
   public DrainArrowEntity(
       final EntityType<? extends DrainArrowEntity> entityType, final World world) {
@@ -34,30 +32,18 @@ public class DrainArrowEntity extends BaseArrowEntity {
   }
 
   @Override
-  protected ArrowImpact onArrowHitBlock(
-      final ServerWorld world, final BlockHitResult blockHitResult) {
-    final DrainArrowConfig drain = ServerConfigService.get().terrain().drain();
-    if (!drain.enabled()) {
-      return ArrowImpact.DEFAULT;
-    }
-    drainAround(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()), drain);
-    return ArrowImpact.DISCARD;
+  protected List<BlockPos> affectAround(
+      final ServerWorld world, final BlockPos center, @Nullable final PlayerEntity shooter) {
+    return DrainService.drain(world, center, shooter);
   }
 
   @Override
-  protected ArrowImpact onArrowHitEntity(
-      final ServerWorld world, final EntityHitResult entityHitResult) {
-    drainAround(
-        world,
-        entityHitResult.getEntity().getBlockPos(),
-        ServerConfigService.get().terrain().drain());
-    return ArrowImpact.DEFAULT;
+  protected SoundEvent effectSound() {
+    return ModSounds.DRAIN_ARROW_ABSORB;
   }
 
-  private void drainAround(
-      final ServerWorld world, final BlockPos center, final DrainArrowConfig drain) {
-    if (!DrainService.drain(world, center, shootingPlayer().orElse(null), drain).isEmpty()) {
-      ModSoundPlayer.playFrom(this, ModSounds.DRAIN_ARROW_ABSORB);
-    }
+  @Override
+  protected boolean alwaysDiscardsOnBlockHit() {
+    return ServerConfigService.get().terrain().drain().enabled();
   }
 }

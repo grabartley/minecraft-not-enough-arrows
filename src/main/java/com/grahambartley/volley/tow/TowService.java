@@ -2,30 +2,29 @@ package com.grahambartley.volley.tow;
 
 import com.grahambartley.volley.config.EnderArrowConfig;
 import com.grahambartley.volley.config.TowArrowConfig;
+import com.grahambartley.volley.ender.RecallTargets;
 import com.grahambartley.volley.grapple.GrappleEnding;
-import com.grahambartley.volley.grapple.GrappleFlightCheck;
 import com.grahambartley.volley.grapple.GrappleService;
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
 import com.grahambartley.volley.world.Reach;
+import com.grahambartley.volley.world.SessionTracker;
 import com.grahambartley.volley.zipline.RideEnding;
 import com.grahambartley.volley.zipline.RideService;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class TowService {
-  private static final Map<RegistryKey<World>, TowTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<SessionTracker<TowSession>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(TowSession::targetId, TowSession::hasExpired));
 
   private TowService() {}
 
@@ -56,7 +55,7 @@ public final class TowService {
         || ender == null
         || target == shooter
         || !shooter.isAlive()
-        || !TowTargets.isTowable(target, ender.recallAffectsPlayers())
+        || !RecallTargets.mayMove(target, ender.recallAffectsPlayers())
         || !Reach.isWithin(target.getPos(), shooter.getPos(), tow.rangeBlocks())) {
       return false;
     }
@@ -68,7 +67,8 @@ public final class TowService {
       RideService.end(world, target.getUuid(), RideEnding.REPLACED);
       GrappleService.end(world, target.getUuid(), GrappleEnding.CANCELLED);
     }
-    trackerFor(world)
+    TRACKERS
+        .of(world)
         .add(
             TowSession.beginning(
                 target.getUuid(),
@@ -80,14 +80,13 @@ public final class TowService {
 
   @Nullable
   public static TowSession towOf(@Nullable final ServerWorld world, @Nullable final UUID targetId) {
-    final TowTracker tracker = trackerIn(world);
-    return tracker == null ? null : tracker.towOf(targetId);
+    return TRACKERS.map(world, tracker -> tracker.get(targetId), null);
   }
 
   @Nullable
   public static TowSession end(
       @Nullable final ServerWorld world, @Nullable final UUID targetId, final TowEnding ending) {
-    final TowTracker tracker = trackerIn(world);
+    final SessionTracker<TowSession> tracker = TRACKERS.in(world);
     if (tracker == null) {
       return null;
     }
@@ -95,14 +94,13 @@ public final class TowService {
     if (ended != null
         && ending.stopsTheTarget()
         && world.getEntity(targetId) instanceof Entity target) {
-      target.setVelocity(TowPull.stopped(target.getVelocity()));
-      target.velocityModified = true;
+      Propel.drive(target, TowPull.stopped(target.getVelocity()));
     }
     return ended;
   }
 
   public static void stopTowingEverywhere(@Nullable final UUID entityId) {
-    TRACKERS.values().forEach(tracker -> tracker.removeInvolving(entityId));
+    TRACKERS.all().forEach(tracker -> tracker.removeIf(tow -> tow.involves(entityId)));
   }
 
   public static void forget() {
@@ -110,12 +108,12 @@ public final class TowService {
   }
 
   private static void towIn(final ServerWorld world) {
-    final TowTracker tracker = trackerIn(world);
+    final SessionTracker<TowSession> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
     final TowArrowConfig tow = ServerConfigService.get().traversal().tow();
-    for (final TowSession session : tracker.tows()) {
+    for (final TowSession session : tracker.all()) {
       final TowEnding ending = towOnce(world, tracker, session, tow);
       if (ending != null) {
         end(world, session.targetId(), ending);
@@ -126,7 +124,7 @@ public final class TowService {
   @Nullable
   private static TowEnding towOnce(
       final ServerWorld world,
-      final TowTracker tracker,
+      final SessionTracker<TowSession> tracker,
       final TowSession session,
       final TowArrowConfig tow) {
     final Entity target = world.getEntity(session.targetId());
@@ -162,26 +160,13 @@ public final class TowService {
   }
 
   private static void drag(final Entity target, final PlayerEntity shooter, final double speed) {
-    target.setVelocity(
-        TowPull.velocity(target.getPos(), shooter.getPos(), target.getVelocity(), speed));
-    target.velocityModified = true;
-    if (target instanceof ServerPlayerEntity player) {
-      GrappleFlightCheck.clearFloatingCountFor(player);
-    }
+    Propel.carry(
+        target, TowPull.velocity(target.getPos(), shooter.getPos(), target.getVelocity(), speed));
   }
 
   private static boolean isGone(@Nullable final Entity entity) {
     return entity == null
         || entity.isRemoved()
         || (entity instanceof LivingEntity living && !living.isAlive());
-  }
-
-  @Nullable
-  private static TowTracker trackerIn(@Nullable final ServerWorld world) {
-    return world == null ? null : TRACKERS.get(world.getRegistryKey());
-  }
-
-  private static TowTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new TowTracker());
   }
 }

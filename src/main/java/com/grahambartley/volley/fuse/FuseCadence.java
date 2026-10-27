@@ -24,15 +24,7 @@ public final class FuseCadence {
   }
 
   public static boolean beepsAt(final int remainingTicks, final int delayTicks) {
-    if (delayTicks <= 0 || remainingTicks <= 0 || remainingTicks > delayTicks) {
-      return false;
-    }
-
-    int scheduled = delayTicks;
-    while (scheduled > remainingTicks) {
-      scheduled -= intervalAt(scheduled, delayTicks);
-    }
-    return scheduled == remainingTicks;
+    return beepTicks(delayTicks).contains(remainingTicks);
   }
 
   public static int intervalAt(final int remainingTicks, final int delayTicks) {

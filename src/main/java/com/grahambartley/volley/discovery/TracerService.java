@@ -2,9 +2,9 @@ package com.grahambartley.volley.discovery;
 
 import com.grahambartley.volley.network.RevealPayloads.TracerPathS2CPayload;
 import com.grahambartley.volley.reveal.RevealAudience;
+import com.grahambartley.volley.server.ModdedClients;
 import com.grahambartley.volley.server.ServerConfigService;
 import java.util.List;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.jetbrains.annotations.Nullable;
@@ -29,9 +29,7 @@ public final class TracerService {
     }
     final TracerPathS2CPayload payload = new TracerPathS2CPayload(path.points(), lifetimeTicks);
     final List<ServerPlayerEntity> audience = RevealAudience.watching(arrow, shooter);
-    audience.stream()
-        .filter(player -> ServerPlayNetworking.canSend(player, TracerPathS2CPayload.ID))
-        .forEach(player -> ServerPlayNetworking.send(player, payload));
+    ModdedClients.sendAll(audience, payload);
     return audience;
   }
 }

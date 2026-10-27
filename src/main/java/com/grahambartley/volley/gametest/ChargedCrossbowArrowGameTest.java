@@ -24,7 +24,6 @@ public final class ChargedCrossbowArrowGameTest implements FabricGameTest {
   private static final BlockPos STANDING_ON = new BlockPos(0, 2, 0);
   private static final int WEAPON_SLOT = 0;
   private static final int QUIVER_SLOT = 1;
-  private static final int A_QUIVER = 8;
   private static final int FULLY_DRAWN = 0;
 
   @CustomTestProvider
@@ -110,7 +109,7 @@ public final class ChargedCrossbowArrowGameTest implements FabricGameTest {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, STANDING_ON);
     player.getInventory().clear();
     player.getInventory().selectedSlot = WEAPON_SLOT;
-    player.getInventory().setStack(QUIVER_SLOT, new ItemStack(arrow, A_QUIVER));
+    player.getInventory().setStack(QUIVER_SLOT, new ItemStack(arrow, MockPlayerSupport.A_QUIVER));
     player.setStackInHand(Hand.MAIN_HAND, new ItemStack(Items.CROSSBOW));
 
     final ItemStack crossbow = player.getStackInHand(Hand.MAIN_HAND);

@@ -7,6 +7,9 @@ import com.grahambartley.volley.config.option.ConfigSection;
 import com.grahambartley.volley.config.option.FloatOption;
 import com.grahambartley.volley.config.option.IdentifierListOption;
 import com.grahambartley.volley.config.option.IntOption;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 
@@ -39,13 +42,20 @@ public final class OptionCommandNodes {
       final ConfigOption<VolleyConfig> option) {
     return switch (option) {
       case IntOption<VolleyConfig> intOption ->
-          ConfigOptionNodes.intOption(
-              intOption.id(), intOption.min(), intOption.max(), intOption::write);
+          ConfigOptionNodes.value(
+              intOption,
+              IntegerArgumentType.integer(intOption.min(), intOption.max()),
+              Integer.class,
+              intOption::write);
       case FloatOption<VolleyConfig> floatOption ->
-          ConfigOptionNodes.floatOption(
-              floatOption.id(), floatOption.min(), floatOption.max(), floatOption::write);
+          ConfigOptionNodes.value(
+              floatOption,
+              FloatArgumentType.floatArg(floatOption.min(), floatOption.max()),
+              Float.class,
+              floatOption::write);
       case BooleanOption<VolleyConfig> booleanOption ->
-          ConfigOptionNodes.booleanOption(booleanOption.id(), booleanOption::write);
+          ConfigOptionNodes.value(
+              booleanOption, BoolArgumentType.bool(), Boolean.class, booleanOption::write);
       case IdentifierListOption<VolleyConfig> listOption -> IdentifierListNodes.build(listOption);
     };
   }

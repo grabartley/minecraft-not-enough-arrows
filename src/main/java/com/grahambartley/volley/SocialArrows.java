@@ -7,9 +7,6 @@ import com.grahambartley.volley.entity.CourierArrowEntity;
 import com.grahambartley.volley.entity.MagnetArrowEntity;
 import com.grahambartley.volley.entity.SnowGolemArrowEntity;
 import com.grahambartley.volley.item.CourierArrowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public final class SocialArrows {
 
@@ -19,7 +16,7 @@ public final class SocialArrows {
               ArrowDefinition.of(
                   "courier_arrow",
                   CourierArrowEntity::new,
-                  SocialArrows::courierArrow,
+                  CourierArrowEntity::new,
                   ArrowSound.own(ModSounds.COURIER_ARROW_DELIVER.getId())),
               CourierArrowItem::new);
 
@@ -29,7 +26,7 @@ public final class SocialArrows {
               ArrowDefinition.of(
                   "snow_golem_arrow",
                   SnowGolemArrowEntity::new,
-                  SocialArrows::snowGolemArrow,
+                  SnowGolemArrowEntity::new,
                   ArrowSound.own(ModSounds.SNOW_GOLEM_ARROW_MELT.getId())));
 
   public static final RegisteredArrow<MagnetArrowEntity> MAGNET_ARROW =
@@ -38,42 +35,12 @@ public final class SocialArrows {
               ArrowDefinition.of(
                   "magnet_arrow",
                   MagnetArrowEntity::new,
-                  SocialArrows::magnetArrow,
+                  MagnetArrowEntity::new,
                   ArrowSound.own(ModSounds.MAGNET_ARROW_PULL.getId())));
 
   private SocialArrows() {}
 
   static void register() {
     Volley.LOGGER.debug("Registered the social arrows");
-  }
-
-  private static CourierArrowEntity courierArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new CourierArrowEntity(COURIER_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static SnowGolemArrowEntity snowGolemArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new SnowGolemArrowEntity(SNOW_GOLEM_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static MagnetArrowEntity magnetArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new MagnetArrowEntity(MAGNET_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

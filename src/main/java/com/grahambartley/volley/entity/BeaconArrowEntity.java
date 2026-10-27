@@ -2,6 +2,7 @@ package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.arrow.ArrowImpact;
+import com.grahambartley.volley.arrow.FaceClearance;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.discovery.BeaconService;
 import net.minecraft.entity.EntityType;
@@ -35,7 +36,7 @@ public class BeaconArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
-    return raised || raiseAt(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()))
+    return raised || raiseAt(world, FaceClearance.blockInFrontOf(blockHitResult))
         ? ArrowImpact.DISCARD
         : ArrowImpact.DEFAULT;
   }

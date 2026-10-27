@@ -12,7 +12,6 @@ import java.util.function.Function;
 
 public final class ExplosiveOptions {
   public static final float POWER_STEP = 0.1f;
-  public static final float BEEP_VOLUME_STEP = 0.05f;
 
   private ExplosiveOptions() {}
 
@@ -77,7 +76,7 @@ public final class ExplosiveOptions {
             ConfigSettings.EXPLOSIVE_BEEP_VOLUME,
             ExplosiveArrowConfig.BEEP_VOLUME_MIN,
             ExplosiveArrowConfig.BEEP_VOLUME_MAX,
-            BEEP_VOLUME_STEP,
+            SoundOptions.VOLUME_STEP,
             config -> config.explosive().beepVolume(),
             (config, value) -> explosive(config, it -> it.withBeepVolume(value))));
     options.add(

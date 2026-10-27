@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class FallingBlocksGameTest implements FabricGameTest {
   private static final String BATCH = "falling-blocks";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CANDIDATE = new BlockPos(3, 4, 3);
   private static final int TICK_LIMIT = 20;
 

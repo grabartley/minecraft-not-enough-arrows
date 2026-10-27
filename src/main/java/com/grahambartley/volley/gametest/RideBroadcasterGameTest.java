@@ -41,7 +41,7 @@ public final class RideBroadcasterGameTest implements FabricGameTest {
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPlayerWhoIsNotRidingIsAnnouncedToNobody(TestContext context) {
-    final ServerPlayerEntity walker = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity walker = MockPlayerSupport.player(context);
 
     context.assertTrue(RideBroadcaster.catchUpFor(walker).isEmpty(), "Not riding");
     context.assertTrue(
@@ -73,7 +73,7 @@ public final class RideBroadcasterGameTest implements FabricGameTest {
 
   private static ServerPlayerEntity boardedRider(final TestContext context) {
     ZiplineTestSupport.stringAcross(context, null, ZiplineTestSupport.longLived());
-    final ServerPlayerEntity rider = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity rider = MockPlayerSupport.player(context);
     TraversalTestSupport.placeCenteredAt(context, rider, GRIP_CENTER);
     context.assertTrue(
         RideService.board(

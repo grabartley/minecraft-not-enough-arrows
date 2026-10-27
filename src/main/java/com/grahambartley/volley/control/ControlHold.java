@@ -40,24 +40,9 @@ public record ControlHold(
     reach = Math.max(0.0, reach);
   }
 
-  public static ControlHold at(
-      final UUID mobId, final Vec3d anchor, final ControlSteering steering, final long expiryTick) {
-    return new ControlHold(mobId, anchor, Optional.empty(), 0.0, steering, expiryTick);
-  }
-
-  public static ControlHold on(
-      final UUID mobId,
-      final Vec3d anchor,
-      final UUID subjectId,
-      final ControlSteering steering,
-      final long expiryTick) {
-    return new ControlHold(
-        mobId,
-        anchor,
-        Optional.of(Objects.requireNonNull(subjectId, "subjectId")),
-        0.0,
-        steering,
-        expiryTick);
+  public static ControlHold drawn(
+      final UUID mobId, final Vec3d anchor, final Optional<UUID> subjectId, final long expiryTick) {
+    return new ControlHold(mobId, anchor, subjectId, 0.0, ControlSteering.DRAWN, expiryTick);
   }
 
   public static ControlHold fleeing(
