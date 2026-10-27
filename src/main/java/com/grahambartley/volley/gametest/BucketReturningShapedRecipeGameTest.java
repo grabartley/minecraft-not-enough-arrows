@@ -6,23 +6,19 @@ import com.grahambartley.volley.Volley;
 import com.grahambartley.volley.recipe.BucketReturningShapedRecipe;
 import java.util.Optional;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.screen.CraftingScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 
 public final class BucketReturningShapedRecipeGameTest implements FabricGameTest {
   private static final String BATCH = "bucket-returning-shaped";
-  private static final BlockPos TABLE = new BlockPos(3, 2, 3);
   private static final Identifier FROST_RECIPE = Identifier.of(Volley.MOD_ID, "frost_arrow");
   private static final int RESULT = 0;
   private static final int FIRST_GRID_SLOT = 1;
@@ -56,7 +52,7 @@ public final class BucketReturningShapedRecipeGameTest implements FabricGameTest
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void craftingFrostArrowsLeavesOneEmptyBucketInTheGrid(TestContext context) {
     final ServerPlayerEntity player = player(context);
-    final CraftingScreenHandler table = openTable(context, player);
+    final CraftingScreenHandler table = FletchingStationSupport.openCraftingTable(context, player);
     fillFrostRecipe(table);
 
     table.onSlotClick(RESULT, 0, SlotActionType.PICKUP, player);
@@ -79,7 +75,7 @@ public final class BucketReturningShapedRecipeGameTest implements FabricGameTest
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void craftingFrostArrowsLeavesNothingWhereTheArrowsWere(TestContext context) {
     final ServerPlayerEntity player = player(context);
-    final CraftingScreenHandler table = openTable(context, player);
+    final CraftingScreenHandler table = FletchingStationSupport.openCraftingTable(context, player);
     fillFrostRecipe(table);
 
     table.onSlotClick(RESULT, 0, SlotActionType.PICKUP, player);
@@ -106,15 +102,6 @@ public final class BucketReturningShapedRecipeGameTest implements FabricGameTest
   }
 
   private static ServerPlayerEntity player(final TestContext context) {
-    return MockPlayerSupport.survivalPlayerAt(context, TABLE.west());
-  }
-
-  private static CraftingScreenHandler openTable(
-      final TestContext context, final ServerPlayerEntity player) {
-    context.setBlockState(TABLE, Blocks.CRAFTING_TABLE);
-    return new CraftingScreenHandler(
-        1,
-        player.getInventory(),
-        ScreenHandlerContext.create(context.getWorld(), context.getAbsolutePos(TABLE)));
+    return MockPlayerSupport.survivalPlayerAt(context, FletchingStationSupport.TABLE.west());
   }
 }

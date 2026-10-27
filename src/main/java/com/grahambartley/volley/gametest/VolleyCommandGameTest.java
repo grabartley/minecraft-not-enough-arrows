@@ -8,7 +8,6 @@ import com.grahambartley.volley.config.GrappleArrowConfig;
 import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.server.ServerConfigService;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import java.nio.file.Path;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -29,7 +28,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
     ServerConfigHolder.reset();
 
     context.assertTrue(
-        run(context, operator(context), SET_MAX_RANGE + "64"),
+        CommandTestSupport.run(context, operator(context), SET_MAX_RANGE + "64"),
         "An operator should be able to set a config value");
     context.assertEquals(
         64, ServerConfigService.get().grapple().maxRangeBlocks(), "Live config after the command");
@@ -45,7 +44,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
         nonOperator.hasPermissionLevel(ConfigPermissions.OPERATOR_LEVEL),
         "The gating test needs a source below the operator permission level");
     context.assertFalse(
-        run(context, nonOperator, SET_MAX_RANGE + "64"),
+        CommandTestSupport.run(context, nonOperator, SET_MAX_RANGE + "64"),
         "A non-operator should not be able to set a config value");
     context.assertEquals(
         GrappleArrowConfig.DEFAULT_MAX_RANGE_BLOCKS,
@@ -57,7 +56,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void aNonOperatorCanStillReadStatus(TestContext context) {
     context.assertTrue(
-        run(context, operator(context).withLevel(0), "volley status"),
+        CommandTestSupport.run(context, operator(context).withLevel(0), "volley status"),
         "Status output should be readable without operator permission");
     context.complete();
   }
@@ -67,7 +66,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
 
     context.assertFalse(
-        run(
+        CommandTestSupport.run(
             context,
             operator(context),
             SET_MAX_RANGE + (GrappleArrowConfig.MAX_RANGE_BLOCKS_MAX + 1)),
@@ -82,7 +81,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void aChangedSettingPersistsIntoTheWorldSave(TestContext context) {
     final MinecraftServer server = context.getWorld().getServer();
-    run(context, operator(context), SET_MAX_RANGE + "96");
+    CommandTestSupport.run(context, operator(context), SET_MAX_RANGE + "96");
 
     final Path configPath =
         new ConfigPaths(server.getSavePath(WorldSavePath.ROOT).normalize()).getServerConfigPath();
@@ -96,10 +95,10 @@ public final class VolleyCommandGameTest implements FabricGameTest {
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void resettingRestoresTheDefaults(TestContext context) {
-    run(context, operator(context), SET_MAX_RANGE + "96");
+    CommandTestSupport.run(context, operator(context), SET_MAX_RANGE + "96");
 
     context.assertTrue(
-        run(context, operator(context), "volley config reset"),
+        CommandTestSupport.run(context, operator(context), "volley config reset"),
         "An operator should be able to reset the config");
     context.assertEquals(
         GrappleArrowConfig.DEFAULT_MAX_RANGE_BLOCKS,
@@ -111,10 +110,10 @@ public final class VolleyCommandGameTest implements FabricGameTest {
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void excludingABlockFromGravityArrowsPersistsIntoTheWorldSave(TestContext context) {
     final MinecraftServer server = context.getWorld().getServer();
-    run(context, operator(context), "volley config reset");
+    CommandTestSupport.run(context, operator(context), "volley config reset");
 
     context.assertTrue(
-        run(
+        CommandTestSupport.run(
             context,
             operator(context),
             "volley config physics gravityblockexclusions add minecraft:bedrock"),
@@ -131,14 +130,14 @@ public final class VolleyCommandGameTest implements FabricGameTest {
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void excludingTheSameBlockTwiceIsRefused(TestContext context) {
-    run(context, operator(context), "volley config reset");
-    run(
+    CommandTestSupport.run(context, operator(context), "volley config reset");
+    CommandTestSupport.run(
         context,
         operator(context),
         "volley config physics gravityblockexclusions add minecraft:bedrock");
 
     context.assertFalse(
-        run(
+        CommandTestSupport.run(
             context,
             operator(context),
             "volley config physics gravityblockexclusions add minecraft:bedrock"),
@@ -153,7 +152,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void theAliasReadsStatusWithoutOperatorPermission(TestContext context) {
     context.assertTrue(
-        run(context, operator(context).withLevel(0), "volley status"),
+        CommandTestSupport.run(context, operator(context).withLevel(0), "volley status"),
         "Status output should be readable through the alias without operator permission");
     context.complete();
   }
@@ -163,7 +162,8 @@ public final class VolleyCommandGameTest implements FabricGameTest {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
 
     context.assertTrue(
-        run(context, operator(context), "volley config grapple maxrangeblocks 64"),
+        CommandTestSupport.run(
+            context, operator(context), "volley config grapple maxrangeblocks 64"),
         "An operator should be able to set a config value through the alias");
     context.assertEquals(
         64,
@@ -177,7 +177,8 @@ public final class VolleyCommandGameTest implements FabricGameTest {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
 
     context.assertFalse(
-        run(context, operator(context).withLevel(0), "volley config grapple maxrangeblocks 64"),
+        CommandTestSupport.run(
+            context, operator(context).withLevel(0), "volley config grapple maxrangeblocks 64"),
         "A non-operator should not be able to set a config value through the alias");
     context.assertEquals(
         GrappleArrowConfig.DEFAULT_MAX_RANGE_BLOCKS,
@@ -214,20 +215,5 @@ public final class VolleyCommandGameTest implements FabricGameTest {
 
   private static ServerCommandSource operator(final TestContext context) {
     return context.getWorld().getServer().getCommandSource();
-  }
-
-  private static boolean run(
-      final TestContext context, final ServerCommandSource source, final String command) {
-    try {
-      return context
-              .getWorld()
-              .getServer()
-              .getCommandManager()
-              .getDispatcher()
-              .execute(command, source)
-          > 0;
-    } catch (final CommandSyntaxException ex) {
-      return false;
-    }
   }
 }
