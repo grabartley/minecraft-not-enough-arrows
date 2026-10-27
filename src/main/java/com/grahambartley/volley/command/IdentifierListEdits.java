@@ -1,10 +1,10 @@
 package com.grahambartley.volley.command;
 
 import com.grahambartley.volley.config.ConfigValues;
+import com.grahambartley.volley.config.IdentifierNames;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import net.minecraft.util.Identifier;
+import java.util.Optional;
 
 public final class IdentifierListEdits {
   private IdentifierListEdits() {}
@@ -27,10 +27,11 @@ public final class IdentifierListEdits {
   public record Result(Outcome outcome, List<String> updated) {}
 
   public static Result add(final List<String> current, final String id, final int maxEntries) {
-    final String normalized = normalize(id);
-    if (normalized == null) {
+    final Optional<String> parsed = IdentifierNames.normalize(id);
+    if (parsed.isEmpty()) {
       return new Result(Outcome.INVALID_ID, current);
     }
+    final String normalized = parsed.get();
     if (normalized.length() > ConfigValues.MAX_IDENTIFIER_LENGTH) {
       return new Result(Outcome.TOO_LONG, current);
     }
@@ -46,10 +47,11 @@ public final class IdentifierListEdits {
   }
 
   public static Result remove(final List<String> current, final String id) {
-    final String normalized = normalize(id);
-    if (normalized == null) {
+    final Optional<String> parsed = IdentifierNames.normalize(id);
+    if (parsed.isEmpty()) {
       return new Result(Outcome.INVALID_ID, current);
     }
+    final String normalized = parsed.get();
     if (!current.contains(normalized)) {
       return new Result(Outcome.NOT_PRESENT, current);
     }
@@ -60,13 +62,5 @@ public final class IdentifierListEdits {
 
   public static Result clear() {
     return new Result(Outcome.CLEARED, List.of());
-  }
-
-  public static String normalize(final String id) {
-    if (id == null) {
-      return null;
-    }
-    final Identifier identifier = Identifier.tryParse(id.trim().toLowerCase(Locale.ROOT));
-    return identifier == null ? null : identifier.toString();
   }
 }

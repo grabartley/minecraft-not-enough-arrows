@@ -6,13 +6,12 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ConfigValues {
-  private static final String VANILLA_NAMESPACE = "minecraft:";
   public static final int MAX_IDENTIFIER_LENGTH = 64;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ConfigValues.class);
@@ -114,38 +113,36 @@ public final class ConfigValues {
     }
     final Set<String> normalized = new LinkedHashSet<>();
     for (final String entry : raw) {
-      if (entry == null) {
+      if (entry == null || entry.isBlank()) {
         continue;
       }
-      final String trimmed = entry.trim().toLowerCase(Locale.ROOT);
-      if (trimmed.isEmpty()) {
+      final Optional<String> parsed = IdentifierNames.normalize(entry);
+      if (parsed.isEmpty()) {
+        LOGGER.warn("Volley config identifier {} is not a valid identifier, dropping it", entry);
         continue;
       }
-      if (trimmed.length() > MAX_IDENTIFIER_LENGTH) {
+      final String identifier = parsed.get();
+      if (identifier.length() > MAX_IDENTIFIER_LENGTH) {
         LOGGER.warn(
             "Volley config identifier {} is longer than {} characters, dropping it",
-            trimmed,
+            identifier,
             MAX_IDENTIFIER_LENGTH);
         continue;
       }
       if (normalized.size() >= maxEntries) {
         LOGGER.warn(
-            "Volley config identifier list exceeds {} entries, dropping {}", maxEntries, trimmed);
+            "Volley config identifier list exceeds {} entries, dropping {}",
+            maxEntries,
+            identifier);
         continue;
       }
-      normalized.add(trimmed);
+      normalized.add(identifier);
     }
     return List.copyOf(normalized);
   }
 
   public static boolean containsIdentifier(final List<String> identifiers, final String queried) {
-    if (queried == null) {
-      return false;
-    }
-    final String normalized = queried.trim().toLowerCase(Locale.ROOT);
-    return identifiers.contains(normalized)
-        || (normalized.startsWith(VANILLA_NAMESPACE)
-            && identifiers.contains(normalized.substring(VANILLA_NAMESPACE.length())));
+    return IdentifierNames.normalize(queried).map(identifiers::contains).orElse(false);
   }
 
   public static JsonArray toJsonArray(final List<String> values) {

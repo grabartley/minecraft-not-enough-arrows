@@ -219,7 +219,7 @@ class ArrowDefinitionTest {
 
     assertEquals("paint_arrow", definition.path());
     assertSame(TINTED_FACTORY, definition.entityFactory());
-    assertSame(CONSTRUCTOR, definition.positionedConstructor());
+    assertSame(TINTED_CONSTRUCTOR, definition.positionedConstructor());
     assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.width());
     assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.height());
     assertEquals(ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE, definition.maxTrackingRange());
