@@ -19,7 +19,7 @@ public final class PufferArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchThePufferOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withPuffer(chaos.puffer().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withPuffer(chaos.puffer().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)

@@ -1,9 +1,5 @@
 package com.grahambartley.volley.gametest;
 
-import com.grahambartley.volley.config.DiscoveryArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
-import com.grahambartley.volley.config.VolleyConfig;
-import java.util.function.UnaryOperator;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
@@ -62,10 +58,5 @@ final class DiscoveryTestSupport {
     projectile.setVelocity(shooter, LEVEL_PITCH, EASTWARD_YAW, 0.0f, BOW_SPEED, 0.0f);
     context.getWorld().spawnEntity(projectile);
     return projectile;
-  }
-
-  static void useDiscovery(final UnaryOperator<DiscoveryArrowConfig> change) {
-    final VolleyConfig defaults = VolleyConfig.defaults();
-    ServerConfigHolder.set(defaults.withDiscovery(change.apply(defaults.discovery())));
   }
 }

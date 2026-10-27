@@ -29,7 +29,7 @@ public final class PolymorphArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchThePolymorphOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withPolymorph(chaos.polymorph().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withPolymorph(chaos.polymorph().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)

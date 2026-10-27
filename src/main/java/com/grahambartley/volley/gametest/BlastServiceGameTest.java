@@ -4,12 +4,10 @@ import com.grahambartley.volley.ModArrows;
 import com.grahambartley.volley.blast.BlastService;
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.config.ExplosiveTierConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.entity.ExplosiveArrowEntity;
 import com.grahambartley.volley.entity.GunpowderArrowEntity;
 import com.grahambartley.volley.fuse.FuseService;
-import com.grahambartley.volley.server.ServerConfigService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -84,13 +82,9 @@ public final class BlastServiceGameTest implements FabricGameTest {
 
   private static void detonateWith(final TestContext context, final VolleyConfig config) {
     final ExplosiveArrowEntity arrow = spawnArrow(context);
-    final VolleyConfig previous = ServerConfigService.get();
-    try {
-      ServerConfigHolder.set(config);
-      BlastService.arm(context.getWorld(), arrow, arrow.tier(), null, DETONATE_NOW);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    ConfigOverrides.during(
+        config,
+        () -> BlastService.arm(context.getWorld(), arrow, arrow.tier(), null, DETONATE_NOW));
   }
 
   private static GunpowderArrowEntity spawnArrow(final TestContext context) {

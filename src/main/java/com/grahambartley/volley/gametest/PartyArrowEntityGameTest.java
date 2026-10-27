@@ -24,7 +24,7 @@ public final class PartyArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchThePartyOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withParty(chaos.party().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withParty(chaos.party().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)

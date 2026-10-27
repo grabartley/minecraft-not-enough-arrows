@@ -22,7 +22,7 @@ public final class StinkArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchTheStinkOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withStink(chaos.stink().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withStink(chaos.stink().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)

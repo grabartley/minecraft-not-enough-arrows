@@ -1,7 +1,6 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.EnderArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.ender.PearlArrivalService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -72,14 +71,10 @@ public final class PearlArrivalServiceGameTest implements FabricGameTest {
   public void theLiveServerConfigDecidesTheRange(TestContext context) {
     final PlayerEntity shooter = MockPlayerSupport.mortalPlayerAt(context, SHOOTER_STAND);
     final Vec3d destination = shooter.getPos().add(SHORT_RANGE * 2.0, 0.0, 0.0);
-    final VolleyConfig previous = ServerConfigHolder.get();
-    final boolean arrived;
-    try {
-      ServerConfigHolder.set(VolleyConfig.defaults().withEnder(rangedTo(SHORT_RANGE)));
-      arrived = PearlArrivalService.arrive(context.getWorld(), shooter, destination);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final boolean arrived =
+        ConfigOverrides.during(
+            VolleyConfig.defaults().withEnder(rangedTo(SHORT_RANGE)),
+            () -> PearlArrivalService.arrive(context.getWorld(), shooter, destination));
 
     context.assertFalse(arrived, "A configured short range should refuse a distant destination");
     context.complete();

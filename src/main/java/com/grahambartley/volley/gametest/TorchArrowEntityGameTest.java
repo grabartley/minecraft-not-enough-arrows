@@ -19,7 +19,7 @@ public final class TorchArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchTheTorchOffBeforeBatch(ServerWorld world) {
-    DiscoveryTestSupport.useDiscovery(
+    ConfigOverrides.useDiscovery(
         discovery -> discovery.withTorch(discovery.torch().withEnabled(false)));
   }
 

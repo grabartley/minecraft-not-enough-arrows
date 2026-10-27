@@ -87,7 +87,7 @@ public final class BeaconArrowEntityGameTest implements FabricGameTest {
   @BeforeBatch(batchId = NO_LIFETIME_BATCH)
   public void zeroTheBeamLifetimeBeforeBatch(ServerWorld world) {
     TimedStructureService.forget();
-    DiscoveryTestSupport.useDiscovery(
+    ConfigOverrides.useDiscovery(
         discovery -> discovery.withBeacon(discovery.beacon().withLifetimeTicks(0)));
   }
 

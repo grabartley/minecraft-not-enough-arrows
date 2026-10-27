@@ -1,5 +1,6 @@
 package com.grahambartley.volley.gametest;
 
+import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.config.ZiplineArrowConfig;
 import com.grahambartley.volley.grapple.GrappleFallGuard;
 import com.grahambartley.volley.grapple.GrappleService;
@@ -288,10 +289,16 @@ public final class RideServiceGameTest implements FabricGameTest {
   public void aRideThatKeepsCreepingButNeverArrivesRunsOutOfTime(TestContext context) {
     span(context, ZiplineTestSupport.LONG_LIFETIME_TICKS);
     final ServerPlayerEntity rider = riderAt(context, WEST_GRIP_CENTER);
-    TraversalTestSupport.withTraversal(
-        traversal ->
-            traversal.withZipline(
-                traversal.zipline().withRideSpeed(ZiplineArrowConfig.RIDE_SPEED_MAX)),
+    final VolleyConfig defaults = VolleyConfig.defaults();
+    ConfigOverrides.during(
+        defaults.withTraversal(
+            defaults
+                .traversal()
+                .withZipline(
+                    defaults
+                        .traversal()
+                        .zipline()
+                        .withRideSpeed(ZiplineArrowConfig.RIDE_SPEED_MAX))),
         () -> board(context, rider));
     final RideSession ride = RideService.rideOf(context.getWorld(), rider.getUuid());
     final int budget = ride.remainingTicks();

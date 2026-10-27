@@ -39,7 +39,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = UNDELIVERABLE_BATCH)
   public void makeDiamondsUndeliverableBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social ->
             social.withCourier(social.courier().withUndeliverable(List.of("minecraft:diamond"))));
   }
@@ -51,7 +51,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = SMALL_CAP_BATCH)
   public void lowerThePayloadCapBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social -> social.withCourier(social.courier().withMaxPayload(SMALL_CAP)));
   }
 

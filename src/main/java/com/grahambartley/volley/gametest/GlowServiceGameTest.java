@@ -1,10 +1,8 @@
 package com.grahambartley.volley.gametest;
 
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.UtilityArrowConfig;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.glow.GlowService;
-import com.grahambartley.volley.server.ServerConfigService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -79,13 +77,9 @@ public final class GlowServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesHowLongAMarkLasts(TestContext context) {
     final ArmorStandEntity target = target(context);
-    final VolleyConfig previous = ServerConfigService.get();
-    try {
-      ServerConfigHolder.set(configWithGlowDuration(DURATION_TICKS));
-      GlowService.mark(context.getWorld(), target, null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    ConfigOverrides.during(
+        configWithGlowDuration(DURATION_TICKS),
+        () -> GlowService.mark(context.getWorld(), target, null));
 
     final StatusEffectInstance glow = target.getStatusEffect(StatusEffects.GLOWING);
     context.assertTrue(glow != null, "The configured duration should have marked the target");
@@ -97,14 +91,9 @@ public final class GlowServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigCanSwitchMarkingOff(TestContext context) {
     final ArmorStandEntity target = target(context);
-    final VolleyConfig previous = ServerConfigService.get();
-    final boolean marked;
-    try {
-      ServerConfigHolder.set(configWithGlowDuration(0));
-      marked = GlowService.mark(context.getWorld(), target, null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final boolean marked =
+        ConfigOverrides.during(
+            configWithGlowDuration(0), () -> GlowService.mark(context.getWorld(), target, null));
 
     context.assertFalse(marked, "A configured duration of zero should mark nothing");
     context.complete();

@@ -29,7 +29,7 @@ public final class CraftingResultSlotMixinGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = CAPPED_BATCH)
   public void lowerTheCapBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social -> social.withCourier(social.courier().withMaxPayload(SMALL_CAP)));
   }
 

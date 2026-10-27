@@ -1,10 +1,6 @@
 package com.grahambartley.volley.gametest;
 
-import com.grahambartley.volley.config.ChaosArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
-import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.gametest.MobRoster.Mob;
-import java.util.function.UnaryOperator;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.SpawnReason;
@@ -54,11 +50,6 @@ final class ChaosTestSupport {
       mob.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
     }
     return mob;
-  }
-
-  static void useChaos(final UnaryOperator<ChaosArrowConfig> change) {
-    final VolleyConfig defaults = VolleyConfig.defaults();
-    ServerConfigHolder.set(defaults.withChaos(change.apply(defaults.chaos())));
   }
 
   static ServerPlayerEntity survivalPlayerAt(final TestContext context, final BlockPos at) {

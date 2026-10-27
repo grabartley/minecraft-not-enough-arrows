@@ -30,7 +30,7 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchTheBoomerangOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withBoomerang(chaos.boomerang().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withBoomerang(chaos.boomerang().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)

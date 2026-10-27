@@ -1,10 +1,5 @@
 package com.grahambartley.volley.gametest;
 
-import com.grahambartley.volley.config.ServerConfigHolder;
-import com.grahambartley.volley.config.TraversalArrowConfig;
-import com.grahambartley.volley.config.VolleyConfig;
-import com.grahambartley.volley.server.ServerConfigService;
-import java.util.function.UnaryOperator;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,16 +33,6 @@ final class TraversalTestSupport {
     } finally {
       border.setSize(size);
       border.setCenter(centerX, centerZ);
-    }
-  }
-
-  static void withTraversal(final UnaryOperator<TraversalArrowConfig> change, final Runnable body) {
-    final VolleyConfig previous = ServerConfigService.get();
-    try {
-      ServerConfigHolder.set(previous.withTraversal(change.apply(previous.traversal())));
-      body.run();
-    } finally {
-      ServerConfigHolder.set(previous);
     }
   }
 

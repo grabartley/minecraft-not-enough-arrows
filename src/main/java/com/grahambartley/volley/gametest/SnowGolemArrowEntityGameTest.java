@@ -26,7 +26,7 @@ public final class SnowGolemArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = SHORT_LIFETIME_BATCH)
   public void shortenTheLifetimeBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social -> social.withSnowGolem(social.snowGolem().withLifetimeTicks(SHORT_LIFETIME)));
   }
 

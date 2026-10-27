@@ -1,13 +1,9 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.SocialArrows;
-import com.grahambartley.volley.config.ServerConfigHolder;
-import com.grahambartley.volley.config.SocialArrowConfig;
-import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.entity.CourierArrowEntity;
 import com.grahambartley.volley.social.CourierPayloads;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -26,11 +22,6 @@ final class SocialTestSupport {
   private static final double NEARBY = 4.0;
 
   private SocialTestSupport() {}
-
-  static void useSocial(final UnaryOperator<SocialArrowConfig> change) {
-    final VolleyConfig defaults = VolleyConfig.defaults();
-    ServerConfigHolder.set(defaults.withSocial(change.apply(defaults.social())));
-  }
 
   static ItemStack emptyCourier() {
     return new ItemStack(SocialArrows.COURIER_ARROW.item());

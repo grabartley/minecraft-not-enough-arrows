@@ -2,10 +2,8 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.config.IncendiaryArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.incendiary.IncendiaryService;
-import com.grahambartley.volley.server.ServerConfigService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -96,22 +94,18 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheBurn(TestContext context) {
     final CowEntity cow = cowAt(context, NEARBY_STAND);
-    final VolleyConfig previous = ServerConfigService.get();
-    final List<Entity> burned;
-    try {
-      ServerConfigHolder.set(
-          VolleyConfig.defaults()
-              .withExplosive(
-                  ExplosiveArrowConfig.defaults()
-                      .withIncendiary(
-                          IncendiaryArrowConfig.defaults()
-                              .withBurnRadius(0)
-                              .withIgnitesBlocks(false))));
-      burned =
-          IncendiaryService.ignite(context.getWorld(), context.getAbsolute(CENTRE), null, null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final List<Entity> burned =
+        ConfigOverrides.during(
+            VolleyConfig.defaults()
+                .withExplosive(
+                    ExplosiveArrowConfig.defaults()
+                        .withIncendiary(
+                            IncendiaryArrowConfig.defaults()
+                                .withBurnRadius(0)
+                                .withIgnitesBlocks(false))),
+            () ->
+                IncendiaryService.ignite(
+                    context.getWorld(), context.getAbsolute(CENTRE), null, null));
 
     context.assertTrue(burned.isEmpty(), "A configured radius of zero should burn nothing");
     context.assertFalse(cow.isOnFire(), "A configured radius of zero should leave a cow unburnt");
