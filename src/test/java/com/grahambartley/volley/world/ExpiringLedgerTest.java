@@ -68,4 +68,15 @@ class ExpiringLedgerTest {
     assertThrows(NullPointerException.class, () -> ledger.put(null, "sheep", 1L));
     assertThrows(NullPointerException.class, () -> ledger.put(FIRST, null, 1L));
   }
+
+  @Test
+  void listsTheIdsItHoldsInTheOrderTheyWereAdded() {
+    final ExpiringLedger<String> ledger = new ExpiringLedger<>();
+    final UUID first = UUID.randomUUID();
+    final UUID second = UUID.randomUUID();
+    ledger.put(first, "a", 10L);
+    ledger.put(second, "b", 5L);
+
+    assertEquals(List.of(first, second), ledger.ids());
+  }
 }

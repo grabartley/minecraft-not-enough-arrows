@@ -4,6 +4,7 @@ import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModExplosion;
 import com.grahambartley.volley.config.UtilityArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Propel;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.Entity;
@@ -85,8 +86,7 @@ public final class WindBurstService {
     if (push.lengthSquared() == 0.0) {
       return false;
     }
-    entity.addVelocity(push);
-    entity.velocityModified = true;
+    Propel.drive(entity, entity.getVelocity().add(push));
     return true;
   }
 

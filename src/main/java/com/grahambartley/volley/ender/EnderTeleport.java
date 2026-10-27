@@ -2,6 +2,7 @@ package com.grahambartley.volley.ender;
 
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
@@ -34,8 +35,7 @@ public final class EnderTeleport {
     } else {
       subject.requestTeleport(destination.getX(), destination.getY(), destination.getZ());
     }
-    subject.setVelocity(Vec3d.ZERO);
-    subject.velocityModified = true;
+    Propel.drive(subject, Vec3d.ZERO);
     subject.onLanding();
 
     final SoundCategory channel =

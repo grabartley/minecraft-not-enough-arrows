@@ -6,6 +6,7 @@ import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.config.PhysicsArrowConfig;
 import com.grahambartley.volley.ricochet.Ricochet;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -81,8 +82,7 @@ public class RicochetArrowEntity extends BaseArrowEntity {
 
   private void bounceOff(final Direction surface, final Vec3d impact, final boolean retainsDamage) {
     setPosition(Ricochet.clearOf(impact, surface));
-    setVelocity(Ricochet.deflect(getVelocity(), surface));
-    velocityModified = true;
+    Propel.drive(this, Ricochet.deflect(getVelocity(), surface));
     setDamage(Ricochet.damageAfterBounce(getDamage(), retainsDamage));
     ModSoundPlayer.playFrom(this, ModSounds.RICOCHET_ARROW_BOUNCE, BOUNCE_VOLUME, BOUNCE_PITCH);
     bounces++;

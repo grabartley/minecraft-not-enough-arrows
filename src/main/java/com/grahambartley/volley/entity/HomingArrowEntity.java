@@ -4,6 +4,7 @@ import com.grahambartley.volley.combat.HomingSteering;
 import com.grahambartley.volley.combat.HomingTargets;
 import com.grahambartley.volley.config.HomingArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Propel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -41,8 +42,7 @@ public class HomingArrowEntity extends BaseArrowEntity {
         .ifPresent(
             target -> {
               final Vec3d toTarget = HomingTargets.aimPointOf(target).subtract(getPos());
-              setVelocity(HomingSteering.steer(velocity, toTarget, homing.turnRate()));
-              velocityModified = true;
+              Propel.drive(this, HomingSteering.steer(velocity, toTarget, homing.turnRate()));
             });
   }
 }
