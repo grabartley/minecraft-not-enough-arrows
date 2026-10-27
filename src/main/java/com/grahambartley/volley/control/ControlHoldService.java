@@ -20,8 +20,6 @@ import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class ControlHoldService {
-  private static final double STEERING_SPEED = 1.1;
-  private static final double FLEEING_SPEED = 1.5;
   private static final double ESCORT_SPEED = 1.25;
 
   private static final PerWorld<ControlHoldTracker> TRACKERS =
@@ -178,14 +176,11 @@ public final class ControlHoldService {
       keepFleeing(world, mob, hold);
     } else if (hold.steering().navigates()
         && hold.subjectId().isEmpty()
-        && (!MobSteering.isUnderway(mob)
-            || MobSteering.steersItself(mob)
-            || MobSteering.hasWanderedOffCourse(mob, hold.anchor()))) {
+        && MobSteering.needsNewCourse(mob, hold.anchor())) {
       steer(mob, hold.anchor(), hold.steering());
     }
     if (hold.steering().navigates()) {
-      MobSteering.keepPace(
-          mob, hold.steering() == ControlSteering.FLEEING ? FLEEING_SPEED : STEERING_SPEED);
+      MobSteering.keepPace(mob, hold.steering().speed());
     }
   }
 
@@ -200,10 +195,7 @@ public final class ControlHoldService {
     MobSteering.rouse(mob);
     final boolean pulledBackToAFight = mob.getTarget() != null;
     final boolean hasSomewhereToRun =
-        pulledBackToAFight
-                || MobSteering.steersItself(mob)
-                || !MobSteering.isUnderway(mob)
-                || MobSteering.hasWanderedOffCourse(mob, fleeDestination(mob, hold))
+        pulledBackToAFight || MobSteering.needsNewCourse(mob, fleeDestination(mob, hold))
             ? steer(mob, hold.anchor(), hold.steering())
             : MobSteering.isUnderway(mob);
     if (!hasSomewhereToRun && MobSteering.canPlanFromHere(mob)) {
@@ -267,9 +259,7 @@ public final class ControlHoldService {
     } else if (Escort.shouldCloseIn(squaredDistance, mob.getWidth())
         || MobSteering.fliesAtRandom(mob)) {
       MobSteering.rouse(mob);
-      if (!MobSteering.isUnderway(mob)
-          || MobSteering.steersItself(mob)
-          || MobSteering.hasWanderedOffCourse(mob, defended.getPos())) {
+      if (MobSteering.needsNewCourse(mob, defended.getPos())) {
         MobSteering.moveTo(mob, defended.getPos(), ESCORT_SPEED);
       }
     }
@@ -312,10 +302,9 @@ public final class ControlHoldService {
 
   private static boolean steer(
       final MobEntity mob, final Vec3d anchor, final ControlSteering steering) {
-    final double speed = steering == ControlSteering.FLEEING ? FLEEING_SPEED : STEERING_SPEED;
     return steering
         .destination(mob.getPos(), anchor)
-        .map(destination -> MobSteering.moveTo(mob, destination, speed))
+        .map(destination -> MobSteering.moveTo(mob, destination, steering.speed()))
         .orElse(false);
   }
 

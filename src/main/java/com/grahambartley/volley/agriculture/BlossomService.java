@@ -4,6 +4,7 @@ import com.grahambartley.volley.config.BlossomArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.terrain.SphereSweep;
 import com.grahambartley.volley.world.BlockSphere;
+import com.grahambartley.volley.world.ParticleBursts;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -60,16 +61,8 @@ public final class BlossomService {
     if (!BoneMealItem.useOnFertilizable(new ItemStack(Items.BONE_MEAL), world, pos)) {
       return false;
     }
-    world.spawnParticles(
-        ParticleTypes.HAPPY_VILLAGER,
-        pos.getX() + 0.5,
-        pos.getY() + 0.5,
-        pos.getZ() + 0.5,
-        BONE_MEAL_PARTICLES,
-        PARTICLE_SPREAD,
-        PARTICLE_SPREAD,
-        PARTICLE_SPREAD,
-        0.0);
+    ParticleBursts.atBlockCentre(
+        world, pos, ParticleTypes.HAPPY_VILLAGER, BONE_MEAL_PARTICLES, PARTICLE_SPREAD);
     return true;
   }
 }

@@ -6,6 +6,7 @@ import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.config.PolymorphArrowConfig;
 import com.grahambartley.volley.disguise.DisguiseService;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.ParticleBursts;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
@@ -46,16 +47,7 @@ public class PolymorphArrowEntity extends BaseArrowEntity {
     if (!DisguiseService.disguise(world, struck, polymorph.durationTicks())) {
       return glanceOff(struck);
     }
-    world.spawnParticles(
-        ParticleTypes.SCULK_SOUL,
-        struck.getX(),
-        struck.getBodyY(0.5),
-        struck.getZ(),
-        CHANGE_PUFFS,
-        struck.getWidth() / 2.0,
-        struck.getHeight() / 2.0,
-        struck.getWidth() / 2.0,
-        PUFF_SPEED);
+    ParticleBursts.aroundBody(world, struck, ParticleTypes.SCULK_SOUL, CHANGE_PUFFS, PUFF_SPEED);
     ModSoundPlayer.playFrom(struck, ModSounds.POLYMORPH_ARROW_CHANGE);
     return ArrowImpact.DISCARD;
   }

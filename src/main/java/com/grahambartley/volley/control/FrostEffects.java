@@ -2,11 +2,11 @@ package com.grahambartley.volley.control;
 
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
+import com.grahambartley.volley.world.ParticleBursts;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.math.Vec3d;
 
 public final class FrostEffects {
   private static final int BURST_PARTICLES = 40;
@@ -45,17 +45,7 @@ public final class FrostEffects {
 
   private static void snow(
       final ServerWorld world, final LivingEntity target, final int count, final double speed) {
-    final Vec3d middle = target.getBoundingBox().getCenter();
-    world.spawnParticles(
-        ParticleTypes.SNOWFLAKE,
-        middle.getX(),
-        middle.getY(),
-        middle.getZ(),
-        count,
-        target.getWidth() / 2.0,
-        target.getHeight() / 2.0,
-        target.getWidth() / 2.0,
-        speed);
+    ParticleBursts.aroundBody(world, target, ParticleTypes.SNOWFLAKE, count, speed);
   }
 
   private static void sound(

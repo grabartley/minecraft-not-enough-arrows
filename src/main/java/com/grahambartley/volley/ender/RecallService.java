@@ -27,10 +27,7 @@ public final class RecallService {
     if (world == null || shooter == null || config == null) {
       return false;
     }
-    if (!RecallTargets.isRecallable(struck) || struck == shooter) {
-      return false;
-    }
-    if (RecallTargets.carriesAPlayer(struck) && !config.recallAffectsPlayers()) {
+    if (struck == shooter || !RecallTargets.mayMove(struck, config.recallAffectsPlayers())) {
       return false;
     }
     if (!Reach.isWithin(struck.getPos(), shooter.getPos(), config.recallMaxRangeBlocks())) {

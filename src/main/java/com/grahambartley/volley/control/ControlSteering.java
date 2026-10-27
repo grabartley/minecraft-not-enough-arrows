@@ -28,6 +28,8 @@ public enum ControlSteering {
   };
 
   public static final double FLEE_DISTANCE = 12.0;
+  public static final double STEERING_SPEED = 1.1;
+  public static final double FLEEING_SPEED = 1.5;
 
   private final TargetPolicy targetPolicy;
 
@@ -39,6 +41,10 @@ public enum ControlSteering {
 
   public TargetPolicy targetPolicy() {
     return targetPolicy;
+  }
+
+  public double speed() {
+    return this == FLEEING ? FLEEING_SPEED : STEERING_SPEED;
   }
 
   public boolean navigates() {

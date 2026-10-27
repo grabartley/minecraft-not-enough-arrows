@@ -93,7 +93,7 @@
       "com.grahambartley.volley.gametest.RidePayloadsGameTest",
       "com.grahambartley.volley.gametest.ZiplineCableBlockGameTest",
       "com.grahambartley.volley.gametest.TowServiceGameTest",
-      "com.grahambartley.volley.gametest.TowTargetsGameTest",
+      "com.grahambartley.volley.gametest.RecallTargetsGameTest",
       "com.grahambartley.volley.gametest.UpdraftServiceGameTest",
       "com.grahambartley.volley.gametest.UpdraftTargetsGameTest",
       "com.grahambartley.volley.gametest.VineServiceGameTest",

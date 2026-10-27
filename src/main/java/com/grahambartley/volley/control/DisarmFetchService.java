@@ -99,9 +99,7 @@ public final class DisarmFetchService {
       MobSteering.halt(mob);
       return true;
     }
-    if (!MobSteering.isUnderway(mob)
-        || MobSteering.steersItself(mob)
-        || MobSteering.hasWanderedOffCourse(mob, thrown.getPos())) {
+    if (MobSteering.needsNewCourse(mob, thrown.getPos())) {
       MobSteering.moveTo(mob, thrown.getPos(), FETCH_SPEED);
     }
     MobSteering.closeTheLastGap(mob, thrown.getPos(), FETCH_SPEED);

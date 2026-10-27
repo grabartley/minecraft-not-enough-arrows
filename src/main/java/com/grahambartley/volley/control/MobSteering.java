@@ -141,6 +141,10 @@ public final class MobSteering {
         || movesThroughOpenSpace(mob);
   }
 
+  public static boolean needsNewCourse(final MobEntity mob, @Nullable final Vec3d destination) {
+    return !isUnderway(mob) || steersItself(mob) || hasWanderedOffCourse(mob, destination);
+  }
+
   public static boolean isUnderway(final MobEntity mob) {
     return steersItself(mob) || !mob.getNavigation().isIdle();
   }

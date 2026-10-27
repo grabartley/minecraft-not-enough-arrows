@@ -4,6 +4,7 @@ import com.grahambartley.volley.config.HarvestArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.terrain.SphereSweep;
 import com.grahambartley.volley.world.DropGrant;
+import com.grahambartley.volley.world.ParticleBursts;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.block.Block;
@@ -60,16 +61,12 @@ public final class HarvestService {
     if (kept.isEmpty() || !world.setBlockState(pos, replanted.get(), Block.NOTIFY_ALL)) {
       return false;
     }
-    world.spawnParticles(
+    ParticleBursts.atBlockCentre(
+        world,
+        pos,
         new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
-        pos.getX() + 0.5,
-        pos.getY() + 0.5,
-        pos.getZ() + 0.5,
         HARVEST_PARTICLES,
-        PARTICLE_SPREAD,
-        PARTICLE_SPREAD,
-        PARTICLE_SPREAD,
-        0.0);
+        PARTICLE_SPREAD);
     world.emitGameEvent(shooter, GameEvent.BLOCK_CHANGE, pos);
     DropGrant.grant(world, pos, kept.get(), shooter);
     return true;

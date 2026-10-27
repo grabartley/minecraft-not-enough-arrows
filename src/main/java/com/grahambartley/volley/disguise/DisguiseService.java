@@ -3,6 +3,7 @@ package com.grahambartley.volley.disguise;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.world.ExpiringLedger;
+import com.grahambartley.volley.world.ParticleBursts;
 import com.grahambartley.volley.world.PerWorld;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,16 +96,7 @@ public final class DisguiseService {
   }
 
   private static void showRestore(final ServerWorld world, final Entity entity) {
-    world.spawnParticles(
-        ParticleTypes.POOF,
-        entity.getX(),
-        entity.getBodyY(0.5),
-        entity.getZ(),
-        RESTORE_PUFFS,
-        entity.getWidth() / 2.0,
-        entity.getHeight() / 2.0,
-        entity.getWidth() / 2.0,
-        0.02);
+    ParticleBursts.aroundBody(world, entity, ParticleTypes.POOF, RESTORE_PUFFS, 0.02);
     ModSoundPlayer.playFrom(entity, ModSounds.POLYMORPH_ARROW_RESTORE);
   }
 }

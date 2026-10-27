@@ -2,6 +2,7 @@ package com.grahambartley.volley.tow;
 
 import com.grahambartley.volley.config.EnderArrowConfig;
 import com.grahambartley.volley.config.TowArrowConfig;
+import com.grahambartley.volley.ender.RecallTargets;
 import com.grahambartley.volley.grapple.GrappleEnding;
 import com.grahambartley.volley.grapple.GrappleFlightCheck;
 import com.grahambartley.volley.grapple.GrappleService;
@@ -55,7 +56,7 @@ public final class TowService {
         || ender == null
         || target == shooter
         || !shooter.isAlive()
-        || !TowTargets.isTowable(target, ender.recallAffectsPlayers())
+        || !RecallTargets.mayMove(target, ender.recallAffectsPlayers())
         || !Reach.isWithin(target.getPos(), shooter.getPos(), tow.rangeBlocks())) {
       return false;
     }
