@@ -44,7 +44,10 @@ public final class ArrowRegistrar {
                 .build(id.toString()));
     final BaseArrowItem item =
         Registry.register(
-            Registries.ITEM, id, itemFactory.apply(new Item.Settings(), definition.spawnFactory()));
+            Registries.ITEM,
+            id,
+            itemFactory.apply(
+                new Item.Settings(), definition.positionedConstructor().boundTo(entityType)));
 
     DispenserBlock.registerProjectileBehavior(item);
 

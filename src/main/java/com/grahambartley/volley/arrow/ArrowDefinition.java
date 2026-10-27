@@ -15,7 +15,7 @@ import net.minecraft.util.Identifier;
 public record ArrowDefinition<E extends BaseArrowEntity>(
     String path,
     EntityType.EntityFactory<E> entityFactory,
-    ArrowEntityFactory spawnFactory,
+    PositionedArrowConstructor<E> positionedConstructor,
     float width,
     float height,
     int maxTrackingRange,
@@ -33,7 +33,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
   public ArrowDefinition {
     Objects.requireNonNull(path, "path");
     Objects.requireNonNull(entityFactory, "entityFactory");
-    Objects.requireNonNull(spawnFactory, "spawnFactory");
+    Objects.requireNonNull(positionedConstructor, "positionedConstructor");
     sounds = List.copyOf(Objects.requireNonNull(sounds, "sounds"));
     Objects.requireNonNull(palette, "palette");
     effects = List.copyOf(Objects.requireNonNull(effects, "effects"));
@@ -59,7 +59,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
   public ArrowDefinition(
       final String path,
       final EntityType.EntityFactory<E> entityFactory,
-      final ArrowEntityFactory spawnFactory,
+      final PositionedArrowConstructor<E> positionedConstructor,
       final float width,
       final float height,
       final int maxTrackingRange,
@@ -68,7 +68,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     this(
         path,
         entityFactory,
-        spawnFactory,
+        positionedConstructor,
         width,
         height,
         maxTrackingRange,
@@ -81,12 +81,12 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
   public static <E extends BaseArrowEntity> ArrowDefinition<E> of(
       final String path,
       final EntityType.EntityFactory<E> entityFactory,
-      final ArrowEntityFactory spawnFactory,
+      final PositionedArrowConstructor<E> positionedConstructor,
       final ArrowSound... sounds) {
     return new ArrowDefinition<>(
         path,
         entityFactory,
-        spawnFactory,
+        positionedConstructor,
         DEFAULT_SIZE,
         DEFAULT_SIZE,
         DEFAULT_MAX_TRACKING_RANGE,
@@ -97,13 +97,13 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
   public static <E extends TintedArrowEntity> ArrowDefinition<E> tinted(
       final String path,
       final EntityType.EntityFactory<E> entityFactory,
-      final ArrowEntityFactory spawnFactory,
+      final PositionedArrowConstructor<E> positionedConstructor,
       final TintPalette palette,
       final ArrowSound... sounds) {
     return new ArrowDefinition<>(
         path,
         entityFactory,
-        spawnFactory,
+        positionedConstructor,
         DEFAULT_SIZE,
         DEFAULT_SIZE,
         DEFAULT_MAX_TRACKING_RANGE,
@@ -117,7 +117,7 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     return new ArrowDefinition<>(
         path,
         entityFactory,
-        spawnFactory,
+        positionedConstructor,
         width,
         height,
         maxTrackingRange,

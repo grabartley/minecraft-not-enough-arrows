@@ -11,17 +11,13 @@ import com.grahambartley.volley.entity.TorchArrowEntity;
 import com.grahambartley.volley.entity.TracerArrowEntity;
 import com.grahambartley.volley.entity.TripwireArrowEntity;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public final class DiscoveryArrows {
 
   public static final RegisteredArrow<TorchArrowEntity> TORCH_ARROW =
       ModArrows.registrar()
           .register(
-              ArrowDefinition.of(
-                  "torch_arrow", TorchArrowEntity::new, DiscoveryArrows::torchArrow));
+              ArrowDefinition.of("torch_arrow", TorchArrowEntity::new, TorchArrowEntity::new));
 
   public static final RegisteredArrow<BeaconArrowEntity> BEACON_ARROW =
       ModArrows.registrar()
@@ -29,7 +25,7 @@ public final class DiscoveryArrows {
               ArrowDefinition.of(
                   "beacon_arrow",
                   BeaconArrowEntity::new,
-                  DiscoveryArrows::beaconArrow,
+                  BeaconArrowEntity::new,
                   ArrowSound.own(ModSounds.BEACON_ARROW_RAISE.getId())));
 
   public static final RegisteredArrow<ProspectorArrowEntity> PROSPECTOR_ARROW =
@@ -38,7 +34,7 @@ public final class DiscoveryArrows {
               ArrowDefinition.of(
                   "prospector_arrow",
                   ProspectorArrowEntity::new,
-                  DiscoveryArrows::prospectorArrow,
+                  ProspectorArrowEntity::new,
                   ArrowSound.own(ModSounds.PROSPECTOR_ARROW_PULSE.getId())));
 
   public static final RegisteredArrow<SonarArrowEntity> SONAR_ARROW =
@@ -47,15 +43,14 @@ public final class DiscoveryArrows {
               ArrowDefinition.<SonarArrowEntity>of(
                       "sonar_arrow",
                       SonarArrowEntity::new,
-                      DiscoveryArrows::sonarArrow,
+                      SonarArrowEntity::new,
                       ArrowSound.own(ModSounds.SONAR_ARROW_PULSE.getId()))
                   .applying(ArrowEffect.overArea(StatusEffects.GLOWING)));
 
   public static final RegisteredArrow<TracerArrowEntity> TRACER_ARROW =
       ModArrows.registrar()
           .register(
-              ArrowDefinition.of(
-                  "tracer_arrow", TracerArrowEntity::new, DiscoveryArrows::tracerArrow));
+              ArrowDefinition.of("tracer_arrow", TracerArrowEntity::new, TracerArrowEntity::new));
 
   public static final RegisteredArrow<TripwireArrowEntity> TRIPWIRE_ARROW =
       ModArrows.registrar()
@@ -63,7 +58,7 @@ public final class DiscoveryArrows {
               ArrowDefinition.of(
                   "tripwire_arrow",
                   TripwireArrowEntity::new,
-                  DiscoveryArrows::tripwireArrow,
+                  TripwireArrowEntity::new,
                   ArrowSound.own(ModSounds.TRIPWIRE_ARROW_SET.getId()),
                   ArrowSound.own(ModSounds.TRIPWIRE_ARROW_ALERT.getId())));
 
@@ -71,65 +66,5 @@ public final class DiscoveryArrows {
 
   static void register() {
     Volley.LOGGER.debug("Registered the discovery arrows");
-  }
-
-  private static TorchArrowEntity torchArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TorchArrowEntity(TORCH_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static BeaconArrowEntity beaconArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new BeaconArrowEntity(BEACON_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static ProspectorArrowEntity prospectorArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new ProspectorArrowEntity(PROSPECTOR_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static SonarArrowEntity sonarArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new SonarArrowEntity(SONAR_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static TracerArrowEntity tracerArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TracerArrowEntity(TRACER_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static TripwireArrowEntity tripwireArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TripwireArrowEntity(TRIPWIRE_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }

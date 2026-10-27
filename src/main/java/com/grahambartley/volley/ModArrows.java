@@ -44,9 +44,6 @@ import com.grahambartley.volley.entity.WindArrowEntity;
 import com.grahambartley.volley.tint.DyePalette;
 import java.util.List;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public final class ModArrows {
   private static final ArrowRegistrar REGISTRAR = new ArrowRegistrar();
@@ -59,28 +56,28 @@ public final class ModArrows {
 
   public static final RegisteredArrow<GrappleArrowEntity> GRAPPLE_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("grapple_arrow", GrappleArrowEntity::new, ModArrows::grappleArrow));
+          ArrowDefinition.of("grapple_arrow", GrappleArrowEntity::new, GrappleArrowEntity::new));
 
   public static final RegisteredArrow<RopeArrowEntity> ROPE_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("rope_arrow", RopeArrowEntity::new, ModArrows::ropeArrow));
+          ArrowDefinition.of("rope_arrow", RopeArrowEntity::new, RopeArrowEntity::new));
 
   public static final RegisteredArrow<GlowInkArrowEntity> GLOW_INK_ARROW =
       REGISTRAR.register(
           ArrowDefinition.<GlowInkArrowEntity>of(
-                  "glow_ink_arrow", GlowInkArrowEntity::new, ModArrows::glowInkArrow)
+                  "glow_ink_arrow", GlowInkArrowEntity::new, GlowInkArrowEntity::new)
               .applying(ArrowEffect.onStruckTarget(StatusEffects.GLOWING)));
 
   public static final RegisteredArrow<RedstoneArrowEntity> REDSTONE_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("redstone_arrow", RedstoneArrowEntity::new, ModArrows::redstoneArrow));
+          ArrowDefinition.of("redstone_arrow", RedstoneArrowEntity::new, RedstoneArrowEntity::new));
 
   public static final RegisteredArrow<WindArrowEntity> WIND_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
               "wind_arrow",
               WindArrowEntity::new,
-              ModArrows::windArrow,
+              WindArrowEntity::new,
               ArrowSound.own(ModSounds.WIND_ARROW_BURST.getId())));
 
   public static final RegisteredArrow<GunpowderArrowEntity> GUNPOWDER_ARROW =
@@ -88,7 +85,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "gunpowder_arrow",
               GunpowderArrowEntity::new,
-              ModArrows::gunpowderArrow,
+              GunpowderArrowEntity::new,
               EXPLOSIVE_FUSE_BEEP,
               EXPLOSIVE_BLAST));
 
@@ -97,7 +94,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "tnt_arrow",
               TntArrowEntity::new,
-              ModArrows::tntArrow,
+              TntArrowEntity::new,
               EXPLOSIVE_FUSE_BEEP,
               EXPLOSIVE_BLAST));
 
@@ -106,25 +103,25 @@ public final class ModArrows {
           ArrowDefinition.of(
               "fire_charge_arrow",
               FireChargeArrowEntity::new,
-              ModArrows::fireChargeArrow,
+              FireChargeArrowEntity::new,
               EXPLOSIVE_FUSE_BEEP,
               EXPLOSIVE_BLAST));
 
   public static final RegisteredArrow<IncendiaryArrowEntity> INCENDIARY_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
-              "incendiary_arrow", IncendiaryArrowEntity::new, ModArrows::incendiaryArrow));
+              "incendiary_arrow", IncendiaryArrowEntity::new, IncendiaryArrowEntity::new));
 
   public static final RegisteredArrow<GravityArrowEntity> GRAVITY_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("gravity_arrow", GravityArrowEntity::new, ModArrows::gravityArrow));
+          ArrowDefinition.of("gravity_arrow", GravityArrowEntity::new, GravityArrowEntity::new));
 
   public static final RegisteredArrow<RicochetArrowEntity> RICOCHET_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
               "ricochet_arrow",
               RicochetArrowEntity::new,
-              ModArrows::ricochetArrow,
+              RicochetArrowEntity::new,
               ArrowSound.own(ModSounds.RICOCHET_ARROW_BOUNCE.getId())));
 
   public static final RegisteredArrow<EnderPearlArrowEntity> ENDER_PEARL_ARROW =
@@ -132,7 +129,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "ender_pearl_arrow",
               EnderPearlArrowEntity::new,
-              ModArrows::enderPearlArrow,
+              EnderPearlArrowEntity::new,
               ArrowSound.sharedBy(ENDER_TELEPORT, ModSounds.ENDER_TELEPORT.getId())));
 
   public static final RegisteredArrow<RecallArrowEntity> RECALL_ARROW =
@@ -140,7 +137,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "recall_arrow",
               RecallArrowEntity::new,
-              ModArrows::recallArrow,
+              RecallArrowEntity::new,
               ArrowSound.sharedBy(ENDER_TELEPORT, ModSounds.ENDER_TELEPORT.getId())));
 
   public static final RegisteredArrow<ShockArrowEntity> SHOCK_ARROW =
@@ -148,7 +145,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "shock_arrow",
               ShockArrowEntity::new,
-              ModArrows::shockArrow,
+              ShockArrowEntity::new,
               ArrowSound.own(ModSounds.SHOCK_ARROW_THUNDER.getId()),
               ArrowSound.own(ModSounds.SHOCK_ARROW_IMPACT.getId())));
 
@@ -157,13 +154,13 @@ public final class ModArrows {
           ArrowDefinition.of(
               "lifesteal_arrow",
               LifestealArrowEntity::new,
-              ModArrows::lifestealArrow,
+              LifestealArrowEntity::new,
               ArrowSound.own(ModSounds.LIFESTEAL_ARROW_DRAIN.getId())));
 
   public static final RegisteredArrow<RustArrowEntity> RUST_ARROW =
       REGISTRAR.register(
           ArrowDefinition.<RustArrowEntity>of(
-                  "rust_arrow", RustArrowEntity::new, ModArrows::rustArrow)
+                  "rust_arrow", RustArrowEntity::new, RustArrowEntity::new)
               .applying(ArrowEffect.onStruckTarget(StatusEffects.MINING_FATIGUE)));
 
   public static final RegisteredArrow<MilkArrowEntity> MILK_ARROW =
@@ -171,43 +168,43 @@ public final class ModArrows {
           ArrowDefinition.of(
               "milk_arrow",
               MilkArrowEntity::new,
-              ModArrows::milkArrow,
+              MilkArrowEntity::new,
               ArrowSound.own(ModSounds.MILK_ARROW_WASH.getId())));
 
   public static final RegisteredArrow<HasteArrowEntity> HASTE_ARROW =
       REGISTRAR.register(
           ArrowDefinition.<HasteArrowEntity>of(
-                  "haste_arrow", HasteArrowEntity::new, ModArrows::hasteArrow)
+                  "haste_arrow", HasteArrowEntity::new, HasteArrowEntity::new)
               .applying(ArrowEffect.onStruckTarget(StatusEffects.HASTE)));
 
   public static final RegisteredArrow<GuardArrowEntity> GUARD_ARROW =
       REGISTRAR.register(
           ArrowDefinition.<GuardArrowEntity>of(
-                  "guard_arrow", GuardArrowEntity::new, ModArrows::guardArrow)
+                  "guard_arrow", GuardArrowEntity::new, GuardArrowEntity::new)
               .applying(ArrowEffect.onStruckTarget(StatusEffects.ABSORPTION)));
 
   public static final RegisteredArrow<HomingArrowEntity> HOMING_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("homing_arrow", HomingArrowEntity::new, ModArrows::homingArrow));
+          ArrowDefinition.of("homing_arrow", HomingArrowEntity::new, HomingArrowEntity::new));
 
   public static final RegisteredArrow<VolleyArrowEntity> VOLLEY_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
               "volley_arrow",
               VolleyArrowEntity::new,
-              ModArrows::volleyArrow,
+              VolleyArrowEntity::new,
               ArrowSound.own(ModSounds.VOLLEY_ARROW_SPLIT.getId())));
 
   public static final RegisteredArrow<RailgunArrowEntity> RAILGUN_ARROW =
       REGISTRAR.register(
-          ArrowDefinition.of("railgun_arrow", RailgunArrowEntity::new, ModArrows::railgunArrow));
+          ArrowDefinition.of("railgun_arrow", RailgunArrowEntity::new, RailgunArrowEntity::new));
 
   public static final RegisteredArrow<FrostArrowEntity> FROST_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
               "frost_arrow",
               FrostArrowEntity::new,
-              ModArrows::frostArrow,
+              FrostArrowEntity::new,
               ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_CRACK.getId()),
               ArrowSound.own(ModSounds.FROST_ARROW_FREEZE_SETTLE.getId()),
               ArrowSound.own(ModSounds.FROST_ARROW_THAW.getId())));
@@ -215,7 +212,7 @@ public final class ModArrows {
   public static final RegisteredArrow<LevitationArrowEntity> LEVITATION_ARROW =
       REGISTRAR.register(
           ArrowDefinition.<LevitationArrowEntity>of(
-                  "levitation_arrow", LevitationArrowEntity::new, ModArrows::levitationArrow)
+                  "levitation_arrow", LevitationArrowEntity::new, LevitationArrowEntity::new)
               .applying(ArrowEffect.onStruckTarget(StatusEffects.LEVITATION)));
 
   public static final RegisteredArrow<TauntArrowEntity> TAUNT_ARROW =
@@ -223,7 +220,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "taunt_arrow",
               TauntArrowEntity::new,
-              ModArrows::tauntArrow,
+              TauntArrowEntity::new,
               ArrowSound.own(ModSounds.TAUNT_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<RepelArrowEntity> REPEL_ARROW =
@@ -231,7 +228,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "repel_arrow",
               RepelArrowEntity::new,
-              ModArrows::repelArrow,
+              RepelArrowEntity::new,
               ArrowSound.own(ModSounds.REPEL_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<AllegianceArrowEntity> ALLEGIANCE_ARROW =
@@ -239,7 +236,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "allegiance_arrow",
               AllegianceArrowEntity::new,
-              ModArrows::allegianceArrow,
+              AllegianceArrowEntity::new,
               ArrowSound.own(ModSounds.ALLEGIANCE_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<SmokeArrowEntity> SMOKE_ARROW =
@@ -247,7 +244,7 @@ public final class ModArrows {
           ArrowDefinition.<SmokeArrowEntity>of(
                   "smoke_arrow",
                   SmokeArrowEntity::new,
-                  ModArrows::smokeArrow,
+                  SmokeArrowEntity::new,
                   ArrowSound.own(ModSounds.SMOKE_ARROW_IMPACT.getId()))
               .applying(ArrowEffect.overArea(StatusEffects.BLINDNESS)));
 
@@ -256,20 +253,20 @@ public final class ModArrows {
           ArrowDefinition.of(
               "disarm_arrow",
               DisarmArrowEntity::new,
-              ModArrows::disarmArrow,
+              DisarmArrowEntity::new,
               ArrowSound.own(ModSounds.DISARM_ARROW_IMPACT.getId())));
 
   public static final RegisteredArrow<PaintArrowEntity> PAINT_ARROW =
       REGISTRAR.register(
           ArrowDefinition.tinted(
-              "paint_arrow", PaintArrowEntity::new, ModArrows::paintArrow, DyePalette.create()));
+              "paint_arrow", PaintArrowEntity::new, PaintArrowEntity::new, DyePalette.create()));
 
   public static final RegisteredArrow<DrillArrowEntity> DRILL_ARROW =
       REGISTRAR.register(
           ArrowDefinition.of(
               "drill_arrow",
               DrillArrowEntity::new,
-              ModArrows::drillArrow,
+              DrillArrowEntity::new,
               ArrowSound.own(ModSounds.DRILL_ARROW_BORE.getId())));
 
   public static final RegisteredArrow<PillarArrowEntity> PILLAR_ARROW =
@@ -277,7 +274,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "pillar_arrow",
               PillarArrowEntity::new,
-              ModArrows::pillarArrow,
+              PillarArrowEntity::new,
               ArrowSound.own(ModSounds.PILLAR_ARROW_RISE.getId())));
 
   public static final RegisteredArrow<DrainArrowEntity> DRAIN_ARROW =
@@ -285,7 +282,7 @@ public final class ModArrows {
           ArrowDefinition.of(
               "drain_arrow",
               DrainArrowEntity::new,
-              ModArrows::drainArrow,
+              DrainArrowEntity::new,
               ArrowSound.own(ModSounds.DRAIN_ARROW_ABSORB.getId())));
 
   public static final RegisteredArrow<FreezeArrowEntity> FREEZE_ARROW =
@@ -293,11 +290,11 @@ public final class ModArrows {
           ArrowDefinition.of(
               "freeze_arrow",
               FreezeArrowEntity::new,
-              ModArrows::freezeArrow,
+              FreezeArrowEntity::new,
               ArrowSound.own(ModSounds.FREEZE_ARROW_FREEZE.getId())));
 
   public static final RegisteredArrow<WebArrowEntity> WEB_ARROW =
-      REGISTRAR.register(ArrowDefinition.of("web_arrow", WebArrowEntity::new, ModArrows::webArrow));
+      REGISTRAR.register(ArrowDefinition.of("web_arrow", WebArrowEntity::new, WebArrowEntity::new));
 
   static {
     registerLaterFamiliesInOrder();
@@ -327,355 +324,5 @@ public final class ModArrows {
 
   public static ArrowCatalog catalog() {
     return REGISTRAR.catalog();
-  }
-
-  private static GrappleArrowEntity grappleArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new GrappleArrowEntity(GRAPPLE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RopeArrowEntity ropeArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RopeArrowEntity(ROPE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static GlowInkArrowEntity glowInkArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new GlowInkArrowEntity(GLOW_INK_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RedstoneArrowEntity redstoneArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RedstoneArrowEntity(REDSTONE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static WindArrowEntity windArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new WindArrowEntity(WIND_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static GunpowderArrowEntity gunpowderArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new GunpowderArrowEntity(GUNPOWDER_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static TntArrowEntity tntArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TntArrowEntity(TNT_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static FireChargeArrowEntity fireChargeArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new FireChargeArrowEntity(FIRE_CHARGE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static IncendiaryArrowEntity incendiaryArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new IncendiaryArrowEntity(INCENDIARY_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static GravityArrowEntity gravityArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new GravityArrowEntity(GRAVITY_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RicochetArrowEntity ricochetArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RicochetArrowEntity(RICOCHET_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static EnderPearlArrowEntity enderPearlArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new EnderPearlArrowEntity(ENDER_PEARL_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RecallArrowEntity recallArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RecallArrowEntity(RECALL_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static ShockArrowEntity shockArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new ShockArrowEntity(SHOCK_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static LifestealArrowEntity lifestealArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new LifestealArrowEntity(LIFESTEAL_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RustArrowEntity rustArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RustArrowEntity(RUST_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static MilkArrowEntity milkArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new MilkArrowEntity(MILK_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static HasteArrowEntity hasteArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new HasteArrowEntity(HASTE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static GuardArrowEntity guardArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new GuardArrowEntity(GUARD_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static HomingArrowEntity homingArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new HomingArrowEntity(HOMING_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static VolleyArrowEntity volleyArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new VolleyArrowEntity(VOLLEY_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RailgunArrowEntity railgunArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RailgunArrowEntity(RAILGUN_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static FrostArrowEntity frostArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new FrostArrowEntity(FROST_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static LevitationArrowEntity levitationArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new LevitationArrowEntity(LEVITATION_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static TauntArrowEntity tauntArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new TauntArrowEntity(TAUNT_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static RepelArrowEntity repelArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new RepelArrowEntity(REPEL_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static SmokeArrowEntity smokeArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new SmokeArrowEntity(SMOKE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static DisarmArrowEntity disarmArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new DisarmArrowEntity(DISARM_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static AllegianceArrowEntity allegianceArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new AllegianceArrowEntity(ALLEGIANCE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static PaintArrowEntity paintArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new PaintArrowEntity(PAINT_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static DrillArrowEntity drillArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new DrillArrowEntity(DRILL_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static PillarArrowEntity pillarArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new PillarArrowEntity(PILLAR_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static DrainArrowEntity drainArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new DrainArrowEntity(DRAIN_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static FreezeArrowEntity freezeArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new FreezeArrowEntity(FREEZE_ARROW.entityType(), world, x, y, z, stack, weapon);
-  }
-
-  private static WebArrowEntity webArrow(
-      final World world,
-      final double x,
-      final double y,
-      final double z,
-      final ItemStack stack,
-      @Nullable final ItemStack weapon) {
-    return new WebArrowEntity(WEB_ARROW.entityType(), world, x, y, z, stack, weapon);
   }
 }
