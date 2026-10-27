@@ -12,9 +12,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullSource;
 
 class ServerConfigServiceTest {
 
@@ -84,9 +88,15 @@ class ServerConfigServiceTest {
     assertEquals(VolleyConfig.defaults(), ServerConfigService.get());
   }
 
-  @Test
-  void refusesToUpdateWithoutAServerOrConfig() {
-    assertEquals(false, ServerConfigService.update(null, VolleyConfig.defaults()));
+  @ParameterizedTest
+  @NullSource
+  @MethodSource("configs")
+  void refusesToUpdateWithoutAServer(final VolleyConfig config) {
+    assertEquals(false, ServerConfigService.update(null, config));
+  }
+
+  static Stream<VolleyConfig> configs() {
+    return Stream.of(VolleyConfig.defaults());
   }
 
   @Test

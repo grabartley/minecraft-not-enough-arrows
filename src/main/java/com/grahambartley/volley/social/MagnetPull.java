@@ -20,8 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public final class MagnetPull {
   private static final double AIM_ABOVE_FEET = 0.5;
 
-  private static final PerWorld<ExpiringLedger<UUID>> PULLS =
-      new PerWorld<>(() -> new ExpiringLedger<>());
+  private static final PerWorld<ExpiringLedger<UUID>> PULLS = new PerWorld<>(ExpiringLedger::new);
 
   private MagnetPull() {}
 

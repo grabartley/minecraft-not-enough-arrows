@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class RedstoneChargeService {
   private static final PerWorld<RedstoneChargeTracker> TRACKERS =
-      new PerWorld<>(() -> new RedstoneChargeTracker());
+      new PerWorld<>(RedstoneChargeTracker::new);
 
   private RedstoneChargeService() {}
 

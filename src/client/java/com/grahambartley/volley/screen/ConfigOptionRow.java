@@ -47,8 +47,7 @@ final class ConfigOptionRow extends ConfigOptionListWidget.OptionEntry {
         layout.labelY(),
         ConfigRowText.LABEL_COLOUR,
         true);
-    ConfigRowText.drawDescription(
-        context, textRenderer, description, layout, layout.textX(), false);
+    ConfigRowText.drawDescriptionLeft(context, textRenderer, description, layout, layout.textX());
     if (control != null) {
       control.setPosition(layout.controlX(), layout.controlY());
       control.render(context, mouseX, mouseY, tickDelta);

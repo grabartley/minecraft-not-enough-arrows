@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ExpiringLedgerTest {
   private static final UUID FIRST = new UUID(0L, 1L);
@@ -69,14 +72,17 @@ class ExpiringLedgerTest {
     assertThrows(NullPointerException.class, () -> ledger.put(FIRST, null, 1L));
   }
 
-  @Test
-  void listsTheIdsItHoldsInTheOrderTheyWereAdded() {
+  @ParameterizedTest(name = "{0} entries")
+  @ValueSource(ints = {0, 1, 3})
+  void listsTheIdsItHoldsInTheOrderTheyWereAdded(final int count) {
     final ExpiringLedger<String> ledger = new ExpiringLedger<>();
-    final UUID first = UUID.randomUUID();
-    final UUID second = UUID.randomUUID();
-    ledger.put(first, "a", 10L);
-    ledger.put(second, "b", 5L);
+    final List<UUID> added = new ArrayList<>();
+    for (int i = 0; i < count; i++) {
+      final UUID id = UUID.randomUUID();
+      ledger.put(id, "entry", 10L - i);
+      added.add(id);
+    }
 
-    assertEquals(List.of(first, second), ledger.ids());
+    assertEquals(added, ledger.ids());
   }
 }

@@ -19,7 +19,7 @@ import net.minecraft.util.math.Box;
 import org.jetbrains.annotations.Nullable;
 
 public final class WatcherService {
-  private static final PerWorld<WatcherLedger> LEDGERS = new PerWorld<>(() -> new WatcherLedger());
+  private static final PerWorld<WatcherLedger> LEDGERS = new PerWorld<>(WatcherLedger::new);
   private static final float ALERT_VOLUME = 1.0f;
   private static final float ALERT_PITCH = 1.0f;
 

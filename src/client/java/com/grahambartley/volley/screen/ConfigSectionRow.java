@@ -39,7 +39,7 @@ final class ConfigSectionRow extends ConfigOptionListWidget.OptionEntry {
         centreX,
         layout.labelY(),
         ConfigRowText.LABEL_COLOUR);
-    ConfigRowText.drawDescription(context, textRenderer, description, layout, centreX, true);
+    ConfigRowText.drawDescriptionCentred(context, textRenderer, description, layout, centreX);
   }
 
   @Override

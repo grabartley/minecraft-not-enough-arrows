@@ -2,6 +2,7 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.social.SnowGolemBuild;
 import com.grahambartley.volley.social.SnowGolemMelt;
+import com.grahambartley.volley.world.SpawnPermission;
 import java.util.Optional;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -60,7 +61,8 @@ public final class SnowGolemBuildGameTest implements FabricGameTest {
     visitor.getAbilities().allowModifyWorld = false;
 
     context.assertFalse(
-        SnowGolemBuild.allows(context.getWorld(), at(context, OPEN_GROUND), visitor),
+        SpawnPermission.allows(
+            context.getWorld(), EntityType.SNOW_GOLEM, at(context, OPEN_GROUND), visitor),
         "A shooter who could not build a golem by hand may not shoot one either");
     context.complete();
   }

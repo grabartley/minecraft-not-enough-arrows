@@ -18,8 +18,7 @@ import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 
 public final class CountdownBroadcaster {
-  private static final PerWorld<CountdownChanges> ANNOUNCED =
-      new PerWorld<>(() -> new CountdownChanges());
+  private static final PerWorld<CountdownChanges> ANNOUNCED = new PerWorld<>(CountdownChanges::new);
 
   private CountdownBroadcaster() {}
 

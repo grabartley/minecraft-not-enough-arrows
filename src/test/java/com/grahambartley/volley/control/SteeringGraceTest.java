@@ -1,10 +1,12 @@
 package com.grahambartley.volley.control;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class SteeringGraceTest {
   private final SteeringGrace grace = new SteeringGrace();
@@ -16,11 +18,12 @@ class SteeringGraceTest {
     assertFalse(grace.isSteered(slime, STEERED_AT));
   }
 
-  @Test
-  void aSteeredSlimeStaysSteeredThroughTheGrace() {
+  @ParameterizedTest(name = "{0} ticks later steered = {1}")
+  @CsvSource({"0, true", "1, true", "2, true", "3, false", "20, false"})
+  void aSteeredMobStaysSteeredOnlyThroughTheGrace(final long later, final boolean steered) {
     grace.steer(slime, STEERED_AT);
-    assertTrue(grace.isSteered(slime, STEERED_AT));
-    assertTrue(grace.isSteered(slime, STEERED_AT + SteeringGrace.STEERING_GRACE_TICKS));
+
+    assertEquals(steered, grace.isSteered(slime, STEERED_AT + later));
   }
 
   @Test

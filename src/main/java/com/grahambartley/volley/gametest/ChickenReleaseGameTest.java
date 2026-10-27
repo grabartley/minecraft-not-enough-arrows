@@ -1,8 +1,10 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.chaos.ChickenRelease;
+import com.grahambartley.volley.world.SpawnPermission;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.test.GameTest;
@@ -59,7 +61,8 @@ public final class ChickenReleaseGameTest implements FabricGameTest {
     visitor.getAbilities().allowModifyWorld = false;
 
     context.assertFalse(
-        ChickenRelease.allows(context.getWorld(), at(context, OPEN_GROUND), visitor),
+        SpawnPermission.allows(
+            context.getWorld(), EntityType.CHICKEN, at(context, OPEN_GROUND), visitor),
         "A shooter who may not change the world may not release a chicken either");
     context.complete();
   }
@@ -69,7 +72,8 @@ public final class ChickenReleaseGameTest implements FabricGameTest {
     final PlayerEntity shooter = context.createMockPlayer(GameMode.SURVIVAL);
 
     context.assertTrue(
-        ChickenRelease.allows(context.getWorld(), at(context, OPEN_GROUND), shooter),
+        SpawnPermission.allows(
+            context.getWorld(), EntityType.CHICKEN, at(context, OPEN_GROUND), shooter),
         "A survival shooter may release a chicken in open ground");
     context.complete();
   }

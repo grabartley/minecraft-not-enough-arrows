@@ -1,0 +1,5 @@
+volley config fletching stationenabled true,true
+volley config fletching stationenabled false,true
+volley config fletching stationenabled,false
+volley config fletching stationenabled maybe,false
+volley config fletching,false

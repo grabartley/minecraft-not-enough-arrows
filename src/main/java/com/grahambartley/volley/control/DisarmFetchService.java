@@ -20,7 +20,7 @@ public final class DisarmFetchService {
   public static final double FETCH_SPEED = 1.2;
 
   private static final PerWorld<Map<UUID, DisarmFetch>> ERRANDS =
-      new PerWorld<>(() -> new LinkedHashMap<>());
+      new PerWorld<>(LinkedHashMap::new);
 
   private DisarmFetchService() {}
 

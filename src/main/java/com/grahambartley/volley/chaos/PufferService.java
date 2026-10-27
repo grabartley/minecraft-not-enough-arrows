@@ -16,7 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 public final class PufferService {
 
   private static final PerWorld<ExpiringLedger<Boolean>> LEDGERS =
-      new PerWorld<>(() -> new ExpiringLedger<>());
+      new PerWorld<>(ExpiringLedger::new);
 
   private PufferService() {}
 

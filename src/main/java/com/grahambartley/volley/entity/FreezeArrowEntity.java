@@ -43,7 +43,7 @@ public class FreezeArrowEntity extends BlockAreaArrowEntity {
   }
 
   @Override
-  protected boolean discardsOnBlockHit(final boolean changedAny) {
+  protected boolean alwaysDiscardsOnBlockHit() {
     return ServerConfigService.get().terrain().freeze().enabled();
   }
 

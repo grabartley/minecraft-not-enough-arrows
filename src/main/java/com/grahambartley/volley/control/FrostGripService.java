@@ -13,8 +13,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.world.ServerWorld;
 
 public final class FrostGripService {
-  private static final PerWorld<Map<UUID, Long>> GRIPS =
-      new PerWorld<>(() -> new LinkedHashMap<>());
+  private static final PerWorld<Map<UUID, Long>> GRIPS = new PerWorld<>(LinkedHashMap::new);
 
   private FrostGripService() {}
 

@@ -1,11 +1,12 @@
 package com.grahambartley.volley.social;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class MagnetSteeringTest {
   private static final double EPSILON = 1.0E-9;
@@ -38,12 +39,9 @@ class MagnetSteeringTest {
     assertEquals(Vec3d.ZERO, MagnetSteering.velocityToward(Vec3d.ZERO, Vec3d.ZERO));
   }
 
-  @Test
-  void arrivesWithinTheArrivalDistance() {
-    assertTrue(
-        MagnetSteering.hasArrived(Vec3d.ZERO, new Vec3d(MagnetSteering.ARRIVAL_DISTANCE, 0, 0)));
-    assertFalse(
-        MagnetSteering.hasArrived(
-            Vec3d.ZERO, new Vec3d(MagnetSteering.ARRIVAL_DISTANCE + 0.1, 0, 0)));
+  @ParameterizedTest(name = "{0} blocks away arrived = {1}")
+  @CsvSource({"0.0, true", "0.5, true", "1.0, true", "1.1, false", "8.0, false"})
+  void arrivesWithinTheArrivalDistance(final double distance, final boolean arrived) {
+    assertEquals(arrived, MagnetSteering.hasArrived(Vec3d.ZERO, new Vec3d(distance, 0, 0)));
   }
 }

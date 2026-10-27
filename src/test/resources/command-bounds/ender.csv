@@ -1,0 +1,11 @@
+volley config ender pearlmaxrangeblocks 4,true
+volley config ender pearlmaxrangeblocks 128,true
+volley config ender pearlmaxrangeblocks 3,false
+volley config ender pearlmaxrangeblocks 129,false
+volley config ender recallmaxrangeblocks 4,true
+volley config ender recallmaxrangeblocks 128,true
+volley config ender recallmaxrangeblocks 3,false
+volley config ender recallmaxrangeblocks 129,false
+volley config ender recallaffectsplayers true,true
+volley config ender recallaffectsplayers false,true
+volley config ender recallaffectsplayers maybe,false

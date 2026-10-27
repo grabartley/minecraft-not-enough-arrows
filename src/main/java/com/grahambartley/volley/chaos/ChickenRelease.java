@@ -1,7 +1,6 @@
 package com.grahambartley.volley.chaos;
 
 import com.grahambartley.volley.world.MobSpawn;
-import com.grahambartley.volley.world.SpawnPermission;
 import java.util.Optional;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -14,11 +13,6 @@ import org.jetbrains.annotations.Nullable;
 public final class ChickenRelease {
 
   private ChickenRelease() {}
-
-  public static boolean allows(
-      final ServerWorld world, final Vec3d at, @Nullable final PlayerEntity shooter) {
-    return SpawnPermission.allows(world, EntityType.CHICKEN, at, shooter);
-  }
 
   public static Optional<ChickenEntity> release(
       final ServerWorld world, final Vec3d at, @Nullable final PlayerEntity shooter) {

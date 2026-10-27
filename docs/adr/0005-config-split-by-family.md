@@ -1,6 +1,7 @@
 # ADR 0005: Configuration and commands are split by arrow family
 
 - **Status:** Accepted
+- **Revised by:** The command half of this decision is revised by [ADR 0046](0046-the-command-tree-is-built-from-the-catalog-alone.md).
 - **Date:** 2026-08-22
 
 ## Context

@@ -21,7 +21,7 @@ public final class DisguiseService {
 
   private static final int RESTORE_PUFFS = 12;
   private static final PerWorld<ExpiringLedger<Identifier>> LEDGERS =
-      new PerWorld<>(() -> new ExpiringLedger<>());
+      new PerWorld<>(ExpiringLedger::new);
 
   private DisguiseService() {}
 

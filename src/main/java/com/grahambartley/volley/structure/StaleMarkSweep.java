@@ -1,30 +1,27 @@
 package com.grahambartley.volley.structure;
 
 import com.grahambartley.volley.world.LoadedGround;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Predicate;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
 public final class StaleMarkSweep {
-  private final Map<RegistryKey<World>, List<StructureMark>> pending = new HashMap<>();
+  private final PerWorld<List<StructureMark>> pending = new PerWorld<>(ArrayList::new);
 
   public void notice(
       final ServerWorld world, final WorldChunk chunk, final Predicate<StructureMark> isLive) {
     final List<StructureMark> stale = StructureChunkMarks.in(chunk).stale(isLive);
     if (!stale.isEmpty()) {
-      pending.computeIfAbsent(world.getRegistryKey(), key -> new ArrayList<>()).addAll(stale);
+      pending.of(world).addAll(stale);
     }
   }
 
   public int clearIn(final ServerWorld world) {
-    final List<StructureMark> stale = pending.remove(world.getRegistryKey());
+    final List<StructureMark> stale = pending.remove(world);
     if (stale == null) {
       return 0;
     }
@@ -40,7 +37,7 @@ public final class StaleMarkSweep {
   }
 
   public boolean hasPendingIn(final ServerWorld world) {
-    return pending.containsKey(world.getRegistryKey());
+    return pending.in(world) != null;
   }
 
   public void forget() {

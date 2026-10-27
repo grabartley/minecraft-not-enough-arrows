@@ -38,15 +38,15 @@ public abstract class BlockAreaArrowEntity extends BaseArrowEntity {
 
   protected abstract SoundEvent effectSound();
 
-  protected boolean discardsOnBlockHit(final boolean changedAny) {
-    return changedAny;
+  protected boolean alwaysDiscardsOnBlockHit() {
+    return false;
   }
 
   @Override
   protected final ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
     final boolean changedAny = affect(world, FaceClearance.blockInFrontOf(blockHitResult));
-    return discardsOnBlockHit(changedAny) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
+    return changedAny || alwaysDiscardsOnBlockHit() ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
   }
 
   @Override

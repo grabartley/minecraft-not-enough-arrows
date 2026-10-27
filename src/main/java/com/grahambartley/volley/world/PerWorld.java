@@ -1,7 +1,7 @@
 package com.grahambartley.volley.world;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.registry.RegistryKey;
@@ -26,8 +26,13 @@ public final class PerWorld<T> {
     return values.computeIfAbsent(world.getRegistryKey(), key -> create.get());
   }
 
-  public Collection<T> all() {
-    return values.values();
+  public List<T> all() {
+    return List.copyOf(values.values());
+  }
+
+  @Nullable
+  public T remove(final ServerWorld world) {
+    return values.remove(world.getRegistryKey());
   }
 
   public void clear() {

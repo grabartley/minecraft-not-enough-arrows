@@ -18,8 +18,7 @@ import net.minecraft.world.chunk.WorldChunk;
 import org.jetbrains.annotations.Nullable;
 
 public final class TimedStructureService {
-  private static final PerWorld<StructureLedger> LEDGERS =
-      new PerWorld<>(() -> new StructureLedger());
+  private static final PerWorld<StructureLedger> LEDGERS = new PerWorld<>(StructureLedger::new);
   private static final StaleMarkSweep STALE = new StaleMarkSweep();
 
   private TimedStructureService() {}
@@ -79,12 +78,12 @@ public final class TimedStructureService {
   }
 
   public static Optional<TimedStructure> find(final ServerWorld world, final UUID id) {
-    final StructureLedger ledger = world == null ? null : LEDGERS.in(world);
+    final StructureLedger ledger = LEDGERS.in(world);
     return ledger == null ? Optional.empty() : ledger.find(id);
   }
 
   public static boolean dismantle(final ServerWorld world, final UUID id) {
-    final StructureLedger ledger = world == null ? null : LEDGERS.in(world);
+    final StructureLedger ledger = LEDGERS.in(world);
     if (ledger == null) {
       return false;
     }

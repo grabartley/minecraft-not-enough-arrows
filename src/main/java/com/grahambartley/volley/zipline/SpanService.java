@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
 public final class SpanService {
-  private static final PerWorld<SpanTracker> TRACKERS = new PerWorld<>(() -> new SpanTracker());
+  private static final PerWorld<SpanTracker> TRACKERS = new PerWorld<>(SpanTracker::new);
 
   private SpanService() {}
 

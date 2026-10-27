@@ -24,7 +24,7 @@ public final class BeeSwarmWarden {
       AttachmentRegistry.createPersistent(
           Identifier.of(Volley.MOD_ID, "bee_swarm"), BeeSwarm.CODEC);
 
-  private static final PerWorld<Set<UUID>> WATCHED = new PerWorld<>(() -> new LinkedHashSet<>());
+  private static final PerWorld<Set<UUID>> WATCHED = new PerWorld<>(LinkedHashSet::new);
 
   private BeeSwarmWarden() {}
 

@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class VolleyCommandTest {
@@ -45,12 +46,6 @@ class VolleyCommandTest {
         .map(Arguments::of);
   }
 
-  static Stream<Arguments> outOfBoundsCommands() {
-    return ServerConfigOptions.all().stream()
-        .flatMap(VolleyCommandTest::rejectedValues)
-        .map(Arguments::of);
-  }
-
   private static Stream<String> acceptedValues(final ConfigOption<VolleyConfig> option) {
     final String path = pathOf(option);
     return switch (option) {
@@ -64,20 +59,6 @@ class VolleyCommandTest {
     };
   }
 
-  private static Stream<String> rejectedValues(final ConfigOption<VolleyConfig> option) {
-    final String path = pathOf(option);
-    return switch (option) {
-      case IntOption<VolleyConfig> intOption ->
-          Stream.of(path + " " + (intOption.min() - 1), path + " " + (intOption.max() + 1));
-      case FloatOption<VolleyConfig> floatOption ->
-          Stream.of(
-              path + " " + plain(floatOption.min() - 1f),
-              path + " " + plain(floatOption.max() + 1f));
-      case BooleanOption<VolleyConfig> booleanOption -> Stream.of(path + " maybe");
-      case IdentifierListOption<VolleyConfig> listOption -> Stream.of(path + " 3");
-    };
-  }
-
   private static String pathOf(final ConfigOption<VolleyConfig> option) {
     return "config " + option.id().toLowerCase(Locale.ROOT).replace('.', ' ');
   }
@@ -86,10 +67,28 @@ class VolleyCommandTest {
     return new BigDecimal(Float.toString(value)).toPlainString();
   }
 
-  @ParameterizedTest(name = "an operator may not run \"volley {0}\"")
-  @MethodSource("outOfBoundsCommands")
-  void everyOptionRefusesAValueOutsideItsBounds(String command) {
-    assertFalse(CommandParsing.accepts(dispatcher, operator, VolleyCommand.ROOT + " " + command));
+  @ParameterizedTest(name = "\"{0}\" accepted={1}")
+  @CsvFileSource(
+      resources = {
+        "/command-bounds/explosive.csv",
+        "/command-bounds/grapple.csv",
+        "/command-bounds/utility.csv",
+        "/command-bounds/physics.csv",
+        "/command-bounds/ender.csv",
+        "/command-bounds/combat.csv",
+        "/command-bounds/control.csv",
+        "/command-bounds/traversal.csv",
+        "/command-bounds/terrain.csv",
+        "/command-bounds/agriculture.csv",
+        "/command-bounds/discovery.csv",
+        "/command-bounds/chaos.csv",
+        "/command-bounds/social.csv",
+        "/command-bounds/fletching.csv",
+        "/command-bounds/sound.csv"
+      })
+  void eachOptionAcceptsOnlyTheValuesItsFamilyStatesAsLiterals(
+      final String command, final boolean accepted) {
+    assertEquals(accepted, CommandParsing.accepts(dispatcher, operator, command));
   }
 
   @Test

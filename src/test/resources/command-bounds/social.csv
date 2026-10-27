@@ -1,0 +1,17 @@
+volley config social courier maxpayload 1,true
+volley config social courier maxpayload 64,true
+volley config social courier maxpayload 0,false
+volley config social courier maxpayload 65,false
+volley config social courier undeliverable add minecraft:stone,true
+volley config social courier undeliverable remove minecraft:stone,true
+volley config social courier undeliverable clear,true
+volley config social courier undeliverable add,false
+volley config social courier undeliverable minecraft:stone,false
+volley config social snowgolem lifetimeticks 20,true
+volley config social snowgolem lifetimeticks 12000,true
+volley config social snowgolem lifetimeticks 19,false
+volley config social snowgolem lifetimeticks 12001,false
+volley config social magnet radius 0,true
+volley config social magnet radius 16,true
+volley config social magnet radius -1,false
+volley config social magnet radius 17,false
