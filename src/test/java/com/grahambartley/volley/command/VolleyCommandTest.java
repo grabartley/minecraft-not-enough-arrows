@@ -26,7 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class VolleyCommandTest {
@@ -81,6 +80,32 @@ class VolleyCommandTest {
     };
   }
 
+  static Stream<Arguments> literalBoundRows() throws IOException {
+    final List<Arguments> rows = new ArrayList<>();
+    for (final String row : literalRows()) {
+      final int comma = row.lastIndexOf(',');
+      rows.add(
+          Arguments.of(
+              row.substring(0, comma).trim(),
+              Boolean.parseBoolean(row.substring(comma + 1).trim())));
+    }
+    return rows.stream();
+  }
+
+  private static List<String> literalRows() throws IOException {
+    final List<String> rows = new ArrayList<>();
+    for (final String family : FAMILIES) {
+      try (InputStream csv =
+          VolleyCommandTest.class.getResourceAsStream("/command-bounds/" + family + ".csv")) {
+        new String(csv.readAllBytes(), StandardCharsets.UTF_8)
+            .lines()
+            .filter(line -> !line.isBlank())
+            .forEach(rows::add);
+      }
+    }
+    return rows;
+  }
+
   private static String pathOf(final ConfigOption<VolleyConfig> option) {
     return "config " + option.id().toLowerCase(Locale.ROOT).replace('.', ' ');
   }
@@ -90,24 +115,7 @@ class VolleyCommandTest {
   }
 
   @ParameterizedTest(name = "\"{0}\" accepted={1}")
-  @CsvFileSource(
-      resources = {
-        "/command-bounds/explosive.csv",
-        "/command-bounds/grapple.csv",
-        "/command-bounds/utility.csv",
-        "/command-bounds/physics.csv",
-        "/command-bounds/ender.csv",
-        "/command-bounds/combat.csv",
-        "/command-bounds/control.csv",
-        "/command-bounds/traversal.csv",
-        "/command-bounds/terrain.csv",
-        "/command-bounds/agriculture.csv",
-        "/command-bounds/discovery.csv",
-        "/command-bounds/chaos.csv",
-        "/command-bounds/social.csv",
-        "/command-bounds/fletching.csv",
-        "/command-bounds/sound.csv"
-      })
+  @MethodSource("literalBoundRows")
   void eachOptionAcceptsOnlyTheValuesItsFamilyStatesAsLiterals(
       final String command, final boolean accepted) {
     assertEquals(accepted, CommandParsing.accepts(dispatcher, operator, command));
@@ -115,13 +123,7 @@ class VolleyCommandTest {
 
   @Test
   void everyOptionHasALiteralCaseInItsFamilyFile() throws IOException {
-    final List<String> rows = new ArrayList<>();
-    for (final String family : FAMILIES) {
-      try (InputStream csv =
-          VolleyCommandTest.class.getResourceAsStream("/command-bounds/" + family + ".csv")) {
-        new String(csv.readAllBytes(), StandardCharsets.UTF_8).lines().forEach(rows::add);
-      }
-    }
+    final List<String> rows = literalRows();
 
     final List<String> uncovered =
         ServerConfigOptions.all().stream()

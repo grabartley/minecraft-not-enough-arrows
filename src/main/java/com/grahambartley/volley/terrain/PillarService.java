@@ -2,9 +2,9 @@ package com.grahambartley.volley.terrain;
 
 import com.grahambartley.volley.config.PillarArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.structure.OpenRun;
 import com.grahambartley.volley.structure.StructureBlockSource;
 import com.grahambartley.volley.structure.TimedStructureService;
-import com.grahambartley.volley.world.OpenRun;
 import com.grahambartley.volley.world.VerticalRun;
 import java.util.List;
 import net.minecraft.block.BlockState;

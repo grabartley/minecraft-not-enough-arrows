@@ -71,9 +71,7 @@ public final class BlastService {
       FirePatchService.ignite(
           world,
           BlockPos.ofFloored(carrier.getPos()),
-          shooter instanceof PlayerEntity player ? player : null,
-          explosive.firePatchRadius(),
-          explosive.firePatchDurationTicks());
+          shooter instanceof PlayerEntity player ? player : null);
     }
     if (carrier instanceof ExplosiveArrowEntity arrow) {
       arrow.discard();

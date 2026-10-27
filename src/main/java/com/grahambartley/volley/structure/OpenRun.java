@@ -1,6 +1,6 @@
-package com.grahambartley.volley.world;
+package com.grahambartley.volley.structure;
 
-import com.grahambartley.volley.structure.TimedStructureService;
+import com.grahambartley.volley.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;

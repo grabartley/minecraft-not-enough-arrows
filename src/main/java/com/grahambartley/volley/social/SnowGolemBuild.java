@@ -1,6 +1,7 @@
 package com.grahambartley.volley.social;
 
 import com.grahambartley.volley.world.MobSpawn;
+import com.grahambartley.volley.world.SpawnPermission;
 import java.util.Optional;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.SnowGolemEntity;
@@ -18,11 +19,13 @@ public final class SnowGolemBuild {
       final Vec3d at,
       @Nullable final PlayerEntity shooter,
       final int lifetimeTicks) {
+    if (!SpawnPermission.allows(world, EntityType.SNOW_GOLEM, at, shooter)) {
+      return Optional.empty();
+    }
     return MobSpawn.at(
         world,
         EntityType.SNOW_GOLEM,
         at,
-        shooter,
         golem -> {
           golem.setHasPumpkin(false);
           SnowGolemMelt.schedule(golem, world.getTime() + lifetimeTicks);

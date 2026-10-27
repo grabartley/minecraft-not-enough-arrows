@@ -3,6 +3,7 @@ package com.grahambartley.volley.agriculture;
 import com.grahambartley.volley.config.BeeArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.MobSpawn;
+import com.grahambartley.volley.world.SpawnPermission;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +35,11 @@ public final class BeeSwarmRelease {
       @Nullable final LivingEntity shooter,
       @Nullable final Entity struck,
       final BeeArrowConfig bee) {
-    if (world == null || at == null || bee == null) {
+    if (world == null
+        || at == null
+        || bee == null
+        || !SpawnPermission.mayChange(
+            world, at, shooter instanceof PlayerEntity player ? player : null)) {
       return List.of();
     }
     final LivingEntity target = targetOf(struck, shooter);
@@ -45,7 +50,7 @@ public final class BeeSwarmRelease {
             Optional.ofNullable(target).map(Entity::getUuid));
     final List<BeeEntity> released = new ArrayList<>();
     for (int i = 0; i < bee.count(); i++) {
-      spawn(world, at, shooter, swarm, target, bee.lifetimeTicks()).ifPresent(released::add);
+      spawn(world, at, swarm, target, bee.lifetimeTicks()).ifPresent(released::add);
     }
     return List.copyOf(released);
   }
@@ -53,7 +58,6 @@ public final class BeeSwarmRelease {
   private static Optional<BeeEntity> spawn(
       final ServerWorld world,
       final Vec3d at,
-      @Nullable final LivingEntity shooter,
       final BeeSwarm swarm,
       @Nullable final LivingEntity target,
       final int lifetimeTicks) {
@@ -62,7 +66,6 @@ public final class BeeSwarmRelease {
             world,
             EntityType.BEE,
             at,
-            shooter instanceof PlayerEntity player ? player : null,
             bee -> {
               bee.refreshPositionAndAngles(
                   at.add(scatter(world), 0.0, scatter(world)), bee.getYaw(), 0f);

@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.List;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class RecipeViewerInfoTest {
 
@@ -72,5 +74,19 @@ class RecipeViewerInfoTest {
   @Test
   void rejectsANullCollection() {
     assertThrows(NullPointerException.class, () -> RecipeViewerInfo.entries(null));
+  }
+
+  @ParameterizedTest(name = "{0} arrows")
+  @ValueSource(ints = {1, 2, 5})
+  void givesEachItemExactlyOneEntryOfItsOwn(final int count) {
+    final List<Identifier> ids =
+        java.util.stream.IntStream.range(0, count)
+            .mapToObj(i -> Identifier.of(Volley.MOD_ID, "arrow_" + i))
+            .toList();
+
+    final List<InfoEntry> entries = RecipeViewerInfo.entries(ids);
+
+    assertEquals(count, entries.size());
+    assertEquals(ids, entries.stream().map(entry -> entry.itemIds().get(0)).toList());
   }
 }

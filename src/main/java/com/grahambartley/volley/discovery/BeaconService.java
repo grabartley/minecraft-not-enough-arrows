@@ -2,9 +2,9 @@ package com.grahambartley.volley.discovery;
 
 import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.structure.OpenRun;
 import com.grahambartley.volley.structure.StructureBlockSource;
 import com.grahambartley.volley.structure.TimedStructureService;
-import com.grahambartley.volley.world.OpenRun;
 import com.grahambartley.volley.world.VerticalRun;
 import java.util.List;
 import net.minecraft.block.BlockState;

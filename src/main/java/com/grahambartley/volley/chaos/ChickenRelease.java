@@ -1,6 +1,7 @@
 package com.grahambartley.volley.chaos;
 
 import com.grahambartley.volley.world.MobSpawn;
+import com.grahambartley.volley.world.SpawnPermission;
 import java.util.Optional;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -16,11 +17,13 @@ public final class ChickenRelease {
 
   public static Optional<ChickenEntity> release(
       final ServerWorld world, final Vec3d at, @Nullable final PlayerEntity shooter) {
+    if (!SpawnPermission.allows(world, EntityType.CHICKEN, at, shooter)) {
+      return Optional.empty();
+    }
     return MobSpawn.at(
         world,
         EntityType.CHICKEN,
         at,
-        shooter,
         chicken -> {
           chicken.setVelocity(Vec3d.ZERO);
           chicken.fallDistance = 0.0f;

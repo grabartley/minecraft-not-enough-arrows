@@ -4,6 +4,7 @@ import com.grahambartley.volley.agriculture.BeeSwarmRelease;
 import com.grahambartley.volley.config.BeeArrowConfig;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.passive.BeeEntity;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -108,6 +109,27 @@ public final class BeeSwarmReleaseGameTest implements FabricGameTest {
         release(context, visitor, null, new BeeArrowConfig(3, LONG_LIFE)).size(),
         0,
         "Bees released by a shooter who may not change the world");
+    context.complete();
+  }
+
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aSwarmReleasedJustUnderACeilingIsReleasedInFull(TestContext context) {
+    final BlockPos ceiling = BlockPos.ofFloored(RELEASE).up();
+    context.setBlockState(ceiling, Blocks.STONE);
+
+    context.assertEquals(
+        BeeSwarmRelease.release(
+                context.getWorld(),
+                context.getAbsolute(RELEASE.add(0.0, 0.5, 0.0)),
+                null,
+                null,
+                new BeeArrowConfig(3, LONG_LIFE))
+            .size(),
+        3,
+        "Bees released half a block under a ceiling");
     context.complete();
   }
 
