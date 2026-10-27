@@ -72,8 +72,7 @@ public final class DisguiseService {
   }
 
   public static Optional<Identifier> formOf(final ServerWorld world, final UUID id) {
-    final ExpiringLedger<Identifier> ledger = LEDGERS.in(world);
-    return ledger == null ? Optional.empty() : ledger.get(id);
+    return LEDGERS.map(world, ledger -> ledger.get(id), Optional.empty());
   }
 
   private static void tick(final ServerWorld world) {

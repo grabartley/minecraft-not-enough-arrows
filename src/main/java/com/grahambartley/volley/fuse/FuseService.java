@@ -63,14 +63,12 @@ public final class FuseService {
 
   @Nullable
   public static Fuse fuseOn(@Nullable final ServerWorld world, @Nullable final UUID hostId) {
-    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.get(hostId);
+    return TRACKERS.map(world, tracker -> tracker.get(hostId), null);
   }
 
   @Nullable
   public static Fuse extinguish(@Nullable final ServerWorld world, @Nullable final UUID hostId) {
-    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.remove(hostId);
+    return TRACKERS.map(world, tracker -> tracker.remove(hostId), null);
   }
 
   public static void extinguishEverywhere(@Nullable final UUID hostId) {
@@ -78,8 +76,7 @@ public final class FuseService {
   }
 
   public static List<Fuse> fusesIn(@Nullable final ServerWorld world) {
-    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.all();
+    return TRACKERS.map(world, tracker -> tracker.all(), List.of());
   }
 
   public static void forget() {

@@ -1,5 +1,6 @@
 package com.grahambartley.volley.client.state;
 
+import com.grahambartley.volley.config.ConfigPaths;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import net.fabricmc.loader.api.FabricLoader;
@@ -7,12 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ClientStateService {
+  static final String CLIENT_STATE_FILE = "client-state.json";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ClientStateService.class);
+  private static volatile ClientState current = ClientState.defaults();
 
   private ClientStateService() {}
 
   public static ClientState get() {
-    return ClientStateHolder.get();
+    return current;
   }
 
   public static void load() {
@@ -20,9 +24,9 @@ public final class ClientStateService {
   }
 
   public static ClientState loadFromConfigDir(final Path configDir) {
-    final Path statePath = new ClientStatePaths(configDir).getClientStatePath();
+    final Path statePath = statePath(configDir);
     final ClientState state = ClientStateFile.load(statePath);
-    ClientStateHolder.set(state);
+    current = state;
 
     if (!Files.exists(statePath)) {
       ClientStateFile.save(statePath, state);
@@ -41,10 +45,18 @@ public final class ClientStateService {
     if (configDir == null || updated == null) {
       return false;
     }
-    if (!ClientStateFile.save(new ClientStatePaths(configDir).getClientStatePath(), updated)) {
+    if (!ClientStateFile.save(statePath(configDir), updated)) {
       return false;
     }
-    ClientStateHolder.set(updated);
+    current = updated;
     return true;
+  }
+
+  static Path statePath(final Path configDir) {
+    return configDir.resolve(ConfigPaths.MOD_DIR).resolve(CLIENT_STATE_FILE);
+  }
+
+  static void reset() {
+    current = ClientState.defaults();
   }
 }

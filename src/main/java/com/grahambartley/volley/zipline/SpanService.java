@@ -74,8 +74,7 @@ public final class SpanService {
   }
 
   public static Optional<Span> find(final ServerWorld world, final UUID id) {
-    final SpanTracker tracker = TRACKERS.in(world);
-    return tracker == null ? Optional.empty() : tracker.find(id);
+    return TRACKERS.map(world, tracker -> tracker.find(id), Optional.empty());
   }
 
   public static boolean isIntact(final ServerWorld world, final Span span) {

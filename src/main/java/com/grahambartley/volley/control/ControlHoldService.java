@@ -117,13 +117,12 @@ public final class ControlHoldService {
   }
 
   public static List<ControlHold> holdsIn(final ServerWorld world) {
-    final SessionTracker<ControlHold> tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.all();
+    return TRACKERS.map(world, tracker -> tracker.all(), List.of());
   }
 
   public static Optional<ControlHold> heldIn(final ServerWorld world, final MobEntity mob) {
-    final SessionTracker<ControlHold> tracker = TRACKERS.in(world);
-    return tracker == null ? Optional.empty() : Optional.ofNullable(tracker.get(mob.getUuid()));
+    return TRACKERS.map(
+        world, tracker -> Optional.ofNullable(tracker.get(mob.getUuid())), Optional.empty());
   }
 
   private static void forget() {

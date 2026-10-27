@@ -80,8 +80,7 @@ public final class TowService {
 
   @Nullable
   public static TowSession towOf(@Nullable final ServerWorld world, @Nullable final UUID targetId) {
-    final SessionTracker<TowSession> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.get(targetId);
+    return TRACKERS.map(world, tracker -> tracker.get(targetId), null);
   }
 
   @Nullable

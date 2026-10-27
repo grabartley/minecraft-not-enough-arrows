@@ -78,8 +78,7 @@ public final class TimedStructureService {
   }
 
   public static Optional<TimedStructure> find(final ServerWorld world, final UUID id) {
-    final StructureLedger ledger = LEDGERS.in(world);
-    return ledger == null ? Optional.empty() : ledger.find(id);
+    return LEDGERS.map(world, ledger -> ledger.find(id), Optional.empty());
   }
 
   public static boolean dismantle(final ServerWorld world, final UUID id) {

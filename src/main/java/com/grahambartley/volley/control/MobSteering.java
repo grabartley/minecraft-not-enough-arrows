@@ -1,5 +1,6 @@
 package com.grahambartley.volley.control;
 
+import java.util.List;
 import net.minecraft.entity.ai.brain.MemoryModuleState;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.brain.WalkTarget;
@@ -34,6 +35,28 @@ public final class MobSteering {
   public static final double RABBIT_HOP_SPEED = 2.2;
   public static final double FINAL_APPROACH = 3.0;
 
+  private static final List<SelfSteerer<?>> SELF_STEERERS =
+      List.of(
+          new SelfSteerer<>(SlimeEntity.class, MobSteering::hopToward),
+          new SelfSteerer<>(
+              PhantomEntity.class,
+              (phantom, destination, speed) -> phantom.targetPosition = destination),
+          new SelfSteerer<>(
+              BatEntity.class,
+              (bat, destination, speed) ->
+                  BatFlight.steer(
+                      bat, OpenAirCourse.toward(bat.getPos(), destination, bat.getWorld()::isAir))),
+          new SelfSteerer<>(
+              SquidEntity.class, (squid, destination, speed) -> strokeToward(squid, destination)),
+          new SelfSteerer<>(
+              EnderDragonEntity.class,
+              (dragon, destination, speed) -> chargeToward(dragon, destination)),
+          new SelfSteerer<>(GhastEntity.class, MobSteering::floatToward),
+          new SelfSteerer<>(
+              VexEntity.class,
+              (vex, destination, speed) ->
+                  vex.getMoveControl().moveTo(destination.x, destination.y, destination.z, speed)));
+
   private MobSteering() {}
 
   public static boolean steer(
@@ -46,41 +69,11 @@ public final class MobSteering {
 
   public static boolean moveTo(final MobEntity mob, final Vec3d destination, final double speed) {
     rouse(mob);
-    if (mob instanceof SlimeEntity slime
-        && slime.getMoveControl() instanceof SlimeEntity.SlimeMoveControl hop) {
-      SteeringGrace.SLIMES.steer(slime.getUuid(), slime.getWorld().getTime());
-      hop.look(yawToward(slime.getPos(), destination), true);
-      hop.move(speed);
-      return true;
-    }
-    if (mob instanceof PhantomEntity phantom) {
-      phantom.targetPosition = destination;
-      return true;
-    }
-    if (mob instanceof BatEntity bat) {
-      BatFlight.steer(bat, OpenAirCourse.toward(bat.getPos(), destination, bat.getWorld()::isAir));
-      return true;
-    }
-    if (mob instanceof SquidEntity squid) {
-      final Vec3d stroke = destination.subtract(squid.getPos()).normalize().multiply(SQUID_STROKE);
-      squid.setSwimmingVector((float) stroke.x, (float) stroke.y, (float) stroke.z);
-      return true;
-    }
-    if (mob instanceof EnderDragonEntity dragon) {
-      chargeToward(dragon, destination);
-      return true;
-    }
-    if (mob instanceof GhastEntity ghast) {
-      final Vec3d waypoint =
-          GhastCourse.plan(
-                  ghast.getPos(), destination, ghast.getHeight(), GhastCourse.fitsAt(ghast))
-              .orElse(destination);
-      ghast.getMoveControl().moveTo(waypoint.x, waypoint.y, waypoint.z, speed);
-      return true;
-    }
-    if (mob instanceof VexEntity) {
-      mob.getMoveControl().moveTo(destination.x, destination.y, destination.z, speed);
-      return true;
+    for (final SelfSteerer<?> steerer : SELF_STEERERS) {
+      if (steerer.steers(mob)) {
+        steerer.toward(mob, destination, speed);
+        return true;
+      }
     }
     if (mob.getNavigation()
         .startMovingTo(destination.x, destination.y, destination.z, paceFor(mob, speed))) {
@@ -225,13 +218,44 @@ public final class MobSteering {
   }
 
   public static boolean steersItself(final MobEntity mob) {
-    return mob instanceof SlimeEntity
-        || mob instanceof PhantomEntity
-        || mob instanceof BatEntity
-        || mob instanceof SquidEntity
-        || mob instanceof EnderDragonEntity
-        || mob instanceof GhastEntity
-        || mob instanceof VexEntity;
+    return SELF_STEERERS.stream().anyMatch(steerer -> steerer.steers(mob));
+  }
+
+  private static void hopToward(
+      final SlimeEntity slime, final Vec3d destination, final double speed) {
+    if (slime.getMoveControl() instanceof SlimeEntity.SlimeMoveControl hop) {
+      SteeringGrace.SLIMES.steer(slime.getUuid(), slime.getWorld().getTime());
+      hop.look(yawToward(slime.getPos(), destination), true);
+      hop.move(speed);
+    }
+  }
+
+  private static void strokeToward(final SquidEntity squid, final Vec3d destination) {
+    final Vec3d stroke = destination.subtract(squid.getPos()).normalize().multiply(SQUID_STROKE);
+    squid.setSwimmingVector((float) stroke.x, (float) stroke.y, (float) stroke.z);
+  }
+
+  private static void floatToward(
+      final GhastEntity ghast, final Vec3d destination, final double speed) {
+    final Vec3d waypoint =
+        GhastCourse.plan(ghast.getPos(), destination, ghast.getHeight(), GhastCourse.fitsAt(ghast))
+            .orElse(destination);
+    ghast.getMoveControl().moveTo(waypoint.x, waypoint.y, waypoint.z, speed);
+  }
+
+  @FunctionalInterface
+  private interface Steer<T extends MobEntity> {
+    void toward(T mob, Vec3d destination, double speed);
+  }
+
+  private record SelfSteerer<T extends MobEntity>(Class<T> type, Steer<T> steer) {
+    boolean steers(final MobEntity mob) {
+      return type.isInstance(mob);
+    }
+
+    void toward(final MobEntity mob, final Vec3d destination, final double speed) {
+      steer.toward(type.cast(mob), destination, speed);
+    }
   }
 
   public static float yawToward(final Vec3d from, final Vec3d to) {

@@ -48,8 +48,7 @@ public final class WatcherService {
   }
 
   public static List<Watcher> in(final ServerWorld world) {
-    final WatcherLedger ledger = LEDGERS.in(world);
-    return ledger == null ? List.of() : ledger.all();
+    return LEDGERS.map(world, ledger -> ledger.all(), List.of());
   }
 
   public static List<WatcherAlarm> sweep(

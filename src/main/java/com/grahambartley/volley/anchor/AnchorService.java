@@ -59,15 +59,13 @@ public final class AnchorService {
   @Nullable
   public static BlockAnchor anchorOf(
       @Nullable final ServerWorld world, @Nullable final UUID ownerId) {
-    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.get(ownerId);
+    return TRACKERS.map(world, tracker -> tracker.get(ownerId), null);
   }
 
   @Nullable
   public static BlockAnchor release(
       @Nullable final ServerWorld world, @Nullable final UUID ownerId) {
-    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.remove(ownerId);
+    return TRACKERS.map(world, tracker -> tracker.remove(ownerId), null);
   }
 
   public static void releaseEverywhere(@Nullable final UUID ownerId) {
@@ -75,8 +73,7 @@ public final class AnchorService {
   }
 
   public static List<BlockAnchor> anchorsIn(@Nullable final ServerWorld world) {
-    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.all();
+    return TRACKERS.map(world, tracker -> tracker.all(), List.of());
   }
 
   public static void forget() {

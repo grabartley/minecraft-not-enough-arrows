@@ -30,15 +30,16 @@ public final class ArrowSoundAudit {
       final Map<Identifier, List<ArrowSound>> declared) {
     Objects.requireNonNull(declared, "declared");
 
-    final Map<Identifier, Identifier> firstArrowBySound = new LinkedHashMap<>();
-    final Map<Identifier, ArrowSound> firstBySound = new LinkedHashMap<>();
+    final Map<Identifier, FirstUse> firstBySound = new LinkedHashMap<>();
     final Set<Identifier> clashes = new LinkedHashSet<>();
     declared.forEach(
         (arrow, sounds) -> {
           for (final ArrowSound sound : sounds) {
-            final Identifier firstArrow = firstArrowBySound.putIfAbsent(sound.sound(), arrow);
-            final ArrowSound first = firstBySound.putIfAbsent(sound.sound(), sound);
-            if (firstArrow != null && !firstArrow.equals(arrow) && !sameSystem(first, sound)) {
+            final FirstUse first =
+                firstBySound.putIfAbsent(sound.sound(), new FirstUse(arrow, sound));
+            if (first != null
+                && !first.arrow().equals(arrow)
+                && !sameSystem(first.sound(), sound)) {
               clashes.add(sound.sound());
             }
           }
@@ -49,4 +50,6 @@ public final class ArrowSoundAudit {
   private static boolean sameSystem(final ArrowSound first, final ArrowSound second) {
     return first.sharedSystem().isPresent() && first.sharedSystem().equals(second.sharedSystem());
   }
+
+  private record FirstUse(Identifier arrow, ArrowSound sound) {}
 }

@@ -70,8 +70,7 @@ public final class GrappleService {
   @Nullable
   public static GrappleSession sessionOf(
       @Nullable final ServerWorld world, @Nullable final UUID playerId) {
-    final SessionTracker<GrappleSession> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.get(playerId);
+    return TRACKERS.map(world, tracker -> tracker.get(playerId), null);
   }
 
   @Nullable
@@ -79,8 +78,7 @@ public final class GrappleService {
       @Nullable final ServerWorld world,
       @Nullable final UUID playerId,
       final GrappleEnding ending) {
-    final SessionTracker<GrappleSession> tracker = TRACKERS.in(world);
-    return tracker == null ? null : endIn(world, tracker, playerId, ending);
+    return TRACKERS.map(world, tracker -> endIn(world, tracker, playerId, ending), null);
   }
 
   public static void stopPullingEverywhere(@Nullable final UUID playerId) {

@@ -60,8 +60,7 @@ public final class UpdraftService {
   }
 
   public static List<LiveUpdraft> liveIn(@Nullable final ServerWorld world) {
-    final ExpiringList<LiveUpdraft> tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.live();
+    return TRACKERS.map(world, tracker -> tracker.live(), List.of());
   }
 
   public static void forget() {

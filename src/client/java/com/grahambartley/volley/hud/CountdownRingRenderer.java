@@ -1,6 +1,7 @@
 package com.grahambartley.volley.hud;
 
 import com.grahambartley.volley.client.state.ClientStateService;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.Camera;
@@ -26,42 +27,41 @@ public final class CountdownRingRenderer {
   private CountdownRingRenderer() {}
 
   public static void register() {
-    WorldRenderEvents.AFTER_ENTITIES.register(
-        context -> {
-          final MinecraftClient client = MinecraftClient.getInstance();
-          if (!ClientStateService.get().showCountdownRing() || client.world == null) {
-            return;
-          }
+    WorldRenderEvents.AFTER_ENTITIES.register(CountdownRingRenderer::render);
+  }
 
-          final float tickDelta = context.tickCounter().getTickDelta(false);
-          final Camera camera = context.camera();
-          final Vec3d eye = camera.getPos();
-          final Vec3d look = Vec3d.fromPolar(camera.getPitch(), camera.getYaw());
+  private static void render(final WorldRenderContext context) {
+    final MinecraftClient client = MinecraftClient.getInstance();
+    if (!ClientStateService.get().showCountdownRing() || client.world == null) {
+      return;
+    }
 
-          boolean drewAny = false;
-          for (final Countdown countdown : CountdownSync.burning()) {
-            final Entity carrier = client.world.getEntityById(countdown.carrierId());
-            if (carrier == null) {
-              continue;
-            }
+    final float tickDelta = context.tickCounter().getTickDelta(false);
+    final Camera camera = context.camera();
+    final Vec3d eye = camera.getPos();
+    final Vec3d look = Vec3d.fromPolar(camera.getPitch(), camera.getYaw());
 
-            final Vec3d center =
-                carrier.getLerpedPos(tickDelta).add(0.0, heightAbove(carrier, countdown), 0.0);
-            if (countdown.kind().showsOnlyWhenLookedAt()
-                && !CountdownGaze.isLookingAt(eye, look, center)) {
-              continue;
-            }
+    boolean drewAny = false;
+    for (final Countdown countdown : CountdownSync.burning()) {
+      final Entity carrier = client.world.getEntityById(countdown.carrierId());
+      if (carrier == null) {
+        continue;
+      }
 
-            drawRing(
-                context.matrixStack(), context.consumers(), camera, center, countdown, tickDelta);
-            drewAny = true;
-          }
+      final Vec3d center =
+          carrier.getLerpedPos(tickDelta).add(0.0, heightAbove(carrier, countdown), 0.0);
+      if (countdown.kind().showsOnlyWhenLookedAt()
+          && !CountdownGaze.isLookingAt(eye, look, center)) {
+        continue;
+      }
 
-          if (drewAny
-              && context.consumers() instanceof VertexConsumerProvider.Immediate immediate) {
-            immediate.draw(RenderLayer.getDebugQuads());
-          }
-        });
+      drawRing(context.matrixStack(), context.consumers(), camera, center, countdown, tickDelta);
+      drewAny = true;
+    }
+
+    if (drewAny && context.consumers() instanceof VertexConsumerProvider.Immediate immediate) {
+      immediate.draw(RenderLayer.getDebugQuads());
+    }
   }
 
   private static double heightAbove(final Entity carrier, final Countdown countdown) {

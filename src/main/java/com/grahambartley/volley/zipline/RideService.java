@@ -66,8 +66,7 @@ public final class RideService {
   @Nullable
   public static RideSession rideOf(
       @Nullable final ServerWorld world, @Nullable final UUID riderId) {
-    final SessionTracker<RideSession> tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.get(riderId);
+    return TRACKERS.map(world, tracker -> tracker.get(riderId), null);
   }
 
   @Nullable
