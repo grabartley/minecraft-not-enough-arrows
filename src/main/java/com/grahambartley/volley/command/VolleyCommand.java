@@ -1,5 +1,6 @@
 package com.grahambartley.volley.command;
 
+import com.grahambartley.volley.config.ConfigPermissions;
 import com.grahambartley.volley.config.ConfigSettings;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.config.option.ServerConfigOptions;
@@ -40,7 +41,7 @@ public final class VolleyCommand {
   }
 
   public static boolean isOperator(final ServerCommandSource source) {
-    return source.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL);
+    return ConfigPermissions.canEdit(source::hasPermissionLevel);
   }
 
   private static int status(final CommandContext<ServerCommandSource> context) {

@@ -2,6 +2,7 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.config.ConfigFile;
 import com.grahambartley.volley.config.ConfigPaths;
+import com.grahambartley.volley.config.ConfigPermissions;
 import com.grahambartley.volley.config.GrappleArrowConfig;
 import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
@@ -140,9 +141,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
         .getServer()
         .getPlayerManager()
         .getOpList()
-        .add(
-            new OperatorEntry(
-                player.getGameProfile(), ServerConfigService.OP_PERMISSION_LEVEL, false));
+        .add(new OperatorEntry(player.getGameProfile(), ConfigPermissions.OPERATOR_LEVEL, false));
     return player;
   }
 

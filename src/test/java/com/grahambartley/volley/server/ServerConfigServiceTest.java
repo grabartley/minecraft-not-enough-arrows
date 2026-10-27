@@ -26,11 +26,6 @@ class ServerConfigServiceTest {
   }
 
   @Test
-  void gatesMutationBehindOperatorPermissionLevelTwo() {
-    assertEquals(2, ServerConfigService.OP_PERMISSION_LEVEL);
-  }
-
-  @Test
   void writesDefaultsOutWhenTheWorldHasNoConfigYet() {
     ServerConfigService.loadFromWorldRoot(worldRoot);
 

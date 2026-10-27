@@ -2,6 +2,7 @@ package com.grahambartley.volley.countdown;
 
 import com.grahambartley.volley.countdown.CountdownChanges.Announced;
 import com.grahambartley.volley.network.CountdownPayloads.CountdownS2CPayload;
+import com.grahambartley.volley.server.ModdedClients;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -12,7 +13,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -99,11 +99,7 @@ public final class CountdownBroadcaster {
 
   private static void announceTo(
       final Iterable<ServerPlayerEntity> viewers, final CountdownS2CPayload payload) {
-    for (final ServerPlayerEntity viewer : viewers) {
-      if (ServerPlayNetworking.canSend(viewer, CountdownS2CPayload.ID)) {
-        ServerPlayNetworking.send(viewer, payload);
-      }
-    }
+    ModdedClients.sendAll(viewers, payload);
   }
 
   @Nullable

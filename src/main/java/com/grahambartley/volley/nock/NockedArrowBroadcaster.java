@@ -1,13 +1,13 @@
 package com.grahambartley.volley.nock;
 
 import com.grahambartley.volley.network.NockedArrowPayloads.NockedArrowS2CPayload;
+import com.grahambartley.volley.server.ModdedClients;
 import java.util.List;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -48,10 +48,6 @@ public final class NockedArrowBroadcaster {
     final NockedArrowS2CPayload payload =
         new NockedArrowS2CPayload(
             drawing.getId(), arrow.isEmpty() ? ItemStack.EMPTY : arrow.copyWithCount(1));
-    for (final ServerPlayerEntity viewer : viewers) {
-      if (ServerPlayNetworking.canSend(viewer, NockedArrowS2CPayload.ID)) {
-        ServerPlayNetworking.send(viewer, payload);
-      }
-    }
+    ModdedClients.sendAll(viewers, payload);
   }
 }

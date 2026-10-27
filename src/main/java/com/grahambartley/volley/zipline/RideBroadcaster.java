@@ -1,12 +1,12 @@
 package com.grahambartley.volley.zipline;
 
 import com.grahambartley.volley.network.RidePayloads.RideS2CPayload;
+import com.grahambartley.volley.server.ModdedClients;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -17,7 +17,8 @@ public final class RideBroadcaster {
 
   public static void register() {
     EntityTrackingEvents.START_TRACKING.register(
-        (tracked, viewer) -> catchUpFor(tracked).ifPresent(payload -> send(viewer, payload)));
+        (tracked, viewer) ->
+            catchUpFor(tracked).ifPresent(payload -> ModdedClients.send(viewer, payload)));
   }
 
   public static void started(final ServerPlayerEntity rider) {
@@ -47,12 +48,6 @@ public final class RideBroadcaster {
 
   private static void announce(final ServerPlayerEntity rider, final boolean riding) {
     final RideS2CPayload payload = new RideS2CPayload(rider.getId(), riding);
-    audienceOf(rider).forEach(viewer -> send(viewer, payload));
-  }
-
-  private static void send(final ServerPlayerEntity viewer, final RideS2CPayload payload) {
-    if (ServerPlayNetworking.canSend(viewer, RideS2CPayload.ID)) {
-      ServerPlayNetworking.send(viewer, payload);
-    }
+    ModdedClients.sendAll(audienceOf(rider), payload);
   }
 }

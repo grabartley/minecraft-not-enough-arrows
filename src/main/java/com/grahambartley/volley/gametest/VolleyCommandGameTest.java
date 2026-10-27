@@ -3,6 +3,7 @@ package com.grahambartley.volley.gametest;
 import com.grahambartley.volley.command.VolleyCommand;
 import com.grahambartley.volley.config.ConfigFile;
 import com.grahambartley.volley.config.ConfigPaths;
+import com.grahambartley.volley.config.ConfigPermissions;
 import com.grahambartley.volley.config.GrappleArrowConfig;
 import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
@@ -41,7 +42,7 @@ public final class VolleyCommandGameTest implements FabricGameTest {
     final ServerCommandSource nonOperator = operator(context).withLevel(0);
 
     context.assertFalse(
-        nonOperator.hasPermissionLevel(ServerConfigService.OP_PERMISSION_LEVEL),
+        nonOperator.hasPermissionLevel(ConfigPermissions.OPERATOR_LEVEL),
         "The gating test needs a source below the operator permission level");
     context.assertFalse(
         run(context, nonOperator, SET_MAX_RANGE + "64"),

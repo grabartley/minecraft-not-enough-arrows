@@ -1,12 +1,11 @@
 package com.grahambartley.volley.disguise;
 
 import com.grahambartley.volley.network.DisguisePayloads.DisguiseS2CPayload;
+import com.grahambartley.volley.server.ModdedClients;
 import java.util.Optional;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 
@@ -16,7 +15,8 @@ public final class DisguiseBroadcaster {
 
   public static void register() {
     EntityTrackingEvents.START_TRACKING.register(
-        (tracked, viewer) -> catchUpFor(tracked).ifPresent(payload -> send(viewer, payload)));
+        (tracked, viewer) ->
+            catchUpFor(tracked).ifPresent(payload -> ModdedClients.send(viewer, payload)));
   }
 
   public static Optional<DisguiseS2CPayload> catchUpFor(final Entity tracked) {
@@ -36,12 +36,6 @@ public final class DisguiseBroadcaster {
   }
 
   private static void announce(final Entity disguised, final DisguiseS2CPayload payload) {
-    PlayerLookup.tracking(disguised).forEach(viewer -> send(viewer, payload));
-  }
-
-  private static void send(final ServerPlayerEntity viewer, final DisguiseS2CPayload payload) {
-    if (ServerPlayNetworking.canSend(viewer, DisguiseS2CPayload.ID)) {
-      ServerPlayNetworking.send(viewer, payload);
-    }
+    ModdedClients.sendAll(PlayerLookup.tracking(disguised), payload);
   }
 }

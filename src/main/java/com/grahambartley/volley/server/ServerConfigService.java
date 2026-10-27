@@ -7,7 +7,6 @@ import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.network.ServerConfigPayloads.SyncServerConfigS2CPayload;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.WorldSavePath;
@@ -16,8 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class ServerConfigService {
-  public static final int OP_PERMISSION_LEVEL = 2;
-
   private static final Logger LOGGER = LoggerFactory.getLogger(ServerConfigService.class);
 
   private ServerConfigService() {}
@@ -35,7 +32,7 @@ public final class ServerConfigService {
   }
 
   public static VolleyConfig loadFromWorldRoot(final Path worldRoot) {
-    final Path configPath = new ConfigPaths(worldRoot).getServerConfigPath();
+    final Path configPath = configPathIn(worldRoot);
     final VolleyConfig config = ConfigFile.load(configPath);
     ServerConfigHolder.set(config);
 
@@ -52,7 +49,7 @@ public final class ServerConfigService {
     if (server == null || updated == null) {
       return false;
     }
-    if (!ConfigFile.save(configPathFor(server), updated)) {
+    if (!ConfigFile.save(configPathIn(server.getSavePath(WorldSavePath.ROOT)), updated)) {
       return false;
     }
     ServerConfigHolder.set(updated);
@@ -65,10 +62,9 @@ public final class ServerConfigService {
   }
 
   public static void syncTo(final ServerPlayerEntity player) {
-    if (player == null || !ServerPlayNetworking.canSend(player, SyncServerConfigS2CPayload.ID)) {
-      return;
+    if (player != null) {
+      ModdedClients.send(player, currentSyncPayload());
     }
-    ServerPlayNetworking.send(player, currentSyncPayload());
   }
 
   public static void broadcast(final MinecraftServer server) {
@@ -78,8 +74,7 @@ public final class ServerConfigService {
     server.getPlayerManager().getPlayerList().forEach(ServerConfigService::syncTo);
   }
 
-  private static Path configPathFor(final MinecraftServer server) {
-    return new ConfigPaths(server.getSavePath(WorldSavePath.ROOT).normalize())
-        .getServerConfigPath();
+  private static Path configPathIn(final Path worldRoot) {
+    return new ConfigPaths(worldRoot.normalize()).getServerConfigPath();
   }
 }
