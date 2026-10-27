@@ -5,9 +5,6 @@ public final class IncendiaryBurn {
 
   private IncendiaryBurn() {}
 
-    return center.squaredDistanceTo(target) <= (double) radius * radius;
-  }
-
   public static int igniteTicks(final int seconds) {
     return Math.max(0, seconds) * TICKS_PER_SECOND;
   }

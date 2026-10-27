@@ -1,10 +1,10 @@
 package com.grahambartley.volley.incendiary;
 
-import com.grahambartley.volley.world.Reach;
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.config.IncendiaryArrowConfig;
 import com.grahambartley.volley.fire.FirePatchService;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.Reach;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.entity.Entity;
