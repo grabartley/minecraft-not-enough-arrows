@@ -37,8 +37,7 @@ final class SocialTestSupport {
 
   static ServerPlayerEntity fireEast(final TestContext context, final ItemStack quiver) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    shooter.getInventory().clear();
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, quiver);
     PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
     return shooter;

@@ -23,7 +23,7 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aShooterWithRoomIsGrantedTheArrow(TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER);
+    final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
 
     context.assertEquals(Outcome.GRANTED, resolve(context, shooter, true), "Outcome");
     context.assertEquals(1, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");
@@ -33,7 +33,7 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aShooterWithAFullInventoryHasItDroppedAtTheirFeet(TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER);
+    final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
     AgricultureTestSupport.fillInventory(shooter);
 
     context.assertEquals(Outcome.DROPPED_AT_FEET, resolve(context, shooter, true), "Outcome");
@@ -43,7 +43,7 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aFullCreativeShooterHasItDroppedAtTheirFeetRatherThanDeleted(TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER);
+    final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
     shooter.changeGameMode(net.minecraft.world.GameMode.CREATIVE);
     AgricultureTestSupport.fillInventory(shooter);
 
@@ -67,7 +67,7 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aDeadShooterLeavesItWhereItFell(TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER);
+    final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
     shooter.kill();
 
     context.assertEquals(Outcome.DROPPED_WHERE_IT_FELL, resolve(context, shooter, true), "Outcome");
@@ -84,7 +84,7 @@ public final class BoomerangReturnGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anArrowNobodyMayPickUpReturnsNothing(TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER);
+    final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, SHOOTER);
 
     context.assertEquals(Outcome.NOTHING_TO_RETURN, resolve(context, shooter, false), "Outcome");
     context.assertEquals(0, ChaosTestSupport.countOf(shooter, BOOMERANG), "Held");

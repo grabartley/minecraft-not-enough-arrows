@@ -97,8 +97,6 @@ public final class StackHandoverGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity recipient(final TestContext context) {
-    final ServerPlayerEntity recipient = ChaosTestSupport.survivalPlayerAt(context, STAND);
-    recipient.getInventory().clear();
-    return recipient;
+    return MockPlayerSupport.survivalPlayerAt(context, STAND);
   }
 }

@@ -78,7 +78,7 @@ public final class VineServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aVineNeverGrowsWhereTheShooterMayNotBuild(TestContext context) {
     wall(context, 4);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final List<BlockPos>[] grown = new List[1];
 
     TraversalTestSupport.withTheBorderEastEdgeAt(
@@ -155,7 +155,7 @@ public final class VineServiceGameTest implements FabricGameTest {
         context.getWorld(),
         context.getAbsolutePos(STRUCK),
         face,
-        context.createMockCreativeServerPlayerInWorld(),
+        MockPlayerSupport.player(context),
         length);
   }
 }

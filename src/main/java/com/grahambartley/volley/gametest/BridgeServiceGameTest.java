@@ -89,7 +89,7 @@ public final class BridgeServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aBridgeCrossingAProtectionBoundaryIsTruncatedAtIt(TestContext context) {
     context.setBlockState(WEST_EDGE, Blocks.STONE);
-    final PlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final PlayerEntity shooter = MockPlayerSupport.player(context);
     final List<BlockPos>[] walkway = new List[1];
 
     TraversalTestSupport.withTheBorderEastEdgeAt(

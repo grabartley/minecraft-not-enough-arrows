@@ -38,10 +38,8 @@ public final class EntityRevealPulseGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.ARENA, batchId = BATCH, tickLimit = 10)
   public void neverOutlinesTheShooter(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, shooter, Vec3d.ofBottomCenter(CENTER.east(1)));
-    final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, bystander, Vec3d.ofBottomCenter(CENTER.east(2)));
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, CENTER.east(1));
+    final ServerPlayerEntity bystander = MockPlayerSupport.playerAt(context, CENTER.east(2));
 
     final List<LivingEntity> found = fire(context, shooter, DURATION_TICKS);
 

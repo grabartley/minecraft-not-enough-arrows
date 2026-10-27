@@ -16,7 +16,6 @@ import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameMode;
 
 final class ChaosTestSupport {
   static final double STURDY_PLAYER_HEALTH = 400.0;
@@ -52,14 +51,8 @@ final class ChaosTestSupport {
     return mob;
   }
 
-  static ServerPlayerEntity survivalPlayerAt(final TestContext context, final BlockPos at) {
-    final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, at);
-    player.changeGameMode(GameMode.SURVIVAL);
-    return player;
-  }
-
   static ServerPlayerEntity sturdyPlayerAt(final TestContext context, final BlockPos at) {
-    final ServerPlayerEntity player = survivalPlayerAt(context, at);
+    final ServerPlayerEntity player = MockPlayerSupport.survivalPlayerAt(context, at);
     player
         .getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH)
         .setBaseValue(STURDY_PLAYER_HEALTH);

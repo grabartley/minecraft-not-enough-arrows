@@ -100,7 +100,7 @@ public final class ServerConfigServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void syncingToAPlayerWithNoModChannelIsSkippedRatherThanFatal(TestContext context) {
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player = MockPlayerSupport.player(context);
 
     ServerConfigService.syncTo(player);
 

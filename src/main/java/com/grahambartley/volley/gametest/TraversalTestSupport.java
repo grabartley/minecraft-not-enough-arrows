@@ -37,19 +37,13 @@ final class TraversalTestSupport {
   }
 
   static ServerPlayerEntity keepEntitiesTicking(final TestContext context) {
-    return playerAt(context, WATCHER_STAND);
+    return MockPlayerSupport.playerAt(context, WATCHER_STAND);
   }
 
   static void stone(final TestContext context, final BlockPos... relative) {
     for (final BlockPos pos : relative) {
       context.setBlockState(pos, Blocks.STONE);
     }
-  }
-
-  static ServerPlayerEntity playerAt(final TestContext context, final Vec3d relative) {
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, player, relative);
-    return player;
   }
 
   static void placeCenteredAt(

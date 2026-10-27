@@ -11,7 +11,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 public final class WatcherServiceGameTest implements FabricGameTest {
   private static final String BATCH = "watcher-service";
@@ -25,7 +24,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void somethingCrossingAWatcherRaisesAnAlarmForItsOwner(TestContext context) {
     WatcherService.forget();
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     place(context, owner);
     final CowEntity cow = stillCow(context, WIRE);
 
@@ -43,7 +42,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void aBusyWatcherReportsAtMostOncePerInterval(TestContext context) {
     WatcherService.forget();
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     place(context, owner);
     stillCow(context, WIRE);
     stillCow(context, WIRE);
@@ -63,7 +62,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void nothingCrossingRaisesNoAlarm(TestContext context) {
     WatcherService.forget();
-    place(context, context.createMockCreativeServerPlayerInWorld());
+    place(context, MockPlayerSupport.player(context));
     stillCow(context, WIRE.east(2));
 
     context.assertTrue(sweep(context, 0).isEmpty(), "Nothing is inside the watcher");
@@ -76,8 +75,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void theOwnerWalkingThroughTheirOwnWatcherRaisesNoAlarm(TestContext context) {
     WatcherService.forget();
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, owner, Vec3d.ofBottomCenter(WIRE));
+    final ServerPlayerEntity owner = MockPlayerSupport.playerAt(context, WIRE);
     place(context, owner);
 
     context.assertTrue(sweep(context, 0).isEmpty(), "The owner does not trip their own wire");
@@ -90,10 +88,9 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void anotherPlayerCrossingRaisesAnAlarm(TestContext context) {
     WatcherService.forget();
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     place(context, owner);
-    final ServerPlayerEntity intruder = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, intruder, Vec3d.ofBottomCenter(WIRE));
+    final ServerPlayerEntity intruder = MockPlayerSupport.playerAt(context, WIRE);
 
     final List<WatcherAlarm> alarms = sweep(context, 0);
 
@@ -124,7 +121,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void anExpiredWatcherIsGoneAndRaisesNothing(TestContext context) {
     WatcherService.forget();
-    final Watcher watcher = place(context, context.createMockCreativeServerPlayerInWorld());
+    final Watcher watcher = place(context, MockPlayerSupport.player(context));
     stillCow(context, WIRE);
 
     context.assertEquals(
@@ -140,7 +137,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void aWatcherWhoseGroundUnloadsIsDropped(TestContext context) {
     WatcherService.forget();
-    final Watcher watcher = place(context, context.createMockCreativeServerPlayerInWorld());
+    final Watcher watcher = place(context, MockPlayerSupport.player(context));
     stillCow(context, WIRE);
     final BlockPos wire = context.getAbsolutePos(WIRE);
 
@@ -158,7 +155,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
       tickLimit = 10)
   public void forgettingDropsEveryWatcherAsARestartWould(TestContext context) {
     WatcherService.forget();
-    final Watcher watcher = place(context, context.createMockCreativeServerPlayerInWorld());
+    final Watcher watcher = place(context, MockPlayerSupport.player(context));
 
     WatcherService.forget();
 

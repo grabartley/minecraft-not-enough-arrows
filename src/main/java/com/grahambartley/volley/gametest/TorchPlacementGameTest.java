@@ -85,7 +85,7 @@ public final class TorchPlacementGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void aTorchIsNeverPlacedWhereTheShooterMayNotBuild(TestContext context) {
-    final PlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final PlayerEntity shooter = MockPlayerSupport.player(context);
     final boolean[] placed = new boolean[1];
 
     TraversalTestSupport.withTheBorderEastEdgeAt(

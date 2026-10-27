@@ -205,7 +205,7 @@ public final class BoomerangArrowEntityGameTest implements FabricGameTest {
 
   private static ServerPlayerEntity fireInSurvival(final TestContext context) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, new ItemStack(BOOMERANG, A_QUIVER));
     PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
     return shooter;

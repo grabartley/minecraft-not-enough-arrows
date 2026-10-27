@@ -92,7 +92,7 @@ public final class SpanServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSpanCrossingAProtectionBoundaryIsRefusedWhole(TestContext context) {
-    final var shooter = context.createMockCreativeServerPlayerInWorld();
+    final var shooter = MockPlayerSupport.player(context);
     final SpanResult[] result = new SpanResult[1];
 
     TraversalTestSupport.withTheBorderEastEdgeAt(

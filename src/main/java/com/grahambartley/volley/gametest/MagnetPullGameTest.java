@@ -163,9 +163,7 @@ public final class MagnetPullGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity shooter(final TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, SHOOTER_STAND);
-    shooter.getInventory().clear();
-    return shooter;
+    return MockPlayerSupport.survivalPlayerAt(context, SHOOTER_STAND);
   }
 
   private static ItemEntity itemAt(final TestContext context, final BlockPos at) {

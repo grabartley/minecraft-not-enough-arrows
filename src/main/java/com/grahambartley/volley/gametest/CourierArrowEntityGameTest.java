@@ -230,8 +230,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aCourierArrowLostToTheVoidReturnsItsPayloadToTheShooter(TestContext context) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    shooter.getInventory().clear();
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     final CourierArrowEntity arrow = loadedArrowInMidAir(context);
     arrow.setOwner(shooter);
     arrow.setPosition(arrow.getX(), context.getWorld().getBottomY() - 70.0, arrow.getZ());
@@ -265,8 +264,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPayloadLostToTheVoidReachesAShooterInAnotherDimension(TestContext context) {
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
-    shooter.getInventory().clear();
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     final CourierArrowEntity arrow = loadedArrowInMidAir(context);
     arrow.setOwner(shooter);
     shooter.teleport(
@@ -387,10 +385,7 @@ public final class CourierArrowEntityGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity recipientAt(final TestContext context) {
-    final ServerPlayerEntity recipient =
-        ChaosTestSupport.survivalPlayerAt(context, RECIPIENT_STAND);
-    recipient.getInventory().clear();
-    return recipient;
+    return MockPlayerSupport.survivalPlayerAt(context, RECIPIENT_STAND);
   }
 
   private static CourierArrowEntity loadedArrowInMidAir(final TestContext context) {

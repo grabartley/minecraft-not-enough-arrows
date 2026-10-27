@@ -107,7 +107,7 @@ public final class BeaconServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aBeamNeverRisesWhereTheShooterMayNotBuild(TestContext context) {
-    final PlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final PlayerEntity shooter = MockPlayerSupport.player(context);
     final List<BlockPos>[] beam = new List[1];
 
     TraversalTestSupport.withTheBorderEastEdgeAt(

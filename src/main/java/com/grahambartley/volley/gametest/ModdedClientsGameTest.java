@@ -10,7 +10,7 @@ public final class ModdedClientsGameTest implements FabricGameTest {
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, tickLimit = 20)
   public void aConnectionThatNeverDeclaredThisModsPayloadsDoesNotHaveTheMod(TestContext context) {
     context.assertFalse(
-        ModdedClients.hasTheMod(context.createMockCreativeServerPlayerInWorld().networkHandler),
+        ModdedClients.hasTheMod(MockPlayerSupport.player(context).networkHandler),
         "A connection with no client behind it never declared this mod's payloads");
     context.complete();
   }

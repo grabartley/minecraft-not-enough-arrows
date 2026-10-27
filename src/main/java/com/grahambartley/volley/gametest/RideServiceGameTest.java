@@ -461,7 +461,7 @@ public final class RideServiceGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity riderAt(final TestContext context, final Vec3d center) {
-    final ServerPlayerEntity rider = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity rider = MockPlayerSupport.player(context);
     TraversalTestSupport.placeCenteredAt(context, rider, center);
     return rider;
   }

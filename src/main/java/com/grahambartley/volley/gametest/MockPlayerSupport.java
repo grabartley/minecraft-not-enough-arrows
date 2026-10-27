@@ -82,10 +82,17 @@ final class MockPlayerSupport {
     Items.BOW.onStoppedUsing(new ItemStack(Items.BOW), context.getWorld(), shooter, FULLY_DRAWN);
   }
 
+  static ServerPlayerEntity player(final TestContext context) {
+    return LeavesWhenTestEnds.register(context, context.createMockCreativeServerPlayerInWorld());
+  }
+
   static ServerPlayerEntity playerAt(final TestContext context, final BlockPos relativePos) {
-    final ServerPlayerEntity player =
-        LeavesWhenTestEnds.register(context, context.createMockCreativeServerPlayerInWorld());
-    moveTo(context, player, Vec3d.ofBottomCenter(relativePos));
+    return playerAt(context, Vec3d.ofBottomCenter(relativePos));
+  }
+
+  static ServerPlayerEntity playerAt(final TestContext context, final Vec3d relativePos) {
+    final ServerPlayerEntity player = player(context);
+    moveTo(context, player, relativePos);
     return player;
   }
 

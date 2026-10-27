@@ -25,8 +25,7 @@ public final class UpdraftTargetsGameTest implements FabricGameTest {
   public void mobsPlayersItemsAndVehiclesAreAllLifted(TestContext context) {
     context.assertTrue(
         UpdraftTargets.canBeLifted(context.spawnEntity(EntityType.COW, SPOT)), "Cow");
-    context.assertTrue(
-        UpdraftTargets.canBeLifted(context.createMockCreativeServerPlayerInWorld()), "Player");
+    context.assertTrue(UpdraftTargets.canBeLifted(MockPlayerSupport.player(context)), "Player");
     context.assertTrue(UpdraftTargets.canBeLifted(context.spawnItem(Items.STICK, SPOT)), "Item");
     context.assertTrue(
         UpdraftTargets.canBeLifted(context.spawnEntity(EntityType.BOAT, SPOT)), "Boat");
@@ -47,7 +46,7 @@ public final class UpdraftTargetsGameTest implements FabricGameTest {
   public void somethingThatDoesNotFallIsLeftAlone(TestContext context) {
     final ArmorStandEntity stand = context.spawnEntity(EntityType.ARMOR_STAND, SPOT);
     stand.setNoGravity(true);
-    final ServerPlayerEntity flyer = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity flyer = MockPlayerSupport.player(context);
     flyer.getAbilities().flying = true;
 
     context.assertFalse(UpdraftTargets.canBeLifted(stand), "A gravityless armor stand");

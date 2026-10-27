@@ -151,9 +151,7 @@ public final class CraftingResultSlotMixinGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity player(final TestContext context) {
-    final ServerPlayerEntity player = ChaosTestSupport.survivalPlayerAt(context, TABLE.west());
-    player.getInventory().clear();
-    return player;
+    return MockPlayerSupport.survivalPlayerAt(context, TABLE.west());
   }
 
   private static CraftingScreenHandler openTable(

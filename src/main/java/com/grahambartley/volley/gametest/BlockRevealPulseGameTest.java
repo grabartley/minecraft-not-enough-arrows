@@ -54,7 +54,7 @@ public final class BlockRevealPulseGameTest implements FabricGameTest {
   @GameTest(templateName = DiscoveryTestSupport.ARENA, batchId = BATCH, tickLimit = 10)
   public void firingTellsTheShooterWhatItFound(TestContext context) {
     context.setBlockState(CENTER.east(2), Blocks.DIAMOND_ORE);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     final List<BlockPos> found =
         BlockRevealPulse.fire(

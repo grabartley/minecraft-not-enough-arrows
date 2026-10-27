@@ -60,7 +60,7 @@ public final class TowTargetsGameTest implements FabricGameTest {
 
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void aPlayerIsTowedOnlyWhereTheServerLetsRecallMovePlayers(TestContext context) {
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player = MockPlayerSupport.player(context);
 
     context.assertFalse(TowTargets.isTowable(player, false), "Setting off");
     context.assertTrue(TowTargets.isTowable(player, true), "Setting on");
@@ -70,7 +70,7 @@ public final class TowTargetsGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void aMountCarryingAPlayerCountsAsAPlayer(TestContext context) {
     final HorseEntity horse = context.spawnEntity(EntityType.HORSE, SPOT);
-    final ServerPlayerEntity rider = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity rider = MockPlayerSupport.player(context);
     rider.startRiding(horse, true);
 
     context.assertFalse(TowTargets.isTowable(horse, false), "Setting off");
