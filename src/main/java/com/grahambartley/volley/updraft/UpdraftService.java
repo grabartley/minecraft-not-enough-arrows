@@ -3,15 +3,14 @@ package com.grahambartley.volley.updraft;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.config.UpdraftArrowConfig;
-import com.grahambartley.volley.grapple.GrappleFlightCheck;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
 import java.util.List;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.Vec3d;
@@ -98,12 +97,8 @@ public final class UpdraftService {
   }
 
   private static void lift(final Entity entity, final UpdraftColumn column) {
-    entity.setVelocity(column.lift(entity.getVelocity()));
-    entity.velocityModified = true;
+    Propel.drive(entity, column.lift(entity.getVelocity()));
     entity.fallDistance = 0.0f;
-    if (entity instanceof ServerPlayerEntity player) {
-      GrappleFlightCheck.clearFloatingCountFor(player);
-    }
   }
 
   private static void show(final ServerWorld world, final UpdraftColumn column) {

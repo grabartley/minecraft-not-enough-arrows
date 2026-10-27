@@ -1,5 +1,8 @@
 package com.grahambartley.volley.world;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -25,6 +28,22 @@ public final class BlockPlacement {
       return false;
     }
     return state.canPlaceAt(world, pos);
+  }
+
+  public static List<BlockPos> placeUntilBlocked(
+      final ServerWorld world,
+      final List<BlockPos> positions,
+      final BlockState state,
+      @Nullable final PlayerEntity placer) {
+    final List<BlockPos> placed = new ArrayList<>(positions.size());
+    for (final BlockPos pos : positions) {
+      if (!canPlace(world, pos, state, placer)
+          || !world.setBlockState(pos, state, Block.NOTIFY_ALL)) {
+        break;
+      }
+      placed.add(pos.toImmutable());
+    }
+    return List.copyOf(placed);
   }
 
   public static boolean canOccupy(

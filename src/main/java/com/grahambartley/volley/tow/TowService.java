@@ -4,11 +4,11 @@ import com.grahambartley.volley.config.EnderArrowConfig;
 import com.grahambartley.volley.config.TowArrowConfig;
 import com.grahambartley.volley.ender.RecallTargets;
 import com.grahambartley.volley.grapple.GrappleEnding;
-import com.grahambartley.volley.grapple.GrappleFlightCheck;
 import com.grahambartley.volley.grapple.GrappleService;
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
 import com.grahambartley.volley.world.Reach;
 import com.grahambartley.volley.world.SessionTracker;
 import com.grahambartley.volley.zipline.RideEnding;
@@ -19,7 +19,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,8 +95,7 @@ public final class TowService {
     if (ended != null
         && ending.stopsTheTarget()
         && world.getEntity(targetId) instanceof Entity target) {
-      target.setVelocity(TowPull.stopped(target.getVelocity()));
-      target.velocityModified = true;
+      Propel.drive(target, TowPull.stopped(target.getVelocity()));
     }
     return ended;
   }
@@ -163,12 +161,8 @@ public final class TowService {
   }
 
   private static void drag(final Entity target, final PlayerEntity shooter, final double speed) {
-    target.setVelocity(
-        TowPull.velocity(target.getPos(), shooter.getPos(), target.getVelocity(), speed));
-    target.velocityModified = true;
-    if (target instanceof ServerPlayerEntity player) {
-      GrappleFlightCheck.clearFloatingCountFor(player);
-    }
+    Propel.drive(
+        target, TowPull.velocity(target.getPos(), shooter.getPos(), target.getVelocity(), speed));
   }
 
   private static boolean isGone(@Nullable final Entity entity) {

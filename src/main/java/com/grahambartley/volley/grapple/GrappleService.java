@@ -6,6 +6,7 @@ import com.grahambartley.volley.config.GrappleArrowConfig;
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
 import com.grahambartley.volley.world.Reach;
 import com.grahambartley.volley.world.SessionTracker;
 import java.util.UUID;
@@ -165,10 +166,9 @@ public final class GrappleService {
 
   private static void pullTowardAnchor(
       final ServerPlayerEntity player, final Vec3d target, final double pullSpeed) {
-    player.setVelocity(
+    Propel.drive(
+        player,
         GrapplePull.velocity(pullOrigin(player), target, pullSpeed, player.getFinalGravity()));
-    player.velocityModified = true;
-    GrappleFlightCheck.clearFloatingCountFor(player);
   }
 
   private static Vec3d pullOrigin(final PlayerEntity player) {

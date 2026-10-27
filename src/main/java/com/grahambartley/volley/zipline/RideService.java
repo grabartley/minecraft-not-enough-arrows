@@ -2,13 +2,13 @@ package com.grahambartley.volley.zipline;
 
 import com.grahambartley.volley.grapple.GrappleEnding;
 import com.grahambartley.volley.grapple.GrappleFallGuard;
-import com.grahambartley.volley.grapple.GrappleFlightCheck;
 import com.grahambartley.volley.grapple.GrappleService;
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.tow.TowEnding;
 import com.grahambartley.volley.tow.TowService;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.Propel;
 import com.grahambartley.volley.world.SessionTracker;
 import java.util.Optional;
 import java.util.UUID;
@@ -158,11 +158,10 @@ public final class RideService {
       final RideSession session,
       final Vec3d grip,
       final double speed) {
-    rider.setVelocity(
+    Propel.drive(
+        rider,
         RidePath.velocity(session.from(), session.to(), grip, speed, rider.getFinalGravity()));
-    rider.velocityModified = true;
     rider.fallDistance = 0.0f;
-    GrappleFlightCheck.clearFloatingCountFor(rider);
   }
 
   private static boolean canHoldOn(final ServerPlayerEntity rider) {
