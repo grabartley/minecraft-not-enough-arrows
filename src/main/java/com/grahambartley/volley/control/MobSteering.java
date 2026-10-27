@@ -36,6 +36,14 @@ public final class MobSteering {
 
   private MobSteering() {}
 
+  public static boolean steer(
+      final MobEntity mob, final Vec3d anchor, final ControlSteering steering) {
+    return steering
+        .destination(mob.getPos(), anchor)
+        .map(destination -> MobSteering.moveTo(mob, destination, steering.speed()))
+        .orElse(false);
+  }
+
   public static boolean moveTo(final MobEntity mob, final Vec3d destination, final double speed) {
     rouse(mob);
     if (mob instanceof SlimeEntity slime

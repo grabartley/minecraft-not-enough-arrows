@@ -2,6 +2,8 @@ package com.grahambartley.volley.control;
 
 import com.grahambartley.volley.Volley;
 import com.mojang.serialization.Codec;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -30,32 +32,36 @@ public final class ControlPersistence {
   public static void restore(final Entity entity, final ServerWorld world) {
     final long now = world.getTime();
     if (entity instanceof MobEntity mob) {
-      final ControlHold hold = mob.getAttached(HOLD);
-      if (hold != null) {
-        if (hold.hasExpired(now)) {
-          mob.removeAttached(HOLD);
-        } else {
-          ControlHoldService.resume(world, hold);
-        }
-      }
-      final DisarmFetch fetch = mob.getAttached(FETCH);
-      if (fetch != null) {
-        if (fetch.hasExpired(now)) {
-          mob.removeAttached(FETCH);
-        } else {
-          DisarmFetchService.resume(world, fetch);
-        }
-      }
+      restoreIfLive(
+          mob, HOLD, hold -> hold.hasExpired(now), hold -> ControlHoldService.resume(world, hold));
+      restoreIfLive(
+          mob,
+          FETCH,
+          fetch -> fetch.hasExpired(now),
+          fetch -> DisarmFetchService.resume(world, fetch));
     }
     if (entity instanceof LivingEntity living) {
-      final Long frostUntil = living.getAttached(FROST_UNTIL);
-      if (frostUntil != null) {
-        if (frostUntil <= now) {
-          living.removeAttached(FROST_UNTIL);
-        } else {
-          FrostGripService.resume(world, living, frostUntil);
-        }
-      }
+      restoreIfLive(
+          living,
+          FROST_UNTIL,
+          until -> until <= now,
+          until -> FrostGripService.resume(world, living, until));
+    }
+  }
+
+  private static <T> void restoreIfLive(
+      final Entity entity,
+      final AttachmentType<T> type,
+      final Predicate<T> hasExpired,
+      final Consumer<T> resume) {
+    final T saved = entity.getAttached(type);
+    if (saved == null) {
+      return;
+    }
+    if (hasExpired.test(saved)) {
+      entity.removeAttached(type);
+    } else {
+      resume.accept(saved);
     }
   }
 }

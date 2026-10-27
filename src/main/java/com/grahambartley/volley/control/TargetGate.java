@@ -25,7 +25,7 @@ public final class TargetGate {
     final ControlHold hold = held.get();
     final Optional<UUID> subject = hold.subjectId();
     return switch (hold.steering()) {
-      case FLEEING -> ControlHoldService.isCornered(mob);
+      case FLEEING -> FleeBehaviour.isCornered(mob);
       case DRAWN -> subject.map(id -> id.equals(target.getUuid())).orElse(true);
       case DEFENDING -> subject.map(id -> !id.equals(target.getUuid())).orElse(true);
     };

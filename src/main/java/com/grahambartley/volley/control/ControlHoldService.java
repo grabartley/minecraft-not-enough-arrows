@@ -4,7 +4,6 @@ import com.grahambartley.volley.config.AllegianceArrowConfig;
 import com.grahambartley.volley.config.TargetingArrowConfig;
 import com.grahambartley.volley.world.PerWorld;
 import com.grahambartley.volley.world.SessionTracker;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -14,18 +13,15 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 
 public final class ControlHoldService {
-  private static final double ESCORT_SPEED = 1.25;
 
   private static final PerWorld<SessionTracker<ControlHold>> TRACKERS =
       new PerWorld<>(() -> new SessionTracker<>(ControlHold::mobId));
-  private static final Set<UUID> CORNERED = new HashSet<>();
 
   private ControlHoldService() {}
 
@@ -71,7 +67,7 @@ public final class ControlHoldService {
       mob.setAttached(ControlPersistence.HOLD, hold);
       if (hold.subjectId().isEmpty()) {
         MobAggression.aim(mob, null);
-        steer(mob, hold.anchor(), hold.steering());
+        MobSteering.steer(mob, hold.anchor(), hold.steering());
       } else {
         applyTargeting(world, mob, hold);
       }
@@ -96,7 +92,7 @@ public final class ControlHoldService {
               world.getTime() + targeting.repelDurationTicks());
       TRACKERS.of(world).add(hold);
       mob.setAttached(ControlPersistence.HOLD, hold);
-      steer(mob, hold.anchor(), hold.steering());
+      MobSteering.steer(mob, hold.anchor(), hold.steering());
       held++;
     }
     return held;
@@ -140,13 +136,9 @@ public final class ControlHoldService {
     return tracker == null ? Optional.empty() : Optional.ofNullable(tracker.get(mob.getUuid()));
   }
 
-  public static boolean isCornered(final MobEntity mob) {
-    return CORNERED.contains(mob.getUuid());
-  }
-
   private static void forget() {
     TRACKERS.clear();
-    CORNERED.clear();
+    FleeBehaviour.forget();
     BatFlight.forgetAll();
     SteeringGrace.SLIMES.forgetAll();
   }
@@ -176,36 +168,14 @@ public final class ControlHoldService {
       return;
     }
     if (hold.steering() == ControlSteering.FLEEING) {
-      keepFleeing(world, mob, hold);
+      FleeBehaviour.keepFleeing(mob, hold);
     } else if (hold.steering().navigates()
         && hold.subjectId().isEmpty()
         && MobSteering.needsNewCourse(mob, hold.anchor())) {
-      steer(mob, hold.anchor(), hold.steering());
+      MobSteering.steer(mob, hold.anchor(), hold.steering());
     }
     if (hold.steering().navigates()) {
       MobSteering.keepPace(mob, hold.steering().speed());
-    }
-  }
-
-  private static void keepFleeing(
-      final ServerWorld world, final MobEntity mob, final ControlHold hold) {
-    if (hold.hasFledFarEnough(mob.getPos())) {
-      MobSteering.halt(mob);
-      CORNERED.remove(mob.getUuid());
-      MobAggression.aim(mob, null);
-      return;
-    }
-    MobSteering.rouse(mob);
-    final boolean pulledBackToAFight = mob.getTarget() != null;
-    final boolean hasSomewhereToRun =
-        pulledBackToAFight || MobSteering.needsNewCourse(mob, fleeDestination(mob, hold))
-            ? steer(mob, hold.anchor(), hold.steering())
-            : MobSteering.isUnderway(mob);
-    if (!hasSomewhereToRun && MobSteering.canPlanFromHere(mob)) {
-      CORNERED.add(mob.getUuid());
-    } else {
-      CORNERED.remove(mob.getUuid());
-      MobAggression.aim(mob, null);
     }
   }
 
@@ -213,7 +183,7 @@ public final class ControlHoldService {
       final ServerWorld world, final MobEntity mob, final ControlHold hold) {
     return switch (hold.steering().targetPolicy()) {
       case AIM_AT_SUBJECT -> aimAtSubject(world, mob, hold);
-      case DEFEND_SUBJECT -> defendSubject(world, mob, hold);
+      case DEFEND_SUBJECT -> EscortBehaviour.defendSubject(world, mob, hold);
       case DROP_UNLESS_CORNERED -> true;
     };
   }
@@ -231,44 +201,6 @@ public final class ControlHoldService {
     return true;
   }
 
-  private static boolean defendSubject(
-      final ServerWorld world, final MobEntity mob, final ControlHold hold) {
-    final Entity subject = hold.subjectId().map(world::getEntity).orElse(null);
-    if (subject == null) {
-      return true;
-    }
-    if (!(subject instanceof LivingEntity defended) || !defended.isAlive()) {
-      return false;
-    }
-    WitherHeads.spare(mob, defended);
-    final LivingEntity threat =
-        DefenderTargets.threatTo(world, defended, mob, hold.reach()).orElse(null);
-    MobAggression.aim(mob, threat);
-    if (threat == null) {
-      escort(world, mob, defended);
-    }
-    return true;
-  }
-
-  private static void escort(
-      final ServerWorld world, final MobEntity mob, final LivingEntity defended) {
-    final double squaredDistance = mob.squaredDistanceTo(defended);
-    if (mob instanceof EndermanEntity && Escort.hasLostTrack(squaredDistance)) {
-      mob.teleport(defended.getX(), defended.getY(), defended.getZ(), true);
-      return;
-    }
-    if (Escort.isCloseEnough(squaredDistance, mob.getWidth())) {
-      MobSteering.halt(mob);
-    } else if (Escort.shouldCloseIn(squaredDistance, mob.getWidth())
-        || MobSteering.fliesAtRandom(mob)) {
-      MobSteering.rouse(mob);
-      if (MobSteering.needsNewCourse(mob, defended.getPos())) {
-        MobSteering.moveTo(mob, defended.getPos(), ESCORT_SPEED);
-      }
-    }
-    MobSteering.keepPace(mob, ESCORT_SPEED);
-  }
-
   @Nullable
   private static LivingEntity livingSubject(final ServerWorld world, final ControlHold hold) {
     final UUID subjectId = hold.subjectId().orElse(null);
@@ -280,7 +212,7 @@ public final class ControlHoldService {
   }
 
   private static void handBack(final ServerWorld world, final ControlHold hold) {
-    CORNERED.remove(hold.mobId());
+    FleeBehaviour.release(hold.mobId());
     SteeringGrace.SLIMES.release(hold.mobId());
     final MobEntity mob = mobIn(world, hold);
     if (mob == null) {
@@ -296,19 +228,6 @@ public final class ControlHoldService {
     if (hold.steering().navigates()) {
       MobSteering.halt(mob);
     }
-  }
-
-  @Nullable
-  private static Vec3d fleeDestination(final MobEntity mob, final ControlHold hold) {
-    return hold.steering().destination(mob.getPos(), hold.anchor()).orElse(null);
-  }
-
-  private static boolean steer(
-      final MobEntity mob, final Vec3d anchor, final ControlSteering steering) {
-    return steering
-        .destination(mob.getPos(), anchor)
-        .map(destination -> MobSteering.moveTo(mob, destination, steering.speed()))
-        .orElse(false);
   }
 
   private static MobEntity mobIn(final ServerWorld world, final ControlHold hold) {
