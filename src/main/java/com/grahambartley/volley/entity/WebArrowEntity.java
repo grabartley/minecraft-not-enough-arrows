@@ -1,6 +1,7 @@
 package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.arrow.ArrowImpact;
+import com.grahambartley.volley.arrow.FaceClearance;
 import com.grahambartley.volley.config.WebArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.terrain.WebService;
@@ -37,10 +38,7 @@ public class WebArrowEntity extends BaseArrowEntity {
       return ArrowImpact.DEFAULT;
     }
     WebService.spin(
-        world,
-        blockHitResult.getBlockPos().offset(blockHitResult.getSide()),
-        shootingPlayer().orElse(null),
-        web);
+        world, FaceClearance.blockInFrontOf(blockHitResult), shootingPlayer().orElse(null), web);
     return ArrowImpact.DISCARD;
   }
 

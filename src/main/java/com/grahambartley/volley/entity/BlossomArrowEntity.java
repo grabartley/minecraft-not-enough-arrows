@@ -2,18 +2,17 @@ package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.agriculture.BlossomService;
-import com.grahambartley.volley.arrow.ArrowImpact;
-import com.grahambartley.volley.audio.ModSoundPlayer;
+import java.util.List;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class BlossomArrowEntity extends BaseArrowEntity {
+public class BlossomArrowEntity extends BlockAreaArrowEntity {
 
   public BlossomArrowEntity(
       final EntityType<? extends BlossomArrowEntity> entityType, final World world) {
@@ -32,25 +31,13 @@ public class BlossomArrowEntity extends BaseArrowEntity {
   }
 
   @Override
-  protected ArrowImpact onArrowHitBlock(
-      final ServerWorld world, final BlockHitResult blockHitResult) {
-    return bloomAround(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()))
-        ? ArrowImpact.DISCARD
-        : ArrowImpact.DEFAULT;
+  protected List<BlockPos> affectAround(
+      final ServerWorld world, final BlockPos center, @Nullable final PlayerEntity shooter) {
+    return BlossomService.bloom(world, center, shooter);
   }
 
   @Override
-  protected ArrowImpact onArrowHitEntity(
-      final ServerWorld world, final EntityHitResult entityHitResult) {
-    bloomAround(world, entityHitResult.getEntity().getBlockPos());
-    return ArrowImpact.DEFAULT;
-  }
-
-  private boolean bloomAround(final ServerWorld world, final BlockPos center) {
-    if (BlossomService.bloom(world, center, shootingPlayer().orElse(null)).isEmpty()) {
-      return false;
-    }
-    ModSoundPlayer.playFrom(this, ModSounds.BLOSSOM_ARROW_BLOOM);
-    return true;
+  protected SoundEvent effectSound() {
+    return ModSounds.BLOSSOM_ARROW_BLOOM;
   }
 }

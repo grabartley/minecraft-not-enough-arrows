@@ -1,21 +1,19 @@
 package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.ModSounds;
-import com.grahambartley.volley.arrow.ArrowImpact;
-import com.grahambartley.volley.audio.ModSoundPlayer;
-import com.grahambartley.volley.config.FreezeArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.terrain.FreezeService;
+import java.util.List;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class FreezeArrowEntity extends BaseArrowEntity {
+public class FreezeArrowEntity extends BlockAreaArrowEntity {
 
   public FreezeArrowEntity(
       final EntityType<? extends FreezeArrowEntity> entityType, final World world) {
@@ -34,35 +32,23 @@ public class FreezeArrowEntity extends BaseArrowEntity {
   }
 
   @Override
-  protected ArrowImpact onArrowHitBlock(
-      final ServerWorld world, final BlockHitResult blockHitResult) {
-    final FreezeArrowConfig freeze = ServerConfigService.get().terrain().freeze();
-    if (!freeze.enabled()) {
-      return ArrowImpact.DEFAULT;
-    }
-    freezeAround(world, blockHitResult.getBlockPos().offset(blockHitResult.getSide()), freeze);
-    return ArrowImpact.DISCARD;
+  protected List<BlockPos> affectAround(
+      final ServerWorld world, final BlockPos center, @Nullable final PlayerEntity shooter) {
+    return FreezeService.freeze(world, center, shooter);
   }
 
   @Override
-  protected ArrowImpact onArrowHitEntity(
-      final ServerWorld world, final EntityHitResult entityHitResult) {
-    freezeAround(
-        world,
-        entityHitResult.getEntity().getBlockPos(),
-        ServerConfigService.get().terrain().freeze());
-    return ArrowImpact.DEFAULT;
+  protected SoundEvent effectSound() {
+    return ModSounds.FREEZE_ARROW_FREEZE;
+  }
+
+  @Override
+  protected boolean discardsOnBlockHit(final boolean changedAny) {
+    return ServerConfigService.get().terrain().freeze().enabled();
   }
 
   @Override
   protected boolean hurtsWhatItHits() {
     return !ServerConfigService.get().terrain().freeze().enabled();
-  }
-
-  private void freezeAround(
-      final ServerWorld world, final BlockPos center, final FreezeArrowConfig freeze) {
-    if (!FreezeService.freeze(world, center, shootingPlayer().orElse(null), freeze).isEmpty()) {
-      ModSoundPlayer.playFrom(this, ModSounds.FREEZE_ARROW_FREEZE);
-    }
   }
 }

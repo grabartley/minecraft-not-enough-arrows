@@ -106,7 +106,8 @@ public final class ShockArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void aSpectatorNearerTheHitDoesNotSoakUpTheBolt(TestContext context) {
     FiringRangeSupport.raiseBackstop(context);
-    MockPlayerSupport.playerAt(context, TARGET_STAND).changeGameMode(GameMode.SPECTATOR);
+    final ServerPlayerEntity spectator = MockPlayerSupport.survivalPlayerAt(context, TARGET_STAND);
+    spectator.changeGameMode(GameMode.SPECTATOR);
     final CowEntity bystander = FiringRangeSupport.liveTargetOnPedestalAt(context, NEIGHBOUR_STAND);
     final float before = bystander.getHealth();
     MockPlayerSupport.fireEastFromBow(

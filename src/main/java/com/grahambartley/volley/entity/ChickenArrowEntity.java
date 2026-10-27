@@ -2,6 +2,7 @@ package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.arrow.ArrowImpact;
+import com.grahambartley.volley.arrow.FaceClearance;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.chaos.ChickenRelease;
 import com.grahambartley.volley.server.ServerConfigService;
@@ -39,8 +40,7 @@ public class ChickenArrowEntity extends BaseArrowEntity {
     if (!isHatching()) {
       return ArrowImpact.DEFAULT;
     }
-    final Vec3d inFront =
-        Vec3d.ofBottomCenter(blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
+    final Vec3d inFront = FaceClearance.groundInFrontOf(blockHitResult);
     return hatchAt(world, inFront) ? ArrowImpact.DISCARD : ArrowImpact.DEFAULT;
   }
 

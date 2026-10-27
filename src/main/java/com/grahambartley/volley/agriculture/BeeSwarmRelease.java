@@ -61,9 +61,10 @@ public final class BeeSwarmRelease {
         MobSpawn.at(
             world,
             EntityType.BEE,
-            at.add(scatter(world), 0.0, scatter(world)),
+            at,
             shooter instanceof PlayerEntity player ? player : null,
             bee -> {
+              bee.setPosition(at.add(scatter(world), 0.0, scatter(world)));
               bee.setCannotEnterHiveTicks(lifetimeTicks);
               bee.setBreedingAge(lifetimeTicks);
               bee.setAttached(BeeSwarmWarden.SWARM, swarm);

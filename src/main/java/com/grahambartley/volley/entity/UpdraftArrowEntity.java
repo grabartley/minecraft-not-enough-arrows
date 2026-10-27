@@ -1,6 +1,7 @@
 package com.grahambartley.volley.entity;
 
 import com.grahambartley.volley.arrow.ArrowImpact;
+import com.grahambartley.volley.arrow.FaceClearance;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.updraft.UpdraftService;
 import net.minecraft.entity.EntityType;
@@ -33,8 +34,7 @@ public class UpdraftArrowEntity extends BaseArrowEntity {
   @Override
   protected ArrowImpact onArrowHitBlock(
       final ServerWorld world, final BlockHitResult blockHitResult) {
-    final Vec3d base =
-        Vec3d.ofBottomCenter(blockHitResult.getBlockPos().offset(blockHitResult.getSide()));
+    final Vec3d base = FaceClearance.groundInFrontOf(blockHitResult);
     return UpdraftService.open(world, base, ServerConfigService.get().traversal().updraft())
         ? ArrowImpact.DISCARD
         : ArrowImpact.DEFAULT;
