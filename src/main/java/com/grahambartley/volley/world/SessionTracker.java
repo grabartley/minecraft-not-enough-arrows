@@ -13,6 +13,10 @@ public final class SessionTracker<S> {
   private final Function<S, UUID> keyOf;
   private final Predicate<S> hasExpired;
 
+  public SessionTracker(final Function<S, UUID> keyOf) {
+    this(keyOf, session -> false);
+  }
+
   public SessionTracker(final Function<S, UUID> keyOf, final Predicate<S> hasExpired) {
     this.keyOf = keyOf;
     this.hasExpired = hasExpired;

@@ -79,4 +79,12 @@ class SessionTrackerTest {
     assertNull(tracker.remove(null));
     assertTrue(tracker.isEmpty());
   }
+
+  @Test
+  void aTrackerWithoutAnExpiryKeepsEverySession() {
+    final SessionTracker<Pull> forever = new SessionTracker<>(Pull::pulled);
+    forever.add(new Pull(COW, ALEX, 0));
+
+    assertEquals(1, forever.size());
+  }
 }

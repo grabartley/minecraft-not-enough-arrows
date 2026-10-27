@@ -4,6 +4,7 @@ import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.SessionTracker;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,7 +20,8 @@ import org.jetbrains.annotations.Nullable;
 public final class FuseService {
   private static final float BEEP_PITCH = 1.0f;
 
-  private static final PerWorld<FuseTracker> TRACKERS = new PerWorld<>(() -> new FuseTracker());
+  private static final PerWorld<SessionTracker<Fuse>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(Fuse::hostId, Fuse::hasExpired));
   private static final List<FuseExpiry> LISTENERS = new CopyOnWriteArrayList<>();
 
   private FuseService() {}
@@ -61,13 +63,13 @@ public final class FuseService {
 
   @Nullable
   public static Fuse fuseOn(@Nullable final ServerWorld world, @Nullable final UUID hostId) {
-    final FuseTracker tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.fuseOn(hostId);
+    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
+    return tracker == null ? null : tracker.get(hostId);
   }
 
   @Nullable
   public static Fuse extinguish(@Nullable final ServerWorld world, @Nullable final UUID hostId) {
-    final FuseTracker tracker = TRACKERS.in(world);
+    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
     return tracker == null ? null : tracker.remove(hostId);
   }
 
@@ -76,8 +78,8 @@ public final class FuseService {
   }
 
   public static List<Fuse> fusesIn(@Nullable final ServerWorld world) {
-    final FuseTracker tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.fuses();
+    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
+    return tracker == null ? List.of() : tracker.all();
   }
 
   public static void forget() {
@@ -85,13 +87,13 @@ public final class FuseService {
   }
 
   private static void burnDownFusesIn(final ServerWorld world) {
-    final FuseTracker tracker = TRACKERS.in(world);
+    final SessionTracker<Fuse> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
 
-    for (final Fuse snapshot : tracker.fuses()) {
-      final Fuse fuse = tracker.fuseOn(snapshot.hostId());
+    for (final Fuse snapshot : tracker.all()) {
+      final Fuse fuse = tracker.get(snapshot.hostId());
       if (fuse == null) {
         continue;
       }
@@ -105,7 +107,10 @@ public final class FuseService {
   }
 
   private static void burnDown(
-      final ServerWorld world, final FuseTracker tracker, final Entity host, final Fuse fuse) {
+      final ServerWorld world,
+      final SessionTracker<Fuse> tracker,
+      final Entity host,
+      final Fuse fuse) {
     final Fuse burned = fuse.burned();
     if (burned.hasExpired()) {
       tracker.remove(burned.hostId());
@@ -119,7 +124,7 @@ public final class FuseService {
     }
   }
 
-  private static void holdWithoutHost(final FuseTracker tracker, final Fuse fuse) {
+  private static void holdWithoutHost(final SessionTracker<Fuse> tracker, final Fuse fuse) {
     final Fuse held = fuse.lost();
     if (held.isAbandoned()) {
       tracker.remove(held.hostId());

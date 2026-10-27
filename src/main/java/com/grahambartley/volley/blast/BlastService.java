@@ -10,6 +10,8 @@ import com.grahambartley.volley.fuse.Fuse;
 import com.grahambartley.volley.fuse.FuseService;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.SessionTracker;
+import java.util.List;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -24,8 +26,8 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BlastService {
 
-  private static final PerWorld<BlastChargeTracker> TRACKERS =
-      new PerWorld<>(() -> new BlastChargeTracker());
+  private static final PerWorld<SessionTracker<BlastCharge>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(BlastCharge::carrierId));
 
   private BlastService() {}
 
@@ -82,17 +84,18 @@ public final class BlastService {
 
   private static void onFuseExpired(
       final ServerWorld world, final Entity carrier, final Fuse fuse) {
-    final BlastChargeTracker tracker = TRACKERS.in(world);
+    final SessionTracker<BlastCharge> tracker = TRACKERS.in(world);
     final BlastCharge charge = tracker == null ? null : tracker.remove(fuse.hostId());
     detonate(world, carrier, charge);
   }
 
   private static void dropChargesWithoutFuses(final ServerWorld world) {
-    final BlastChargeTracker tracker = TRACKERS.in(world);
+    final SessionTracker<BlastCharge> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
-    tracker.retainOnly(FuseService.fusesIn(world).stream().map(Fuse::hostId).toList());
+    final List<UUID> lit = FuseService.fusesIn(world).stream().map(Fuse::hostId).toList();
+    tracker.removeIf(charge -> !lit.contains(charge.carrierId()));
   }
 
   @Nullable

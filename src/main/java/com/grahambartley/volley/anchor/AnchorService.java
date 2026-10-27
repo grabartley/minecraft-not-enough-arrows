@@ -2,6 +2,7 @@ package com.grahambartley.volley.anchor;
 
 import com.grahambartley.volley.server.PlayerExit;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.SessionTracker;
 import java.util.List;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -14,7 +15,8 @@ import org.jetbrains.annotations.Nullable;
 public final class AnchorService {
   public static final int DEFAULT_LIFETIME_TICKS = 20 * 60;
 
-  private static final PerWorld<AnchorTracker> TRACKERS = new PerWorld<>(() -> new AnchorTracker());
+  private static final PerWorld<SessionTracker<BlockAnchor>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(BlockAnchor::ownerId));
 
   private AnchorService() {}
 
@@ -57,14 +59,14 @@ public final class AnchorService {
   @Nullable
   public static BlockAnchor anchorOf(
       @Nullable final ServerWorld world, @Nullable final UUID ownerId) {
-    final AnchorTracker tracker = TRACKERS.in(world);
-    return tracker == null ? null : tracker.anchorOf(ownerId);
+    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
+    return tracker == null ? null : tracker.get(ownerId);
   }
 
   @Nullable
   public static BlockAnchor release(
       @Nullable final ServerWorld world, @Nullable final UUID ownerId) {
-    final AnchorTracker tracker = TRACKERS.in(world);
+    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
     return tracker == null ? null : tracker.remove(ownerId);
   }
 
@@ -73,8 +75,8 @@ public final class AnchorService {
   }
 
   public static List<BlockAnchor> anchorsIn(@Nullable final ServerWorld world) {
-    final AnchorTracker tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.anchors();
+    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
+    return tracker == null ? List.of() : tracker.all();
   }
 
   public static void forget() {
@@ -82,11 +84,11 @@ public final class AnchorService {
   }
 
   private static void dropLostAnchorsIn(final ServerWorld world) {
-    final AnchorTracker tracker = TRACKERS.in(world);
+    final SessionTracker<BlockAnchor> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
-    tracker.takeIf(anchor -> anchor.hasExpired(world.getTime()) || !stillHolds(world, anchor));
+    tracker.removeIf(anchor -> anchor.hasExpired(world.getTime()) || !stillHolds(world, anchor));
   }
 
   private static boolean stillHolds(final ServerWorld world, final BlockAnchor anchor) {

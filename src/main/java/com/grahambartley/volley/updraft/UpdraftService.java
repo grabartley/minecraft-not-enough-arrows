@@ -3,6 +3,7 @@ package com.grahambartley.volley.updraft;
 import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.config.UpdraftArrowConfig;
+import com.grahambartley.volley.world.ExpiringList;
 import com.grahambartley.volley.world.PerWorld;
 import com.grahambartley.volley.world.Propel;
 import java.util.List;
@@ -21,8 +22,9 @@ public final class UpdraftService {
   private static final int PARTICLES_PER_BLOCK = 2;
   private static final double PARTICLE_RISE = 0.15;
   private static final float OPEN_PITCH = 1.0f;
-  private static final PerWorld<UpdraftTracker> TRACKERS =
-      new PerWorld<>(() -> new UpdraftTracker());
+  private static final PerWorld<ExpiringList<LiveUpdraft>> TRACKERS =
+      new PerWorld<>(
+          () -> new ExpiringList<>((updraft, tick) -> updraft.column().hasExpired(tick)));
 
   private UpdraftService() {}
 
@@ -58,7 +60,7 @@ public final class UpdraftService {
   }
 
   public static List<LiveUpdraft> liveIn(@Nullable final ServerWorld world) {
-    final UpdraftTracker tracker = world == null ? null : TRACKERS.in(world);
+    final ExpiringList<LiveUpdraft> tracker = world == null ? null : TRACKERS.in(world);
     return tracker == null ? List.of() : tracker.live();
   }
 
@@ -67,7 +69,7 @@ public final class UpdraftService {
   }
 
   private static void liftIn(final ServerWorld world) {
-    final UpdraftTracker tracker = TRACKERS.in(world);
+    final ExpiringList<LiveUpdraft> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }

@@ -3,6 +3,7 @@ package com.grahambartley.volley.control;
 import com.grahambartley.volley.config.AllegianceArrowConfig;
 import com.grahambartley.volley.config.TargetingArrowConfig;
 import com.grahambartley.volley.world.PerWorld;
+import com.grahambartley.volley.world.SessionTracker;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -22,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
 public final class ControlHoldService {
   private static final double ESCORT_SPEED = 1.25;
 
-  private static final PerWorld<ControlHoldTracker> TRACKERS =
-      new PerWorld<>(() -> new ControlHoldTracker());
+  private static final PerWorld<SessionTracker<ControlHold>> TRACKERS =
+      new PerWorld<>(() -> new SessionTracker<>(ControlHold::mobId));
   private static final Set<UUID> CORNERED = new HashSet<>();
 
   private ControlHoldService() {}
@@ -66,7 +67,7 @@ public final class ControlHoldService {
                   struck.getUuid(),
                   ControlSteering.DRAWN,
                   world.getTime() + targeting.tauntDurationTicks());
-      TRACKERS.of(world).hold(hold);
+      TRACKERS.of(world).add(hold);
       mob.setAttached(ControlPersistence.HOLD, hold);
       if (hold.subjectId().isEmpty()) {
         MobAggression.aim(mob, null);
@@ -93,7 +94,7 @@ public final class ControlHoldService {
               center,
               targeting.repelDistance(),
               world.getTime() + targeting.repelDurationTicks());
-      TRACKERS.of(world).hold(hold);
+      TRACKERS.of(world).add(hold);
       mob.setAttached(ControlPersistence.HOLD, hold);
       steer(mob, hold.anchor(), hold.steering());
       held++;
@@ -119,24 +120,24 @@ public final class ControlHoldService {
             protectedEntity.getUuid(),
             allegiance.defendRadius(),
             world.getTime() + allegiance.durationTicks());
-    TRACKERS.of(world).hold(hold);
+    TRACKERS.of(world).add(hold);
     mob.setAttached(ControlPersistence.HOLD, hold);
     applyTargeting(world, mob, hold);
     return true;
   }
 
   static void resume(final ServerWorld world, final ControlHold hold) {
-    TRACKERS.of(world).hold(hold);
+    TRACKERS.of(world).add(hold);
   }
 
   public static List<ControlHold> holdsIn(final ServerWorld world) {
-    final ControlHoldTracker tracker = TRACKERS.in(world);
-    return tracker == null ? List.of() : tracker.live();
+    final SessionTracker<ControlHold> tracker = TRACKERS.in(world);
+    return tracker == null ? List.of() : tracker.all();
   }
 
   public static Optional<ControlHold> heldIn(final ServerWorld world, final MobEntity mob) {
-    final ControlHoldTracker tracker = TRACKERS.in(world);
-    return tracker == null ? Optional.empty() : tracker.find(mob.getUuid());
+    final SessionTracker<ControlHold> tracker = TRACKERS.in(world);
+    return tracker == null ? Optional.empty() : Optional.ofNullable(tracker.get(mob.getUuid()));
   }
 
   public static boolean isCornered(final MobEntity mob) {
@@ -151,24 +152,26 @@ public final class ControlHoldService {
   }
 
   private static void tick(final ServerWorld world) {
-    final ControlHoldTracker tracker = TRACKERS.in(world);
+    final SessionTracker<ControlHold> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
-    tracker.takeExpired(world.getTime()).forEach(hold -> handBack(world, hold));
-    tracker.live().forEach(hold -> apply(world, tracker, hold));
+    tracker
+        .removeIf(hold -> hold.hasExpired(world.getTime()))
+        .forEach(hold -> handBack(world, hold));
+    tracker.all().forEach(hold -> apply(world, tracker, hold));
   }
 
   private static void apply(
-      final ServerWorld world, final ControlHoldTracker tracker, final ControlHold hold) {
+      final ServerWorld world, final SessionTracker<ControlHold> tracker, final ControlHold hold) {
     final MobEntity mob = mobIn(world, hold);
     if (mob == null) {
-      tracker.forget(hold.mobId());
+      tracker.remove(hold.mobId());
       SteeringGrace.SLIMES.release(hold.mobId());
       return;
     }
     if (hold.steering().targetPolicy().retargetsEveryTick() && !applyTargeting(world, mob, hold)) {
-      tracker.forget(hold.mobId());
+      tracker.remove(hold.mobId());
       handBack(world, hold);
       return;
     }

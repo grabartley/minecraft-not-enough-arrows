@@ -1,8 +1,8 @@
 package com.grahambartley.volley.control;
 
 import com.grahambartley.volley.cloud.TimedCloud;
-import com.grahambartley.volley.cloud.TimedCloudTracker;
 import com.grahambartley.volley.config.SmokeArrowConfig;
+import com.grahambartley.volley.world.ExpiringList;
 import com.grahambartley.volley.world.PerWorld;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -21,8 +21,8 @@ public final class SmokeCloudService {
   private static final int PARTICLES_PER_BURST = 24;
   private static final double PARTICLE_DRIFT = 0.0;
 
-  private static final PerWorld<TimedCloudTracker> TRACKERS =
-      new PerWorld<>(() -> new TimedCloudTracker());
+  private static final PerWorld<ExpiringList<TimedCloud>> TRACKERS =
+      new PerWorld<>(() -> new ExpiringList<>(TimedCloud::hasExpired));
 
   private SmokeCloudService() {}
 
@@ -47,7 +47,7 @@ public final class SmokeCloudService {
   }
 
   private static void tick(final ServerWorld world) {
-    final TimedCloudTracker tracker = TRACKERS.in(world);
+    final ExpiringList<TimedCloud> tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
