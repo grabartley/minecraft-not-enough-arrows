@@ -1,6 +1,7 @@
 package com.grahambartley.volley.traversal;
 
 import com.grahambartley.volley.structure.TimedStructureService;
+import com.grahambartley.volley.world.BlockPlacement;
 import com.grahambartley.volley.world.LoadedGround;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,7 @@ public final class OpenRun {
     if (!isLoaded.test(pos) || !world.isInBuildLimit(pos)) {
       return false;
     }
-    final BlockState current = world.getBlockState(pos);
-    return current.isReplaceable()
-        && current.getFluidState().isEmpty()
+    return BlockPlacement.canOccupy(world, pos, material)
         && !TimedStructureService.holds(world, pos)
         && world.canPlace(material, pos, ShapeContext.absent());
   }

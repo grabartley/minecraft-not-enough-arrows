@@ -3,15 +3,12 @@ package com.grahambartley.volley.terrain;
 import com.grahambartley.volley.config.PillarArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.structure.StructureBlockSource;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
-import com.grahambartley.volley.world.BlockPlacement;
-import java.util.ArrayList;
+import com.grahambartley.volley.traversal.OpenRun;
+import com.grahambartley.volley.traversal.VerticalRun;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -35,27 +32,9 @@ public final class PillarService {
     if (world == null || struck == null || pillar == null || !pillar.enabled()) {
       return List.of();
     }
-    final List<BlockPos> column = openRun(world, PillarColumn.above(struck, pillar.heightBlocks()));
-    return TimedStructureService.build(
-            world,
-            shooter,
-            column,
-            StructureBlockSource.of(MATERIAL),
-            StructureBudget.of(column.size()),
-            pillar.lifetimeTicks())
-        .map(TimedStructure::positions)
-        .orElse(List.of());
-  }
-
-  private static List<BlockPos> openRun(final ServerWorld world, final List<BlockPos> column) {
-    final List<BlockPos> open = new ArrayList<>();
-    for (final BlockPos pos : column) {
-      if (!BlockPlacement.canOccupy(world, pos, MATERIAL)
-          || !world.canPlace(MATERIAL, pos, ShapeContext.absent())) {
-        break;
-      }
-      open.add(pos);
-    }
-    return open;
+    final List<BlockPos> column =
+        OpenRun.leading(world, VerticalRun.upFrom(struck.up(), pillar.heightBlocks()), MATERIAL);
+    return TimedStructureService.placeAll(
+        world, shooter, column, StructureBlockSource.of(MATERIAL), pillar.lifetimeTicks());
   }
 }

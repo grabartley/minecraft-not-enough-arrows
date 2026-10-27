@@ -3,8 +3,6 @@ package com.grahambartley.volley.terrain;
 import com.grahambartley.volley.config.WebArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.structure.StructureBlockSource;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
 import com.grahambartley.volley.world.BlockSphere;
 import java.util.List;
@@ -34,14 +32,7 @@ public final class WebService {
       return List.of();
     }
     final List<BlockPos> patch = BlockSphere.blocks(center, web.patchRadius());
-    return TimedStructureService.build(
-            world,
-            shooter,
-            patch,
-            StructureBlockSource.of(MATERIAL),
-            StructureBudget.of(patch.size()),
-            web.lifetimeTicks())
-        .map(TimedStructure::positions)
-        .orElse(List.of());
+    return TimedStructureService.placeAll(
+        world, shooter, patch, StructureBlockSource.of(MATERIAL), web.lifetimeTicks());
   }
 }

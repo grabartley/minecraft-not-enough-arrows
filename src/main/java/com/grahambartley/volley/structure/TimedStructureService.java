@@ -34,6 +34,18 @@ public final class TimedStructureService {
     ServerLifecycleEvents.SERVER_STOPPED.register(server -> forget());
   }
 
+  public static List<BlockPos> placeAll(
+      final ServerWorld world,
+      @Nullable final PlayerEntity owner,
+      final List<BlockPos> candidates,
+      final StructureBlockSource source,
+      final int lifetimeTicks) {
+    return build(
+            world, owner, candidates, source, StructureBudget.of(candidates.size()), lifetimeTicks)
+        .map(TimedStructure::positions)
+        .orElse(List.of());
+  }
+
   public static Optional<TimedStructure> build(
       final ServerWorld world,
       @Nullable final PlayerEntity owner,

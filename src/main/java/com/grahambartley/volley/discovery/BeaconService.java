@@ -3,8 +3,6 @@ package com.grahambartley.volley.discovery;
 import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.structure.StructureBlockSource;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
 import com.grahambartley.volley.traversal.OpenRun;
 import com.grahambartley.volley.traversal.VerticalRun;
@@ -39,14 +37,7 @@ public final class BeaconService {
         OpenRun.leading(world, VerticalRun.upFrom(base, BEAM_HEIGHT_BLOCKS), beam).stream()
             .takeWhile(pos -> world.getBlockState(pos).isAir())
             .toList();
-    return TimedStructureService.build(
-            world,
-            shooter,
-            column,
-            StructureBlockSource.of(beam),
-            StructureBudget.of(column.size()),
-            lifetimeTicks)
-        .map(TimedStructure::positions)
-        .orElse(List.of());
+    return TimedStructureService.placeAll(
+        world, shooter, column, StructureBlockSource.of(beam), lifetimeTicks);
   }
 }

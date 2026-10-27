@@ -3,8 +3,6 @@ package com.grahambartley.volley.traversal;
 import com.grahambartley.volley.config.BridgeArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.structure.StructureBlockSource;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
 import java.util.List;
 import net.minecraft.block.BlockState;
@@ -46,14 +44,7 @@ public final class BridgeService {
             world,
             BridgeLine.toward(struck, toward.getX(), toward.getZ(), bridge.lengthBlocks()),
             MATERIAL);
-    return TimedStructureService.build(
-            world,
-            shooter,
-            walkway,
-            StructureBlockSource.of(MATERIAL),
-            StructureBudget.of(walkway.size()),
-            bridge.lifetimeTicks())
-        .map(TimedStructure::positions)
-        .orElse(List.of());
+    return TimedStructureService.placeAll(
+        world, shooter, walkway, StructureBlockSource.of(MATERIAL), bridge.lifetimeTicks());
   }
 }

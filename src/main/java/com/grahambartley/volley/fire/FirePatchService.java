@@ -2,8 +2,6 @@ package com.grahambartley.volley.fire;
 
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
-import com.grahambartley.volley.structure.StructureBudget;
-import com.grahambartley.volley.structure.TimedStructure;
 import com.grahambartley.volley.structure.TimedStructureService;
 import java.util.List;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,15 +31,12 @@ public final class FirePatchService {
     }
 
     final List<BlockPos> columns = FirePatchShape.columns(center, radius);
-    return TimedStructureService.build(
-            world,
-            igniter,
-            columns,
-            (target, column) -> FirePatchPlacer.surfaceIn(target, column, igniter),
-            StructureBudget.of(columns.size()),
-            durationTicks)
-        .map(TimedStructure::positions)
-        .orElse(List.of());
+    return TimedStructureService.placeAll(
+        world,
+        igniter,
+        columns,
+        (target, column) -> FirePatchPlacer.surfaceIn(target, column, igniter),
+        durationTicks);
   }
 
   public static void forget() {
