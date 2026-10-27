@@ -1,5 +1,6 @@
 package com.grahambartley.volley.chaos;
 
+import com.grahambartley.volley.world.MobSpawn;
 import com.grahambartley.volley.world.SpawnPermission;
 import java.util.Optional;
 import net.minecraft.entity.EntityType;
@@ -21,19 +22,17 @@ public final class ChickenRelease {
 
   public static Optional<ChickenEntity> release(
       final ServerWorld world, final Vec3d at, @Nullable final PlayerEntity shooter) {
-    if (!allows(world, at, shooter)) {
-      return Optional.empty();
-    }
-    final ChickenEntity chicken = EntityType.CHICKEN.create(world);
-    if (chicken == null) {
-      return Optional.empty();
-    }
-    chicken.refreshPositionAndAngles(at.x, at.y, at.z, world.random.nextFloat() * 360f, 0f);
-    chicken.setVelocity(Vec3d.ZERO);
-    chicken.fallDistance = 0.0f;
-    chicken.initialize(
-        world, world.getLocalDifficulty(chicken.getBlockPos()), SpawnReason.SPAWN_EGG, null);
-    chicken.setBreedingAge(0);
-    return world.spawnEntity(chicken) ? Optional.of(chicken) : Optional.empty();
+    return MobSpawn.at(
+        world,
+        EntityType.CHICKEN,
+        at,
+        shooter,
+        chicken -> {
+          chicken.setVelocity(Vec3d.ZERO);
+          chicken.fallDistance = 0.0f;
+          chicken.initialize(
+              world, world.getLocalDifficulty(chicken.getBlockPos()), SpawnReason.SPAWN_EGG, null);
+          chicken.setBreedingAge(0);
+        });
   }
 }

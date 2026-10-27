@@ -2,6 +2,7 @@ package com.grahambartley.volley.agriculture;
 
 import com.grahambartley.volley.config.BeeArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
+import com.grahambartley.volley.world.MobSpawn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.BeeEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
@@ -43,38 +45,34 @@ public final class BeeSwarmRelease {
             Optional.ofNullable(target).map(Entity::getUuid));
     final List<BeeEntity> released = new ArrayList<>();
     for (int i = 0; i < bee.count(); i++) {
-      final BeeEntity spawned = spawn(world, at, swarm, target, bee.lifetimeTicks());
-      if (spawned != null) {
-        released.add(spawned);
-      }
+      spawn(world, at, shooter, swarm, target, bee.lifetimeTicks()).ifPresent(released::add);
     }
     return List.copyOf(released);
   }
 
-  @Nullable
-  private static BeeEntity spawn(
+  private static Optional<BeeEntity> spawn(
       final ServerWorld world,
       final Vec3d at,
+      @Nullable final LivingEntity shooter,
       final BeeSwarm swarm,
       @Nullable final LivingEntity target,
       final int lifetimeTicks) {
-    final BeeEntity bee = EntityType.BEE.create(world);
-    if (bee == null) {
-      return null;
-    }
-    bee.refreshPositionAndAngles(
-        at.x + scatter(world), at.y, at.z + scatter(world), world.random.nextFloat() * 360f, 0f);
-    bee.setCannotEnterHiveTicks(lifetimeTicks);
-    bee.setBreedingAge(lifetimeTicks);
-    bee.setAttached(BeeSwarmWarden.SWARM, swarm);
-    if (target != null) {
-      BeeSwarmWarden.angerAt(bee, target, lifetimeTicks);
-    }
-    if (!world.spawnEntity(bee)) {
-      return null;
-    }
-    BeeSwarmWarden.watch(world, bee);
-    return bee;
+    final Optional<BeeEntity> spawned =
+        MobSpawn.at(
+            world,
+            EntityType.BEE,
+            at.add(scatter(world), 0.0, scatter(world)),
+            shooter instanceof PlayerEntity player ? player : null,
+            bee -> {
+              bee.setCannotEnterHiveTicks(lifetimeTicks);
+              bee.setBreedingAge(lifetimeTicks);
+              bee.setAttached(BeeSwarmWarden.SWARM, swarm);
+              if (target != null) {
+                BeeSwarmWarden.angerAt(bee, target, lifetimeTicks);
+              }
+            });
+    spawned.ifPresent(bee -> BeeSwarmWarden.watch(world, bee));
+    return spawned;
   }
 
   @Nullable
