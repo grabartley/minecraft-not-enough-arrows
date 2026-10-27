@@ -3,6 +3,7 @@ package com.grahambartley.volley.gametest;
 import com.grahambartley.volley.AgricultureArrows;
 import com.grahambartley.volley.ModArrows;
 import com.grahambartley.volley.SocialArrows;
+import com.grahambartley.volley.fletching.FletchingRecipeSelection;
 import com.grahambartley.volley.fletching.FletchingStationScreenHandler;
 import com.grahambartley.volley.fletching.FletchingStationSlots;
 import com.grahambartley.volley.social.CourierPayloads;
@@ -75,7 +76,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
     context.assertTrue(
         FletchingStationSupport.result(station).isEmpty(), "An empty station should show nothing");
     context.assertEquals(
-        FletchingStationScreenHandler.NO_SELECTION,
+        FletchingRecipeSelection.NO_SELECTION,
         station.getSelectedRecipe(),
         "Selected recipe of an empty station");
     context.complete();
