@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class BlockEditPermissionGameTest implements FabricGameTest {
   private static final String BATCH = "block-edit-permission";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos INSIDE_THE_WORLD = new BlockPos(0, 3, 0);
   private static final BlockPos FAR_OUTSIDE_THE_BORDER =
       new BlockPos(Integer.MAX_VALUE, 3, Integer.MAX_VALUE);

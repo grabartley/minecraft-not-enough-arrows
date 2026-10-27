@@ -17,7 +17,6 @@ public final class HarvestArrowEntityGameTest implements FabricGameTest {
   private static final String BATCH = "harvest-arrow";
   private static final BlockPos NEAR_CROP = FiringRangeSupport.IMPACT_FACE;
   private static final BlockPos FAR_CROP = FiringRangeSupport.IMPACT_FACE.west();
-  private static final int A_QUIVER = 8;
 
   @GameTest(
       templateName = TerrainArrowTestSupport.TEMPLATE,
@@ -66,10 +65,11 @@ public final class HarvestArrowEntityGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, FiringRangeSupport.SHOOTER_STAND);
     shooter.changeGameMode(GameMode.SURVIVAL);
-    AgricultureTestSupport.fillInventory(shooter);
-    MockPlayerSupport.fireEastFromBow(
-        context, shooter, new ItemStack(AgricultureArrows.HARVEST_ARROW.item(), A_QUIVER));
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    MockPlayerSupport.fillInventory(shooter);
+    TerrainArrowTestSupport.fireFromBow(
+        context,
+        shooter,
+        new ItemStack(AgricultureArrows.HARVEST_ARROW.item(), MockPlayerSupport.A_QUIVER));
 
     context.runAtTick(
         TerrainArrowTestSupport.SETTLED_TICK,

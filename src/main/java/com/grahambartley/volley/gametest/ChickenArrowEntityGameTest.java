@@ -21,7 +21,7 @@ public final class ChickenArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = DISABLED_BATCH)
   public void switchTheChickenOffBeforeBatch(ServerWorld world) {
-    ChaosTestSupport.useChaos(chaos -> chaos.withChicken(chaos.chicken().withEnabled(false)));
+    ConfigOverrides.useChaos(chaos -> chaos.withChicken(chaos.chicken().withEnabled(false)));
   }
 
   @AfterBatch(batchId = DISABLED_BATCH)

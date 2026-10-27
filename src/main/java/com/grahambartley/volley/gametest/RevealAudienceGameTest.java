@@ -15,7 +15,7 @@ public final class RevealAudienceGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void theShooterIsAlwaysTold(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     context.assertTrue(
         RevealAudience.around(context.getWorld(), context.getAbsolutePos(SPOT), shooter)
@@ -26,7 +26,7 @@ public final class RevealAudienceGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void theShooterIsToldOnceEvenWhenAlsoWatching(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final CowEntity cow = context.spawnEntity(EntityType.COW, SPOT);
 
     context.assertEquals(

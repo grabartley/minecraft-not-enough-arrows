@@ -162,6 +162,6 @@ public final class DisguiseServiceGameTest implements FabricGameTest {
   }
 
   private static ZombieEntity zombie(final TestContext context) {
-    return ChaosTestSupport.shaded(context.spawnEntity(EntityType.ZOMBIE, STAND));
+    return MobArena.helmeted(context.spawnEntity(EntityType.ZOMBIE, STAND));
   }
 }

@@ -139,7 +139,7 @@ public final class ShearServiceGameTest implements FabricGameTest {
     final SheepEntity sheep = still(context, EntityType.SHEEP);
     sheep.setColor(DyeColor.WHITE);
     final PlayerEntity shooter = context.createMockPlayer(GameMode.SURVIVAL);
-    AgricultureTestSupport.fillInventory(shooter);
+    MockPlayerSupport.fillInventory(shooter);
 
     ShearService.shearEntity(sheep, shooter);
 

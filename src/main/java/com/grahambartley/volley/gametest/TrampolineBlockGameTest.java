@@ -2,8 +2,6 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.config.ServerConfigHolder;
-import com.grahambartley.volley.config.VolleyConfig;
-import com.grahambartley.volley.server.ServerConfigService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
@@ -26,21 +24,19 @@ public final class TrampolineBlockGameTest implements FabricGameTest {
   private static final double LAUNCH_SPEED = 1.0;
   private static final double STILL_SPEED = 0.1;
 
-  private VolleyConfig beforeStill;
-
   @BeforeBatch(batchId = STILL_BATCH)
   public void switchLaunchesOffBeforeBatch(ServerWorld world) {
-    beforeStill = ServerConfigService.get();
-    ServerConfigHolder.set(
-        beforeStill.withTraversal(
-            beforeStill
-                .traversal()
-                .withTrampoline(beforeStill.traversal().trampoline().withStrength(0.0f))));
+    ConfigOverrides.useDefaultsWith(
+        config ->
+            config.withTraversal(
+                config
+                    .traversal()
+                    .withTrampoline(config.traversal().trampoline().withStrength(0.0f))));
   }
 
   @AfterBatch(batchId = STILL_BATCH)
   public void restoreLaunchesAfterBatch(ServerWorld world) {
-    ServerConfigHolder.set(beforeStill);
+    ServerConfigHolder.reset();
   }
 
   @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 60)

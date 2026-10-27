@@ -1,11 +1,9 @@
 package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.ModArrows;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.UtilityArrowConfig;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.entity.WindArrowEntity;
-import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.wind.WindBurstService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -21,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 
 public final class WindBurstServiceGameTest implements FabricGameTest {
   private static final String BATCH = "wind-burst";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final Vec3d CENTRE = new Vec3d(3.5, 2.5, 3.5);
   private static final BlockPos NEARBY_STAND = new BlockPos(4, 2, 3);
   private static final BlockPos DISTANT_STAND = new BlockPos(6, 2, 6);
@@ -102,14 +100,10 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheBurst(TestContext context) {
     final ArmorStandEntity bystander = standAt(context, NEARBY_STAND);
-    final VolleyConfig previous = ServerConfigService.get();
-    final List<Entity> displaced;
-    try {
-      ServerConfigHolder.set(configWithBurst(0.5f, STRENGTH));
-      displaced = WindBurstService.burst(context.getWorld(), context.getAbsolute(CENTRE), null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final List<Entity> displaced =
+        ConfigOverrides.during(
+            configWithBurst(0.5f, STRENGTH),
+            () -> WindBurstService.burst(context.getWorld(), context.getAbsolute(CENTRE), null));
 
     context.assertTrue(
         displaced.isEmpty(),

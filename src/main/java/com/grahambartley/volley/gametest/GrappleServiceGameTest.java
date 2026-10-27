@@ -2,14 +2,12 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.anchor.AnchorService;
 import com.grahambartley.volley.config.GrappleArrowConfig;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.grapple.GrappleEnding;
 import com.grahambartley.volley.grapple.GrappleProgress;
 import com.grahambartley.volley.grapple.GrapplePull;
 import com.grahambartley.volley.grapple.GrappleService;
 import com.grahambartley.volley.grapple.GrappleSession;
-import com.grahambartley.volley.server.ServerConfigService;
 import java.util.ArrayList;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
@@ -23,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class GrappleServiceGameTest implements FabricGameTest {
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
 
   private static final BlockPos PLAYER_STAND = new BlockPos(0, 3, 0);
   private static final BlockPos SECOND_STAND = new BlockPos(2, 3, 0);
@@ -70,17 +68,12 @@ public final class GrappleServiceGameTest implements FabricGameTest {
   public void aGrappleBeyondTheConfiguredRangeStartsNothing(TestContext context) {
     context.setBlockState(HIGH_ANCHOR, Blocks.STONE);
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    final VolleyConfig previous = ServerConfigService.get();
-
-    final GrappleSession session;
-    try {
-      ServerConfigHolder.set(configWithMaxRange(GrappleArrowConfig.MAX_RANGE_BLOCKS_MIN));
-      session =
-          GrappleService.start(
-              context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final GrappleSession session =
+        ConfigOverrides.during(
+            configWithMaxRange(GrappleArrowConfig.MAX_RANGE_BLOCKS_MIN),
+            () ->
+                GrappleService.start(
+                    context.getWorld(), player, context.getAbsolutePos(HIGH_ANCHOR), null));
 
     context.assertTrue(session == null, "A grapple past its range should hand back nothing");
     context.assertTrue(

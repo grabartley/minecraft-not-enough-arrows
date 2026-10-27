@@ -11,7 +11,6 @@ import net.minecraft.test.TestContext;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 public final class WatcherReportGameTest implements FabricGameTest {
@@ -73,9 +72,7 @@ public final class WatcherReportGameTest implements FabricGameTest {
   }
 
   private static ServerPlayerEntity ownerAt(final TestContext context, final BlockPos relative) {
-    final ServerPlayerEntity owner = context.createMockCreativeServerPlayerInWorld();
-    MockPlayerSupport.moveTo(context, owner, Vec3d.ofBottomCenter(relative));
-    return owner;
+    return MockPlayerSupport.playerAt(context, relative);
   }
 
   private static WatcherAlarm alarm(

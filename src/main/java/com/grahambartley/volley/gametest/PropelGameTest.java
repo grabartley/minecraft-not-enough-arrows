@@ -9,7 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class PropelGameTest implements FabricGameTest {
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
 
   private static final BlockPos PLAYER_STAND = new BlockPos(0, 3, 0);
   private static final int COUNTED_TICKS = 40;

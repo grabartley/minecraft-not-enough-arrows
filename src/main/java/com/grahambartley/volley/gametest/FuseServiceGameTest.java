@@ -27,7 +27,7 @@ public final class FuseServiceGameTest implements FabricGameTest {
   private static final String FORGET_BATCH = "fuse-forget";
   private static final String MUTED_BEEP_BATCH = "fuse-muted-beep";
   private static final String TIER_DELAY_BATCH = "fuse-tier-delay";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
 
   private static final BlockPos IMPACT = new BlockPos(3, 2, 3);
   private static final BlockPos DRIFT = new BlockPos(5, 2, 5);

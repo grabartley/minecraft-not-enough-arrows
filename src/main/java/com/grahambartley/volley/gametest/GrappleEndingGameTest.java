@@ -10,7 +10,6 @@ import com.grahambartley.volley.grapple.GrappleArrowReturn;
 import com.grahambartley.volley.grapple.GrappleFallGuard;
 import com.grahambartley.volley.grapple.GrapplePull;
 import com.grahambartley.volley.grapple.GrappleService;
-import com.grahambartley.volley.server.ServerConfigService;
 import java.util.function.UnaryOperator;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -18,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.test.AfterBatch;
 import net.minecraft.test.BeforeBatch;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
@@ -25,7 +25,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class GrappleEndingGameTest implements FabricGameTest {
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final String BATCH = "grapple-ending";
   private static final String NO_ARROW_RETURN_BATCH = "grapple-ending-no-arrow-return";
   private static final String NO_FALL_CANCEL_BATCH = "grapple-ending-no-fall-cancel";
@@ -54,11 +54,23 @@ public final class GrappleEndingGameTest implements FabricGameTest {
   @BeforeBatch(batchId = NO_ARROW_RETURN_BATCH)
   public void forgetEveryGrappleBeforeTheArrowReturnBatch(ServerWorld world) {
     forgetEveryGrapple();
+    ServerConfigHolder.set(grappleConfig(it -> it.withReturnArrowOnArrival(false)));
+  }
+
+  @AfterBatch(batchId = NO_ARROW_RETURN_BATCH)
+  public void restoreDefaultConfigAfterTheArrowReturnBatch(ServerWorld world) {
+    ServerConfigHolder.reset();
   }
 
   @BeforeBatch(batchId = NO_FALL_CANCEL_BATCH)
   public void forgetEveryGrappleBeforeTheFallCancellationBatch(ServerWorld world) {
     forgetEveryGrapple();
+    ServerConfigHolder.set(grappleConfig(it -> it.withCancelFallDamageOnArrival(false)));
+  }
+
+  @AfterBatch(batchId = NO_FALL_CANCEL_BATCH)
+  public void restoreDefaultConfigAfterTheFallCancellationBatch(ServerWorld world) {
+    ServerConfigHolder.reset();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
@@ -86,22 +98,16 @@ public final class GrappleEndingGameTest implements FabricGameTest {
   public void anOperatorWhoTurnsArrowReturnOffLeavesTheArrowWhereItLanded(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     final GrappleArrowEntity arrow = plantedArrow(context);
-    final VolleyConfig previous = ServerConfigService.get();
-    ServerConfigHolder.set(grappleConfig(it -> it.withReturnArrowOnArrival(false)));
     startGrappleUnderfoot(context, shooter, arrow);
 
     context.runAtTick(
         SETTLE_TICK,
         () -> {
-          try {
-            context.assertFalse(
-                arrow.isRemoved(), "An arrow nobody asked back should stay where it landed");
-            context.assertFalse(
-                holdsAGrappleArrow(shooter),
-                "A shooter should be given nothing when arrow return is off");
-          } finally {
-            ServerConfigHolder.set(previous);
-          }
+          context.assertFalse(
+              arrow.isRemoved(), "An arrow nobody asked back should stay where it landed");
+          context.assertFalse(
+              holdsAGrappleArrow(shooter),
+              "A shooter should be given nothing when arrow return is off");
           context.complete();
         });
   }
@@ -124,25 +130,19 @@ public final class GrappleEndingGameTest implements FabricGameTest {
   @GameTest(templateName = TEMPLATE, batchId = NO_FALL_CANCEL_BATCH, tickLimit = 40)
   public void anOperatorWhoTurnsFallCancellationOffLeavesTheFallStanding(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, PLAYER_STAND);
-    final VolleyConfig previous = ServerConfigService.get();
-    ServerConfigHolder.set(grappleConfig(it -> it.withCancelFallDamageOnArrival(false)));
     startGrappleUnderfoot(context, shooter, null);
     shooter.fallDistance = A_LONG_FALL;
 
     context.runAtTick(
         SETTLE_TICK,
         () -> {
-          try {
-            context.assertEquals(
-                shooter.fallDistance,
-                A_LONG_FALL,
-                "Fall a grappled player keeps when the operator turned cancellation off");
-            context.assertFalse(
-                GrappleFallGuard.spares(shooter.getUuid()),
-                "A player the operator left to their fall should not be spared it either");
-          } finally {
-            ServerConfigHolder.set(previous);
-          }
+          context.assertEquals(
+              shooter.fallDistance,
+              A_LONG_FALL,
+              "Fall a grappled player keeps when the operator turned cancellation off");
+          context.assertFalse(
+              GrappleFallGuard.spares(shooter.getUuid()),
+              "A player the operator left to their fall should not be spared it either");
           context.complete();
         });
   }

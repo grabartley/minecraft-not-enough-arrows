@@ -22,8 +22,8 @@ public final class StinkCloudServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aStinkCloudNauseatesAPlayerInsideAndNobodyOutside(TestContext context) {
-    final ServerPlayerEntity inside = ChaosTestSupport.survivalPlayerAt(context, CLOUD);
-    final ServerPlayerEntity outside = ChaosTestSupport.survivalPlayerAt(context, OUTSIDE);
+    final ServerPlayerEntity inside = MockPlayerSupport.survivalPlayerAt(context, CLOUD);
+    final ServerPlayerEntity outside = MockPlayerSupport.survivalPlayerAt(context, OUTSIDE);
     open(context, LIFETIME);
 
     context.runAtTick(
@@ -39,7 +39,7 @@ public final class StinkCloudServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = MobArena.TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aStinkCloudHurtsNobody(TestContext context) {
-    final ServerPlayerEntity player = ChaosTestSupport.survivalPlayerAt(context, CLOUD);
+    final ServerPlayerEntity player = MockPlayerSupport.survivalPlayerAt(context, CLOUD);
     final float health = player.getHealth();
     open(context, LIFETIME);
 

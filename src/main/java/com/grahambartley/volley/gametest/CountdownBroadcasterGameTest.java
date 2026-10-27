@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class CountdownBroadcasterGameTest implements FabricGameTest {
   private static final String BATCH = "countdown-broadcaster";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CARRIER_POS = new BlockPos(3, 2, 3);
   private static final int LONG_FUSE_TICKS = 200;
 

@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class FirePatchPlacerGameTest implements FabricGameTest {
   private static final String BATCH = "fire-patch-placement";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CENTRE = new BlockPos(3, 3, 3);
   private static final BlockPos SURFACE = CENTRE.down();
   private static final int RADIUS = 2;

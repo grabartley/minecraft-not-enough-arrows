@@ -2,11 +2,9 @@ package com.grahambartley.volley.gametest;
 
 import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.block.RedstoneChargeBlock;
-import com.grahambartley.volley.config.ServerConfigHolder;
 import com.grahambartley.volley.config.UtilityArrowConfig;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.redstone.RedstoneChargeService;
-import com.grahambartley.volley.server.ServerConfigService;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
@@ -18,7 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class RedstoneChargeServiceGameTest implements FabricGameTest {
   private static final String BATCH = "redstone-charge-lifecycle";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CHARGE = new BlockPos(3, 3, 3);
   private static final BlockPos LAMP = new BlockPos(3, 3, 4);
   private static final int STRENGTH = 15;
@@ -118,13 +116,10 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheStrengthOfACharge(TestContext context) {
-    final VolleyConfig previous = ServerConfigService.get();
-    try {
-      ServerConfigHolder.set(configWithSignal(9, LONG_DURATION_TICKS));
-      RedstoneChargeService.charge(context.getWorld(), context.getAbsolutePos(CHARGE), null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    ConfigOverrides.during(
+        configWithSignal(9, LONG_DURATION_TICKS),
+        () ->
+            RedstoneChargeService.charge(context.getWorld(), context.getAbsolutePos(CHARGE), null));
 
     context.checkBlockState(
         CHARGE,
@@ -135,13 +130,10 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void theLiveServerConfigDecidesHowLongAChargeHolds(TestContext context) {
-    final VolleyConfig previous = ServerConfigService.get();
-    try {
-      ServerConfigHolder.set(configWithSignal(STRENGTH, SHORT_DURATION_TICKS));
-      RedstoneChargeService.charge(context.getWorld(), context.getAbsolutePos(CHARGE), null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    ConfigOverrides.during(
+        configWithSignal(STRENGTH, SHORT_DURATION_TICKS),
+        () ->
+            RedstoneChargeService.charge(context.getWorld(), context.getAbsolutePos(CHARGE), null));
 
     context.expectBlock(ModBlocks.REDSTONE_CHARGE, CHARGE);
     context.runAtTick(
@@ -154,15 +146,12 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigCanSwitchChargesOff(TestContext context) {
-    final VolleyConfig previous = ServerConfigService.get();
-    final boolean charged;
-    try {
-      ServerConfigHolder.set(configWithSignal(STRENGTH, 0));
-      charged =
-          RedstoneChargeService.charge(context.getWorld(), context.getAbsolutePos(CHARGE), null);
-    } finally {
-      ServerConfigHolder.set(previous);
-    }
+    final boolean charged =
+        ConfigOverrides.during(
+            configWithSignal(STRENGTH, 0),
+            () ->
+                RedstoneChargeService.charge(
+                    context.getWorld(), context.getAbsolutePos(CHARGE), null));
 
     context.assertFalse(charged, "A configured duration of zero should charge nothing");
     context.expectBlock(Blocks.AIR, CHARGE);

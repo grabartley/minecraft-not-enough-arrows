@@ -234,7 +234,7 @@ public final class TimedStructureServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void miningABlockOutOfAStructureDropsItAndTakesItOutOfTheRecord(TestContext context) {
-    final ServerPlayerEntity miner = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity miner = MockPlayerSupport.player(context);
     miner.changeGameMode(GameMode.SURVIVAL);
     final BlockPos mined = context.getAbsolutePos(SECOND);
 
@@ -263,7 +263,7 @@ public final class TimedStructureServiceGameTest implements FabricGameTest {
   public void aPlayerStandingInsideAnExpiringStructureIsLeftExactlyWhereTheyWere(
       TestContext context) {
     final BlockPos feet = new BlockPos(3, 3, 5);
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player = MockPlayerSupport.player(context);
     player.changeGameMode(GameMode.SURVIVAL);
     MockPlayerSupport.moveTo(context, player, Vec3d.ofBottomCenter(feet));
     final Vec3d[] before = new Vec3d[1];

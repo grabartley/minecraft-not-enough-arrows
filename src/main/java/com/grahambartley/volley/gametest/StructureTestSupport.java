@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 final class StructureTestSupport {
-  static final String TEMPLATE = "volley:fire_pad";
+  static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   static final BlockPos FIRST = new BlockPos(1, 3, 3);
   static final BlockPos SECOND = new BlockPos(2, 3, 3);
   static final BlockPos THIRD = new BlockPos(3, 3, 3);

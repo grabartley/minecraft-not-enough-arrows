@@ -17,7 +17,7 @@ public final class TracerServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void aPathIsSentToTheShooter(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     context.assertTrue(
         TracerService.draw(carrier(context), twoPoints(), shooter, 100).contains(shooter),
@@ -27,7 +27,7 @@ public final class TracerServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void aZeroLifetimeDrawsNothing(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     context.assertTrue(
         TracerService.draw(carrier(context), twoPoints(), shooter, 0).isEmpty(),
@@ -37,7 +37,7 @@ public final class TracerServiceGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void aSinglePointIsNoPath(TestContext context) {
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
     final TracerPath dot = new TracerPath();
     dot.record(Vec3d.ZERO);
 

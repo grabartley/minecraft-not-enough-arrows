@@ -85,8 +85,7 @@ public final class CourierArrowItemGameTest implements FabricGameTest {
 
   @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aMultishotCrossbowSendsThePayloadOnlyOnce(TestContext context) {
-    final ServerPlayerEntity shooter = ChaosTestSupport.survivalPlayerAt(context, STAND);
-    shooter.getInventory().clear();
+    final ServerPlayerEntity shooter = MockPlayerSupport.survivalPlayerAt(context, STAND);
     final ItemStack crossbow = new ItemStack(Items.CROSSBOW);
     crossbow.addEnchantment(
         context

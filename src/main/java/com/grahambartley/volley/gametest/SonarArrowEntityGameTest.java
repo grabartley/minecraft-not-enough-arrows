@@ -29,7 +29,7 @@ public final class SonarArrowEntityGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = PIERCING_BATCH)
   public void narrowTheSonarBeforeBatch(ServerWorld world) {
-    DiscoveryTestSupport.useDiscovery(
+    ConfigOverrides.useDiscovery(
         discovery -> discovery.withSonar(discovery.sonar().withRadius(SMALL_RADIUS)));
   }
 

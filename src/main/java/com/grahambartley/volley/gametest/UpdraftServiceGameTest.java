@@ -145,7 +145,7 @@ public final class UpdraftServiceGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.ARENA, batchId = BATCH, tickLimit = 20)
   public void aPlayerInAColumnIsNotCountedAsFloatingNorFalling(TestContext context) {
     final ServerPlayerEntity player =
-        TraversalTestSupport.playerAt(context, Vec3d.ofBottomCenter(BASE));
+        MockPlayerSupport.playerAt(context, Vec3d.ofBottomCenter(BASE));
     player.getAbilities().flying = false;
     open(context, DEFAULTS);
 

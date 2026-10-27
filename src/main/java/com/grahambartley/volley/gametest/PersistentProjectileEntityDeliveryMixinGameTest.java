@@ -90,16 +90,14 @@ public final class PersistentProjectileEntityDeliveryMixinGameTest implements Fa
   public void aLoadedCourierArrowReachesATeammateWithoutFriendlyFire(TestContext context) {
     final ServerPlayerEntity recipient = recipientAt(context);
     final ServerPlayerEntity shooter =
-        ChaosTestSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
+        MockPlayerSupport.survivalPlayerAt(context, FiringRangeSupport.SHOOTER_STAND);
     final Scoreboard scoreboard = context.getWorld().getScoreboard();
     final Team team =
         scoreboard.getTeam(TEAM) != null ? scoreboard.getTeam(TEAM) : scoreboard.addTeam(TEAM);
     team.setFriendlyFireAllowed(false);
     scoreboard.addScoreHolderToTeam(shooter.getNameForScoreboard(), team);
     scoreboard.addScoreHolderToTeam(recipient.getNameForScoreboard(), team);
-    shooter.getInventory().clear();
-    MockPlayerSupport.fireEastFromBow(context, shooter, SocialTestSupport.loadedCourier());
-    PhysicsArrowTestSupport.stepOutOfTheLane(context, shooter);
+    TerrainArrowTestSupport.fireFromBow(context, shooter, SocialTestSupport.loadedCourier());
 
     context.runAtTick(
         SocialTestSupport.SETTLED_TICK,
@@ -132,9 +130,6 @@ public final class PersistentProjectileEntityDeliveryMixinGameTest implements Fa
   }
 
   private static ServerPlayerEntity recipientAt(final TestContext context) {
-    final ServerPlayerEntity recipient =
-        ChaosTestSupport.survivalPlayerAt(context, RECIPIENT_STAND);
-    recipient.getInventory().clear();
-    return recipient;
+    return MockPlayerSupport.survivalPlayerAt(context, RECIPIENT_STAND);
   }
 }

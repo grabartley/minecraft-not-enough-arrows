@@ -36,7 +36,7 @@ public final class ZiplineArrowEntityGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void twoBowShotsStringAZiplineBetweenTheBlocksTheyHit(TestContext context) {
     TraversalTestSupport.stone(context, NORTH_POST, SOUTH_POST);
-    final ServerPlayerEntity shooter = TraversalTestSupport.playerAt(context, NORTH_STAND);
+    final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, NORTH_STAND);
     MockPlayerSupport.fireEastFromBow(context, shooter, TraversalArrows.ZIPLINE_ARROW.item());
     MockPlayerSupport.moveTo(context, shooter, ASIDE);
 

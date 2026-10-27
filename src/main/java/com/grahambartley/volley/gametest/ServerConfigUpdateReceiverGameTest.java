@@ -56,7 +56,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void aNonOperatorsUpdateIsRejected(TestContext context) {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
-    final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity bystander = MockPlayerSupport.player(context);
 
     final Outcome outcome =
         ServerConfigUpdateReceiver.apply(bystander, Optional.of(configWithRange(CHANGED_RANGE)));
@@ -70,7 +70,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   @GameTest(templateName = FabricGameTest.EMPTY_STRUCTURE, batchId = BATCH, tickLimit = 20)
   public void aNonOperatorsUpdateLeavesTheLiveConfigAlone(TestContext context) {
     ServerConfigService.update(context.getWorld().getServer(), VolleyConfig.defaults());
-    final ServerPlayerEntity bystander = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity bystander = MockPlayerSupport.player(context);
 
     ServerConfigUpdateReceiver.apply(bystander, Optional.of(configWithRange(CHANGED_RANGE)));
 
@@ -135,7 +135,7 @@ public final class ServerConfigUpdateReceiverGameTest implements FabricGameTest 
   }
 
   private static ServerPlayerEntity operator(final TestContext context) {
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player = MockPlayerSupport.player(context);
     context
         .getWorld()
         .getServer()

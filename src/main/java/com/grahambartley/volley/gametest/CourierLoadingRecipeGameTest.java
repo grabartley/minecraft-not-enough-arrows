@@ -29,7 +29,7 @@ public final class CourierLoadingRecipeGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = CONFIGURED_BATCH)
   public void capAndRefuseBeforeBatch(ServerWorld world) {
-    SocialTestSupport.useSocial(
+    ConfigOverrides.useSocial(
         social ->
             social.withCourier(
                 social

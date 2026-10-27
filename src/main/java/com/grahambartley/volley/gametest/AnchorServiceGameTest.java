@@ -15,7 +15,7 @@ import net.minecraft.util.math.BlockPos;
 public final class AnchorServiceGameTest implements FabricGameTest {
   private static final String BATCH = "anchor-lifecycle";
   private static final String FORGET_BATCH = "anchor-forget";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos TARGET = new BlockPos(3, 3, 3);
   private static final int LONG_LIFETIME_TICKS = 400;
   private static final int SHORT_LIFETIME_TICKS = 10;

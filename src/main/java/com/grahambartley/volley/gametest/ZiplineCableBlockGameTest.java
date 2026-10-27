@@ -28,7 +28,7 @@ public final class ZiplineCableBlockGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void usingACableOfAStrungSpanRidesIt(TestContext context) {
     ZiplineTestSupport.stringAcross(context, null, ZiplineTestSupport.longLived());
-    final ServerPlayerEntity rider = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity rider = MockPlayerSupport.player(context);
     TraversalTestSupport.placeCenteredAt(context, rider, GRIP_CENTER);
 
     context.useBlock(ZiplineTestSupport.CABLE.getFirst(), rider);
@@ -42,7 +42,7 @@ public final class ZiplineCableBlockGameTest implements FabricGameTest {
   @GameTest(templateName = TraversalTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void usingACableThatBelongsToNoSpanDoesNothing(TestContext context) {
     context.setBlockState(STRAY_CABLE, ModBlocks.ZIPLINE_CABLE);
-    final ServerPlayerEntity player = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity player = MockPlayerSupport.player(context);
 
     context.useBlock(STRAY_CABLE, player);
 

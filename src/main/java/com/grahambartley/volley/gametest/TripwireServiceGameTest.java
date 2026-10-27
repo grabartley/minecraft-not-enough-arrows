@@ -28,7 +28,7 @@ public final class TripwireServiceGameTest implements FabricGameTest {
   @GameTest(templateName = DiscoveryTestSupport.TEMPLATE, batchId = BATCH, tickLimit = 10)
   public void setsAWatcherInTheSpaceInFrontOfTheStruckFace(TestContext context) {
     context.setBlockState(WALL, Blocks.STONE);
-    final ServerPlayerEntity shooter = context.createMockCreativeServerPlayerInWorld();
+    final ServerPlayerEntity shooter = MockPlayerSupport.player(context);
 
     final Optional<Watcher> watcher = set(context, Direction.WEST, shooter);
 

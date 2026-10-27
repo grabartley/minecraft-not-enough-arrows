@@ -209,7 +209,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   public void closingTheStationDropsInputsThePlayerHasNoRoomFor(TestContext context) {
     final ServerPlayerEntity player = player(context);
     final FletchingStationScreenHandler station = station(context, player);
-    fillInventory(player);
+    MockPlayerSupport.fillInventory(player);
     FletchingStationSupport.loadInputs(station);
 
     station.onClosed(player);
@@ -233,7 +233,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
       TestContext context) {
     final ServerPlayerEntity player = player(context);
     final FletchingStationScreenHandler station = station(context, player);
-    fillInventory(player);
+    MockPlayerSupport.fillInventory(player);
     player.getInventory().setStack(0, new ItemStack(Items.ARROW, ROOM_FOR_HALF_A_CRAFT));
     FletchingStationSupport.loadInputs(station);
 
@@ -245,7 +245,7 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
         "Arrows the player has room for after a partial take");
     context.assertEquals(
         FletchingTestSupport.ARROWS_PRODUCED - (Items.ARROW.getMaxCount() - ROOM_FOR_HALF_A_CRAFT),
-        droppedArrows(context),
+        TerrainTestSupport.droppedCount(context, Items.ARROW),
         "Arrows dropped because the player had no room for them");
     context.complete();
   }
@@ -503,21 +503,5 @@ public final class FletchingStationScreenHandlerGameTest implements FabricGameTe
   private static FletchingStationScreenHandler station(
       final TestContext context, final ServerPlayerEntity player) {
     return FletchingStationSupport.openStation(context, player);
-  }
-
-  private static int droppedArrows(final TestContext context) {
-    return context
-        .getWorld()
-        .getEntitiesByClass(
-            ItemEntity.class, context.getTestBox(), entity -> entity.getStack().isOf(Items.ARROW))
-        .stream()
-        .mapToInt(entity -> entity.getStack().getCount())
-        .sum();
-  }
-
-  private static void fillInventory(final ServerPlayerEntity player) {
-    for (int slot = 0; slot < player.getInventory().main.size(); slot++) {
-      player.getInventory().main.set(slot, new ItemStack(Items.STONE, Items.STONE.getMaxCount()));
-    }
   }
 }

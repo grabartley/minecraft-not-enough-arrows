@@ -10,7 +10,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class RedstoneChargePlacerGameTest implements FabricGameTest {
   private static final String BATCH = "redstone-charge-placement";
-  private static final String TEMPLATE = "volley:fire_pad";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos OPEN_AIR = new BlockPos(3, 3, 3);
   private static final BlockPos OCCUPIED = new BlockPos(3, 3, 4);
   private static final int STRENGTH = 12;
