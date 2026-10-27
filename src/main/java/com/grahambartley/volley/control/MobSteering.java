@@ -40,7 +40,7 @@ public final class MobSteering {
     rouse(mob);
     if (mob instanceof SlimeEntity slime
         && slime.getMoveControl() instanceof SlimeEntity.SlimeMoveControl hop) {
-      SlimeSteering.steer(slime.getUuid(), slime.getWorld().getTime());
+      SteeringGrace.SLIMES.steer(slime.getUuid(), slime.getWorld().getTime());
       hop.look(yawToward(slime.getPos(), destination), true);
       hop.move(speed);
       return true;

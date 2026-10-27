@@ -1,6 +1,6 @@
 package com.grahambartley.volley.mixin;
 
-import com.grahambartley.volley.control.SlimeSteering;
+import com.grahambartley.volley.control.SteeringGrace;
 import net.minecraft.entity.mob.SlimeEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ public abstract class SlimeRandomLookGoalMixin {
 
   @Inject(method = "canStart", at = @At("HEAD"), cancellable = true)
   private void volley$keepTheHeadingAControlArrowChose(final CallbackInfoReturnable<Boolean> cir) {
-    if (SlimeSteering.isSteered(slime.getUuid(), slime.getWorld().getTime())) {
+    if (SteeringGrace.SLIMES.isSteered(slime.getUuid(), slime.getWorld().getTime())) {
       cir.setReturnValue(false);
     }
   }
