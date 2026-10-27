@@ -1,5 +1,6 @@
 package com.grahambartley.volley.social;
 
+import com.grahambartley.volley.world.Reach;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,7 +51,7 @@ public final class MagnetPull {
             entity ->
                 entity.isAlive()
                     && isPullable(entity)
-                    && MagnetSteering.isWithinReach(entity.getPos(), impact, radius));
+                    && Reach.isWithin(entity.getPos(), impact, radius));
     final Map<UUID, Pull> pulls =
         PULLS.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashMap<>());
     final long until = world.getTime() + MagnetSteering.MAX_PULL_TICKS;

@@ -46,15 +46,4 @@ class MagnetSteeringTest {
         MagnetSteering.hasArrived(
             Vec3d.ZERO, new Vec3d(MagnetSteering.ARRIVAL_DISTANCE + 0.1, 0, 0)));
   }
-
-  @Test
-  void reachesOnlyWithinTheRadius() {
-    assertTrue(MagnetSteering.isWithinReach(new Vec3d(3.0, 0.0, 0.0), Vec3d.ZERO, 3));
-    assertFalse(MagnetSteering.isWithinReach(new Vec3d(3.1, 0.0, 0.0), Vec3d.ZERO, 3));
-  }
-
-  @Test
-  void aZeroRadiusReachesNothing() {
-    assertFalse(MagnetSteering.isWithinReach(Vec3d.ZERO, Vec3d.ZERO, 0));
-  }
 }

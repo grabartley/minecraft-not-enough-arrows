@@ -3,6 +3,7 @@ package com.grahambartley.volley.world;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,12 @@ class ReachTest {
   void aTargetIsInReachUpToAndIncludingTheLimit(
       final double distance, final int maxBlocks, final boolean within) {
     assertEquals(within, Reach.isWithin(ORIGIN, ORIGIN.add(distance, 0.0, 0.0), maxBlocks));
+  }
+
+  @Test
+  void measuresTheLimitInEveryDirectionRatherThanOnOneAxis() {
+    assertTrue(Reach.isWithin(ORIGIN, ORIGIN.add(1.0, 1.0, 1.0), 3));
+    assertFalse(Reach.isWithin(ORIGIN, ORIGIN.add(2.0, 2.0, 2.0), 3));
   }
 
   @ParameterizedTest

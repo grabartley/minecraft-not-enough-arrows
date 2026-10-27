@@ -13,6 +13,7 @@ import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -60,7 +61,11 @@ public final class ShockStrike {
     return world.getEntitiesByClass(
         LivingEntity.class,
         search,
-        candidate -> candidate.isAlive() && candidate != struck && candidate != shooter);
+        candidate ->
+            candidate.isAlive()
+                && EntityPredicates.EXCEPT_SPECTATOR.test(candidate)
+                && candidate != struck
+                && candidate != shooter);
   }
 
   private static void shock(

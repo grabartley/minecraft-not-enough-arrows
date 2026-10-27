@@ -1,5 +1,6 @@
 package com.grahambartley.volley.incendiary;
 
+import com.grahambartley.volley.world.Reach;
 import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.config.IncendiaryArrowConfig;
 import com.grahambartley.volley.fire.FirePatchService;
@@ -81,7 +82,7 @@ public final class IncendiaryService {
       if (entity != shooter
           && !(entity instanceof ItemEntity)
           && !entity.isFireImmune()
-          && IncendiaryBurn.reaches(center, entity.getPos(), radius)) {
+          && Reach.isWithin(center, entity.getPos(), radius)) {
         entity.setOnFireForTicks(ticks);
         burned.add(entity);
       }

@@ -1,6 +1,7 @@
 package com.grahambartley.volley.reveal;
 
 import com.grahambartley.volley.glow.GlowService;
+import com.grahambartley.volley.world.Reach;
 import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -23,7 +24,6 @@ public final class EntityRevealPulse {
     if (world == null || center == null || radius < 0 || durationTicks <= 0) {
       return List.of();
     }
-    final double reachSquared = (double) radius * radius;
     final List<LivingEntity> found =
         world.getEntitiesByClass(
             LivingEntity.class,
@@ -32,7 +32,7 @@ public final class EntityRevealPulse {
                 living.isAlive()
                     && !living.isSpectator()
                     && living != shooter
-                    && living.getPos().squaredDistanceTo(center) <= reachSquared);
+                    && Reach.isWithin(center, living.getPos(), radius));
     found.forEach(living -> GlowService.mark(world, living, source, durationTicks));
     return List.copyOf(found);
   }

@@ -1,16 +1,10 @@
 package com.grahambartley.volley.incendiary;
 
-import net.minecraft.util.math.Vec3d;
-
 public final class IncendiaryBurn {
   public static final int TICKS_PER_SECOND = 20;
 
   private IncendiaryBurn() {}
 
-  public static boolean reaches(final Vec3d center, final Vec3d target, final int radius) {
-    if (center == null || target == null || radius <= 0) {
-      return false;
-    }
     return center.squaredDistanceTo(target) <= (double) radius * radius;
   }
 
