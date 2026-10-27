@@ -1,7 +1,7 @@
 package com.grahambartley.volley.control;
 
 import com.grahambartley.volley.config.FrostArrowConfig;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,12 +10,11 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 
 public final class FrostGripService {
-  private static final Map<RegistryKey<World>, Map<UUID, Long>> GRIPS = new HashMap<>();
+  private static final PerWorld<Map<UUID, Long>> GRIPS =
+      new PerWorld<>(() -> new LinkedHashMap<>());
 
   private FrostGripService() {}
 
@@ -33,7 +32,7 @@ public final class FrostGripService {
       return false;
     }
     final long until = world.getTime() + frost.durationTicks();
-    gripsIn(world).put(target.getUuid(), until);
+    GRIPS.of(world).put(target.getUuid(), until);
     target.setAttached(ControlPersistence.FROST_UNTIL, until);
     pin(target);
     FrostEffects.frozeOver(world, target);
@@ -45,7 +44,7 @@ public final class FrostGripService {
   }
 
   private static void tick(final ServerWorld world) {
-    final Map<UUID, Long> gripped = GRIPS.get(world.getRegistryKey());
+    final Map<UUID, Long> gripped = GRIPS.in(world);
     if (gripped == null || gripped.isEmpty()) {
       return;
     }
@@ -74,14 +73,10 @@ public final class FrostGripService {
   }
 
   static void resume(final ServerWorld world, final LivingEntity target, final long until) {
-    gripsIn(world).put(target.getUuid(), until);
+    GRIPS.of(world).put(target.getUuid(), until);
   }
 
   private static void pin(final LivingEntity target) {
     target.setFrozenTicks(FrostGrip.pinnedTicks(target.getMinFreezeDamageTicks()));
-  }
-
-  private static Map<UUID, Long> gripsIn(final ServerWorld world) {
-    return GRIPS.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashMap<>());
   }
 }

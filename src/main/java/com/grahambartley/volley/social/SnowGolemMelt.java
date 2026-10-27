@@ -4,9 +4,8 @@ import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.Volley;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.world.ExpiringLedger;
+import com.grahambartley.volley.world.PerWorld;
 import com.mojang.serialization.Codec;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.OptionalLong;
 import java.util.UUID;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -17,10 +16,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.SnowGolemEntity;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 
 public final class SnowGolemMelt {
   public static final AttachmentType<Long> MELTS_AT =
@@ -31,7 +28,8 @@ public final class SnowGolemMelt {
   private static final double MELT_SPREAD = 0.4;
   private static final double MELT_SPEED = 0.05;
 
-  private static final Map<RegistryKey<World>, ExpiringLedger<Boolean>> LEDGERS = new HashMap<>();
+  private static final PerWorld<ExpiringLedger<Boolean>> LEDGERS =
+      new PerWorld<>(() -> new ExpiringLedger<>());
 
   private SnowGolemMelt() {}
 
@@ -52,30 +50,26 @@ public final class SnowGolemMelt {
   }
 
   public static boolean isTracked(final ServerWorld world, final UUID id) {
-    final ExpiringLedger<Boolean> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Boolean> ledger = LEDGERS.in(world);
     return ledger != null && ledger.contains(id);
   }
 
   public static void track(final Entity entity, final ServerWorld world) {
     if (entity instanceof SnowGolemEntity golem) {
       meltsAt(golem)
-          .ifPresent(
-              meltsAt ->
-                  LEDGERS
-                      .computeIfAbsent(world.getRegistryKey(), key -> new ExpiringLedger<>())
-                      .put(golem.getUuid(), Boolean.TRUE, meltsAt));
+          .ifPresent(meltsAt -> LEDGERS.of(world).put(golem.getUuid(), Boolean.TRUE, meltsAt));
     }
   }
 
   private static void forget(final Entity entity, final ServerWorld world) {
-    final ExpiringLedger<Boolean> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Boolean> ledger = LEDGERS.in(world);
     if (ledger != null) {
       ledger.remove(entity.getUuid());
     }
   }
 
   private static void tick(final ServerWorld world) {
-    final ExpiringLedger<Boolean> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Boolean> ledger = LEDGERS.in(world);
     if (ledger == null || ledger.isEmpty()) {
       return;
     }

@@ -4,21 +4,19 @@ import com.grahambartley.volley.ModSounds;
 import com.grahambartley.volley.audio.ModSoundPlayer;
 import com.grahambartley.volley.config.PufferArrowConfig;
 import com.grahambartley.volley.world.ExpiringLedger;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 
 public final class PufferService {
 
-  private static final Map<RegistryKey<World>, ExpiringLedger<Boolean>> LEDGERS = new HashMap<>();
+  private static final PerWorld<ExpiringLedger<Boolean>> LEDGERS =
+      new PerWorld<>(() -> new ExpiringLedger<>());
 
   private PufferService() {}
 
@@ -36,17 +34,17 @@ public final class PufferService {
     if (!PufferInflation.isInflated(target) && PufferInflation.inflate(target).isEmpty()) {
       return false;
     }
-    ledgerFor(world).put(target.getUuid(), Boolean.TRUE, world.getTime() + puffer.durationTicks());
+    LEDGERS.of(world).put(target.getUuid(), Boolean.TRUE, world.getTime() + puffer.durationTicks());
     return true;
   }
 
   public static boolean isTracked(final ServerWorld world, final UUID id) {
-    final ExpiringLedger<Boolean> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Boolean> ledger = LEDGERS.in(world);
     return ledger != null && ledger.contains(id);
   }
 
   private static void tick(final ServerWorld world) {
-    final ExpiringLedger<Boolean> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Boolean> ledger = LEDGERS.in(world);
     if (ledger == null || ledger.isEmpty()) {
       return;
     }
@@ -59,15 +57,11 @@ public final class PufferService {
   }
 
   private static void forget(final Entity entity, final ServerWorld world) {
-    final ExpiringLedger<Boolean> ledger = LEDGERS.get(world.getRegistryKey());
+    final ExpiringLedger<Boolean> ledger = LEDGERS.in(world);
     if (ledger != null
         && ledger.remove(entity.getUuid()).isPresent()
         && entity instanceof LivingEntity living) {
       PufferInflation.deflate(living);
     }
-  }
-
-  private static ExpiringLedger<Boolean> ledgerFor(final ServerWorld world) {
-    return LEDGERS.computeIfAbsent(world.getRegistryKey(), key -> new ExpiringLedger<>());
   }
 }

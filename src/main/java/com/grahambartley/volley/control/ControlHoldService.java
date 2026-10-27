@@ -2,11 +2,10 @@ package com.grahambartley.volley.control;
 
 import com.grahambartley.volley.config.AllegianceArrowConfig;
 import com.grahambartley.volley.config.TargetingArrowConfig;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -16,10 +15,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.EndermanEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class ControlHoldService {
@@ -27,7 +24,8 @@ public final class ControlHoldService {
   private static final double FLEEING_SPEED = 1.5;
   private static final double ESCORT_SPEED = 1.25;
 
-  private static final Map<RegistryKey<World>, ControlHoldTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<ControlHoldTracker> TRACKERS =
+      new PerWorld<>(() -> new ControlHoldTracker());
   private static final Set<UUID> CORNERED = new HashSet<>();
 
   private ControlHoldService() {}
@@ -70,7 +68,7 @@ public final class ControlHoldService {
                   struck.getUuid(),
                   ControlSteering.DRAWN,
                   world.getTime() + targeting.tauntDurationTicks());
-      trackerFor(world).hold(hold);
+      TRACKERS.of(world).hold(hold);
       mob.setAttached(ControlPersistence.HOLD, hold);
       if (hold.subjectId().isEmpty()) {
         MobAggression.aim(mob, null);
@@ -97,7 +95,7 @@ public final class ControlHoldService {
               center,
               targeting.repelDistance(),
               world.getTime() + targeting.repelDurationTicks());
-      trackerFor(world).hold(hold);
+      TRACKERS.of(world).hold(hold);
       mob.setAttached(ControlPersistence.HOLD, hold);
       steer(mob, hold.anchor(), hold.steering());
       held++;
@@ -123,23 +121,23 @@ public final class ControlHoldService {
             protectedEntity.getUuid(),
             allegiance.defendRadius(),
             world.getTime() + allegiance.durationTicks());
-    trackerFor(world).hold(hold);
+    TRACKERS.of(world).hold(hold);
     mob.setAttached(ControlPersistence.HOLD, hold);
     applyTargeting(world, mob, hold);
     return true;
   }
 
   static void resume(final ServerWorld world, final ControlHold hold) {
-    trackerFor(world).hold(hold);
+    TRACKERS.of(world).hold(hold);
   }
 
   public static List<ControlHold> holdsIn(final ServerWorld world) {
-    final ControlHoldTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final ControlHoldTracker tracker = TRACKERS.in(world);
     return tracker == null ? List.of() : tracker.live();
   }
 
   public static Optional<ControlHold> heldIn(final ServerWorld world, final MobEntity mob) {
-    final ControlHoldTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final ControlHoldTracker tracker = TRACKERS.in(world);
     return tracker == null ? Optional.empty() : tracker.find(mob.getUuid());
   }
 
@@ -155,7 +153,7 @@ public final class ControlHoldService {
   }
 
   private static void tick(final ServerWorld world) {
-    final ControlHoldTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final ControlHoldTracker tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
@@ -324,9 +322,5 @@ public final class ControlHoldService {
   private static MobEntity mobIn(final ServerWorld world, final ControlHold hold) {
     final Entity entity = world.getEntity(hold.mobId());
     return entity instanceof MobEntity mob && mob.isAlive() ? mob : null;
-  }
-
-  private static ControlHoldTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new ControlHoldTracker());
   }
 }

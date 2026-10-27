@@ -3,21 +3,19 @@ package com.grahambartley.volley.redstone;
 import com.grahambartley.volley.ModBlocks;
 import com.grahambartley.volley.config.UtilityArrowConfig;
 import com.grahambartley.volley.server.ServerConfigService;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.List;
-import java.util.Map;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class RedstoneChargeService {
-  private static final Map<RegistryKey<World>, RedstoneChargeTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<RedstoneChargeTracker> TRACKERS =
+      new PerWorld<>(() -> new RedstoneChargeTracker());
 
   private RedstoneChargeService() {}
 
@@ -52,7 +50,7 @@ public final class RedstoneChargeService {
     }
 
     world.scheduleBlockTick(pos, ModBlocks.REDSTONE_CHARGE, durationTicks);
-    trackerFor(world).add(new RedstoneCharge(pos, world.getTime() + durationTicks));
+    TRACKERS.of(world).add(new RedstoneCharge(pos, world.getTime() + durationTicks));
     return true;
   }
 
@@ -60,7 +58,7 @@ public final class RedstoneChargeService {
     if (world == null || pos == null) {
       return 0;
     }
-    final RedstoneChargeTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final RedstoneChargeTracker tracker = TRACKERS.in(world);
     final long remaining = tracker == null ? 0L : tracker.remainingAt(pos, world.getTime());
     return (int) Math.min(remaining, Integer.MAX_VALUE);
   }
@@ -70,7 +68,7 @@ public final class RedstoneChargeService {
   }
 
   private static void expireChargesIn(final ServerWorld world) {
-    final RedstoneChargeTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final RedstoneChargeTracker tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
@@ -85,7 +83,7 @@ public final class RedstoneChargeService {
         .getWorlds()
         .forEach(
             world -> {
-              final RedstoneChargeTracker tracker = TRACKERS.get(world.getRegistryKey());
+              final RedstoneChargeTracker tracker = TRACKERS.in(world);
               if (tracker != null) {
                 clear(world, tracker.takeAll());
               }
@@ -94,9 +92,5 @@ public final class RedstoneChargeService {
 
   private static void clear(final ServerWorld world, final List<BlockPos> positions) {
     positions.forEach(pos -> RedstoneChargePlacer.clear(world, pos));
-  }
-
-  private static RedstoneChargeTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new RedstoneChargeTracker());
   }
 }

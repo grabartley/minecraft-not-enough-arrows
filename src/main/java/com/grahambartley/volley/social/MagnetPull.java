@@ -1,8 +1,8 @@
 package com.grahambartley.volley.social;
 
+import com.grahambartley.volley.world.PerWorld;
 import com.grahambartley.volley.world.Reach;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,17 +13,16 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class MagnetPull {
   private static final double AIM_ABOVE_FEET = 0.5;
 
-  private static final Map<RegistryKey<World>, Map<UUID, Pull>> PULLS = new HashMap<>();
+  private static final PerWorld<Map<UUID, Pull>> PULLS =
+      new PerWorld<>(() -> new LinkedHashMap<>());
 
   private MagnetPull() {}
 
@@ -52,8 +51,7 @@ public final class MagnetPull {
                 entity.isAlive()
                     && isPullable(entity)
                     && Reach.isWithin(entity.getPos(), impact, radius));
-    final Map<UUID, Pull> pulls =
-        PULLS.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashMap<>());
+    final Map<UUID, Pull> pulls = PULLS.of(world);
     final long until = world.getTime() + MagnetSteering.MAX_PULL_TICKS;
     for (final Entity entity : caught) {
       pulls.put(entity.getUuid(), new Pull(shooter.getUuid(), until));
@@ -63,12 +61,12 @@ public final class MagnetPull {
   }
 
   public static boolean isPulling(final ServerWorld world, final UUID id) {
-    final Map<UUID, Pull> pulls = PULLS.get(world.getRegistryKey());
+    final Map<UUID, Pull> pulls = PULLS.in(world);
     return pulls != null && pulls.containsKey(id);
   }
 
   private static void tick(final ServerWorld world) {
-    final Map<UUID, Pull> pulls = PULLS.get(world.getRegistryKey());
+    final Map<UUID, Pull> pulls = PULLS.in(world);
     if (pulls == null || pulls.isEmpty()) {
       return;
     }

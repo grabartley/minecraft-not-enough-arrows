@@ -3,18 +3,15 @@ package com.grahambartley.volley.control;
 import com.grahambartley.volley.cloud.TimedCloud;
 import com.grahambartley.volley.cloud.TimedCloudTracker;
 import com.grahambartley.volley.config.SmokeArrowConfig;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.PerWorld;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 public final class SmokeCloudService {
   private static final int BLINDNESS_REFRESH_TICKS = 40;
@@ -24,7 +21,8 @@ public final class SmokeCloudService {
   private static final int PARTICLES_PER_BURST = 24;
   private static final double PARTICLE_DRIFT = 0.0;
 
-  private static final Map<RegistryKey<World>, TimedCloudTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<TimedCloudTracker> TRACKERS =
+      new PerWorld<>(() -> new TimedCloudTracker());
 
   private SmokeCloudService() {}
 
@@ -38,7 +36,8 @@ public final class SmokeCloudService {
     if (world == null || center == null || !smoke.clouds()) {
       return false;
     }
-    trackerFor(world)
+    TRACKERS
+        .of(world)
         .add(new TimedCloud(center, smoke.radius(), world.getTime() + smoke.durationTicks()));
     return true;
   }
@@ -48,7 +47,7 @@ public final class SmokeCloudService {
   }
 
   private static void tick(final ServerWorld world) {
-    final TimedCloudTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final TimedCloudTracker tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
@@ -84,9 +83,5 @@ public final class SmokeCloudService {
         cloud.radius() / 2.0,
         cloud.radius() / 2.0,
         PARTICLE_DRIFT);
-  }
-
-  private static TimedCloudTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new TimedCloudTracker());
   }
 }

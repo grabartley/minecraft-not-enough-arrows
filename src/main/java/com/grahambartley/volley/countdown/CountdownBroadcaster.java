@@ -3,10 +3,9 @@ package com.grahambartley.volley.countdown;
 import com.grahambartley.volley.countdown.CountdownChanges.Announced;
 import com.grahambartley.volley.network.CountdownPayloads.CountdownS2CPayload;
 import com.grahambartley.volley.server.ModdedClients;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -14,14 +13,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.Entity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 public final class CountdownBroadcaster {
-  private static final Map<RegistryKey<World>, CountdownChanges> ANNOUNCED = new HashMap<>();
+  private static final PerWorld<CountdownChanges> ANNOUNCED =
+      new PerWorld<>(() -> new CountdownChanges());
 
   private CountdownBroadcaster() {}
 
@@ -32,7 +30,7 @@ public final class CountdownBroadcaster {
   }
 
   public static boolean isAnnouncing(@Nullable final ServerWorld world, final UUID carrier) {
-    final CountdownChanges changes = changesIn(world);
+    final CountdownChanges changes = ANNOUNCED.in(world);
     return changes != null && changes.knows(carrier);
   }
 
@@ -41,7 +39,7 @@ public final class CountdownBroadcaster {
   }
 
   private static void announceChangesIn(final ServerWorld world) {
-    final CountdownChanges changes = changesFor(world);
+    final CountdownChanges changes = ANNOUNCED.of(world);
     final Set<UUID> burning = new HashSet<>();
 
     for (final CountdownTimer timer : CountdownSources.timersIn(world)) {
@@ -100,14 +98,5 @@ public final class CountdownBroadcaster {
   private static void announceTo(
       final Iterable<ServerPlayerEntity> viewers, final CountdownS2CPayload payload) {
     ModdedClients.sendAll(viewers, payload);
-  }
-
-  @Nullable
-  private static CountdownChanges changesIn(@Nullable final ServerWorld world) {
-    return world == null ? null : ANNOUNCED.get(world.getRegistryKey());
-  }
-
-  private static CountdownChanges changesFor(final ServerWorld world) {
-    return ANNOUNCED.computeIfAbsent(world.getRegistryKey(), key -> new CountdownChanges());
   }
 }

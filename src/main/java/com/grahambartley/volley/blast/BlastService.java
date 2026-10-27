@@ -9,8 +9,7 @@ import com.grahambartley.volley.fire.FirePatchService;
 import com.grahambartley.volley.fuse.Fuse;
 import com.grahambartley.volley.fuse.FuseService;
 import com.grahambartley.volley.server.ServerConfigService;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.UUID;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -18,7 +17,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -26,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
 
 public final class BlastService {
 
-  private static final Map<RegistryKey<World>, BlastChargeTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<BlastChargeTracker> TRACKERS =
+      new PerWorld<>(() -> new BlastChargeTracker());
 
   private BlastService() {}
 
@@ -51,7 +50,7 @@ public final class BlastService {
       detonate(world, carrier, charge);
       return;
     }
-    trackerFor(world).add(charge);
+    TRACKERS.of(world).add(charge);
     FuseService.light(world, carrier, delayTicks);
   }
 
@@ -83,13 +82,13 @@ public final class BlastService {
 
   private static void onFuseExpired(
       final ServerWorld world, final Entity carrier, final Fuse fuse) {
-    final BlastChargeTracker tracker = trackerIn(world);
+    final BlastChargeTracker tracker = TRACKERS.in(world);
     final BlastCharge charge = tracker == null ? null : tracker.remove(fuse.hostId());
     detonate(world, carrier, charge);
   }
 
   private static void dropChargesWithoutFuses(final ServerWorld world) {
-    final BlastChargeTracker tracker = trackerIn(world);
+    final BlastChargeTracker tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }
@@ -125,14 +124,5 @@ public final class BlastService {
         ParticleTypes.EXPLOSION,
         ParticleTypes.EXPLOSION_EMITTER,
         ModSounds.EXPLOSIVE_ARROW_BLAST);
-  }
-
-  @Nullable
-  private static BlastChargeTracker trackerIn(@Nullable final ServerWorld world) {
-    return world == null ? null : TRACKERS.get(world.getRegistryKey());
-  }
-
-  private static BlastChargeTracker trackerFor(final ServerWorld world) {
-    return TRACKERS.computeIfAbsent(world.getRegistryKey(), key -> new BlastChargeTracker());
   }
 }

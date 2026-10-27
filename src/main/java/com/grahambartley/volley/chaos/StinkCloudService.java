@@ -3,18 +3,15 @@ package com.grahambartley.volley.chaos;
 import com.grahambartley.volley.cloud.TimedCloud;
 import com.grahambartley.volley.cloud.TimedCloudTracker;
 import com.grahambartley.volley.config.StinkArrowConfig;
-import java.util.HashMap;
-import java.util.Map;
+import com.grahambartley.volley.world.PerWorld;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 
 public final class StinkCloudService {
   public static final double RADIUS = 3.0;
@@ -24,7 +21,8 @@ public final class StinkCloudService {
   private static final int PARTICLES_PER_BURST = 20;
   private static final double PARTICLE_DRIFT = 0.01;
 
-  private static final Map<RegistryKey<World>, TimedCloudTracker> TRACKERS = new HashMap<>();
+  private static final PerWorld<TimedCloudTracker> TRACKERS =
+      new PerWorld<>(() -> new TimedCloudTracker());
 
   private StinkCloudService() {}
 
@@ -39,18 +37,18 @@ public final class StinkCloudService {
       return false;
     }
     TRACKERS
-        .computeIfAbsent(world.getRegistryKey(), key -> new TimedCloudTracker())
+        .of(world)
         .add(new TimedCloud(center, RADIUS, world.getTime() + stink.cloudLifetimeTicks()));
     return true;
   }
 
   public static boolean isInCloud(final ServerWorld world, final Vec3d point) {
-    final TimedCloudTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final TimedCloudTracker tracker = TRACKERS.in(world);
     return tracker != null && tracker.live().stream().anyMatch(cloud -> cloud.contains(point));
   }
 
   private static void tick(final ServerWorld world) {
-    final TimedCloudTracker tracker = TRACKERS.get(world.getRegistryKey());
+    final TimedCloudTracker tracker = TRACKERS.in(world);
     if (tracker == null || tracker.isEmpty()) {
       return;
     }

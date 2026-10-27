@@ -1,10 +1,9 @@
 package com.grahambartley.volley.agriculture;
 
 import com.grahambartley.volley.Volley;
-import java.util.HashMap;
+import com.grahambartley.volley.world.PerWorld;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
@@ -17,17 +16,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.passive.BeeEntity;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
 
 public final class BeeSwarmWarden {
   public static final AttachmentType<BeeSwarm> SWARM =
       AttachmentRegistry.createPersistent(
           Identifier.of(Volley.MOD_ID, "bee_swarm"), BeeSwarm.CODEC);
 
-  private static final Map<RegistryKey<World>, Set<UUID>> WATCHED = new HashMap<>();
+  private static final PerWorld<Set<UUID>> WATCHED = new PerWorld<>(() -> new LinkedHashSet<>());
 
   private BeeSwarmWarden() {}
 
@@ -39,11 +36,11 @@ public final class BeeSwarmWarden {
   }
 
   public static void watch(final ServerWorld world, final BeeEntity bee) {
-    watchedIn(world).add(bee.getUuid());
+    WATCHED.of(world).add(bee.getUuid());
   }
 
   public static boolean isWatched(final ServerWorld world, final UUID beeId) {
-    return watchedIn(world).contains(beeId);
+    return WATCHED.of(world).contains(beeId);
   }
 
   static void angerAt(final BeeEntity bee, final LivingEntity target, final int ticks) {
@@ -68,7 +65,7 @@ public final class BeeSwarmWarden {
   }
 
   private static void tick(final ServerWorld world) {
-    final Set<UUID> watched = WATCHED.get(world.getRegistryKey());
+    final Set<UUID> watched = WATCHED.in(world);
     if (watched == null || watched.isEmpty()) {
       return;
     }
@@ -114,9 +111,5 @@ public final class BeeSwarmWarden {
     }
     final BeeSwarm swarm = bee.getAttached(SWARM);
     return swarm == null || !swarm.spares(victim.getUuid());
-  }
-
-  private static Set<UUID> watchedIn(final ServerWorld world) {
-    return WATCHED.computeIfAbsent(world.getRegistryKey(), key -> new LinkedHashSet<>());
   }
 }
