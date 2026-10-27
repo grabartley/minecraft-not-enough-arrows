@@ -16,16 +16,13 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
     String path,
     EntityType.EntityFactory<E> entityFactory,
     PositionedArrowConstructor<E> positionedConstructor,
-    float width,
-    float height,
-    int maxTrackingRange,
     int trackingTickInterval,
     List<ArrowSound> sounds,
     Optional<TintPalette> palette,
     List<ArrowEffect> effects) {
 
-  public static final float DEFAULT_SIZE = 0.5f;
-  public static final int DEFAULT_MAX_TRACKING_RANGE = 4;
+  public static final float SIZE = 0.5f;
+  public static final int MAX_TRACKING_RANGE = 4;
   public static final int DEFAULT_TRACKING_TICK_INTERVAL = 20;
 
   private static final Pattern VALID_PATH = Pattern.compile("[a-z0-9_]+");
@@ -42,40 +39,10 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
       throw new IllegalArgumentException(
           "Arrow path must match " + VALID_PATH.pattern() + " but was '" + path + "'");
     }
-    if (width <= 0f || height <= 0f) {
-      throw new IllegalArgumentException(
-          "Arrow dimensions must be positive but were " + width + "x" + height);
-    }
-    if (maxTrackingRange <= 0) {
-      throw new IllegalArgumentException(
-          "Arrow max tracking range must be positive but was " + maxTrackingRange);
-    }
     if (trackingTickInterval <= 0) {
       throw new IllegalArgumentException(
           "Arrow tracking tick interval must be positive but was " + trackingTickInterval);
     }
-  }
-
-  public ArrowDefinition(
-      final String path,
-      final EntityType.EntityFactory<E> entityFactory,
-      final PositionedArrowConstructor<E> positionedConstructor,
-      final float width,
-      final float height,
-      final int maxTrackingRange,
-      final int trackingTickInterval,
-      final List<ArrowSound> sounds) {
-    this(
-        path,
-        entityFactory,
-        positionedConstructor,
-        width,
-        height,
-        maxTrackingRange,
-        trackingTickInterval,
-        sounds,
-        Optional.empty(),
-        List.of());
   }
 
   public static <E extends BaseArrowEntity> ArrowDefinition<E> of(
@@ -87,11 +54,10 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         path,
         entityFactory,
         positionedConstructor,
-        DEFAULT_SIZE,
-        DEFAULT_SIZE,
-        DEFAULT_MAX_TRACKING_RANGE,
         DEFAULT_TRACKING_TICK_INTERVAL,
-        Arrays.asList(Objects.requireNonNull(sounds, "sounds")));
+        Arrays.asList(Objects.requireNonNull(sounds, "sounds")),
+        Optional.empty(),
+        List.of());
   }
 
   public static <E extends TintedArrowEntity> ArrowDefinition<E> tinted(
@@ -104,13 +70,15 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         path,
         entityFactory,
         positionedConstructor,
-        DEFAULT_SIZE,
-        DEFAULT_SIZE,
-        DEFAULT_MAX_TRACKING_RANGE,
         DEFAULT_TRACKING_TICK_INTERVAL,
         Arrays.asList(Objects.requireNonNull(sounds, "sounds")),
         Optional.of(Objects.requireNonNull(palette, "palette")),
         List.of());
+  }
+
+  public ArrowDefinition<E> trackedEvery(final int ticks) {
+    return new ArrowDefinition<>(
+        path, entityFactory, positionedConstructor, ticks, sounds, palette, effects);
   }
 
   public ArrowDefinition<E> applying(final ArrowEffect... applied) {
@@ -118,9 +86,6 @@ public record ArrowDefinition<E extends BaseArrowEntity>(
         path,
         entityFactory,
         positionedConstructor,
-        width,
-        height,
-        maxTrackingRange,
         trackingTickInterval,
         sounds,
         palette,

@@ -4,13 +4,13 @@ import java.util.Optional;
 import net.minecraft.util.math.Vec3d;
 
 public enum ControlSteering {
-  DRAWN(TargetPolicy.AIM_AT_SUBJECT) {
+  DRAWN {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
       return Optional.of(anchor);
     }
   },
-  FLEEING(TargetPolicy.DROP_UNLESS_CORNERED) {
+  FLEEING {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
       final Vec3d away = new Vec3d(from.getX() - anchor.getX(), 0.0, from.getZ() - anchor.getZ());
@@ -20,7 +20,7 @@ public enum ControlSteering {
       return Optional.of(from.add(away.normalize().multiply(FLEE_DISTANCE)));
     }
   },
-  DEFENDING(TargetPolicy.DEFEND_SUBJECT) {
+  DEFENDING {
     @Override
     public Optional<Vec3d> destination(final Vec3d from, final Vec3d anchor) {
       return Optional.empty();
@@ -31,16 +31,10 @@ public enum ControlSteering {
   public static final double STEERING_SPEED = 1.1;
   public static final double FLEEING_SPEED = 1.5;
 
-  private final TargetPolicy targetPolicy;
-
-  ControlSteering(final TargetPolicy targetPolicy) {
-    this.targetPolicy = targetPolicy;
-  }
-
   public abstract Optional<Vec3d> destination(Vec3d from, Vec3d anchor);
 
-  public TargetPolicy targetPolicy() {
-    return targetPolicy;
+  public boolean retargetsEveryTick() {
+    return this != FLEEING;
   }
 
   public double speed() {

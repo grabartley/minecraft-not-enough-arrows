@@ -25,13 +25,12 @@ final class EscortBehaviour {
         DefenderTargets.threatTo(world, defended, mob, hold.reach()).orElse(null);
     MobAggression.aim(mob, threat);
     if (threat == null) {
-      escort(world, mob, defended);
+      escort(mob, defended);
     }
     return true;
   }
 
-  private static void escort(
-      final ServerWorld world, final MobEntity mob, final LivingEntity defended) {
+  private static void escort(final MobEntity mob, final LivingEntity defended) {
     final double squaredDistance = mob.squaredDistanceTo(defended);
     if (mob instanceof EndermanEntity && Escort.hasLostTrack(squaredDistance)) {
       mob.teleport(defended.getX(), defended.getY(), defended.getZ(), true);

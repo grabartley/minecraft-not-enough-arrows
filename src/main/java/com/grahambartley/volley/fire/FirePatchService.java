@@ -38,8 +38,4 @@ public final class FirePatchService {
         (target, column) -> FirePatchPlacer.surfaceIn(target, column, igniter),
         durationTicks);
   }
-
-  public static void forget() {
-    TimedStructureService.forget();
-  }
 }

@@ -11,7 +11,6 @@ import com.grahambartley.volley.entity.PartyArrowEntity;
 import com.grahambartley.volley.entity.PolymorphArrowEntity;
 import com.grahambartley.volley.entity.PufferArrowEntity;
 import com.grahambartley.volley.entity.StinkArrowEntity;
-import java.util.List;
 import net.minecraft.entity.effect.StatusEffects;
 
 public final class ChaosArrows {
@@ -58,15 +57,12 @@ public final class ChaosArrows {
   public static final RegisteredArrow<BoomerangArrowEntity> BOOMERANG_ARROW =
       ModArrows.registrar()
           .register(
-              new ArrowDefinition<>(
-                  "boomerang_arrow",
-                  BoomerangArrowEntity::new,
-                  BoomerangArrowEntity::new,
-                  ArrowDefinition.DEFAULT_SIZE,
-                  ArrowDefinition.DEFAULT_SIZE,
-                  ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
-                  BOOMERANG_TRACKING_TICK_INTERVAL,
-                  List.of(ArrowSound.own(ModSounds.BOOMERANG_ARROW_RETURN.getId()))));
+              ArrowDefinition.<BoomerangArrowEntity>of(
+                      "boomerang_arrow",
+                      BoomerangArrowEntity::new,
+                      BoomerangArrowEntity::new,
+                      ArrowSound.own(ModSounds.BOOMERANG_ARROW_RETURN.getId()))
+                  .trackedEvery(BOOMERANG_TRACKING_TICK_INTERVAL));
 
   public static final RegisteredArrow<PolymorphArrowEntity> POLYMORPH_ARROW =
       ModArrows.registrar()

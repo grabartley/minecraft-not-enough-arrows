@@ -4,6 +4,7 @@ import com.grahambartley.volley.config.ExplosiveArrowConfig;
 import com.grahambartley.volley.config.VolleyConfig;
 import com.grahambartley.volley.fire.FirePatchService;
 import com.grahambartley.volley.fire.FirePatchShape;
+import com.grahambartley.volley.structure.TimedStructureService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -23,7 +24,7 @@ public final class FirePatchServiceGameTest implements FabricGameTest {
 
   @BeforeBatch(batchId = BATCH)
   public void forgetPatchesBeforeBatch(ServerWorld world) {
-    FirePatchService.forget();
+    TimedStructureService.forget();
   }
 
   @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)

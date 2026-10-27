@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.util.math.Vec3d;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ class ControlHoldTest {
 
   @Test
   void holdsUntilItsExpiryTick() {
-    final ControlHold hold = ControlHold.at(MOB, ANCHOR, ControlSteering.DRAWN, 100L);
+    final ControlHold hold = ControlHold.drawn(MOB, ANCHOR, Optional.empty(), 100L);
 
     assertFalse(hold.hasExpired(99L));
     assertTrue(hold.hasExpired(100L));
@@ -30,16 +31,19 @@ class ControlHoldTest {
   void carriesTheSteeringItWasHeldWith() {
     assertEquals(
         ControlSteering.FLEEING,
-        ControlHold.at(MOB, ANCHOR, ControlSteering.FLEEING, 10L).steering());
+        new ControlHold(MOB, ANCHOR, Optional.empty(), 0.0, ControlSteering.FLEEING, 10L)
+            .steering());
   }
 
   @Test
   void refusesAHoldWithoutAMobAnAnchorOrASteering() {
     assertThrows(
-        NullPointerException.class, () -> ControlHold.at(null, ANCHOR, ControlSteering.DRAWN, 1L));
+        NullPointerException.class, () -> ControlHold.drawn(null, ANCHOR, Optional.empty(), 1L));
     assertThrows(
-        NullPointerException.class, () -> ControlHold.at(MOB, null, ControlSteering.DRAWN, 1L));
-    assertThrows(NullPointerException.class, () -> ControlHold.at(MOB, ANCHOR, null, 1L));
+        NullPointerException.class, () -> ControlHold.drawn(MOB, null, Optional.empty(), 1L));
+    assertThrows(
+        NullPointerException.class,
+        () -> new ControlHold(MOB, ANCHOR, Optional.empty(), 0.0, null, 1L));
   }
 
   @ParameterizedTest

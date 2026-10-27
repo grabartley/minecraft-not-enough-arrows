@@ -68,16 +68,11 @@ class ControlSteeringTest {
     assertFalse(ControlSteering.DEFENDING.navigates());
   }
 
-  @Test
-  void eachSteeringCarriesTheTargetingItsArrowPromises() {
-    assertEquals(TargetPolicy.AIM_AT_SUBJECT, ControlSteering.DRAWN.targetPolicy());
-    assertEquals(TargetPolicy.DROP_UNLESS_CORNERED, ControlSteering.FLEEING.targetPolicy());
-    assertEquals(TargetPolicy.DEFEND_SUBJECT, ControlSteering.DEFENDING.targetPolicy());
-  }
-
-  @Test
-  void aRepelledMobDropsItsTargetOnlyWhileItHasSomewhereToRun() {
-    assertEquals(TargetPolicy.DROP_UNLESS_CORNERED, ControlSteering.FLEEING.targetPolicy());
+  @ParameterizedTest
+  @CsvSource({"DRAWN, true", "DEFENDING, true", "FLEEING, false"})
+  void onlyAFleeingMobLeavesItsTargetAloneEachTick(
+      final ControlSteering steering, final boolean retargets) {
+    assertEquals(retargets, steering.retargetsEveryTick());
   }
 
   @ParameterizedTest

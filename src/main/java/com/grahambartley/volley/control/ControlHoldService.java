@@ -45,24 +45,14 @@ public final class ControlHoldService {
     if (struck != null && shooter != null) {
       drawn.addAll(MobScan.mobsHunting(world, shooter, targeting.tauntRadius()));
     }
+    final long expiry = world.getTime() + targeting.tauntDurationTicks();
+    final Optional<UUID> subject = Optional.ofNullable(struck).map(Entity::getUuid);
     int held = 0;
     for (final MobEntity mob : drawn) {
       if (mob == struck) {
         continue;
       }
-      final ControlHold hold =
-          struck == null
-              ? ControlHold.at(
-                  mob.getUuid(),
-                  center,
-                  ControlSteering.DRAWN,
-                  world.getTime() + targeting.tauntDurationTicks())
-              : ControlHold.on(
-                  mob.getUuid(),
-                  center,
-                  struck.getUuid(),
-                  ControlSteering.DRAWN,
-                  world.getTime() + targeting.tauntDurationTicks());
+      final ControlHold hold = ControlHold.drawn(mob.getUuid(), center, subject, expiry);
       TRACKERS.of(world).add(hold);
       mob.setAttached(ControlPersistence.HOLD, hold);
       if (hold.subjectId().isEmpty()) {
@@ -162,7 +152,7 @@ public final class ControlHoldService {
       SteeringGrace.SLIMES.release(hold.mobId());
       return;
     }
-    if (hold.steering().targetPolicy().retargetsEveryTick() && !applyTargeting(world, mob, hold)) {
+    if (hold.steering().retargetsEveryTick() && !applyTargeting(world, mob, hold)) {
       tracker.remove(hold.mobId());
       handBack(world, hold);
       return;
@@ -181,10 +171,10 @@ public final class ControlHoldService {
 
   private static boolean applyTargeting(
       final ServerWorld world, final MobEntity mob, final ControlHold hold) {
-    return switch (hold.steering().targetPolicy()) {
-      case AIM_AT_SUBJECT -> aimAtSubject(world, mob, hold);
-      case DEFEND_SUBJECT -> EscortBehaviour.defendSubject(world, mob, hold);
-      case DROP_UNLESS_CORNERED -> true;
+    return switch (hold.steering()) {
+      case DRAWN -> aimAtSubject(world, mob, hold);
+      case DEFENDING -> EscortBehaviour.defendSubject(world, mob, hold);
+      case FLEEING -> true;
     };
   }
 

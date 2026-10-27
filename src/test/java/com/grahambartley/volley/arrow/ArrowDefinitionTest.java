@@ -15,7 +15,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ArrowDefinitionTest {
@@ -44,38 +43,25 @@ class ArrowDefinitionTest {
   }
 
   @ParameterizedTest
-  @CsvSource({"0, 0.5", "0.5, 0", "-1, 0.5", "0.5, -1", "0, 0"})
-  void rejectsNonPositiveDimensions(final float width, final float height) {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ArrowDefinition<>(
-                "tnt_arrow",
-                ENTITY_FACTORY,
-                CONSTRUCTOR,
-                width,
-                height,
-                ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
-                ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
-                List.of()));
+  @ValueSource(ints = {0, -1, -20})
+  void rejectsANonPositiveTrackingInterval(final int ticks) {
+    final ArrowDefinition<BaseArrowEntity> definition =
+        ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR);
+
+    assertThrows(IllegalArgumentException.class, () -> definition.trackedEvery(ticks));
   }
 
   @ParameterizedTest
-  @CsvSource({"0, 20", "-4, 20", "4, 0", "4, -20"})
-  void rejectsNonPositiveTrackingSettings(
-      final int maxTrackingRange, final int trackingTickInterval) {
-    assertThrows(
-        IllegalArgumentException.class,
-        () ->
-            new ArrowDefinition<>(
-                "tnt_arrow",
-                ENTITY_FACTORY,
-                CONSTRUCTOR,
-                ArrowDefinition.DEFAULT_SIZE,
-                ArrowDefinition.DEFAULT_SIZE,
-                maxTrackingRange,
-                trackingTickInterval,
-                List.of()));
+  @ValueSource(ints = {1, 5, 20})
+  void tracksAtTheIntervalItIsGivenAndKeepsEverythingElse(final int ticks) {
+    final ArrowDefinition<BaseArrowEntity> plain =
+        ArrowDefinition.of("boomerang_arrow", ENTITY_FACTORY, CONSTRUCTOR);
+
+    final ArrowDefinition<BaseArrowEntity> tracked = plain.trackedEvery(ticks);
+
+    assertEquals(ticks, tracked.trackingTickInterval());
+    assertEquals(plain.path(), tracked.path());
+    assertEquals(plain.sounds(), tracked.sounds());
   }
 
   @Test
@@ -101,9 +87,6 @@ class ArrowDefinitionTest {
     final ArrowDefinition<BaseArrowEntity> definition =
         ArrowDefinition.of("tnt_arrow", ENTITY_FACTORY, CONSTRUCTOR);
 
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.width());
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.height());
-    assertEquals(ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE, definition.maxTrackingRange());
     assertEquals(ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL, definition.trackingTickInterval());
   }
 
@@ -155,9 +138,6 @@ class ArrowDefinitionTest {
     assertEquals(plain.path(), voiced.path());
     assertSame(plain.entityFactory(), voiced.entityFactory());
     assertSame(plain.positionedConstructor(), voiced.positionedConstructor());
-    assertEquals(plain.width(), voiced.width());
-    assertEquals(plain.height(), voiced.height());
-    assertEquals(plain.maxTrackingRange(), voiced.maxTrackingRange());
     assertEquals(plain.trackingTickInterval(), voiced.trackingTickInterval());
   }
 
@@ -187,11 +167,10 @@ class ArrowDefinitionTest {
                 "tnt_arrow",
                 ENTITY_FACTORY,
                 CONSTRUCTOR,
-                ArrowDefinition.DEFAULT_SIZE,
-                ArrowDefinition.DEFAULT_SIZE,
-                ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE,
                 ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL,
-                null));
+                null,
+                java.util.Optional.empty(),
+                List.of()));
   }
 
   @Test
@@ -220,9 +199,6 @@ class ArrowDefinitionTest {
     assertEquals("paint_arrow", definition.path());
     assertSame(TINTED_FACTORY, definition.entityFactory());
     assertSame(TINTED_CONSTRUCTOR, definition.positionedConstructor());
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.width());
-    assertEquals(ArrowDefinition.DEFAULT_SIZE, definition.height());
-    assertEquals(ArrowDefinition.DEFAULT_MAX_TRACKING_RANGE, definition.maxTrackingRange());
     assertEquals(ArrowDefinition.DEFAULT_TRACKING_TICK_INTERVAL, definition.trackingTickInterval());
     assertEquals(List.of(sound), definition.sounds());
   }
