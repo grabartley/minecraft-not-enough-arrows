@@ -36,3 +36,4 @@ volley config combat railgun gravityfactor 2.0,true
 volley config combat railgun gravityfactor 0.0,false
 volley config combat railgun gravityfactor 0.04,false
 volley config combat railgun gravityfactor -1.0,false
+volley config combat shock damage 20.0,true

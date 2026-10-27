@@ -166,7 +166,7 @@ public final class GrappleService {
 
   private static void pullTowardAnchor(
       final ServerPlayerEntity player, final Vec3d target, final double pullSpeed) {
-    Propel.drive(
+    Propel.carry(
         player,
         GrapplePull.velocity(pullOrigin(player), target, pullSpeed, player.getFinalGravity()));
   }

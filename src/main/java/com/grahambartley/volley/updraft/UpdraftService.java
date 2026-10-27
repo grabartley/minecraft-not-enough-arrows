@@ -99,7 +99,7 @@ public final class UpdraftService {
   }
 
   private static void lift(final Entity entity, final UpdraftColumn column) {
-    Propel.drive(entity, column.lift(entity.getVelocity()));
+    Propel.carry(entity, column.lift(entity.getVelocity()));
     entity.fallDistance = 0.0f;
   }
 

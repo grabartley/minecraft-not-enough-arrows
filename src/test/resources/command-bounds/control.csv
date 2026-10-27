@@ -31,3 +31,8 @@ volley config control disarm affectsplayers true,true
 volley config control disarm affectsplayers false,true
 volley config control disarm affectsplayers maybe,false
 volley config control disarm affectsplayers 1,false
+volley config control smoke radius -0.1,false
+volley config control targeting repeldistance 0.0,true
+volley config control targeting repeldistance 64.0,true
+volley config control targeting repeldistance -0.5,false
+volley config control targeting repeldistance 64.5,false

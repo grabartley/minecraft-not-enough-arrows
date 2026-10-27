@@ -11,6 +11,10 @@ public final class Propel {
   public static void drive(final Entity entity, final Vec3d velocity) {
     entity.setVelocity(velocity);
     entity.velocityModified = true;
+  }
+
+  public static void carry(final Entity entity, final Vec3d velocity) {
+    drive(entity, velocity);
     if (entity instanceof ServerPlayerEntity player && player.networkHandler != null) {
       player.networkHandler.floatingTicks = 0;
     }

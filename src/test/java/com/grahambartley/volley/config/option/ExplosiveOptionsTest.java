@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class ExplosiveOptionsTest {
 
@@ -31,5 +33,18 @@ class ExplosiveOptionsTest {
   @Test
   void groupsItsOptionsUnderItsOwnSection() {
     assertEquals(ExplosiveOptions.options(), ExplosiveOptions.section().options());
+  }
+
+  @ParameterizedTest(name = "{0}")
+  @ValueSource(strings = {"explosive.beepVolume"})
+  void stepsInTheSameIncrementAsEveryOtherSettingOfItsKind(final String id) {
+    final FloatOption<?> option =
+        (FloatOption<?>)
+            ExplosiveOptions.options().stream()
+                .filter(o -> o.id().equals(id))
+                .findFirst()
+                .orElseThrow();
+
+    assertEquals(0.05f, option.step());
   }
 }

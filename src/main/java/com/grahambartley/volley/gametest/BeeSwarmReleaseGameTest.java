@@ -96,6 +96,21 @@ public final class BeeSwarmReleaseGameTest implements FabricGameTest {
         });
   }
 
+  @GameTest(
+      templateName = FiringRangeSupport.TEMPLATE,
+      batchId = BATCH,
+      tickLimit = TerrainTestSupport.TICK_LIMIT)
+  public void aShooterWhoMayNotBuildReleasesNoBees(TestContext context) {
+    final PlayerEntity visitor = MockPlayerSupport.mortalPlayerAt(context, TARGET_STAND.west(2));
+    visitor.getAbilities().allowModifyWorld = false;
+
+    context.assertEquals(
+        release(context, visitor, null, new BeeArrowConfig(3, LONG_LIFE)).size(),
+        0,
+        "Bees released by a shooter who may not change the world");
+    context.complete();
+  }
+
   private static List<BeeEntity> release(
       final TestContext context,
       final PlayerEntity shooter,

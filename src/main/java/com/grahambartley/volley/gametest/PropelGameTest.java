@@ -16,11 +16,11 @@ public final class PropelGameTest implements FabricGameTest {
   private static final Vec3d LAUNCH = new Vec3d(0.5, 1.0, -0.25);
 
   @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
-  public void aDrivenPlayerTakesTheVelocityAndHasTheirFloatingCountCleared(TestContext context) {
+  public void aCarriedPlayerTakesTheVelocityAndHasTheirFloatingCountCleared(TestContext context) {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     player.networkHandler.floatingTicks = COUNTED_TICKS;
 
-    Propel.drive(player, LAUNCH);
+    Propel.carry(player, LAUNCH);
 
     context.assertEquals(
         player.networkHandler.floatingTicks,
@@ -28,6 +28,21 @@ public final class PropelGameTest implements FabricGameTest {
         "Ticks the server still counts a pulled player as floating for");
     context.assertEquals(player.getVelocity(), LAUNCH, "Velocity after the drive");
     context.assertTrue(player.velocityModified, "The new velocity is sent to the client");
+    context.complete();
+  }
+
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
+  public void aDrivenPlayerKeepsTheirFloatingCount(TestContext context) {
+    final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
+    player.networkHandler.floatingTicks = COUNTED_TICKS;
+
+    Propel.drive(player, LAUNCH);
+
+    context.assertEquals(
+        player.networkHandler.floatingTicks,
+        COUNTED_TICKS,
+        "A push the mod does not carry the player through leaves the anti-flight check alone");
+    context.assertEquals(player.getVelocity(), LAUNCH, "Velocity after the drive");
     context.complete();
   }
 }

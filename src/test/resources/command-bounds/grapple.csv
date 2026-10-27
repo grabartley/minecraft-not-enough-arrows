@@ -13,3 +13,7 @@ volley config grapple ropelengthblocks 128,true
 volley config grapple ropelengthblocks 0,false
 volley config grapple ropelengthblocks 129,false
 volley config grapple ropesdecay true,true
+volley config grapple pullacceleration 0.01,true
+volley config grapple pullacceleration 4.0,true
+volley config grapple pullacceleration 0.0,false
+volley config grapple pullacceleration 4.1,false

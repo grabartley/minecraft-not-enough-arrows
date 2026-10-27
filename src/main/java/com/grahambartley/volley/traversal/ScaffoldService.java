@@ -5,6 +5,8 @@ import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.structure.StructureBlock;
 import com.grahambartley.volley.structure.TimedStructureService;
 import com.grahambartley.volley.world.LoadedGround;
+import com.grahambartley.volley.world.OpenRun;
+import com.grahambartley.volley.world.VerticalRun;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;

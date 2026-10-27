@@ -2,6 +2,7 @@ package com.grahambartley.volley.traversal;
 
 import com.grahambartley.volley.server.ServerConfigService;
 import com.grahambartley.volley.world.BlockPlacement;
+import com.grahambartley.volley.world.VerticalRun;
 import java.util.List;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

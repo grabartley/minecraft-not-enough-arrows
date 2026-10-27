@@ -13,7 +13,12 @@ import com.grahambartley.volley.config.option.IntOption;
 import com.grahambartley.volley.config.option.ServerConfigOptions;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 import net.minecraft.server.command.ServerCommandSource;
@@ -25,6 +30,23 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class VolleyCommandTest {
+  private static final List<String> FAMILIES =
+      List.of(
+          "explosive",
+          "grapple",
+          "utility",
+          "physics",
+          "ender",
+          "combat",
+          "control",
+          "traversal",
+          "terrain",
+          "agriculture",
+          "discovery",
+          "chaos",
+          "social",
+          "fletching",
+          "sound");
 
   private static final String OLD_ALIAS = "nea";
 
@@ -92,9 +114,32 @@ class VolleyCommandTest {
   }
 
   @Test
+  void everyOptionHasALiteralCaseInItsFamilyFile() throws IOException {
+    final List<String> rows = new ArrayList<>();
+    for (final String family : FAMILIES) {
+      try (InputStream csv =
+          VolleyCommandTest.class.getResourceAsStream("/command-bounds/" + family + ".csv")) {
+        new String(csv.readAllBytes(), StandardCharsets.UTF_8).lines().forEach(rows::add);
+      }
+    }
+
+    final List<String> uncovered =
+        ServerConfigOptions.all().stream()
+            .filter(
+                option -> {
+                  final String path = VolleyCommand.ROOT + " " + pathOf(option) + " ";
+                  return rows.stream().noneMatch(row -> row.startsWith(path));
+                })
+            .map(ConfigOption::id)
+            .toList();
+
+    assertEquals(List.of(), uncovered);
+  }
+
+  @Test
   void mountsEverySectionUnderConfigInCatalogOrder() {
     assertEquals(
-        ServerConfigOptions.sections().stream().map(section -> section.id()).toList(),
+        FAMILIES,
         dispatcher
             .getRoot()
             .getChild(VolleyCommand.ROOT)

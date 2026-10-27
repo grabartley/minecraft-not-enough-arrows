@@ -161,7 +161,7 @@ public final class TowService {
   }
 
   private static void drag(final Entity target, final PlayerEntity shooter, final double speed) {
-    Propel.drive(
+    Propel.carry(
         target, TowPull.velocity(target.getPos(), shooter.getPos(), target.getVelocity(), speed));
   }
 

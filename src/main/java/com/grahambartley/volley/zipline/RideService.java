@@ -158,7 +158,7 @@ public final class RideService {
       final RideSession session,
       final Vec3d grip,
       final double speed) {
-    Propel.drive(
+    Propel.carry(
         rider,
         RidePath.velocity(session.from(), session.to(), grip, speed, rider.getFinalGravity()));
     rider.fallDistance = 0.0f;
