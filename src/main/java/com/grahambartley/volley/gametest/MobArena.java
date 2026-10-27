@@ -158,7 +158,7 @@ final class MobArena {
     return mob.moves() == Moves.WATER ? EntityType.DROWNED : EntityType.ZOMBIE;
   }
 
-  private static MobEntity helmeted(final MobEntity mob) {
+  static <E extends MobEntity> E helmeted(final E mob) {
     if (mob.getType().isIn(EntityTypeTags.UNDEAD)
         && mob.getEquippedStack(EquipmentSlot.HEAD).isEmpty()) {
       mob.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
@@ -182,7 +182,7 @@ final class MobArena {
   }
 
   static CowEntity cow(final TestContext context, final BlockPos at) {
-    final CowEntity cow = ControlTestSupport.sturdyStillCow(context, at);
+    final CowEntity cow = ControlTestSupport.sturdyStillCowAt(context, at);
     cow.addStatusEffect(new StatusEffectInstance(StatusEffects.WATER_BREATHING, LONG_LIMIT * 2));
     cow.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, LONG_LIMIT * 2));
     return cow;

@@ -1,18 +1,10 @@
 package com.grahambartley.volley.gametest;
 
-import com.grahambartley.volley.gametest.MobRoster.Mob;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.AbstractPiglinEntity;
-import net.minecraft.entity.mob.HoglinEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -24,32 +16,6 @@ final class ChaosTestSupport {
   private static final double NEARBY = 2.0;
 
   private ChaosTestSupport() {}
-
-  static MobEntity fighting(final TestContext context, final Mob mob, final BlockPos at) {
-    final MobEntity spawned =
-        (MobEntity) context.spawnEntity(mob.type(), MobArena.standFor(mob, at));
-    spawned.initialize(
-        context.getWorld(),
-        context.getWorld().getLocalDifficulty(context.getAbsolutePos(at)),
-        SpawnReason.MOB_SUMMONED,
-        null);
-    spawned.setBaby(false);
-    spawned.setPersistent();
-    if (spawned instanceof AbstractPiglinEntity piglin) {
-      piglin.setImmuneToZombification(true);
-    }
-    if (spawned instanceof HoglinEntity hoglin) {
-      hoglin.setImmuneToZombification(true);
-    }
-    return shaded(spawned);
-  }
-
-  static <E extends MobEntity> E shaded(final E mob) {
-    if (mob.getEquippedStack(EquipmentSlot.HEAD).isEmpty()) {
-      mob.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.IRON_HELMET));
-    }
-    return mob;
-  }
 
   static ServerPlayerEntity sturdyPlayerAt(final TestContext context, final BlockPos at) {
     final ServerPlayerEntity player = MockPlayerSupport.survivalPlayerAt(context, at);

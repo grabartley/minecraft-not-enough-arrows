@@ -5,7 +5,6 @@ import com.grahambartley.volley.reveal.WatcherAlarm;
 import com.grahambartley.volley.reveal.WatcherService;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.test.GameTest;
@@ -26,7 +25,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
     WatcherService.forget();
     final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     place(context, owner);
-    final CowEntity cow = stillCow(context, WIRE);
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, WIRE);
 
     final List<WatcherAlarm> alarms = sweep(context, 0);
 
@@ -44,8 +43,8 @@ public final class WatcherServiceGameTest implements FabricGameTest {
     WatcherService.forget();
     final ServerPlayerEntity owner = MockPlayerSupport.player(context);
     place(context, owner);
-    stillCow(context, WIRE);
-    stillCow(context, WIRE);
+    ControlTestSupport.stillCowAt(context, WIRE);
+    ControlTestSupport.stillCowAt(context, WIRE);
 
     int raised = 0;
     for (int tick = 0; tick < INTERVAL_TICKS * 3; tick++) {
@@ -63,7 +62,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
   public void nothingCrossingRaisesNoAlarm(TestContext context) {
     WatcherService.forget();
     place(context, MockPlayerSupport.player(context));
-    stillCow(context, WIRE.east(2));
+    ControlTestSupport.stillCowAt(context, WIRE.east(2));
 
     context.assertTrue(sweep(context, 0).isEmpty(), "Nothing is inside the watcher");
     context.complete();
@@ -106,7 +105,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
   public void aWatcherWithNoShooterReportsToNobodyAndStillExpires(TestContext context) {
     WatcherService.forget();
     final Watcher watcher = place(context, null);
-    stillCow(context, WIRE);
+    ControlTestSupport.stillCowAt(context, WIRE);
 
     context.assertTrue(sweep(context, 0).isEmpty(), "Nobody to report to");
     context.assertTrue(isLive(context, watcher), "It is still there until it expires");
@@ -122,7 +121,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
   public void anExpiredWatcherIsGoneAndRaisesNothing(TestContext context) {
     WatcherService.forget();
     final Watcher watcher = place(context, MockPlayerSupport.player(context));
-    stillCow(context, WIRE);
+    ControlTestSupport.stillCowAt(context, WIRE);
 
     context.assertEquals(
         1, sweep(context, LIFETIME_TICKS - 1).size(), "A watcher still reports a tick before");
@@ -138,7 +137,7 @@ public final class WatcherServiceGameTest implements FabricGameTest {
   public void aWatcherWhoseGroundUnloadsIsDropped(TestContext context) {
     WatcherService.forget();
     final Watcher watcher = place(context, MockPlayerSupport.player(context));
-    stillCow(context, WIRE);
+    ControlTestSupport.stillCowAt(context, WIRE);
     final BlockPos wire = context.getAbsolutePos(WIRE);
 
     final List<WatcherAlarm> alarms =
@@ -179,11 +178,5 @@ public final class WatcherServiceGameTest implements FabricGameTest {
   private static boolean isLive(final TestContext context, final Watcher watcher) {
     return WatcherService.in(context.getWorld()).stream()
         .anyMatch(live -> live.id().equals(watcher.id()));
-  }
-
-  private static CowEntity stillCow(final TestContext context, final BlockPos relative) {
-    final CowEntity cow = context.spawnEntity(EntityType.COW, relative);
-    cow.setAiDisabled(true);
-    return cow;
   }
 }

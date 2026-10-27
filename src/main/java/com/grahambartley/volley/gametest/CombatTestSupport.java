@@ -3,7 +3,6 @@ package com.grahambartley.volley.gametest;
 import com.grahambartley.volley.entity.BaseArrowEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -15,14 +14,6 @@ final class CombatTestSupport {
   static final int MID_FLIGHT_TICK = 4;
 
   private CombatTestSupport() {}
-
-  static ZombieEntity stillZombieAt(final TestContext context, final BlockPos relativePos) {
-    context.setBlockState(relativePos.down(), Blocks.STONE);
-    final ZombieEntity zombie = context.spawnMob(EntityType.ZOMBIE, relativePos);
-    zombie.setAiDisabled(true);
-    zombie.setVelocity(Vec3d.ZERO);
-    return zombie;
-  }
 
   static <E extends BaseArrowEntity> E driftingFrom(
       final TestContext context,

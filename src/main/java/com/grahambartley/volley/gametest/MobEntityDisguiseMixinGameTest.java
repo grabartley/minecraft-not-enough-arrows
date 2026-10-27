@@ -33,7 +33,7 @@ public final class MobEntityDisguiseMixinGameTest implements FabricGameTest {
 
   private static void harmless(final TestContext context, final Mob mob) {
     final ServerPlayerEntity player = ChaosTestSupport.sturdyPlayerAt(context, PLAYER_STAND);
-    final MobEntity fighter = ChaosTestSupport.fighting(context, mob, FIGHTER_STAND);
+    final MobEntity fighter = MobArena.thinking(context, mob, FIGHTER_STAND);
     context.runAtTick(
         DISGUISED_AT,
         () -> {

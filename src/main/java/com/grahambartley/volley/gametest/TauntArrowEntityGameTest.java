@@ -119,7 +119,7 @@ public final class TauntArrowEntityGameTest implements FabricGameTest {
     final ServerPlayerEntity shooter =
         MockPlayerSupport.playerAt(context, CombatTestSupport.LONG_RANGE_SHOOTER_STAND);
     shooter.changeGameMode(GameMode.SURVIVAL);
-    final CowEntity struck = ControlTestSupport.sturdyStillCow(context, new BlockPos(10, 2, 3));
+    final CowEntity struck = ControlTestSupport.sturdyStillCowAt(context, new BlockPos(10, 2, 3));
     final ZombieEntity hunter = ControlTestSupport.stillZombieAt(context, new BlockPos(1, 3, 6));
     hunter.setTarget(shooter);
     context.assertTrue(

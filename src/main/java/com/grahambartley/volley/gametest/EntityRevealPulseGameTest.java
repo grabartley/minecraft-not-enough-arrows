@@ -3,7 +3,6 @@ package com.grahambartley.volley.gametest;
 import com.grahambartley.volley.reveal.EntityRevealPulse;
 import java.util.List;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.CowEntity;
@@ -22,8 +21,8 @@ public final class EntityRevealPulseGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.ARENA, batchId = BATCH, tickLimit = 10)
   public void outlinesEveryLivingThingInRangeWithTheGlowInkArrowsGlow(TestContext context) {
-    final CowEntity near = stillCow(context, CENTER.east(4));
-    final CowEntity far = stillCow(context, CENTER.east(RADIUS + 3));
+    final CowEntity near = ControlTestSupport.stillCowAt(context, CENTER.east(4));
+    final CowEntity far = ControlTestSupport.stillCowAt(context, CENTER.east(RADIUS + 3));
 
     final List<LivingEntity> found = fire(context, null, DURATION_TICKS);
 
@@ -52,17 +51,11 @@ public final class EntityRevealPulseGameTest implements FabricGameTest {
 
   @GameTest(templateName = DiscoveryTestSupport.ARENA, batchId = BATCH, tickLimit = 10)
   public void aZeroDurationOutlinesNothing(TestContext context) {
-    final CowEntity cow = stillCow(context, CENTER.east(2));
+    final CowEntity cow = ControlTestSupport.stillCowAt(context, CENTER.east(2));
 
     context.assertTrue(fire(context, null, 0).isEmpty(), "A zero duration finds nothing");
     context.assertFalse(cow.hasStatusEffect(StatusEffects.GLOWING), "Nothing glows");
     context.complete();
-  }
-
-  private static CowEntity stillCow(final TestContext context, final BlockPos relative) {
-    final CowEntity cow = context.spawnEntity(EntityType.COW, relative);
-    cow.setAiDisabled(true);
-    return cow;
   }
 
   private static List<LivingEntity> fire(
