@@ -1,7 +1,6 @@
 package com.grahambartley.volley.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
@@ -51,9 +50,9 @@ class ExplosiveArrowConfigTest {
   void defaultsToATelegraphedCountdownOnEveryTier() {
     final ExplosiveArrowConfig defaults = ExplosiveArrowConfig.defaults();
 
-    assertFalse(defaults.gunpowder().detonatesOnContact());
-    assertFalse(defaults.tnt().detonatesOnContact());
-    assertFalse(defaults.fireCharge().detonatesOnContact());
+    assertTrue(defaults.gunpowder().delayTicks() > 0);
+    assertTrue(defaults.tnt().delayTicks() > 0);
+    assertTrue(defaults.fireCharge().delayTicks() > 0);
   }
 
   @ParameterizedTest
@@ -133,7 +132,7 @@ class ExplosiveArrowConfigTest {
         ExplosiveArrowConfig.fromJson(
             JsonParser.parseString("{\"tnt\":{\"delayTicks\":0,\"power\":9.0}}").getAsJsonObject());
 
-    assertTrue(config.tnt().detonatesOnContact());
+    assertEquals(0, config.tnt().delayTicks());
     assertEquals(9.0f, config.tnt().power());
     assertEquals(ExplosiveArrowConfig.DEFAULT_GUNPOWDER, config.gunpowder());
   }

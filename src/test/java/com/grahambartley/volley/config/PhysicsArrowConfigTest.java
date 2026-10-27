@@ -20,7 +20,6 @@ class PhysicsArrowConfigTest {
     final PhysicsArrowConfig defaults = PhysicsArrowConfig.defaults();
 
     assertEquals(3, defaults.gravityImpactRadius());
-    assertFalse(defaults.affectsOnlyTheHitBlock());
   }
 
   @Test
@@ -40,11 +39,6 @@ class PhysicsArrowConfigTest {
     final PhysicsArrowConfig parsed = new PhysicsArrowConfig(0, List.of(), given, true);
 
     assertEquals(expected, parsed.ricochetBounceCount());
-  }
-
-  @Test
-  void reportsARadiusAboveZeroAsAffectingNeighbours() {
-    assertFalse(config(1, List.of()).affectsOnlyTheHitBlock());
   }
 
   @Test

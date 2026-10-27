@@ -76,11 +76,6 @@ public final class DisguiseService {
     return ledger == null ? Optional.empty() : ledger.get(id);
   }
 
-  public static int liveDisguises(final ServerWorld world) {
-    final ExpiringLedger<Identifier> ledger = LEDGERS.in(world);
-    return ledger == null ? 0 : ledger.size();
-  }
-
   private static void tick(final ServerWorld world) {
     final ExpiringLedger<Identifier> ledger = LEDGERS.in(world);
     if (ledger == null || ledger.isEmpty()) {

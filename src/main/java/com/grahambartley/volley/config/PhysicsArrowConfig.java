@@ -44,10 +44,6 @@ public record PhysicsArrowConfig(
         DEFAULT_RICOCHET_RETAINS_DAMAGE);
   }
 
-  public boolean affectsOnlyTheHitBlock() {
-    return gravityImpactRadius == GRAVITY_IMPACT_RADIUS_MIN;
-  }
-
   public boolean isExcludedFromGravity(final String blockId) {
     return ConfigValues.containsIdentifier(gravityBlockExclusions, blockId);
   }

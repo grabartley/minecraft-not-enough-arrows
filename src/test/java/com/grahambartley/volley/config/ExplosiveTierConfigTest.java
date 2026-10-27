@@ -1,8 +1,6 @@
 package com.grahambartley.volley.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
@@ -21,16 +19,6 @@ class ExplosiveTierConfigTest {
   @CsvSource({"-1.0, 0.0", "0.0, 0.0", "4.0, 4.0", "20.0, 20.0", "99.0, 20.0"})
   void clampsPowerIntoRange(final float given, final float expected) {
     assertEquals(expected, new ExplosiveTierConfig(60, given).power());
-  }
-
-  @Test
-  void treatsAZeroDelayAsDetonateOnContact() {
-    assertTrue(new ExplosiveTierConfig(0, 4.0f).detonatesOnContact());
-  }
-
-  @Test
-  void treatsAnyPositiveDelayAsATelegraphedCountdown() {
-    assertFalse(new ExplosiveTierConfig(1, 4.0f).detonatesOnContact());
   }
 
   @Test
