@@ -19,6 +19,7 @@ import net.minecraft.util.math.Vec3d;
 
 public final class WindBurstServiceGameTest implements FabricGameTest {
   private static final String BATCH = "wind-burst";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final Vec3d CENTRE = new Vec3d(3.5, 2.5, 3.5);
   private static final BlockPos NEARBY_STAND = new BlockPos(4, 2, 3);
   private static final BlockPos DISTANT_STAND = new BlockPos(6, 2, 6);
@@ -27,7 +28,7 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
   private static final float RADIUS = 4.0f;
   private static final float STRENGTH = 2.0f;
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityInsideTheRadiusIsPushedAway(TestContext context) {
     final ArmorStandEntity bystander = standAt(context, NEARBY_STAND);
 
@@ -40,7 +41,7 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityBeyondTheRadiusIsLeftAlone(TestContext context) {
     final ArmorStandEntity distant = standAt(context, DISTANT_STAND);
 
@@ -53,7 +54,7 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theShooterIsNeverPushedByTheirOwnBurst(TestContext context) {
     final ArmorStandEntity shooter = standAt(context, NEARBY_STAND);
     final WindArrowEntity arrow = context.spawnEntity(ModArrows.WIND_ARROW.entityType(), CENTRE);
@@ -68,7 +69,7 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aWindActivatedBlockRespondsAsItDoesToAWindCharge(TestContext context) {
     context.setBlockState(GATE, Blocks.OAK_FENCE_GATE);
 
@@ -82,7 +83,7 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aRadiusOfZeroDisplacesNothing(TestContext context) {
     final ArmorStandEntity bystander = standAt(context, NEARBY_STAND);
 
@@ -96,7 +97,7 @@ public final class WindBurstServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheBurst(TestContext context) {
     final ArmorStandEntity bystander = standAt(context, NEARBY_STAND);
     final List<Entity> displaced =

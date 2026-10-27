@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class BlastServiceGameTest implements FabricGameTest {
   private static final String BATCH = "explosive";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CENTRE = new BlockPos(3, 4, 3);
   private static final BlockPos NEARBY_BLOCK = new BlockPos(3, 3, 3);
   private static final float POWER = 4.0f;
@@ -30,7 +31,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     FuseService.forget();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aBlastLeavesTerrainAloneWhenTerrainDamageIsOff(TestContext context) {
     context.setBlockState(NEARBY_BLOCK, Blocks.DIRT);
     detonateWith(context, configWith(false, false));
@@ -39,7 +40,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aBlastBreaksTerrainWhenTerrainDamageIsOn(TestContext context) {
     context.setBlockState(NEARBY_BLOCK, Blocks.DIRT);
     detonateWith(context, configWith(true, false));
@@ -48,7 +49,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aBlastLeavesEntitiesUnhurtWhenEntityDamageIsOff(TestContext context) {
     final ArmorStandEntity bystander =
         context.spawnEntity(EntityType.ARMOR_STAND, new BlockPos(3, 3, 4));
@@ -61,7 +62,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aDetonatedArrowIsConsumed(TestContext context) {
     detonateWith(context, configWith(false, false));
 
@@ -69,7 +70,7 @@ public final class BlastServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aPowerOfZeroDetonatesWithoutAnExplosion(TestContext context) {
     context.setBlockState(NEARBY_BLOCK, Blocks.DIRT);
     detonateWith(context, configWithGunpowderPower(0.0f, true));

@@ -11,12 +11,13 @@ import net.minecraft.util.math.BlockPos;
 
 public final class GravityServiceGameTest implements FabricGameTest {
   private static final String BATCH = "gravity-service";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos STRUCK = new BlockPos(3, 4, 3);
   private static final BlockPos NEIGHBOUR = new BlockPos(4, 4, 3);
   private static final String STONE_ID = "minecraft:stone";
   private static final String OBSIDIAN_ID = "minecraft:obsidian";
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theDefaultRadiusDropsOnlyTheBlockThatWasHit(TestContext context) {
     context.setBlockState(STRUCK, Blocks.STONE);
     context.setBlockState(NEIGHBOUR, Blocks.STONE);
@@ -29,7 +30,7 @@ public final class GravityServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void raisingTheRadiusDropsTheBlocksAroundItToo(TestContext context) {
     context.setBlockState(STRUCK, Blocks.STONE);
     context.setBlockState(NEIGHBOUR, Blocks.STONE);
@@ -41,7 +42,7 @@ public final class GravityServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anExcludedBlockNeverFalls(TestContext context) {
     context.setBlockState(STRUCK, Blocks.STONE);
 
@@ -53,7 +54,7 @@ public final class GravityServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anExcludedBlockIsSparedWhileItsNeighboursFall(TestContext context) {
     context.setBlockState(STRUCK, Blocks.STONE);
     context.setBlockState(NEIGHBOUR, Blocks.OBSIDIAN);
@@ -65,7 +66,7 @@ public final class GravityServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anUnbreakableBlockIsNeverMoved(TestContext context) {
     context.setBlockState(STRUCK, Blocks.BEDROCK);
 
@@ -76,7 +77,7 @@ public final class GravityServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEmptySpaceHasNothingToDrop(TestContext context) {
     final List<BlockPos> fallen = collapse(context, PhysicsArrowTestSupport.physics(1, List.of()));
 
@@ -84,7 +85,7 @@ public final class GravityServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void nothingFallsWithoutABlockToHit(TestContext context) {
     context.assertTrue(
         GravityService.collapse(

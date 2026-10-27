@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public final class GrappleArrowEntityGameTest implements FabricGameTest {
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
 
   private static final BlockPos SHOOTER_STAND = new BlockPos(0, 3, 0);
   private static final BlockPos WALL_BASE = new BlockPos(6, 3, 0);
@@ -31,10 +32,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
   private static final int LETTING_GO_TICKS = 15;
   private static final int STRETCH_TICKS = 4;
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredFromABowGrapplesTheShooterToTheBlockItLandsIn(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
@@ -58,10 +56,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowFiredWithNoPlayerBehindItGrapplesNobody(TestContext context) {
     raiseWall(context);
     final PigEntity shooter = context.spawnEntity(EntityType.PIG, SHOOTER_STAND);
@@ -83,10 +78,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowPullingAPlayerHoldsItsLineToThatPlayer(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
@@ -109,10 +101,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 80)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
   public void anArrowWhoseGrappleHasEndedHoldsNoLine(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
@@ -135,10 +124,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 80)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
   public void anArrowThatSurvivesAReloadPicksItsLineBackUp(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
@@ -180,10 +166,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void anArrowThatRememberedNoAnchorNeverTakesUpALine(TestContext context) {
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
     final GrappleArrowEntity reloaded =
@@ -201,10 +184,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 60)
   public void aGrappleLineIsNeverBrokenByVanillaLeashDistance(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
@@ -224,10 +204,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 80)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
   public void aGrappleLineWhoseHolderDiesNeverLeavesALeadBehind(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);
@@ -250,10 +227,7 @@ public final class GrappleArrowEntityGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 80)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 80)
   public void aGrappleLineStretchedPastALeadsReachIsNeitherBrokenNorFelt(TestContext context) {
     raiseWall(context);
     final ServerPlayerEntity shooter = MockPlayerSupport.playerAt(context, SHOOTER_STAND);

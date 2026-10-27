@@ -8,14 +8,12 @@ import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 
 public final class GrappleFlightCheckGameTest implements FabricGameTest {
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
 
   private static final BlockPos PLAYER_STAND = new BlockPos(0, 3, 0);
   private static final int COUNTED_TICKS = 40;
 
-  @GameTest(
-      templateName = FiringRangeSupport.TEMPLATE,
-      batchId = MockPlayerSupport.BATCH,
-      tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = MockPlayerSupport.BATCH, tickLimit = 20)
   public void aPlayerHeldInTheAirHasTheirFloatingCountCleared(TestContext context) {
     final ServerPlayerEntity player = MockPlayerSupport.playerAt(context, PLAYER_STAND);
     player.networkHandler.floatingTicks = COUNTED_TICKS;

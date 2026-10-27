@@ -15,10 +15,11 @@ import net.minecraft.util.math.BlockPos;
 
 public final class GlowServiceGameTest implements FabricGameTest {
   private static final String BATCH = "glow-marking";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos TARGET_STAND = new BlockPos(3, 2, 3);
   private static final int DURATION_TICKS = 120;
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aLivingEntityIsMarkedWithGlowing(TestContext context) {
     final ArmorStandEntity target = target(context);
 
@@ -29,7 +30,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aMarkCarriesTheDurationItWasGiven(TestContext context) {
     final ArmorStandEntity target = target(context);
 
@@ -42,7 +43,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityWithoutStatusEffectsIsLeftAloneRatherThanErroring(TestContext context) {
     final BoatEntity target = context.spawnEntity(EntityType.BOAT, TARGET_STAND);
 
@@ -52,7 +53,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void nothingIsMarkedWhenThereIsNoTarget(TestContext context) {
     context.assertFalse(
         GlowService.mark(context.getWorld(), null, null, DURATION_TICKS),
@@ -60,7 +61,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aDurationOfZeroMarksNothingAtAll(TestContext context) {
     final ArmorStandEntity target = target(context);
 
@@ -73,7 +74,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesHowLongAMarkLasts(TestContext context) {
     final ArmorStandEntity target = target(context);
     ConfigOverrides.during(
@@ -87,7 +88,7 @@ public final class GlowServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigCanSwitchMarkingOff(TestContext context) {
     final ArmorStandEntity target = target(context);
     final boolean marked =

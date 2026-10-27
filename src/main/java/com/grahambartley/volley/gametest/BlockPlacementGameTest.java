@@ -9,11 +9,12 @@ import net.minecraft.util.math.BlockPos;
 
 public final class BlockPlacementGameTest implements FabricGameTest {
   private static final String BATCH = "block-placement";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos OPEN_AIR = new BlockPos(3, 4, 3);
   private static final BlockPos FAR_OUTSIDE_THE_BORDER =
       new BlockPos(Integer.MAX_VALUE, 4, Integer.MAX_VALUE);
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aBlockMayBePlacedWhereSomethingHoldsItUp(TestContext context) {
     context.setBlockState(OPEN_AIR.down(), Blocks.STONE);
 
@@ -23,7 +24,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void nothingMayBePlacedWhereSomethingAlreadyStands(TestContext context) {
     context.setBlockState(OPEN_AIR.down(), Blocks.STONE);
     context.setBlockState(OPEN_AIR, Blocks.STONE);
@@ -34,7 +35,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aBlockThatCannotHoldItselfUpIsRefused(TestContext context) {
     context.assertFalse(
         canPlaceTorchAt(context, context.getAbsolutePos(OPEN_AIR)),
@@ -42,7 +43,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void nothingMayBePlacedOutsideTheWorld(TestContext context) {
     context.assertFalse(
         canPlaceTorchAt(context, FAR_OUTSIDE_THE_BORDER),
@@ -50,7 +51,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void nothingIsPlacedWithoutAWorldAPositionOrAState(TestContext context) {
     final BlockPos pos = context.getAbsolutePos(OPEN_AIR);
 
@@ -71,7 +72,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
         context.getWorld(), absolutePos, Blocks.TORCH.getDefaultState(), null);
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStructureMayOccupyOpenAir(TestContext context) {
     context.assertTrue(
         BlockPlacement.canOccupy(
@@ -82,7 +83,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStructureMayOccupyAReplaceableBlock(TestContext context) {
     context.setBlockState(OPEN_AIR.down(), Blocks.STONE);
     context.setBlockState(OPEN_AIR, Blocks.SNOW);
@@ -96,7 +97,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStructureNeverOccupiesABuiltBlock(TestContext context) {
     context.setBlockState(OPEN_AIR, Blocks.STONE);
 
@@ -109,7 +110,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStructureBlockThatCannotStandThereIsRefused(TestContext context) {
     context.assertFalse(
         BlockPlacement.canOccupy(
@@ -118,7 +119,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStructureNeverOccupiesAPositionOutsideTheWorld(TestContext context) {
     context.assertFalse(
         BlockPlacement.canOccupy(
@@ -130,7 +131,7 @@ public final class BlockPlacementGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStructureNeverOccupiesWater(TestContext context) {
     context.setBlockState(OPEN_AIR, Blocks.WATER);
 

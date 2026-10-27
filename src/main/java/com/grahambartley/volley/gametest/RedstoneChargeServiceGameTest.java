@@ -16,6 +16,7 @@ import net.minecraft.util.math.BlockPos;
 
 public final class RedstoneChargeServiceGameTest implements FabricGameTest {
   private static final String BATCH = "redstone-charge-lifecycle";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CHARGE = new BlockPos(3, 3, 3);
   private static final BlockPos LAMP = new BlockPos(3, 3, 4);
   private static final int STRENGTH = 15;
@@ -27,7 +28,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
     RedstoneChargeService.forget();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 40)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 40)
   public void aChargeLightsARedstoneLampBesideIt(TestContext context) {
     context.setBlockState(LAMP, Blocks.REDSTONE_LAMP);
 
@@ -45,7 +46,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aLampGoesDarkOnceTheChargeExpires(TestContext context) {
     context.setBlockState(LAMP, Blocks.REDSTONE_LAMP);
     charge(context, STRENGTH, SHORT_DURATION_TICKS);
@@ -62,7 +63,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aChargeHoldsUntilItsDurationElapses(TestContext context) {
     charge(context, STRENGTH, LONG_DURATION_TICKS);
 
@@ -74,7 +75,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void aChargeStillExpiresWhenTheTrackerHasBeenLost(TestContext context) {
     charge(context, STRENGTH, SHORT_DURATION_TICKS);
     RedstoneChargeService.forget();
@@ -87,7 +88,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aChargeCarriesTheStrengthItWasGiven(TestContext context) {
     charge(context, 7, LONG_DURATION_TICKS);
 
@@ -98,14 +99,14 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aDurationOfZeroChargesNothingAtAll(TestContext context) {
     context.assertFalse(charge(context, STRENGTH, 0), "A zero duration should charge nothing");
     context.expectBlock(Blocks.AIR, CHARGE);
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStrengthOfZeroChargesNothingAtAll(TestContext context) {
     context.assertFalse(
         charge(context, 0, LONG_DURATION_TICKS), "A zero strength should charge nothing");
@@ -113,7 +114,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheStrengthOfACharge(TestContext context) {
     ConfigOverrides.during(
         configWithSignal(9, LONG_DURATION_TICKS),
@@ -127,7 +128,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 60)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 60)
   public void theLiveServerConfigDecidesHowLongAChargeHolds(TestContext context) {
     ConfigOverrides.during(
         configWithSignal(STRENGTH, SHORT_DURATION_TICKS),
@@ -143,7 +144,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigCanSwitchChargesOff(TestContext context) {
     final boolean charged =
         ConfigOverrides.during(
@@ -157,7 +158,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 80)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 80)
   public void aChargeThatReplacesAnExpiredOneKeepsItsOwnFullDuration(TestContext context) {
     charge(context, STRENGTH, SHORT_DURATION_TICKS);
 
@@ -176,7 +177,7 @@ public final class RedstoneChargeServiceGameTest implements FabricGameTest {
         });
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 120)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 120)
   public void aChargeReplacedAfterItsBlockIsDestroyedStillGoesAwayOnItsOwn(TestContext context) {
     charge(context, STRENGTH, SHORT_DURATION_TICKS);
     context.setBlockState(CHARGE, Blocks.AIR);

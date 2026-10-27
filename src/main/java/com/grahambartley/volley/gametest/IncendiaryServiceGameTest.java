@@ -16,6 +16,7 @@ import net.minecraft.util.math.Vec3d;
 
 public final class IncendiaryServiceGameTest implements FabricGameTest {
   private static final String BATCH = "incendiary";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final Vec3d CENTRE = new Vec3d(3.5, 3.0, 3.5);
   private static final BlockPos NEARBY_STAND = new BlockPos(4, 3, 3);
   private static final BlockPos DISTANT_STAND = new BlockPos(6, 3, 6);
@@ -23,7 +24,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
   private static final int IGNITE_SECONDS = 5;
   private static final int FIRE_PATCH_TICKS = 200;
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityInsideTheRadiusCatchesFire(TestContext context) {
     final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
@@ -34,7 +35,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anEntityBeyondTheRadiusIsLeftAlone(TestContext context) {
     final CowEntity cow = ControlTestSupport.stillCowAt(context, DISTANT_STAND);
 
@@ -45,7 +46,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void fireIsLaidOnTheSurfaceWhenBlockIgnitionIsOn(TestContext context) {
     ignite(context, RADIUS, IGNITE_SECONDS, true);
 
@@ -53,7 +54,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void noFireIsLaidWhenBlockIgnitionIsOff(TestContext context) {
     final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
@@ -65,7 +66,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aRadiusOfZeroBurnsNothingAtAll(TestContext context) {
     final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
@@ -77,7 +78,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anIgniteTimeOfZeroLaysFireWithoutBurningEntities(TestContext context) {
     final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
 
@@ -89,7 +90,7 @@ public final class IncendiaryServiceGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void theLiveServerConfigDecidesTheBurn(TestContext context) {
     final CowEntity cow = ControlTestSupport.stillCowAt(context, NEARBY_STAND);
     final List<Entity> burned =

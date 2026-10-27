@@ -11,11 +11,12 @@ import net.minecraft.util.math.BlockPos;
 
 public final class FirePatchPlacerGameTest implements FabricGameTest {
   private static final String BATCH = "fire-patch-placement";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos CENTRE = new BlockPos(3, 3, 3);
   private static final BlockPos SURFACE = CENTRE.down();
   private static final int RADIUS = 2;
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPatchOnFlatGroundCoversEveryColumnOfItsShape(TestContext context) {
     final List<BlockPos> placed = placePatch(context);
 
@@ -23,7 +24,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void everyColumnOfAPatchOnFlatGroundBurnsAtTheCentreHeight(TestContext context) {
     placePatch(context);
 
@@ -33,7 +34,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void waterHoldsNoFire(TestContext context) {
     context.setBlockState(CENTRE, Blocks.WATER);
 
@@ -46,7 +47,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSurfaceWithNoSolidTopFaceHoldsNoFire(TestContext context) {
     final BlockPos overSlab = CENTRE.add(2, 0, 0);
     context.setBlockState(overSlab.down(), Blocks.STONE_SLAB);
@@ -60,7 +61,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void fireSettlesOnTopOfARaisedBlockRatherThanInsideIt(TestContext context) {
     final BlockPos raised = CENTRE.add(1, 0, 0);
     context.setBlockState(raised, Blocks.STONE);
@@ -77,7 +78,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void soulSoilBurnsWithSoulFireTheWayVanillaDoes(TestContext context) {
     final BlockPos overSoulSoil = CENTRE.add(0, 0, 1);
     context.setBlockState(overSoulSoil.down(), Blocks.SOUL_SOIL);
@@ -88,7 +89,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void clearingRemovesTheFireItPlaced(TestContext context) {
     for (final BlockPos pos : placePatch(context)) {
       context.assertTrue(
@@ -101,7 +102,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void clearingLeavesABlockThatIsNoLongerFireAlone(TestContext context) {
     final BlockPos replaced = CENTRE.add(0, 0, 2);
     context.setBlockState(replaced, Blocks.STONE);
@@ -113,7 +114,7 @@ public final class FirePatchPlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSolidSurfaceIsNeverReplacedByFire(TestContext context) {
     context.assertFalse(
         FirePatchPlacer.canPlaceAt(context.getWorld(), context.getAbsolutePos(SURFACE), null),

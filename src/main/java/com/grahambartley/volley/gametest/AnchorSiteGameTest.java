@@ -12,45 +12,46 @@ import net.minecraft.util.math.BlockPos;
 
 public final class AnchorSiteGameTest implements FabricGameTest {
   private static final String BATCH = "anchor-site";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos TARGET = new BlockPos(3, 3, 3);
   private static final BlockPos SUPPORT = TARGET.down();
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aFullBlockIsSolidEnoughToAnchorTo(TestContext context) {
     assertSuitability(context, Blocks.STONE, true, "A full block should hold an anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSlabIsSolidEnoughToAnchorTo(TestContext context) {
     assertSuitability(context, Blocks.STONE_SLAB, true, "A slab should hold an anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void glassIsSolidEnoughToAnchorTo(TestContext context) {
     assertSuitability(context, Blocks.GLASS, true, "Glass should hold an anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void thereIsNothingToAnchorToInOpenAir(TestContext context) {
     assertSuitability(context, Blocks.AIR, false, "Open air should hold no anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void waterIsNotSolidEnoughToAnchorTo(TestContext context) {
     assertSuitability(context, Blocks.WATER, false, "Water should hold no anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void grassIsNotSolidEnoughToAnchorTo(TestContext context) {
     assertSuitability(context, Blocks.SHORT_GRASS, false, "Grass should hold no anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aTorchIsNotSolidEnoughToAnchorTo(TestContext context) {
     assertSuitability(context, Blocks.TORCH, false, "A torch should hold no anchor");
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aPositionOutsideTheWorldHoldsNoAnchor(TestContext context) {
     context.assertFalse(
         AnchorSite.isSuitable(context.getWorld(), new BlockPos(0, Integer.MAX_VALUE, 0)),
@@ -58,7 +59,7 @@ public final class AnchorSiteGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSiteReportsTheBlockStandingThere(TestContext context) {
     context.setBlockState(TARGET, Blocks.STONE);
 
@@ -68,7 +69,7 @@ public final class AnchorSiteGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aSiteWithNothingStandingThereReportsAir(TestContext context) {
     context.assertTrue(
         Registries.BLOCK.getId(Blocks.AIR).equals(blockIdAt(context)),

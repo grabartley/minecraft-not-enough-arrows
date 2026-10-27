@@ -10,11 +10,12 @@ import net.minecraft.util.math.BlockPos;
 
 public final class RedstoneChargePlacerGameTest implements FabricGameTest {
   private static final String BATCH = "redstone-charge-placement";
+  private static final String TEMPLATE = FiringRangeSupport.TEMPLATE;
   private static final BlockPos OPEN_AIR = new BlockPos(3, 3, 3);
   private static final BlockPos OCCUPIED = new BlockPos(3, 3, 4);
   private static final int STRENGTH = 12;
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aChargeIsPlacedIntoOpenAir(TestContext context) {
     context.assertTrue(
         RedstoneChargePlacer.place(
@@ -24,7 +25,7 @@ public final class RedstoneChargePlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void anOccupiedPositionIsNeverReplaced(TestContext context) {
     context.setBlockState(OCCUPIED, Blocks.STONE);
 
@@ -36,7 +37,7 @@ public final class RedstoneChargePlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void aStrengthOfZeroPlacesNothing(TestContext context) {
     context.assertFalse(
         RedstoneChargePlacer.place(context.getWorld(), context.getAbsolutePos(OPEN_AIR), 0, null),
@@ -45,7 +46,7 @@ public final class RedstoneChargePlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void clearingRemovesAChargeAndLeavesAir(TestContext context) {
     final BlockPos absolute = context.getAbsolutePos(OPEN_AIR);
     RedstoneChargePlacer.place(context.getWorld(), absolute, STRENGTH, null);
@@ -57,7 +58,7 @@ public final class RedstoneChargePlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void clearingNeverTouchesABlockThatIsNotACharge(TestContext context) {
     context.setBlockState(OCCUPIED, Blocks.STONE);
 
@@ -68,7 +69,7 @@ public final class RedstoneChargePlacerGameTest implements FabricGameTest {
     context.complete();
   }
 
-  @GameTest(templateName = FiringRangeSupport.TEMPLATE, batchId = BATCH, tickLimit = 20)
+  @GameTest(templateName = TEMPLATE, batchId = BATCH, tickLimit = 20)
   public void onlyAChargeIsRecognisedAsOne(TestContext context) {
     final BlockPos absoluteAir = context.getAbsolutePos(OPEN_AIR);
     context.setBlockState(OCCUPIED, Blocks.STONE);
