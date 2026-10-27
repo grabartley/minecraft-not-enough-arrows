@@ -1,10 +1,20 @@
 package com.grahambartley.volley.command;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.grahambartley.volley.config.VolleyConfig;
+import com.grahambartley.volley.config.option.BooleanOption;
+import com.grahambartley.volley.config.option.ConfigOption;
+import com.grahambartley.volley.config.option.FloatOption;
+import com.grahambartley.volley.config.option.IdentifierListOption;
+import com.grahambartley.volley.config.option.IntOption;
+import com.grahambartley.volley.config.option.ServerConfigOptions;
 import com.mojang.brigadier.CommandDispatcher;
-import java.util.List;
+import com.mojang.brigadier.tree.CommandNode;
+import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.stream.Stream;
 import net.minecraft.server.command.ServerCommandSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,21 +26,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 class VolleyCommandTest {
 
   private static final String OLD_ALIAS = "nea";
-
-  private static final List<String> OPERATOR_COMMANDS =
-      List.of(
-          "config reset",
-          "config explosive beepvolume 0.5",
-          "config grapple maxrangeblocks 64",
-          "config utility redstonesignalstrength 7",
-          "config physics ricochetbouncecount 2",
-          "config ender pearlmaxrangeblocks 64",
-          "config traversal zipline maxspanblocks 64",
-          "config terrain drill tooltier 1",
-          "config agriculture bee count 5",
-          "config discovery prospector blocks add minecraft:stone",
-          "config chaos party enabled false",
-          "config social magnet radius 4");
 
   private CommandDispatcher<ServerCommandSource> dispatcher;
   private ServerCommandSource operator;
@@ -44,7 +39,72 @@ class VolleyCommandTest {
   }
 
   static Stream<Arguments> operatorCommands() {
-    return OPERATOR_COMMANDS.stream().map(Arguments::of);
+    return Stream.concat(
+            Stream.of("config reset"),
+            ServerConfigOptions.all().stream().flatMap(VolleyCommandTest::acceptedValues))
+        .map(Arguments::of);
+  }
+
+  static Stream<Arguments> outOfBoundsCommands() {
+    return ServerConfigOptions.all().stream()
+        .flatMap(VolleyCommandTest::rejectedValues)
+        .map(Arguments::of);
+  }
+
+  private static Stream<String> acceptedValues(final ConfigOption<VolleyConfig> option) {
+    final String path = pathOf(option);
+    return switch (option) {
+      case IntOption<VolleyConfig> intOption ->
+          Stream.of(path + " " + intOption.min(), path + " " + intOption.max());
+      case FloatOption<VolleyConfig> floatOption ->
+          Stream.of(path + " " + plain(floatOption.min()), path + " " + plain(floatOption.max()));
+      case BooleanOption<VolleyConfig> booleanOption -> Stream.of(path + " true", path + " false");
+      case IdentifierListOption<VolleyConfig> listOption ->
+          Stream.of(path + " add minecraft:stone", path + " clear");
+    };
+  }
+
+  private static Stream<String> rejectedValues(final ConfigOption<VolleyConfig> option) {
+    final String path = pathOf(option);
+    return switch (option) {
+      case IntOption<VolleyConfig> intOption ->
+          Stream.of(path + " " + (intOption.min() - 1), path + " " + (intOption.max() + 1));
+      case FloatOption<VolleyConfig> floatOption ->
+          Stream.of(
+              path + " " + plain(floatOption.min() - 1f),
+              path + " " + plain(floatOption.max() + 1f));
+      case BooleanOption<VolleyConfig> booleanOption -> Stream.of(path + " maybe");
+      case IdentifierListOption<VolleyConfig> listOption -> Stream.of(path + " 3");
+    };
+  }
+
+  private static String pathOf(final ConfigOption<VolleyConfig> option) {
+    return "config " + option.id().toLowerCase(Locale.ROOT).replace('.', ' ');
+  }
+
+  private static String plain(final float value) {
+    return new BigDecimal(Float.toString(value)).toPlainString();
+  }
+
+  @ParameterizedTest(name = "an operator may not run \"volley {0}\"")
+  @MethodSource("outOfBoundsCommands")
+  void everyOptionRefusesAValueOutsideItsBounds(String command) {
+    assertFalse(CommandParsing.accepts(dispatcher, operator, VolleyCommand.ROOT + " " + command));
+  }
+
+  @Test
+  void mountsEverySectionUnderConfigInCatalogOrder() {
+    assertEquals(
+        ServerConfigOptions.sections().stream().map(section -> section.id()).toList(),
+        dispatcher
+            .getRoot()
+            .getChild(VolleyCommand.ROOT)
+            .getChild(VolleyCommand.CONFIG)
+            .getChildren()
+            .stream()
+            .map(CommandNode::getName)
+            .filter(name -> !name.equals(VolleyCommand.RESET))
+            .toList());
   }
 
   @Test
@@ -59,7 +119,7 @@ class VolleyCommandTest {
 
   @ParameterizedTest(name = "an operator may run \"volley {0}\"")
   @MethodSource("operatorCommands")
-  void everyFamilyIsReachableByAnOperator(String command) {
+  void everyOptionIsReachableByAnOperatorAtItsBounds(String command) {
     assertTrue(CommandParsing.accepts(dispatcher, operator, VolleyCommand.ROOT + " " + command));
   }
 
